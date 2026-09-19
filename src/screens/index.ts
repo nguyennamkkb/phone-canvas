@@ -16,10 +16,6 @@ import type { ScreenFile } from './manifest'
  */
 
 import splash from './splash.html?raw'
-import onboardingWelcome from './onboarding-welcome.html?raw'
-import onboardingCheckin from './onboarding-checkin.html?raw'
-import onboardingInsights from './onboarding-insights.html?raw'
-import onboardingReminder from './onboarding-reminder.html?raw'
 import home from './home.html?raw'
 import checkin from './checkin.html?raw'
 import insights from './insights.html?raw'
@@ -33,10 +29,6 @@ import moodStats from './mood-stats.html?raw'
 
 const RAW: Record<string, string> = {
   splash,
-  'onboarding-welcome': onboardingWelcome,
-  'onboarding-checkin': onboardingCheckin,
-  'onboarding-insights': onboardingInsights,
-  'onboarding-reminder': onboardingReminder,
   home,
   checkin,
   insights,
