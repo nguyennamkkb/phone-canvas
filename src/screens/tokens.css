@@ -1172,13 +1172,65 @@ figure {
   justify-content: center;
   flex: 1 1 0;
   min-width: 0;
-  padding: 5px;
+  padding: 3px;
   border: 3px solid transparent;
   border-radius: var(--r-full);
 }
 
 .mood-orb.is-on {
   border-color: var(--sage-deep);
+  background: var(--card);
+}
+
+/* A colour region that bleeds to the screen edges and curves into the page.
+   The reference designs all open with one. Without it a screen is a stack of
+   floating cards; with it there is a top, a middle and a bottom. */
+.hero-bleed {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  flex: 0 0 auto;
+  padding: var(--s4) var(--s5) var(--s5);
+  border-radius: 0 0 36px 36px;
+  background: var(--sage-soft);
+}
+
+/* the week is a mini chart, not a row of dots: the bar is the mood level and
+   the colour is the mood, so it says how much, not just whether */
+.week-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--s2);
+  flex: 1 1 0;
+  min-width: 0;
+  height: 92px;
+}
+
+.week-bar {
+  display: block;
+  width: 100%;
+  border-radius: var(--r-full);
+}
+
+.week-bar.is-missing {
+  height: 9px;
+  background: rgba(51, 36, 28, 0.12);
+}
+
+/* seven small pills: one per day of the current streak. They sit on a solid
+   colour tile, so they are white rather than ink — ink on lilac reads muddy. */
+.streak-pill {
+  display: block;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 9px;
+  border-radius: var(--r-full);
+  background: rgba(51, 36, 28, 0.16);
+}
+
+.streak-pill.is-on {
   background: var(--card);
 }
 
