@@ -1,6 +1,6 @@
 <div class="screen app-mood">
   <div class="body-fixed">
-    <section class="hero-bleed">
+    <section class="hero-bleed" style="padding-bottom: var(--s3)">
       <div class="row" style="justify-content: space-between">
         <div class="row" style="gap: var(--s3)">
           <img class="art avatar-round" src="/images/avatar.svg" width="44" height="44" alt="Your profile" />
@@ -43,7 +43,7 @@
       </div>
     </section>
 
-    <div class="inset" style="padding: var(--s3) var(--s5) 0">
+    <div class="inset" style="padding: var(--s2) var(--s5) 0">
       <div class="paper-card">
         <div class="row" style="justify-content: space-between">
           <div class="t-headline">This week</div>
@@ -51,38 +51,44 @@
         </div>
         <div class="row" style="gap: var(--s2); align-items: flex-end">
           <div class="week-col">
-            <span class="week-bar fill-4" style="height: 62%"></span>
+            <img class="art" src="/images/mood-good.svg" data-asset="MoodGood" width="20" height="20" alt="Good" />
+            <div class="week-track"><span class="week-bar fill-4" style="height: 83%"></span></div>
             <span class="t-caption" style="color: var(--clay)">M</span>
           </div>
           <div class="week-col">
-            <span class="week-bar fill-3" style="height: 50%"></span>
+            <img class="art" src="/images/mood-okay.svg" data-asset="MoodOkay" width="20" height="20" alt="Okay" />
+            <div class="week-track"><span class="week-bar fill-3" style="height: 67%"></span></div>
             <span class="t-caption" style="color: var(--clay)">T</span>
           </div>
           <div class="week-col">
-            <span class="week-bar fill-5" style="height: 75%"></span>
+            <img class="art" src="/images/mood-great.svg" data-asset="MoodGreat" width="20" height="20" alt="Great" />
+            <div class="week-track"><span class="week-bar fill-5" style="height: 100%"></span></div>
             <span class="t-caption" style="color: var(--clay)">W</span>
           </div>
           <div class="week-col">
-            <span class="week-bar fill-2" style="height: 36%"></span>
+            <img class="art" src="/images/mood-bad.svg" data-asset="MoodBad" width="20" height="20" alt="Bad" />
+            <div class="week-track"><span class="week-bar fill-2" style="height: 44%"></span></div>
             <span class="t-caption" style="color: var(--clay)">T</span>
           </div>
           <div class="week-col">
-            <span class="week-bar fill-3" style="height: 50%"></span>
+            <img class="art" src="/images/mood-okay.svg" data-asset="MoodOkay" width="20" height="20" alt="Okay" />
+            <div class="week-track"><span class="week-bar fill-3" style="height: 67%"></span></div>
             <span class="t-caption" style="color: var(--clay)">F</span>
           </div>
           <div class="week-col">
-            <span class="week-bar fill-4" style="height: 62%"></span>
+            <img class="art" src="/images/mood-good.svg" data-asset="MoodGood" width="20" height="20" alt="Good" />
+            <div class="week-track"><span class="week-bar fill-4" style="height: 83%"></span></div>
             <span class="t-caption" style="color: var(--clay)">S</span>
           </div>
           <div class="week-col">
-            <span class="week-bar is-missing"></span>
+            <span class="week-track"><span class="week-bar is-missing"></span></span>
             <span class="t-caption" style="color: var(--clay)">S</span>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="row" style="gap: var(--s3); padding: var(--s3) var(--s5) 0">
+    <div class="row" style="gap: var(--s3); padding: var(--s2) var(--s5) 0">
       <div class="stat-tile is-sage">
         <div class="t-caption" style="opacity: 0.7">Day streak</div>
         <div class="row" style="gap: var(--s2); align-items: baseline">
@@ -118,7 +124,7 @@
       </div>
     </div>
 
-    <div class="inset" style="padding: var(--s3) var(--s5) 0">
+    <div class="inset" style="padding: var(--s2) var(--s5) 0">
       <div class="band is-sun">
         <div class="row" style="gap: var(--s3)">
           <img class="art" src="/images/mascot-calm.svg" data-asset="MascotCalm" width="54" height="55" alt="" />
@@ -135,7 +141,7 @@
 
     <div class="spacer"></div>
 
-    <div class="inset" style="padding: var(--s4) var(--s5) var(--s2)">
+    <div class="inset" style="padding: var(--s3) var(--s5) var(--s2)">
       <nav class="dock">
         <span class="dock-item is-on"><span class="icon" data-symbol="house"></span></span>
         <span class="dock-item"><span class="icon" data-symbol="book"></span></span>

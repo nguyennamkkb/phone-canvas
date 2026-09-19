@@ -1199,7 +1199,10 @@ figure {
 }
 
 /* the week is a mini chart, not a row of dots: the bar is the mood level and
-   the colour is the mood, so it says how much, not just whether */
+   the colour is the mood, so it says how much, not just whether. Each column
+   carries the day's face on top, so the chart reads as seven feelings rather
+   than seven values — the face is fixed 20, the track is fixed 64, and the bar
+   is a percentage of the track, never of the whole column. */
 .week-col {
   display: flex;
   flex-direction: column;
@@ -1208,7 +1211,16 @@ figure {
   gap: var(--s2);
   flex: 1 1 0;
   min-width: 0;
-  height: 92px;
+  height: 116px;
+}
+
+.week-track {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 100%;
+  height: 64px;
+  flex: 0 0 auto;
 }
 
 .week-bar {
