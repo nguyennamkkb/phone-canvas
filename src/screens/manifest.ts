@@ -12,6 +12,8 @@
  *
  * This file is plain data on purpose, so Node can import it directly and there
  * is no second copy to keep in sync.
+ *
+ * Empty is a valid state. The board opens with no screens, and says so.
  */
 
 export type ScreenFile = {
@@ -28,17 +30,4 @@ export type ScreenFile = {
   lightStatusBar?: boolean
 }
 
-export const SCREEN_FILES: ScreenFile[] = [
-  { id: 'lesson-details', title: 'Lesson · Details', file: 'lesson-details.html' },
-  { id: 'learning-overview', title: 'Learning · Overview', file: 'learning-overview.html' },
-  { id: 'health-score', title: 'Health · Score', file: 'health-score.html' },
-  { id: 'sheet-actions', title: 'Sheet · Actions', file: 'sheet-actions.html' },
-  { id: 'sheet-detail', title: 'Sheet · Detail', file: 'sheet-detail.html' },
-  { id: 'sheet-form', title: 'Sheet · Form', file: 'sheet-form.html' },
-  { id: 'get-started', title: 'Onboarding 1 · Get Started', file: 'get-started.html' },
-  { id: 'taxi-driver', title: 'Onboarding 2 · Taxi Driver', file: 'taxi-driver.html' },
-  { id: 'make-success', title: 'Onboarding 3 · Make a Success', file: 'make-success.html' },
-  { id: 'journal-list', title: 'Journal · List', file: 'journal-list.html' },
-  { id: 'journal-detail', title: 'Journal · Detail', file: 'journal-detail.html' },
-  { id: 'onboarding', title: 'Onboarding (sample)', file: 'onboarding.html' },
-]
+export const SCREEN_FILES: ScreenFile[] = []

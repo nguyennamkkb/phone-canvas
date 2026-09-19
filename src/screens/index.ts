@@ -1,38 +1,21 @@
 import { SCREEN_FILES } from './manifest'
 import type { ScreenFile } from './manifest'
 
-import getStarted from './get-started.html?raw'
-import healthScore from './health-score.html?raw'
-import journalDetail from './journal-detail.html?raw'
-import journalList from './journal-list.html?raw'
-import learningOverview from './learning-overview.html?raw'
-import lessonDetails from './lesson-details.html?raw'
-import makeSuccess from './make-success.html?raw'
-import onboarding from './onboarding.html?raw'
-import sheetActions from './sheet-actions.html?raw'
-import sheetDetail from './sheet-detail.html?raw'
-import sheetForm from './sheet-form.html?raw'
-import taxiDriver from './taxi-driver.html?raw'
-
 /**
- * Vite needs the `?raw` imports to be static, so the binding from id to markup
+ * Vite needs every `?raw` import to be static, so the binding from id to markup
  * is written out here. The manifest stays the single source of identity; this
  * file only resolves it.
+ *
+ * Adding a screen:
+ *   1. write `src/screens/<name>.html`
+ *   2. add the entry to SCREEN_FILES in ./manifest.ts
+ *   3. add its `?raw` import below and one line to RAW
+ *
+ * Step 3 is not optional — the check under RAW throws at startup if it is
+ * missing, rather than rendering a blank frame.
  */
-const RAW: Record<string, string> = {
-  'lesson-details': lessonDetails,
-  'learning-overview': learningOverview,
-  'health-score': healthScore,
-  'sheet-actions': sheetActions,
-  'sheet-detail': sheetDetail,
-  'sheet-form': sheetForm,
-  'get-started': getStarted,
-  'taxi-driver': taxiDriver,
-  'make-success': makeSuccess,
-  'journal-list': journalList,
-  'journal-detail': journalDetail,
-  onboarding,
-}
+
+const RAW: Record<string, string> = {}
 
 export type ScreenDef = ScreenFile & { html: string }
 

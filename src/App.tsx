@@ -68,6 +68,8 @@ export function App() {
   )
 
   const onAddScreen = useCallback(() => {
+    // an empty registry is a valid state — the board opens with nothing on it
+    if (SCREENS.length === 0) return
     // the id is minted outside the updater: a state updater must stay pure, and
     // react may run it twice
     const id = nextNodeId()

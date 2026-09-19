@@ -13,6 +13,7 @@ import { PhoneNode } from './PhoneNode'
 import type { PhoneFlowNode } from './PhoneNode'
 import { useBoardSettings } from './BoardContext'
 import type { CanvasMode, FrameStyle } from './BoardContext'
+import { SCREENS } from '../screens'
 
 const nodeTypes = { phone: PhoneNode } as unknown as NodeTypes
 
@@ -123,13 +124,33 @@ export function Board({
           </button>
         </div>
 
-        <button type="button" className="tool" onClick={onAddScreen}>
+        <button
+          type="button"
+          className="tool"
+          onClick={onAddScreen}
+          disabled={SCREENS.length === 0}
+        >
           + Màn hình
         </button>
         <button type="button" className="tool" onClick={handleFit}>
           Vừa khung
         </button>
       </div>
+
+      {nodes.length === 0 && (
+        <div className="board-empty">
+          <div className="board-empty-title">Bảng đang trống</div>
+          <p>
+            Viết <code>src/screens/&lt;tên&gt;.html</code>, khai báo một dòng trong{' '}
+            <code>src/screens/manifest.ts</code>, rồi thêm import <code>?raw</code> và một dòng
+            trong <code>RAW</code> ở <code>src/screens/index.ts</code>.
+          </p>
+          <p className="board-empty-note">
+            Chưa chắc cách dựng? Hỏi agent — skill <code>phone-canvas</code> có sẵn quy trình và
+            các mẫu màn hình.
+          </p>
+        </div>
+      )}
     </div>
   )
 }
