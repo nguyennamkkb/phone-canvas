@@ -15,7 +15,19 @@ import type { ScreenFile } from './manifest'
  * missing, rather than rendering a blank frame.
  */
 
-const RAW: Record<string, string> = {}
+import splash from './splash.html?raw'
+import onboardingWelcome from './onboarding-welcome.html?raw'
+import onboardingCheckin from './onboarding-checkin.html?raw'
+import onboardingInsights from './onboarding-insights.html?raw'
+import onboardingReminder from './onboarding-reminder.html?raw'
+
+const RAW: Record<string, string> = {
+  splash,
+  'onboarding-welcome': onboardingWelcome,
+  'onboarding-checkin': onboardingCheckin,
+  'onboarding-insights': onboardingInsights,
+  'onboarding-reminder': onboardingReminder,
+}
 
 export type ScreenDef = ScreenFile & { html: string }
 

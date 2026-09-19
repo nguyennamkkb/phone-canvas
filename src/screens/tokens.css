@@ -76,6 +76,29 @@
   --slate: #6b7280;
   --bolt: #facc15;
 
+  /* ---- moodtracker palette ---- */
+  --paper: #f6f2ec;
+  --card: #fffdfa;
+  --espresso: #3a2b22;
+  --clay: #8a7d72;
+  --hairline: rgba(58, 43, 34, 0.13);
+  --sage: #a9bc84;
+  --sage-deep: #7f9a5e;
+  --sage-soft: #e6ecda;
+  --ember: #f2824b;
+  --ember-soft: #fbe3d5;
+  --lilac: #b6aeee;
+  --lilac-soft: #e9e6fa;
+  --mood-1: #c0574b;
+  --mood-2: #e08a63;
+  --mood-3: #dcc46a;
+  --mood-4: #a9bc84;
+  --mood-5: #6f9a56;
+
+  /* both are system fonts on macOS and iOS — nothing loads over the network,
+     and SwiftUI reaches them with .custom("MarkerFelt-Thin", size:) */
+  --font-hand: 'Bradley Hand', 'Marker Felt', 'Segoe Script', cursive;
+
   /* ---- typography (iOS text styles) ---- */
   --font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
     'Helvetica Neue', system-ui, sans-serif;
@@ -1031,6 +1054,265 @@ figure {
   background: #ffffff;
   color: var(--label);
 }
+
+/* ============================================================================
+ * Moodtracker
+ *
+ * Paper, not glass: cards are a white surface with a 1px hairline and no
+ * shadow. One dark pill per screen for the primary action; everything else is
+ * an outline.
+ *
+ * `.app-mood` is the whole theme in one place. Every shared component written
+ * for an earlier app — .dot, .chip, .row-card, .tabbar-light — reads --label,
+ * --label-3, --separator and --bg-grouped, so redefining them here makes the
+ * entire vocabulary warm without touching any of it. A screen opts in with
+ * class="screen app-mood" and nothing else.
+ * ========================================================================== */
+
+.app-mood {
+  --bg: var(--paper);
+  --bg-elevated: var(--card);
+  --bg-grouped: #efe9e0;
+  --label: var(--espresso);
+  --label-2: var(--clay);
+  --label-3: rgba(58, 43, 34, 0.22);
+  --separator: var(--hairline);
+  --fill: rgba(58, 43, 34, 0.07);
+  --accent: var(--sage-deep);
+}
+
+/* the shared chart vocabulary, re-coloured for this app */
+.app-mood .bar {
+  background: var(--sage-soft);
+}
+
+.app-mood .bar.is-peak {
+  background: var(--ember);
+}
+
+.app-mood .tooltip {
+  background: var(--espresso);
+}
+
+.app-mood .chart-label.is-on {
+  color: var(--espresso);
+}
+
+.toggle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+  width: 48px;
+  height: 28px;
+  padding: 3px;
+  border-radius: var(--r-full);
+  background: var(--sage);
+}
+
+.toggle.is-off {
+  justify-content: flex-start;
+  background: rgba(58, 43, 34, 0.14);
+}
+
+.toggle-knob {
+  display: block;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--r-full);
+  background: #ffffff;
+}
+
+.paper-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  flex: 0 0 auto;
+  padding: var(--s4);
+  border: 1px solid var(--hairline);
+  border-radius: 20px;
+  background: var(--card);
+}
+
+/* a section heading written by hand — the app's one editorial gesture */
+.t-hand {
+  font-family: var(--font-hand);
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 28px;
+  color: var(--espresso);
+}
+
+.pill-soft {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+  flex: 0 0 auto;
+  height: 32px;
+  padding: 0 var(--s3);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--sage-soft);
+  color: var(--espresso);
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pill-ghost {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+  flex: 0 0 auto;
+  height: 38px;
+  padding: 0 var(--s4);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-full);
+  background: transparent;
+  color: var(--espresso);
+  font-family: var(--font);
+  font-size: var(--t-subhead);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pill-sage {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  flex: 0 0 auto;
+  height: 50px;
+  padding: 0 var(--s5);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--espresso);
+  color: var(--paper);
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pill-sage.is-accent {
+  background: var(--sage);
+  color: var(--espresso);
+}
+
+/* the week strip: one dot per day, coloured by that day's mood */
+.mood-row {
+  display: flex;
+  flex-direction: row;
+  gap: var(--s2);
+  flex: 0 0 auto;
+}
+
+.mood-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s2);
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.mood-dot {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--r-full);
+  background: var(--sage-soft);
+}
+
+.mood-dot.is-1 { background: var(--mood-1); }
+.mood-dot.is-2 { background: var(--mood-2); }
+.mood-dot.is-3 { background: var(--mood-3); }
+.mood-dot.is-4 { background: var(--mood-4); }
+.mood-dot.is-5 { background: var(--mood-5); }
+.mood-dot.is-empty { background: transparent; border: 1px dashed var(--hairline); }
+
+/* the floating dock */
+.dock {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  flex: 0 0 auto;
+  height: 62px;
+  padding: 0 var(--s2);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-full);
+  background: var(--card);
+}
+
+.dock-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  min-width: 0;
+  color: var(--clay);
+}
+
+.dock-item.is-on {
+  color: var(--espresso);
+}
+
+.dock-plus {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 52px;
+  height: 52px;
+  margin-top: -26px;
+  border-radius: var(--r-full);
+  background: var(--sage);
+  color: var(--espresso);
+}
+
+/* the big reading: a score inside a ring */
+.bubble {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+  flex: 0 0 auto;
+  width: 132px;
+  height: 132px;
+  border: 6px solid var(--sage);
+  border-radius: var(--r-full);
+  background: var(--card);
+}
+
+.stat-tile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  flex: 1 1 0;
+  min-width: 0;
+  padding: var(--s4);
+  border-radius: 22px;
+}
+
+.stat-tile.is-sage { background: var(--sage); color: var(--espresso); }
+.stat-tile.is-ember { background: var(--ember); color: #ffffff; }
+.stat-tile.is-lilac { background: var(--lilac); color: var(--espresso); }
+.stat-tile.is-sage-soft { background: var(--sage-soft); color: var(--espresso); }
+.stat-tile.is-ember-soft { background: var(--ember-soft); color: var(--espresso); }
 
 .dots {
   display: flex;
