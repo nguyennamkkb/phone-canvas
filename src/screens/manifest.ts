@@ -38,6 +38,7 @@ export const SCREEN_FILES: ScreenFile[] = [
   { id: 'onb-search', title: 'Onboarding 4 · Search', file: 'onb-search.html' },
   { id: 'onb-remind', title: 'Onboarding 5 · Reminders', file: 'onb-remind.html' },
   { id: 'onb-listen', title: 'Onboarding 6 · Listen', file: 'onb-listen.html' },
+  { id: 'onb-watch', title: 'Onboarding 7 · Watch', file: 'onb-watch.html' },
   { id: 'home', title: 'Home · Today', file: 'home.html' },
   { id: 'checkin', title: 'Check in', file: 'checkin.html' },
   { id: 'insights', title: 'Insights', file: 'insights.html' },

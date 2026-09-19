@@ -22,6 +22,7 @@ import onbInsights from './onb-insights.html?raw'
 import onbSearch from './onb-search.html?raw'
 import onbRemind from './onb-remind.html?raw'
 import onbListen from './onb-listen.html?raw'
+import onbWatch from './onb-watch.html?raw'
 import home from './home.html?raw'
 import checkin from './checkin.html?raw'
 import insights from './insights.html?raw'
@@ -41,6 +42,7 @@ const RAW: Record<string, string> = {
   'onb-search': onbSearch,
   'onb-remind': onbRemind,
   'onb-listen': onbListen,
+  'onb-watch': onbWatch,
   home,
   checkin,
   insights,

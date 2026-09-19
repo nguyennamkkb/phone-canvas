@@ -1,43 +1,82 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" fill="none">
-  <ellipse cx="150" cy="158" rx="118" ry="106" fill="#FFFDF9" opacity="0.55"/>
+  <defs>
+    <radialGradient id="ckHalo" cx="50%" cy="42%" r="62%">
+      <stop offset="0%" stop-color="#FFFDF9"/>
+      <stop offset="70%" stop-color="#FFFDF9" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#FFFDF9" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
 
-  <g fill="#7C9448">
-    <path d="M38 190c-8-34 6-62 34-76-2 32-12 60-34 76Z"/>
-    <path d="M262 190c8-34-6-62-34-76 2 32 12 60 34 76Z"/>
-  </g>
+  <ellipse cx="150" cy="158" rx="128" ry="114" fill="url(#ckHalo)"/>
+  <ellipse cx="150" cy="158" rx="112" ry="100" fill="#FFFFFF" opacity="0.5"/>
 
-  <!-- left phone: check-in picker -->
   <g>
-    <rect x="52" y="76" width="104" height="172" rx="26" fill="#2B1D16"/>
-    <rect x="59" y="83" width="90" height="158" rx="20" fill="#FFFFFF"/>
-    <rect x="84" y="88" width="40" height="10" rx="5" fill="#2B1D16"/>
-    <circle cx="74" cy="130" r="17" fill="#F47F42"/>
-    <circle cx="104" cy="130" r="17" fill="#E7C65A"/>
-    <circle cx="134" cy="130" r="17" fill="#9DB06C"/>
-    <circle cx="134" cy="130" r="21" stroke="#2B1D16" stroke-width="3.2"/>
-    <circle cx="89" cy="168" r="6" fill="#7C9448"/>
-    <circle cx="104" cy="168" r="6" fill="#F47F42"/>
-    <circle cx="119" cy="168" r="6" fill="#E7C65A"/>
-    <rect x="72" y="188" width="64" height="30" rx="15" fill="#2B1D16"/>
-    <circle cx="140" cy="203" r="4" fill="#FFFFFF"/>
+    <path d="M30 196c-10-40 8-72 42-86-4 38-16 68-42 86Z" fill="#7C9448"/>
+    <path d="M38 190c6-26 18-48 34-64" stroke="#5F7A36" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M40 176l12-4M44 162l11-5" stroke="#5F7A36" stroke-width="2" stroke-linecap="round"/>
+    <path d="M270 196c10-40-8-72-42-86 4 38 16 68 42 86Z" fill="#7C9448"/>
+    <path d="M262 190c-6-26-18-48-34-64" stroke="#5F7A36" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M260 176l-12-4M256 162l-11-5" stroke="#5F7A36" stroke-width="2" stroke-linecap="round"/>
   </g>
 
-  <!-- floating faces with motion arcs -->
+  <ellipse cx="104" cy="256" rx="56" ry="10" fill="#2B1D16" opacity="0.1"/>
+
+  <!-- phone: check-in picker with glass, keys and save -->
   <g>
-    <circle cx="206" cy="96" r="26" fill="#9D8FF0"/>
-    <circle cx="197" cy="91" r="4.4" fill="#FFFFFF"/>
-    <circle cx="215" cy="91" r="4.4" fill="#FFFFFF"/>
-    <path d="M197 104c2.8 4 5.8 6 9 6s6.2-2 9-6" stroke="#FFFFFF" stroke-width="3.4" stroke-linecap="round"/>
-    <path d="M178 118c8-10 22-14 34-10" stroke="#2B1D16" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="2 8"/>
-
-    <circle cx="216" cy="196" r="26" fill="#E7C65A"/>
-    <circle cx="207" cy="191" r="4.4" fill="#2B1D16"/>
-    <circle cx="225" cy="191" r="4.4" fill="#2B1D16"/>
-    <path d="M207 201h18" stroke="#2B1D16" stroke-width="3.4" stroke-linecap="round"/>
-    <path d="M184 176c10 6 24 6 34 0" stroke="#2B1D16" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="2 8"/>
+    <rect x="52" y="72" width="108" height="176" rx="28" fill="#2B1D16"/>
+    <rect x="56" y="76" width="100" height="168" rx="24" fill="#3A2A21"/>
+    <rect x="60" y="80" width="92" height="160" rx="20" fill="#FFFFFF"/>
+    <rect x="60" y="80" width="92" height="26" rx="13" fill="#2B1D16" opacity="0.06"/>
+    <rect x="86" y="85" width="40" height="10" rx="5" fill="#2B1D16"/>
+    <circle cx="142" cy="90" r="3.4" fill="#9DB06C"/>
+    <rect x="70" y="102" width="56" height="12" rx="6" fill="#2B1D16" opacity="0.85"/>
+    <rect x="70" y="118" width="38" height="9" rx="4.5" fill="#8A7A6E" opacity="0.55"/>
+    <circle cx="76" cy="144" r="16" fill="#F47F42"/>
+    <circle cx="76" cy="144" r="16" stroke="#D9622A" stroke-width="2"/>
+    <circle cx="106" cy="144" r="16" fill="#E7C65A"/>
+    <circle cx="106" cy="144" r="16" stroke="#C9A83E" stroke-width="2"/>
+    <circle cx="136" cy="144" r="16" fill="#9DB06C"/>
+    <circle cx="136" cy="144" r="20" fill="none" stroke="#2B1D16" stroke-width="3.2"/>
+    <circle cx="136" cy="144" r="24" fill="none" stroke="#2B1D16" stroke-width="1.6" stroke-dasharray="3 6" opacity="0.6"/>
+    <g>
+      <circle cx="88" cy="172" r="6" fill="#7C9448"/>
+      <circle cx="103" cy="172" r="6" fill="#F47F42"/>
+      <circle cx="118" cy="172" r="6" fill="#E7C65A"/>
+      <circle cx="133" cy="172" r="6" fill="#9D8FF0"/>
+    </g>
+    <rect x="72" y="190" width="68" height="32" rx="16" fill="#2B1D16"/>
+    <rect x="80" y="198" width="36" height="9" rx="4.5" fill="#FFFFFF" opacity="0.9"/>
+    <circle cx="130" cy="206" r="7" fill="#9DB06C"/>
+    <path d="M127 206l2.4 2.4 4.6-5" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
 
-  <circle cx="66" cy="246" r="7" fill="#9DB06C"/>
-  <circle cx="244" cy="248" r="7" fill="#F47F42"/>
+  <!-- floating faces riding dashed arcs -->
+  <g>
+    <ellipse cx="208" cy="122" rx="27" ry="9" fill="#2B1D16" opacity="0.08"/>
+    <circle cx="208" cy="96" r="26" fill="#9D8FF0"/>
+    <circle cx="208" cy="96" r="26" stroke="#7E6FD6" stroke-width="2.4"/>
+    <circle cx="200" cy="75" r="6" fill="#FFFFFF" opacity="0.45"/>
+    <circle cx="199" cy="91" r="4.4" fill="#FFFFFF"/>
+    <circle cx="217" cy="91" r="4.4" fill="#FFFFFF"/>
+    <path d="M199 103c2.8 4 5.8 6 9 6s6.2-2 9-6" stroke="#FFFFFF" stroke-width="3.4" stroke-linecap="round"/>
+    <path d="M180 120c8-12 24-17 38-12" stroke="#2B1D16" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="2 8"/>
+
+    <ellipse cx="218" cy="222" rx="27" ry="9" fill="#2B1D16" opacity="0.08"/>
+    <circle cx="218" cy="196" r="26" fill="#E7C65A"/>
+    <circle cx="218" cy="196" r="26" stroke="#C9A83E" stroke-width="2.4"/>
+    <circle cx="209" cy="191" r="4.4" fill="#2B1D16"/>
+    <circle cx="227" cy="191" r="4.4" fill="#2B1D16"/>
+    <path d="M209 201h18" stroke="#2B1D16" stroke-width="3.4" stroke-linecap="round"/>
+    <path d="M186 176c10 6 24 6 34 0" stroke="#2B1D16" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="2 8"/>
+  </g>
+
+  <g stroke-linecap="round" stroke-width="3">
+    <path d="M60 240c4-2 8-2 12 0" stroke="#7C9448"/>
+    <path d="M230 244c4-2 8-2 12 0" stroke="#F47F42"/>
+  </g>
+  <circle cx="62" cy="250" r="7" fill="#9DB06C"/>
+  <circle cx="62" cy="250" r="7" stroke="#7C9448" stroke-width="2"/>
+  <circle cx="244" cy="252" r="7" fill="#F47F42"/>
+  <circle cx="244" cy="252" r="7" stroke="#D9622A" stroke-width="2"/>
   <path d="M228 52c1.4 3.8 3 5.4 6.8 6.8-3.8 1.4-5.4 3-6.8 6.8-1.4-3.8-3-5.4-6.8-6.8 3.8-1.4 5.4-3 6.8-6.8Z" fill="#9D8FF0"/>
 </svg>

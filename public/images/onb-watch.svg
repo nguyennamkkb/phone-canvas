@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" fill="none">
+  <defs>
+    <radialGradient id="wtHalo" cx="50%" cy="42%" r="62%">
+      <stop offset="0%" stop-color="#FFFDF9"/>
+      <stop offset="70%" stop-color="#FFFDF9" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#FFFDF9" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="wtScreen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3A2A21"/>
+      <stop offset="100%" stop-color="#2B1D16"/>
+    </linearGradient>
+  </defs>
+
+  <ellipse cx="150" cy="158" rx="128" ry="114" fill="url(#wtHalo)"/>
+  <ellipse cx="150" cy="158" rx="112" ry="100" fill="#FFFFFF" opacity="0.5"/>
+
+  <g>
+    <path d="M30 196c-10-40 8-72 42-86-4 38-16 68-42 86Z" fill="#7C9448"/>
+    <path d="M38 190c6-26 18-48 34-64" stroke="#5F7A36" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M40 176l12-4M44 162l11-5" stroke="#5F7A36" stroke-width="2" stroke-linecap="round"/>
+    <path d="M270 196c10-40-8-72-42-86 4 38 16 68 42 86Z" fill="#7C9448"/>
+    <path d="M262 190c-6-26-18-48-34-64" stroke="#5F7A36" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M260 176l-12-4M256 162l-11-5" stroke="#5F7A36" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <ellipse cx="150" cy="252" rx="88" ry="11" fill="#2B1D16" opacity="0.1"/>
+
+  <!-- watch body with straps, crown and side button -->
+  <g>
+    <rect x="118" y="34" width="64" height="44" rx="16" fill="#2B1D16"/>
+    <rect x="118" y="222" width="64" height="44" rx="16" fill="#2B1D16"/>
+    <rect x="128" y="42" width="44" height="26" rx="10" fill="#3A2A21"/>
+    <rect x="128" y="232" width="44" height="26" rx="10" fill="#3A2A21"/>
+    <rect x="186" y="112" width="14" height="30" rx="7" fill="#2B1D16"/>
+    <rect x="186" y="150" width="10" height="24" rx="5" fill="#2B1D16"/>
+    <rect x="96" y="80" width="108" height="140" rx="44" fill="#2B1D16"/>
+    <rect x="102" y="86" width="96" height="128" rx="38" fill="url(#wtScreen)"/>
+    <rect x="102" y="86" width="96" height="128" rx="38" fill="none" stroke="#000000" stroke-width="2" opacity="0.5"/>
+  </g>
+
+  <!-- watch face: ring, face, ticks and complications -->
+  <g>
+    <circle cx="150" cy="150" r="34" fill="none" stroke="#9DB06C" stroke-width="9"/>
+    <path d="M150 116c14 0 26 8 31 20" fill="none" stroke="#E7C65A" stroke-width="9" stroke-linecap="round"/>
+    <circle cx="150" cy="150" r="24" fill="#FFFFFF"/>
+    <circle cx="150" cy="142" r="4" fill="#9DB06C"/>
+    <circle cx="150" cy="142" r="4" stroke="#7C9448" stroke-width="1.4"/>
+    <path d="M143 154c2.4 3.4 4.8 5 7 5s4.6-1.6 7-5" stroke="#2B1D16" stroke-width="2.6" stroke-linecap="round"/>
+    <g stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity="0.85">
+      <path d="M150 122v5M150 173v5M122 150h5M173 150h5"/>
+    </g>
+    <g>
+      <rect x="112" y="94" width="30" height="16" rx="8" fill="#2B1D16"/>
+      <circle cx="120" cy="102" r="4" fill="#F47F42"/>
+      <rect x="160" y="94" width="30" height="16" rx="8" fill="#2B1D16"/>
+      <circle cx="182" cy="102" r="4" fill="#9D8FF0"/>
+      <rect x="126" y="188" width="48" height="16" rx="8" fill="#FFFFFF"/>
+      <rect x="134" y="192" width="32" height="8" rx="4" fill="#2B1D16"/>
+    </g>
+  </g>
+
+  <!-- haptic waves + floating chips -->
+  <g stroke-linecap="round">
+    <path d="M88 120c-8 8-12 20-12 32M212 120c8 8 12 20 12 32" stroke="#F47F42" stroke-width="4"/>
+    <path d="M78 132c-5 6-7 13-7 20M222 132c5 6 7 13 7 20" stroke="#2B1D16" stroke-width="3"/>
+  </g>
+  <g>
+    <rect x="52" y="182" width="58" height="30" rx="15" fill="#E3EAD0"/>
+    <rect x="52" y="182" width="58" height="30" rx="15" stroke="#7C9448" stroke-width="2"/>
+    <circle cx="64" cy="197" r="6" fill="#7C9448"/>
+    <rect x="74" y="193" width="26" height="8" rx="4" fill="#2B1D16" opacity="0.8"/>
+    <rect x="192" y="184" width="58" height="30" rx="15" fill="#2B1D16"/>
+    <circle cx="204" cy="199" r="6" fill="#E7C65A"/>
+    <rect x="214" y="195" width="26" height="8" rx="4" fill="#FFFFFF"/>
+  </g>
+
+  <g stroke-linecap="round" stroke-width="3">
+    <path d="M62 248c4-2 8-2 12 0" stroke="#7C9448"/>
+    <path d="M226 248c4-2 8-2 12 0" stroke="#9D8FF0"/>
+  </g>
+  <circle cx="66" cy="246" r="6" fill="#F47F42"/>
+  <circle cx="66" cy="246" r="6" stroke="#D9622A" stroke-width="2"/>
+  <circle cx="236" cy="50" r="6" fill="#9DB06C"/>
+  <circle cx="236" cy="50" r="6" stroke="#7C9448" stroke-width="2"/>
+</svg>
