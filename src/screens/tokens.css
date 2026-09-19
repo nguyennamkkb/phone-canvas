@@ -1180,6 +1180,9 @@ figure {
 .mood-orb.is-on {
   border-color: var(--sage-deep);
   background: var(--card);
+  /* one soft shadow only: it lifts the chosen face without changing layout,
+     and it maps to a single .shadow() in SwiftUI */
+  box-shadow: 0 3px 10px rgba(51, 36, 28, 0.2);
 }
 
 /* A colour region that bleeds to the screen edges and curves into the page.
