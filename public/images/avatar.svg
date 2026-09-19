@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44" fill="none">
+  <defs>
+    <clipPath id="face">
+      <circle cx="22" cy="22" r="22" />
+    </clipPath>
+  </defs>
+
+  <circle cx="22" cy="22" r="22" fill="#EFE4D4" />
+
+  <g clip-path="url(#face)">
+    <path d="M22 9c4.6 0 8 3.5 8 8.2v4.4c0 4.7-3.4 8.2-8 8.2s-8-3.5-8-8.2v-4.4C14 12.5 17.4 9 22 9Z" fill="#F2C9A6" />
+    <path d="M13.4 20.4C13.4 14.6 17 10 22 10s8.6 4.6 8.6 10.4c0-2.6-3.8-4.8-8.6-4.8s-8.6 2.2-8.6 4.8Z" fill="#6B4A34" />
+    <path d="M4 46a18 18 0 0 1 36 0Z" fill="#A98BE0" />
+    <path d="M22 28c5.6 0 10.3 3.2 11.6 7.6L22 40l-11.6-4.4C11.7 31.2 16.4 28 22 28Z" fill="#F2C9A6" />
+  </g>
+</svg>

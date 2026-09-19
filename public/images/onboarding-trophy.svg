@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" fill="none">
+  <defs>
+    <path id="blob" d="M150 22C198 22 240 46 258 86C274 122 271 170 251 208C231 246 194 276 150 278C106 280 66 248 44 210C24 174 21 124 39 86C57 48 102 22 150 22Z" />
+
+    <g id="cheer">
+      <path d="M-11 -27l-17 -15M11 -27l17 -15" stroke="#111111" stroke-width="9" stroke-linecap="round" />
+      <path d="M-8 4v32M8 4v32" stroke="#111111" stroke-width="9" stroke-linecap="round" />
+      <path d="M-15 -30h30l-6 40h-18z" fill="#111111" />
+      <circle cx="0" cy="-45" r="13" fill="#111111" />
+    </g>
+  </defs>
+
+  <use href="#blob" fill="#F2C81C" />
+
+  <g stroke="#111111" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M155 100h64v34a32 32 0 0 1-64 0z" fill="#FFFFFF" />
+    <path d="M155 106c-21 0-21 24 0 24" />
+    <path d="M219 106c21 0 21 24 0 24" />
+  </g>
+
+  <g stroke="#111111" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M187 167v25" />
+    <rect x="163" y="191" width="48" height="17" rx="8.5" fill="#FFFFFF" />
+  </g>
+
+  <path d="M187 114l7 15 15 7-15 7-7 15-7-15-15-7 15-7z" fill="#111111" />
+
+  <use href="#cheer" transform="translate(78 210) scale(0.84)" />
+
+  <g stroke="#111111" stroke-width="3.2" stroke-linecap="round">
+    <path d="M124 56l-10-9M256 88l11 -7M252 178l12 3M118 258l-10 8" />
+    <path d="M66 92c-7 5-8 13-3 19" />
+    <path d="M44 150c-6 3-8 9-4 14" />
+    <path d="M262 56v-13" />
+    <path d="M150 34v-11" />
+  </g>
+
+  <g fill="#111111">
+    <circle cx="100" cy="42" r="3.4" />
+    <circle cx="196" cy="52" r="3" />
+    <circle cx="252" cy="136" r="3.2" />
+    <circle cx="42" cy="200" r="3" />
+    <circle cx="138" cy="272" r="3" />
+    <circle cx="264" cy="216" r="3.2" />
+  </g>
+</svg>

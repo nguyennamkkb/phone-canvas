@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" fill="none">
+  <defs>
+    <path id="blob" d="M150 22C198 22 240 46 258 86C274 122 271 170 251 208C231 246 194 276 150 278C106 280 66 248 44 210C24 174 21 124 39 86C57 48 102 22 150 22Z" />
+
+    <g id="hand">
+      <path d="M0 16v30" stroke="#111111" stroke-width="9" stroke-linecap="round" />
+      <path d="M-12 -2l-10 -9" stroke="#111111" stroke-width="4.6" stroke-linecap="round" />
+      <path d="M-8.5 -12v-11M-3 -15v-16M3 -15v-16M8.5 -12v-11" stroke="#111111" stroke-width="4.4" stroke-linecap="round" />
+      <rect x="-14" y="-19" width="28" height="37" rx="12" fill="#FFFFFF" stroke="#111111" stroke-width="3.2" />
+    </g>
+
+    <g id="note">
+      <rect x="-46" y="-25" width="92" height="50" rx="8" fill="#FFFFFF" stroke="#111111" stroke-width="3.2" />
+      <circle r="11" fill="none" stroke="#111111" stroke-width="3" />
+      <path d="M-31 -8h-10M-31 8h-10M31 -8h10M31 8h10" stroke="#111111" stroke-width="2.6" stroke-linecap="round" />
+    </g>
+
+    <g id="coin">
+      <circle r="13" fill="#FFFFFF" stroke="#111111" stroke-width="3.2" />
+      <circle r="7" fill="none" stroke="#111111" stroke-width="2.4" />
+    </g>
+  </defs>
+
+  <use href="#blob" fill="#F2C81C" />
+
+  <use href="#note" transform="translate(150 92) rotate(-16)" />
+  <use href="#note" transform="translate(64 126) rotate(11) scale(0.8)" />
+  <use href="#note" transform="translate(234 118) rotate(13) scale(0.86)" />
+
+  <use href="#coin" transform="translate(54 198) scale(1)" />
+  <use href="#coin" transform="translate(248 190) scale(0.85)" />
+
+  <use href="#hand" transform="translate(94 220) rotate(-15) scale(0.76)" />
+  <use href="#hand" transform="translate(123 212) rotate(-7) scale(0.88)" />
+  <use href="#hand" transform="translate(152 206) rotate(1) scale(0.98)" />
+  <use href="#hand" transform="translate(181 212) rotate(7) scale(0.88)" />
+  <use href="#hand" transform="translate(210 220) rotate(15) scale(0.76)" />
+
+  <g stroke="#111111" stroke-width="3" stroke-linecap="round">
+    <path d="M150 46v-13M104 52l-6-10M196 52l6-10" />
+    <path d="M40 118c-6 5-6 12-1 17" />
+    <path d="M260 112c6 5 6 12 1 17" />
+    <path d="M32 254c7 3 12 0 14-6" />
+    <path d="M268 250c-7 3-12 0-14-6" />
+  </g>
+
+  <g fill="#111111">
+    <circle cx="74" cy="62" r="3.2" />
+    <circle cx="228" cy="66" r="3.2" />
+    <circle cx="150" cy="20" r="3" />
+  </g>
+</svg>

@@ -1,0 +1,61 @@
+/* ============================================================================
+ * Icons — base rules.
+ *
+ * The per-symbol `--icon` mapping lives in `icon-set.css`, which is GENERATED
+ * from `public/icons/` (see scripts/icons.ts). Nothing here references a file
+ * by URL: a mask image is a CORS-mode fetch, and a screen renders in a
+ * sandboxed iframe with an opaque origin, so a URL would be refused and the
+ * glyph would vanish. The generator inlines each glyph as a data URI instead.
+ *
+ * A monochrome glyph is a MASK, not an image. The SVG supplies the shape and
+ * `background-color: currentColor` supplies the colour, so an icon inherits the
+ * colour of whatever it sits in — exactly like `Image(systemName:)` inherits
+ * `foregroundStyle` in SwiftUI. An <img> can never do this: `currentColor`
+ * inside an <img> resolves against the image's own document and comes out black.
+ *
+ *   <span class="icon" data-symbol="magnifyingglass"></span>
+ *   <span class="icon icon-sm" data-symbol="chevron.left"></span>
+ *
+ * Full-colour art (a logo, an illustration) is the other lane: use
+ * <img class="art" src="/images/x.svg">. It cannot be tinted, so it should not
+ * need to be.
+ * ========================================================================== */
+
+.icon {
+  display: block;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  background-color: currentColor;
+  -webkit-mask-image: var(--icon);
+  mask-image: var(--icon);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+.icon-sm {
+  width: 20px;
+  height: 20px;
+}
+
+.icon-xs {
+  width: 16px;
+  height: 16px;
+}
+
+.icon-lg {
+  width: 28px;
+  height: 28px;
+}
+
+/* ------------------------------------------------------------------ art -- */
+
+.art {
+  display: block;
+  flex: 0 0 auto;
+  object-fit: contain;
+}

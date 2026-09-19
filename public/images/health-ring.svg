@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none">
+  <!--
+    The score ring: six arcs on a 106.5 radius, 27 stroke, round caps.
+    Eight badges sit at 0 / 54 / 110 / 184 / 254 / 286 / 318 / 340 degrees —
+    deliberately uneven, so the ring reads as six unequal readings rather than
+    a symmetric dial. Angles are degrees clockwise from 12 o'clock.
+  -->
+  <g stroke-width="27" stroke-linecap="round" fill="none">
+    <path d="M97.86 15.83A106.5 106.5 0 0 1 202.77 52.98" stroke="#EFD264" />
+    <path d="M209.32 62A106.5 106.5 0 0 1 221.85 151.14" stroke="#93A85E" />
+    <path d="M218.03 161.61A106.5 106.5 0 0 1 118.14 226.48" stroke="#F2B4D8" />
+    <path d="M107.02 225.71A106.5 106.5 0 0 1 19.3 154.67" stroke="#AFCBF2" />
+    <path d="M16.23 143.96A106.5 106.5 0 0 1 16.23 96.04" stroke="#93A85E" />
+    <path d="M19.3 85.33A106.5 106.5 0 0 1 44.69 44.69" stroke="#AFCBF2" />
+  </g>
+</svg>

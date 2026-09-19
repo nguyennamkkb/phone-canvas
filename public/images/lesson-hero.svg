@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150" fill="none">
+  <defs>
+    <linearGradient id="sky" x1="20" y1="6" x2="126" y2="146" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7CC8F5" />
+      <stop offset="1" stop-color="#A98BF2" />
+    </linearGradient>
+    <clipPath id="round">
+      <circle cx="75" cy="75" r="75" />
+    </clipPath>
+  </defs>
+
+  <circle cx="75" cy="75" r="75" fill="url(#sky)" />
+
+  <g clip-path="url(#round)">
+    <path d="M75 58 44 68v30l31-7z" fill="#FFFFFF" />
+    <path d="M75 58 106 68v30l-31-7z" fill="#E7E0FB" />
+    <path d="M75 58v33" stroke="#C6BAE8" stroke-width="2" />
+    <path d="M52 76h16M52 84h16M84 76h16M84 84h16" stroke="#C6BAE8" stroke-width="2" stroke-linecap="round" />
+  </g>
+
+  <circle cx="50" cy="56" r="13" fill="#F97316" />
+  <path d="M44 52h5.4a1.4 1.4 0 0 1 1.4 1.4V61h-5.4A1.4 1.4 0 0 1 44 59.6Z" fill="#FFFFFF" />
+  <path d="M51 53.4h5.4V61H51Z" fill="#FFE0C2" />
+
+  <rect x="84" y="40" width="30" height="22" rx="7" fill="#3B82F6" />
+  <path d="M94 62l4 6 4-6z" fill="#3B82F6" />
+  <path d="M91 48h16M91 54h11" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+</svg>

@@ -1,0 +1,1183 @@
+/* ============================================================================
+ * tokens.css — the WHOLE styling vocabulary for a screen.
+ *
+ * This file is injected into every screen iframe before the screen markup.
+ * Anything NOT expressible with these tokens + the layout primitives below is
+ * out of the supported subset and will not map cleanly to SwiftUI.
+ *
+ * Allowed:   flex layout, padding, gap, width/height, background, border,
+ *            border-radius, box-shadow, opacity, typography, overflow:auto.
+ * Banned:    grid, float, transform, position:absolute (except as a full-bleed
+ *            layer inside a relative parent), clip-path, filters, JS layout.
+ * ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  /* ---- spacing scale (4pt grid) ---- */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 20px;
+  --s6: 24px;
+  --s8: 32px;
+  --s10: 40px;
+
+  /* ---- radii ---- */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+  --r-full: 999px;
+
+  /* ---- colors (iOS system) ---- */
+  --bg: #ffffff;
+  --bg-grouped: #f2f2f7;
+  --bg-elevated: #ffffff;
+  --label: #000000;
+  --label-2: rgba(60, 60, 67, 0.6);
+  --label-3: rgba(60, 60, 67, 0.3);
+  --separator: rgba(60, 60, 67, 0.21);
+  --fill: rgba(120, 120, 128, 0.12);
+  --accent: #007aff;
+  --accent-soft: rgba(0, 122, 255, 0.12);
+  --danger: #ff3b30;
+  --success: #34c759;
+  --warning: #ff9500;
+
+  /* ---- brand ---- */
+  --brand: #f2c81c;
+
+  /* ---- health palette ---- */
+  --cream: #f6f1e7;
+  --ink: #1a1a1a;
+  --sun: #efd264;
+  --olive: #93a85e;
+  --blossom: #f2b4d8;
+  --sky: #afcbf2;
+  --muted: #8b8577;
+  --alert: #c8452b;
+  --line: rgba(26, 26, 26, 0.18);
+  --track: #e9e2d4;
+
+  /* ---- learning palette ---- */
+  --violet: #8b5cf6;
+  --violet-deep: #7c4ddb;
+  --violet-tint: #ede0fa;
+  --blue-tint: #d6e9f8;
+  --peach-tint: #fae7d6;
+  --lavender: #e8dff5;
+  --mist: #eff2ef;
+  --slate: #6b7280;
+  --bolt: #facc15;
+
+  /* ---- typography (iOS text styles) ---- */
+  --font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
+    'Helvetica Neue', system-ui, sans-serif;
+  --t-large: 34px;
+  --t-title1: 28px;
+  --t-title2: 22px;
+  --t-title3: 20px;
+  --t-headline: 17px;
+  --t-body: 17px;
+  --t-callout: 16px;
+  --t-subhead: 15px;
+  --t-footnote: 13px;
+  --t-caption: 12px;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+body {
+  font-family: var(--font);
+  font-size: var(--t-body);
+  line-height: 22px;
+  color: var(--label);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure {
+  margin: 0;
+}
+
+/* ============================================================================
+ * Layout primitives — the only structural vocabulary screens may use.
+ * These map 1:1 onto SwiftUI stacks, so the extractor can always name them.
+ *
+ * The screen is NOT height-constrained. `.screen` fills whatever height it is
+ * given and grows past it without complaint: a design that needs 2000pt is a
+ * 2000pt-tall rectangle, not a scrollbar.
+ * ========================================================================== */
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+  background: var(--bg);
+}
+
+/* the scrolling middle band: VStack middle with .frame(maxHeight: .infinity) */
+.body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* a non-scrolling middle band */
+/* the content band is the positioning context for .scrim */
+.body-fixed {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+/* ============================================================================
+ * Component vocabulary
+ * ========================================================================== */
+
+.navbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: var(--s2) var(--s4);
+}
+
+.nav-title {
+  font-size: var(--t-title2);
+  font-weight: 700;
+  line-height: 28px;
+  letter-spacing: -0.4px;
+}
+
+.nav-back {
+  display: flex;
+  align-items: center;
+  gap: var(--s1);
+  color: var(--accent);
+  font-size: var(--t-body);
+  font-weight: 400;
+}
+
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: var(--r-full);
+  background: transparent;
+  color: var(--accent);
+  padding: 0;
+  cursor: pointer;
+}
+
+.tabbar {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-around;
+  flex: 0 0 auto;
+  padding-top: var(--s2);
+  border-top: 1px solid var(--separator);
+  background: var(--bg-elevated);
+}
+
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex: 1 1 0;
+  padding-bottom: var(--s1);
+  color: var(--label-3);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 12px;
+}
+
+.tab.is-active {
+  color: var(--accent);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  padding: var(--s4);
+}
+
+.list-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s4);
+  border-radius: var(--r-lg);
+  background: var(--bg-grouped);
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-full);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: var(--t-title3);
+  font-weight: 600;
+}
+
+.grow {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  padding: var(--s5);
+  border-radius: var(--r-xl);
+  background: var(--bg-grouped);
+}
+
+.btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  height: 50px;
+  padding: 0 var(--s5);
+  border: 0;
+  border-radius: var(--r-lg);
+  background: var(--fill);
+  color: var(--label);
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 var(--s3);
+  border-radius: var(--r-full);
+  background: var(--fill);
+  color: var(--label-2);
+  font-size: var(--t-footnote);
+  font-weight: 600;
+}
+
+.chip.is-active {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.bottom-cta {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  gap: var(--s2);
+  padding: var(--s3) var(--s4) var(--s4);
+  border-top: 1px solid var(--separator);
+  background: var(--bg-elevated);
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  height: 260px;
+  gap: var(--s3);
+  background: var(--accent-soft);
+}
+
+/* the illustration band of a full-bleed onboarding screen */
+.art-block {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 100%;
+  height: 384px;
+  margin-bottom: var(--s10);
+}
+
+/* a square icon button — the back / next pair at the foot of a flow */
+.sq-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-lg);
+  background: var(--fill);
+  color: var(--label);
+  cursor: pointer;
+}
+
+.sq-btn.is-dark {
+  background: var(--label);
+  color: #ffffff;
+}
+
+/* ============================================================================
+ * Composite graphics
+ *
+ * A chart is not a stack of rows. `.ring` and `.card-assistant` declare
+ * themselves positioning contexts and their children are placed by coordinate.
+ * The parent reads as a ZStack and each placed child as a ZStack layer with an
+ * offset — which is exactly how it is written in SwiftUI.
+ *
+ * This is the ONLY place absolute positioning is allowed. Everything else is
+ * still flex, top to bottom.
+ * ========================================================================== */
+
+.above {
+  position: relative;
+}
+
+/* a bare inset wrapper: no gap of its own, exists only to pad its content */
+.inset {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.ring {
+  --ring-size: 256px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--ring-size);
+  height: var(--ring-size);
+}
+
+/* a badge rides the ring: centred on a point given as a % of .ring */
+.badge {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border-radius: var(--r-full);
+  color: var(--ink);
+}
+
+/* the ring itself is a full-bleed layer under the centred reading, and must
+   share --ring-size with the badges or the two coordinate systems drift apart */
+.ring-arcs {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--ring-size);
+  height: var(--ring-size);
+}
+
+.chip-icon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-full);
+  color: var(--ink);
+}
+
+.bg-sun {
+  background: var(--sun);
+}
+
+.bg-olive {
+  background: var(--olive);
+}
+
+.bg-blossom {
+  background: var(--blossom);
+}
+
+.bg-sky {
+  background: var(--sky);
+}
+
+.bg-white {
+  background: #ffffff;
+}
+
+.bg-violet {
+  background: var(--violet);
+}
+
+.bg-blue-tint {
+  background: var(--blue-tint);
+}
+
+.bg-peach-tint {
+  background: var(--peach-tint);
+}
+
+.bg-violet-tint {
+  background: var(--violet-tint);
+}
+
+/* ============================================================================
+ * Health app
+ * ========================================================================== */
+
+.pill {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  flex: 0 0 auto;
+  height: 40px;
+  padding: 0 var(--s5);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--ink);
+  color: var(--cream);
+  font-family: var(--font);
+  font-size: var(--t-subhead);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pill-sm {
+  height: 32px;
+  padding: 0 var(--s4);
+  font-size: var(--t-footnote);
+}
+
+.circle-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-full);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.circle-btn.is-dashed {
+  border-style: dashed;
+  border-width: 1.5px;
+  width: 44px;
+  height: 44px;
+}
+
+.card-assistant {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  padding: var(--s3) var(--s4);
+  border-radius: var(--r-xl);
+  background: var(--blossom);
+  overflow: hidden;
+}
+
+.card-mark {
+  position: absolute;
+  right: -10px;
+  bottom: -26px;
+  width: 136px;
+}
+
+/* a ten-segment reading: each segment is a real element, so the spec can read
+   the score straight off the row */
+.meter {
+  display: flex;
+  flex-direction: row;
+  gap: 3px;
+  width: 100%;
+  height: 12px;
+}
+
+.meter-seg {
+  flex: 1 1 0;
+  border-radius: var(--r-full);
+  background: var(--track);
+}
+
+.meter-seg.is-on {
+  background: var(--sun);
+}
+
+.tabbar-dark {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 0 0 auto;
+  height: 54px;
+  padding: 0 var(--s3);
+  border-radius: var(--r-full);
+  background: var(--ink);
+  color: var(--cream);
+}
+
+/* equal slots, so the five centres are evenly spaced even though the middle
+   one is twice as wide as the rest */
+.tab-slot {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  color: rgba(246, 241, 231, 0.55);
+}
+
+.tab-slot.is-on {
+  color: var(--cream);
+}
+
+.plus-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 54px;
+  height: 54px;
+  margin-top: -8px;
+  border-radius: var(--r-full);
+  background: var(--blossom);
+  color: var(--ink);
+}
+
+/* ============================================================================
+ * Learning app
+ * ========================================================================== */
+
+/* a circular button on a coloured header — the back / share pair */
+.nav-round {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-full);
+  background: #ffffff;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.nav-round.is-hollow {
+  background: transparent;
+  border: 1.5px solid var(--line);
+}
+
+.pill-tag {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  height: 26px;
+  padding: 0 var(--s3);
+  border-radius: var(--r-full);
+  background: var(--violet-deep);
+  color: #ffffff;
+  font-size: var(--t-footnote);
+  font-weight: 600;
+}
+
+.pill-light {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+  flex: 0 0 auto;
+  height: 38px;
+  padding: 0 var(--s4);
+  border: 0;
+  border-radius: var(--r-full);
+  background: #ffffff;
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--t-subhead);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* the white card that takes over the lower half of a coloured header screen */
+.sheet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: var(--s4);
+  border-radius: 28px 28px 0 0;
+  background: #ffffff;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  flex: 1 1 0;
+  padding: var(--s3);
+  border-radius: var(--r-lg);
+}
+
+.row-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  flex: 0 0 auto;
+  padding: var(--s3);
+  border-radius: var(--r-lg);
+  background: var(--bg-grouped);
+}
+
+.cta-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  flex: 0 0 auto;
+}
+
+.btn-dark {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 auto;
+  height: 56px;
+  padding: 0 var(--s5);
+  border: 0;
+  border-radius: var(--r-full);
+  background: #1c1c1e;
+  color: #ffffff;
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ---- learning overview ---- */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  flex: 0 0 auto;
+  padding: var(--s5);
+  border-radius: var(--r-xl);
+  background: #ffffff;
+}
+
+/* bars are real elements with a real height, so the chart is readable in the
+   spec rather than being one picture of a chart */
+.chart {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: var(--s5);
+  height: 176px;
+}
+
+.chart-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  /* a flex item defaults to min-width: auto, which means it refuses to shrink
+     below its content — the column holding the tooltip would widen and squeeze
+     the other six. Equal columns need this or they are not equal. */
+  min-width: 0;
+  flex: 1 1 0;
+  height: 100%;
+}
+
+.bar {
+  width: 100%;
+  border-radius: var(--r-full);
+  background: var(--lavender);
+}
+
+.bar.is-peak {
+  background: var(--violet);
+}
+
+.tooltip {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  height: 26px;
+  padding: 0 var(--s3);
+  border-radius: var(--r-full);
+  background: #1c1c1e;
+  color: #ffffff;
+  font-size: var(--t-caption);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.chart-labels {
+  display: flex;
+  flex-direction: row;
+  gap: var(--s5);
+}
+
+/* same slot geometry as .chart-col, or the labels drift off their bars */
+.chart-label {
+  flex: 1 1 0;
+  min-width: 0;
+  text-align: center;
+  font-size: var(--t-footnote);
+  font-weight: 400;
+  line-height: 18px;
+  color: var(--slate);
+}
+
+.chart-label.is-on {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.feature-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  flex: 1 1 0;
+  min-width: 0;
+  padding: var(--s4);
+  border-radius: var(--r-xl);
+  color: #ffffff;
+}
+
+.bg-violet-grad {
+  background: linear-gradient(150deg, #b98cf0, #8b5cf6);
+}
+
+.bg-sky {
+  background: #29b6f6;
+}
+
+.avatar-round {
+  border-radius: var(--r-full);
+  overflow: hidden;
+}
+
+.icon-btn-soft {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-full);
+  background: #e6eae6;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.tabbar-light {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 0 0 auto;
+  height: 64px;
+}
+
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  flex: 1 1 0;
+  color: var(--slate);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 13px;
+}
+
+.tab-item.is-on {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+/* ============================================================================
+ * Bottom sheet
+ *
+ * The screen behind a sheet is a scrim; the sheet itself is a panel that runs
+ * to the bottom edge. Set the screen's own background to match the sheet, so
+ * the band the home indicator sits in reads as part of the panel rather than a
+ * strip of page background under it.
+ * ========================================================================== */
+
+/* `fixed`, not `absolute`: the shell renders the status bar and home indicator
+   as siblings of the screen, so an absolutely positioned layer inside the
+   content band cannot reach them. A fixed layer resolves against the iframe's
+   viewport, which is the whole device — the scrim dims the OS chrome too, the
+   way a real sheet does. Painting order is DOM order among positioned elements,
+   so .sheet-panel's `position: relative` keeps the panel above it. */
+.scrim {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.sheet-panel {
+  /* positioned so it paints above .scrim, which is absolutely positioned */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  flex: 0 0 auto;
+  padding: var(--s2) var(--s5) var(--s4);
+  border-radius: 28px 28px 0 0;
+  background: var(--bg-elevated);
+}
+
+/* the drag handle: centred by its own row, not by a transform */
+.grabber {
+  display: block;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 5px;
+  border-radius: var(--r-full);
+  background: var(--label-3);
+}
+
+.sheet-head {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  flex: 0 0 auto;
+}
+
+.close-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--fill);
+  color: var(--label-2);
+  cursor: pointer;
+}
+
+.action-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  flex: 0 0 auto;
+  padding: var(--s3) 0;
+  border: 0;
+  border-bottom: 1px solid var(--separator);
+  background: transparent;
+  color: var(--label);
+  font-family: var(--font);
+  font-size: var(--t-body);
+  text-align: left;
+  cursor: pointer;
+}
+
+.action-row.is-danger {
+  color: var(--danger);
+}
+
+.action-row:last-child {
+  border-bottom: 0;
+}
+
+.text-field {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  flex: 0 0 auto;
+  min-height: 92px;
+  padding: var(--s3);
+  border-radius: var(--r-lg);
+  background: var(--bg-grouped);
+  color: var(--label-3);
+  font-size: var(--t-subhead);
+  line-height: 21px;
+}
+
+.segmented-light {
+  display: flex;
+  flex-direction: row;
+  gap: 3px;
+  flex: 0 0 auto;
+  padding: 3px;
+  border-radius: var(--r-md);
+  background: var(--bg-grouped);
+}
+
+.seg {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 32px;
+  border-radius: 9px;
+  color: var(--label-2);
+  font-size: var(--t-footnote);
+  font-weight: 600;
+}
+
+.seg.is-on {
+  background: #ffffff;
+  color: var(--label);
+}
+
+.dots {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-full);
+  background: var(--label-3);
+}
+
+.dot.is-active {
+  width: 22px;
+  background: var(--accent);
+}
+
+/* a page indicator keeps every dot the same size and just fills the current one */
+.dot.is-filled {
+  background: var(--label);
+}
+
+/* ============================================================================
+ * Text styles — pick one, do not invent sizes.
+ * ========================================================================== */
+
+.t-large {
+  font-size: var(--t-large);
+  font-weight: 700;
+  line-height: 41px;
+  letter-spacing: 0.4px;
+}
+
+.t-title1 {
+  font-size: var(--t-title1);
+  font-weight: 700;
+  line-height: 34px;
+  letter-spacing: 0.4px;
+}
+
+/* an onboarding headline: bigger than a title, set tight, wraps to two lines */
+.t-display {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 52px;
+  letter-spacing: -1.25px;
+}
+
+/* a single big reading — the thing the screen exists to show */
+.t-score {
+  font-size: 64px;
+  font-weight: 700;
+  line-height: 68px;
+  letter-spacing: -2.2px;
+}
+
+.t-section {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 25px;
+  letter-spacing: -0.4px;
+}
+
+.t-label {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 14px;
+  letter-spacing: 0.1px;
+}
+
+/* a centred headline on a coloured header */
+.t-hero {
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 32px;
+  letter-spacing: -0.6px;
+  text-align: center;
+  color: #ffffff;
+}
+
+/* the title of a whole screen */
+.t-page {
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 40px;
+  letter-spacing: -1px;
+}
+
+.t-stat {
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 30px;
+  letter-spacing: -0.6px;
+}
+
+.t-title2 {
+  font-size: var(--t-title2);
+  font-weight: 700;
+  line-height: 28px;
+  letter-spacing: -0.4px;
+}
+
+.t-title3 {
+  font-size: var(--t-title3);
+  font-weight: 600;
+  line-height: 25px;
+  letter-spacing: -0.4px;
+}
+
+.t-headline {
+  font-size: var(--t-headline);
+  font-weight: 600;
+  line-height: 22px;
+  letter-spacing: -0.4px;
+}
+
+.t-body {
+  font-size: var(--t-body);
+  font-weight: 400;
+  line-height: 22px;
+  letter-spacing: -0.4px;
+}
+
+.t-subhead {
+  font-size: var(--t-subhead);
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.2px;
+}
+
+.t-footnote {
+  font-size: var(--t-footnote);
+  font-weight: 400;
+  line-height: 18px;
+  letter-spacing: -0.1px;
+}
+
+.t-caption {
+  font-size: var(--t-caption);
+  font-weight: 400;
+  line-height: 16px;
+}
+
+.t-secondary {
+  color: var(--label-2);
+}
