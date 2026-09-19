@@ -16,6 +16,12 @@ import type { ScreenFile } from './manifest'
  */
 
 import splash from './splash.html?raw'
+import onbHello from './onb-hello.html?raw'
+import onbCheckin from './onb-checkin.html?raw'
+import onbInsights from './onb-insights.html?raw'
+import onbSearch from './onb-search.html?raw'
+import onbRemind from './onb-remind.html?raw'
+import onbListen from './onb-listen.html?raw'
 import home from './home.html?raw'
 import checkin from './checkin.html?raw'
 import insights from './insights.html?raw'
@@ -29,6 +35,12 @@ import moodStats from './mood-stats.html?raw'
 
 const RAW: Record<string, string> = {
   splash,
+  'onb-hello': onbHello,
+  'onb-checkin': onbCheckin,
+  'onb-insights': onbInsights,
+  'onb-search': onbSearch,
+  'onb-remind': onbRemind,
+  'onb-listen': onbListen,
   home,
   checkin,
   insights,

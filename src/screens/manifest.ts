@@ -32,6 +32,12 @@ export type ScreenFile = {
 
 export const SCREEN_FILES: ScreenFile[] = [
   { id: 'splash', title: 'Splash', file: 'splash.html', lightStatusBar: false },
+  { id: 'onb-hello', title: 'Onboarding 1 · Hello', file: 'onb-hello.html' },
+  { id: 'onb-checkin', title: 'Onboarding 2 · Check in', file: 'onb-checkin.html' },
+  { id: 'onb-insights', title: 'Onboarding 3 · Patterns', file: 'onb-insights.html' },
+  { id: 'onb-search', title: 'Onboarding 4 · Search', file: 'onb-search.html' },
+  { id: 'onb-remind', title: 'Onboarding 5 · Reminders', file: 'onb-remind.html' },
+  { id: 'onb-listen', title: 'Onboarding 6 · Listen', file: 'onb-listen.html' },
   { id: 'home', title: 'Home · Today', file: 'home.html' },
   { id: 'checkin', title: 'Check in', file: 'checkin.html' },
   { id: 'insights', title: 'Insights', file: 'insights.html' },

@@ -1,27 +1,43 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 200" fill="none">
-  <path d="M130 20c58 0 104 26 112 64 8 38-26 78-82 92-56 14-116-4-136-42C4 96 34 48 88 28c14-5 28-8 42-8Z" fill="#E9E6FA" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" fill="none">
+  <ellipse cx="150" cy="158" rx="118" ry="106" fill="#FFFDF9" opacity="0.55"/>
 
-  <circle cx="130" cy="92" r="46" fill="#B6AEEE" />
-  <circle cx="130" cy="92" r="34" fill="#FFFDFA" />
-  <circle cx="118" cy="84" r="4.4" fill="#3A2B22" />
-  <circle cx="142" cy="84" r="4.4" fill="#3A2B22" />
-  <path d="M116 100c4.4 6.6 9 9.8 14 9.8s9.6-3.2 14-9.8" stroke="#3A2B22" stroke-width="4.2" stroke-linecap="round" />
+  <g fill="#7C9448">
+    <path d="M38 190c-8-34 6-62 34-76-2 32-12 60-34 76Z"/>
+    <path d="M262 190c8-34-6-62-34-76 2 32 12 60 34 76Z"/>
+  </g>
 
+  <!-- left phone: check-in picker -->
   <g>
-    <circle cx="52" cy="150" r="15" fill="#C0574B" />
-    <circle cx="90" cy="164" r="15" fill="#E08A63" />
-    <circle cx="130" cy="170" r="15" fill="#DCC46A" />
-    <circle cx="170" cy="164" r="15" fill="#A9BC84" />
-    <circle cx="208" cy="150" r="15" fill="#6F9A56" />
+    <rect x="52" y="76" width="104" height="172" rx="26" fill="#2B1D16"/>
+    <rect x="59" y="83" width="90" height="158" rx="20" fill="#FFFFFF"/>
+    <rect x="84" y="88" width="40" height="10" rx="5" fill="#2B1D16"/>
+    <circle cx="74" cy="130" r="17" fill="#F47F42"/>
+    <circle cx="104" cy="130" r="17" fill="#E7C65A"/>
+    <circle cx="134" cy="130" r="17" fill="#9DB06C"/>
+    <circle cx="134" cy="130" r="21" stroke="#2B1D16" stroke-width="3.2"/>
+    <circle cx="89" cy="168" r="6" fill="#7C9448"/>
+    <circle cx="104" cy="168" r="6" fill="#F47F42"/>
+    <circle cx="119" cy="168" r="6" fill="#E7C65A"/>
+    <rect x="72" y="188" width="64" height="30" rx="15" fill="#2B1D16"/>
+    <circle cx="140" cy="203" r="4" fill="#FFFFFF"/>
   </g>
 
-  <g stroke="#8A7D72" stroke-width="3.2" stroke-linecap="round" opacity="0.7">
-    <path d="M44 58c-6 5-7 13-2 19" />
-    <path d="M220 62c6 5 7 13 2 19" />
+  <!-- floating faces with motion arcs -->
+  <g>
+    <circle cx="206" cy="96" r="26" fill="#9D8FF0"/>
+    <circle cx="197" cy="91" r="4.4" fill="#FFFFFF"/>
+    <circle cx="215" cy="91" r="4.4" fill="#FFFFFF"/>
+    <path d="M197 104c2.8 4 5.8 6 9 6s6.2-2 9-6" stroke="#FFFFFF" stroke-width="3.4" stroke-linecap="round"/>
+    <path d="M178 118c8-10 22-14 34-10" stroke="#2B1D16" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="2 8"/>
+
+    <circle cx="216" cy="196" r="26" fill="#E7C65A"/>
+    <circle cx="207" cy="191" r="4.4" fill="#2B1D16"/>
+    <circle cx="225" cy="191" r="4.4" fill="#2B1D16"/>
+    <path d="M207 201h18" stroke="#2B1D16" stroke-width="3.4" stroke-linecap="round"/>
+    <path d="M184 176c10 6 24 6 34 0" stroke="#2B1D16" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="2 8"/>
   </g>
-  <g fill="#8A7D72" opacity="0.55">
-    <circle cx="60" cy="42" r="3.2" />
-    <circle cx="206" cy="40" r="3.2" />
-    <circle cx="238" cy="112" r="3" />
-  </g>
+
+  <circle cx="66" cy="246" r="7" fill="#9DB06C"/>
+  <circle cx="244" cy="248" r="7" fill="#F47F42"/>
+  <path d="M228 52c1.4 3.8 3 5.4 6.8 6.8-3.8 1.4-5.4 3-6.8 6.8-1.4-3.8-3-5.4-6.8-6.8 3.8-1.4 5.4-3 6.8-6.8Z" fill="#9D8FF0"/>
 </svg>
