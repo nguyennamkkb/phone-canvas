@@ -76,26 +76,29 @@
   --slate: #6b7280;
   --bolt: #facc15;
 
-  /* ---- moodtracker palette ---- */
-  --paper: #f4efe6;
-  --card: #fffdf9;
-  --espresso: #33241c;
-  --clay: #8b7a6b;
-  --hairline: rgba(51, 36, 28, 0.14);
-  --sage: #a8be7c;
-  --sage-deep: #6e8b4a;
-  --sage-soft: #dce7c4;
-  --ember: #f2814b;
-  --ember-soft: #fbdfcb;
-  --lilac: #b3a8f0;
-  --lilac-soft: #e4dffb;
-  --sun: #f2c14e;
-  --sun-soft: #fbedcb;
-  --mood-1: #c0574b;
-  --mood-2: #e08a63;
-  --mood-3: #dcc46a;
-  --mood-4: #a9bc84;
-  --mood-5: #6f9a56;
+  /* ---- moodtracker palette ----
+     Freud reference (bb5b…): near-white warm ground, near-black warm ink,
+     olive-green positive, tangerine negative, periwinkle journal,
+     butter-yellow neutral, stone text. */
+  --paper: #faf8f5;
+  --card: #ffffff;
+  --espresso: #2b1d16;
+  --clay: #8a7a6e;
+  --hairline: rgba(43, 29, 22, 0.12);
+  --sage: #9db06c;
+  --sage-deep: #7c9448;
+  --sage-soft: #e3ead0;
+  --ember: #f47f42;
+  --ember-soft: #fde3d2;
+  --lilac: #9d8ff0;
+  --lilac-soft: #e3defa;
+  --sun: #e7c65a;
+  --sun-soft: #f7ecc8;
+  --mood-1: #d6543f;
+  --mood-2: #f47f42;
+  --mood-3: #e7c65a;
+  --mood-4: #9db06c;
+  --mood-5: #7c9448;
 
   /* both are system fonts on macOS and iOS — nothing loads over the network,
      and SwiftUI reaches them with .custom("MarkerFelt-Thin", size:) */
@@ -340,17 +343,22 @@ figure {
   width: 100%;
 }
 
+/* Freud reference: status chips are tinted pills with a glyph + label,
+   slightly taller than the old 28px chip. */
 .chip {
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  height: 28px;
+  gap: var(--s1);
+  height: 32px;
   padding: 0 var(--s3);
   border-radius: var(--r-full);
   background: var(--fill);
-  color: var(--label-2);
+  color: var(--label);
   font-size: var(--t-footnote);
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .chip.is-active {
@@ -1071,15 +1079,17 @@ figure {
  * class="screen app-mood" and nothing else.
  * ========================================================================== */
 
+/* Freud reference: the screen ground is near-white; grouping surfaces are a
+   warm stone tint, never the ground colour. Cards stay pure white. */
 .app-mood {
   --bg: var(--paper);
   --bg-elevated: var(--card);
-  --bg-grouped: #efe9e0;
+  --bg-grouped: #f2ede7;
   --label: var(--espresso);
   --label-2: var(--clay);
-  --label-3: rgba(58, 43, 34, 0.22);
+  --label-3: rgba(43, 29, 22, 0.34);
   --separator: var(--hairline);
-  --fill: rgba(58, 43, 34, 0.07);
+  --fill: rgba(43, 29, 22, 0.06);
   --accent: var(--sage-deep);
 }
 
@@ -1126,6 +1136,8 @@ figure {
   background: #ffffff;
 }
 
+/* Freud reference: white cards on a warm ground, radius ~28, hairline edge,
+   no shadow. Gap scale keeps content clear of the edge. */
 .paper-card {
   display: flex;
   flex-direction: column;
@@ -1133,7 +1145,7 @@ figure {
   flex: 0 0 auto;
   padding: var(--s4);
   border: 1px solid var(--hairline);
-  border-radius: 20px;
+  border-radius: 28px;
   background: var(--card);
 }
 
@@ -1370,6 +1382,13 @@ figure {
   gap: var(--s1);
 }
 
+/* Freud reference: month cells are solid mood colours with radius ~12.
+   .is-1..is-5 carry the mood; .is-quiet stays the grouping tint. */
+.cal-cell.is-1 { background: var(--mood-1); color: #ffffff; }
+.cal-cell.is-2 { background: var(--mood-2); color: #ffffff; }
+.cal-cell.is-3 { background: var(--sun); color: var(--espresso); }
+.cal-cell.is-4 { background: var(--mood-4); color: #ffffff; }
+.cal-cell.is-5 { background: var(--mood-5); color: #ffffff; }
 .cal-cell {
   display: flex;
   flex-direction: row;
@@ -1382,6 +1401,7 @@ figure {
   color: var(--espresso);
   font-size: var(--t-footnote);
   font-weight: 600;
+  background: var(--bg-grouped);
 }
 
 .cal-cell.is-quiet {
@@ -1422,18 +1442,22 @@ figure {
   border-color: var(--sage);
 }
 
-/* the floating dock */
+/* Freud reference: a floating white pill dock. Inactive glyphs are stone,
+   the active glyph is filled ink, and the raised centre button overlaps the
+   dock edge. Height and padding follow the reference proportions. */
 .dock {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
   flex: 0 0 auto;
-  height: 62px;
-  padding: 0 var(--s2);
+  height: 68px;
+  padding: 0 var(--s4);
   border: 1px solid var(--hairline);
   border-radius: var(--r-full);
   background: var(--card);
+  /* one soft shadow only: lifts the dock without changing layout */
+  box-shadow: 0 8px 24px rgba(43, 29, 22, 0.1);
 }
 
 .dock-item {
@@ -1456,12 +1480,12 @@ figure {
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  width: 52px;
-  height: 52px;
-  margin-top: -26px;
+  width: 56px;
+  height: 56px;
+  margin-top: -30px;
   border-radius: var(--r-full);
   background: var(--sage);
-  color: var(--espresso);
+  color: #ffffff;
 }
 
 /* the big reading: a score inside a ring */
@@ -1479,6 +1503,9 @@ figure {
   background: var(--card);
 }
 
+/* Freud reference: solid colour tiles (green / tangerine / periwinkle /
+   butter), radius ~28, dark-ink text on green and periwinkle, white on
+   tangerine. */
 .stat-tile {
   display: flex;
   flex-direction: column;
@@ -1486,14 +1513,17 @@ figure {
   flex: 1 1 0;
   min-width: 0;
   padding: var(--s4);
-  border-radius: 22px;
+  border-radius: 28px;
 }
 
 .stat-tile.is-sage { background: var(--sage); color: var(--espresso); }
 .stat-tile.is-ember { background: var(--ember); color: #ffffff; }
 .stat-tile.is-lilac { background: var(--lilac); color: var(--espresso); }
+.stat-tile.is-sun { background: var(--sun); color: var(--espresso); }
 .stat-tile.is-sage-soft { background: var(--sage-soft); color: var(--espresso); }
 .stat-tile.is-ember-soft { background: var(--ember-soft); color: var(--espresso); }
+.stat-tile.is-lilac-soft { background: var(--lilac-soft); color: var(--espresso); }
+.stat-tile.is-sun-soft { background: var(--sun-soft); color: var(--espresso); }
 
 .dots {
   display: flex;
@@ -1737,15 +1767,36 @@ figure {
   background: var(--espresso);
 }
 
-/* one mood face with its day label: Mood History, AI Predictions */
+/* Freud reference: Mood History / AI Predictions rows are solid mood-colour
+   discs with white line faces, each over a stone day label. */
 .face-cell {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
+  gap: var(--s1);
   flex: 1 1 0;
   min-width: 0;
 }
+
+.face-dot {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-full);
+  background: var(--sage);
+  color: #ffffff;
+}
+
+.face-dot.is-1 { background: var(--mood-1); }
+.face-dot.is-2 { background: var(--mood-2); }
+.face-dot.is-3 { background: var(--sun); color: var(--espresso); }
+.face-dot.is-4 { background: var(--mood-4); }
+.face-dot.is-5 { background: var(--mood-5); }
+.face-dot.is-quiet { background: var(--bg-grouped); color: var(--clay); }
 
 /* one cell of the Health Journal dot grid */
 .dotcell {

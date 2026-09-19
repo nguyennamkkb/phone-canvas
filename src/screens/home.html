@@ -1,152 +1,133 @@
 <div class="screen app-mood">
-  <div class="body-fixed">
-    <section class="hero-bleed" style="padding-bottom: var(--s3)">
-      <div class="row" style="justify-content: space-between">
-        <div class="row" style="gap: var(--s3)">
-          <img class="art avatar-round" src="/images/avatar.svg" width="44" height="44" alt="Your profile" />
-          <div class="col" style="gap: 1px">
-            <div class="t-footnote" style="color: var(--espresso); opacity: 0.6">Good morning</div>
-            <div class="t-headline">Olive</div>
-          </div>
-        </div>
-        <button class="icon-btn-soft" style="background: var(--card)" aria-label="Notifications">
-          <span class="icon icon-sm" data-symbol="bell"></span>
-        </button>
-      </div>
-
-      <div class="row" style="gap: var(--s3); align-items: flex-end">
-        <div class="grow col" style="gap: var(--s1)">
-          <div class="t-footnote" style="color: var(--espresso); opacity: 0.62">
-            TUESDAY · ONE HONEST TAP
-          </div>
-          <div class="t-hand" style="font-size: 27px; line-height: 32px">How is your heart today?</div>
-        </div>
-        <img class="art" src="/images/mascot-happy.svg" data-asset="MascotHappy" width="84" height="87" alt="" />
-      </div>
-
-      <div class="row" style="gap: var(--s1)">
-        <span class="mood-orb">
-          <img class="art" src="/images/mood-awful.svg" data-asset="MoodAwful" width="54" height="54" alt="Awful" />
-        </span>
-        <span class="mood-orb">
-          <img class="art" src="/images/mood-bad.svg" data-asset="MoodBad" width="54" height="54" alt="Bad" />
-        </span>
-        <span class="mood-orb">
-          <img class="art" src="/images/mood-okay.svg" data-asset="MoodOkay" width="54" height="54" alt="Okay" />
-        </span>
-        <span class="mood-orb is-on">
-          <img class="art" src="/images/mood-good.svg" data-asset="MoodGood" width="54" height="54" alt="Good" />
-        </span>
-        <span class="mood-orb">
-          <img class="art" src="/images/mood-great.svg" data-asset="MoodGreat" width="54" height="54" alt="Great" />
-        </span>
-      </div>
-    </section>
-
-    <div class="inset" style="padding: var(--s2) var(--s5) 0">
-      <div class="paper-card">
-        <div class="row" style="justify-content: space-between">
-          <div class="t-headline">This week</div>
-          <span class="pill-soft">a warm week</span>
-        </div>
-        <div class="row" style="gap: var(--s2); align-items: flex-end">
-          <div class="week-col">
-            <img class="art" src="/images/mood-good.svg" data-asset="MoodGood" width="20" height="20" alt="Good" />
-            <div class="week-track"><span class="week-bar fill-4" style="height: 83%"></span></div>
-            <span class="t-caption" style="color: var(--clay)">M</span>
-          </div>
-          <div class="week-col">
-            <img class="art" src="/images/mood-okay.svg" data-asset="MoodOkay" width="20" height="20" alt="Okay" />
-            <div class="week-track"><span class="week-bar fill-3" style="height: 67%"></span></div>
-            <span class="t-caption" style="color: var(--clay)">T</span>
-          </div>
-          <div class="week-col">
-            <img class="art" src="/images/mood-great.svg" data-asset="MoodGreat" width="20" height="20" alt="Great" />
-            <div class="week-track"><span class="week-bar fill-5" style="height: 100%"></span></div>
-            <span class="t-caption" style="color: var(--clay)">W</span>
-          </div>
-          <div class="week-col">
-            <img class="art" src="/images/mood-bad.svg" data-asset="MoodBad" width="20" height="20" alt="Bad" />
-            <div class="week-track"><span class="week-bar fill-2" style="height: 44%"></span></div>
-            <span class="t-caption" style="color: var(--clay)">T</span>
-          </div>
-          <div class="week-col">
-            <img class="art" src="/images/mood-okay.svg" data-asset="MoodOkay" width="20" height="20" alt="Okay" />
-            <div class="week-track"><span class="week-bar fill-3" style="height: 67%"></span></div>
-            <span class="t-caption" style="color: var(--clay)">F</span>
-          </div>
-          <div class="week-col">
-            <img class="art" src="/images/mood-good.svg" data-asset="MoodGood" width="20" height="20" alt="Good" />
-            <div class="week-track"><span class="week-bar fill-4" style="height: 83%"></span></div>
-            <span class="t-caption" style="color: var(--clay)">S</span>
-          </div>
-          <div class="week-col">
-            <span class="week-track"><span class="week-bar is-missing"></span></span>
-            <span class="t-caption" style="color: var(--clay)">S</span>
-          </div>
-        </div>
-      </div>
+  <div class="body-fixed" style="padding: 0 var(--s5)">
+    <div class="row" style="justify-content: space-between; padding-top: var(--s4)">
+      <span class="pill-ghost" style="height: 32px">
+        <span class="icon icon-xs" data-symbol="calendar"></span>
+        Tue. 25 Jan 2025
+      </span>
+      <button class="nav-round" aria-label="Notifications">
+        <span class="icon icon-sm" data-symbol="bell"></span>
+      </button>
     </div>
 
-    <div class="row" style="gap: var(--s3); padding: var(--s2) var(--s5) 0">
+    <div class="row" style="gap: var(--s3); padding-top: var(--s3)">
+      <img class="art avatar-round" src="/images/avatar.svg" width="48" height="48" alt="Shinomiya" />
+      <div class="t-title2">Hi, Shinomiya!</div>
+    </div>
+
+    <div class="row" style="gap: var(--s2); padding-top: var(--s3)">
+      <span class="chip">
+        <span class="icon icon-xs" data-symbol="star" style="color: var(--sage-deep)"></span>
+        Pro Member
+      </span>
+      <span class="chip">
+        <span class="icon icon-xs" data-symbol="sparkles" style="color: var(--lilac)"></span>
+        80%
+      </span>
+      <span class="chip">
+        <span class="icon icon-xs" data-symbol="heart.fill" style="color: var(--ember)"></span>
+        Happy
+      </span>
+    </div>
+
+    <div class="searchbar" style="margin-top: var(--s3)">
+      <span class="t-subhead" style="color: var(--clay)">Search anything…</span>
+      <div class="spacer"></div>
+      <span class="icon icon-sm" data-symbol="magnifyingglass" style="color: var(--espresso)"></span>
+    </div>
+
+    <div class="row" style="justify-content: space-between; padding-top: var(--s4)">
+      <div class="t-headline">Mental Health Metrics</div>
+      <span class="icon icon-sm" data-symbol="ellipsis" style="color: var(--clay)"></span>
+    </div>
+
+    <div class="row" style="gap: var(--s3); padding-top: var(--s2)">
       <div class="stat-tile is-sage">
-        <div class="t-caption" style="opacity: 0.7">Day streak</div>
-        <div class="row" style="gap: var(--s2); align-items: baseline">
-          <span class="icon icon-xs" data-symbol="flame" style="color: var(--ember)"></span>
-          <div class="t-stat">6</div>
-          <span class="t-footnote" style="opacity: 0.7">days</span>
+        <div class="row" style="gap: var(--s1)">
+          <span class="icon icon-xs" data-symbol="heart" style="color: var(--card)"></span>
+          <span class="t-footnote">Freud Score</span>
         </div>
-        <div class="row" style="gap: 3px">
-          <span class="streak-pill is-on"></span>
-          <span class="streak-pill is-on"></span>
-          <span class="streak-pill is-on"></span>
-          <span class="streak-pill is-on"></span>
-          <span class="streak-pill is-on"></span>
-          <span class="streak-pill is-on"></span>
-          <span class="streak-pill"></span>
+        <div class="bubble is-sm" style="border-color: var(--card); background: transparent; align-self: center">
+          <div class="t-stat">80</div>
+          <div class="t-caption">Healthy</div>
         </div>
       </div>
-
-      <div class="stat-tile is-lilac">
-        <div class="t-caption" style="opacity: 0.7">Average mood</div>
-        <div class="row" style="gap: var(--s2); align-items: baseline">
-          <span class="icon icon-xs" data-symbol="sparkles" style="color: var(--espresso)"></span>
-          <div class="t-stat">3.9</div>
-          <span class="t-footnote" style="opacity: 0.7">of 5</span>
+      <div class="stat-tile is-ember">
+        <div class="row" style="gap: var(--s1)">
+          <span class="face-dot is-2" style="width: 20px; height: 20px">
+            <span class="icon" data-symbol="heart.fill" style="width: 12px; height: 12px"></span>
+          </span>
+          <span class="t-footnote">Mood</span>
         </div>
-        <div class="row" style="gap: 3px">
-          <span class="streak-pill is-on"></span>
-          <span class="streak-pill is-on"></span>
-          <span class="streak-pill is-on"></span>
-          <span class="streak-pill"></span>
-          <span class="streak-pill"></span>
+        <div class="t-stat">Sad</div>
+        <div class="minibars">
+          <span class="minibar" style="height: 30%"></span>
+          <span class="minibar" style="height: 45%"></span>
+          <span class="minibar" style="height: 60%"></span>
+          <span class="minibar" style="height: 40%"></span>
+          <span class="minibar" style="height: 75%"></span>
+          <span class="minibar" style="height: 55%"></span>
+          <span class="minibar" style="height: 90%"></span>
+          <span class="minibar" style="height: 65%"></span>
         </div>
       </div>
     </div>
 
-    <div class="inset" style="padding: var(--s2) var(--s5) 0">
-      <div class="band is-sun">
-        <div class="row" style="gap: var(--s3)">
-          <img class="art" src="/images/mascot-calm.svg" data-asset="MascotCalm" width="54" height="55" alt="" />
-          <div class="grow col" style="gap: 1px">
-            <div class="t-subhead">Wednesday carried your week</div>
-            <div class="t-footnote" style="color: var(--clay)">
-              Thursday wobbled, but mornings keep forgiving you.
-            </div>
+    <div class="stat-tile is-lilac" style="margin-top: var(--s3)">
+      <div class="row" style="gap: var(--s4)">
+        <div class="grow col" style="gap: var(--s1)">
+          <div class="row" style="gap: var(--s1)">
+            <span class="icon icon-xs" data-symbol="book"></span>
+            <span class="t-footnote">Health Journal</span>
           </div>
-          <span class="icon icon-xs" data-symbol="chevron.right" style="color: var(--clay)"></span>
+          <div class="t-stat">31/365</div>
+        </div>
+        <div class="col" style="gap: var(--s2); width: 112px">
+          <div class="row" style="gap: var(--s2)">
+            <span class="dotcell"></span><span class="dotcell"></span><span class="dotcell"></span><span class="dotcell is-dim"></span>
+          </div>
+          <div class="row" style="gap: var(--s2)">
+            <span class="dotcell"></span><span class="dotcell"></span><span class="dotcell is-dim"></span><span class="dotcell"></span>
+          </div>
+          <div class="row" style="gap: var(--s2)">
+            <span class="dotcell"></span><span class="dotcell is-dim"></span><span class="dotcell"></span><span class="dotcell"></span>
+          </div>
+          <div class="row" style="gap: var(--s2)">
+            <span class="dotcell is-dim"></span><span class="dotcell"></span><span class="dotcell"></span><span class="dotcell is-dim"></span>
+          </div>
+          <div class="row" style="gap: var(--s2)">
+            <span class="dotcell"></span><span class="dotcell"></span><span class="dotcell is-dim"></span><span class="dotcell"></span>
+          </div>
         </div>
       </div>
+    </div>
+
+    <div class="row" style="justify-content: space-between; padding-top: var(--s4)">
+      <div class="t-headline">Mindful Tracker</div>
+      <span class="icon icon-sm" data-symbol="ellipsis" style="color: var(--clay)"></span>
+    </div>
+
+    <div class="row-card" style="margin-top: var(--s2)">
+      <span class="chip-icon" style="background: var(--sage-soft)">
+        <span class="icon icon-sm" data-symbol="clock" style="color: var(--sage-deep)"></span>
+      </span>
+      <div class="grow col" style="gap: 1px">
+        <div class="t-headline">Mindful Hours</div>
+        <div class="t-footnote" style="color: var(--clay)">2.5h/8h</div>
+      </div>
+      <span class="icon icon-sm" data-symbol="trend" style="color: var(--sage-deep)"></span>
     </div>
 
     <div class="spacer"></div>
 
-    <div class="inset" style="padding: var(--s3) var(--s5) var(--s2)">
+    <div style="padding: var(--s4) 0 var(--s2)">
       <nav class="dock">
         <span class="dock-item is-on"><span class="icon" data-symbol="house"></span></span>
-        <span class="dock-item"><span class="icon" data-symbol="book"></span></span>
+        <span class="dock-item"><span class="icon" data-symbol="bubble.left"></span></span>
         <span class="dock-item">
-          <span class="dock-plus"><span class="icon icon-sm" data-symbol="plus"></span></span>
+          <span class="dock-plus" style="background: var(--espresso); color: var(--paper)">
+            <span class="icon icon-sm" data-symbol="plus"></span>
+          </span>
         </span>
         <span class="dock-item"><span class="icon" data-symbol="chart.bar"></span></span>
         <span class="dock-item"><span class="icon" data-symbol="person"></span></span>
