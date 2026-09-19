@@ -43,4 +43,7 @@ export const SCREEN_FILES: ScreenFile[] = [
   { id: 'journal', title: 'Journal', file: 'journal.html' },
   { id: 'entry', title: 'Entry', file: 'entry.html' },
   { id: 'profile', title: 'Profile', file: 'profile.html' },
+  { id: 'freud-score', title: 'Freud · Score', file: 'freud-score.html' },
+  { id: 'freud-home', title: 'Freud · Dashboard', file: 'freud-home.html' },
+  { id: 'mood-stats', title: 'Freud · Mood Stats', file: 'mood-stats.html' },
 ]

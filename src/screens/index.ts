@@ -27,6 +27,9 @@ import history from './history.html?raw'
 import journal from './journal.html?raw'
 import entry from './entry.html?raw'
 import profile from './profile.html?raw'
+import freudScore from './freud-score.html?raw'
+import freudHome from './freud-home.html?raw'
+import moodStats from './mood-stats.html?raw'
 
 const RAW: Record<string, string> = {
   splash,
@@ -41,6 +44,9 @@ const RAW: Record<string, string> = {
   journal,
   entry,
   profile,
+  'freud-score': freudScore,
+  'freud-home': freudHome,
+  'mood-stats': moodStats,
 }
 
 export type ScreenDef = ScreenFile & { html: string }

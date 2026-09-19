@@ -152,6 +152,16 @@
   --icon-src: '/icons/moon.svg';
 }
 
+.icon[data-symbol='download'] {
+  --icon: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%3E%3Cg%20stroke%3D%22currentColor%22%20stroke-width%3D%221.9%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M12%203.2v10.4%22%20%2F%3E%3Cpath%20d%3D%22M8%209.4l4%204%204-4%22%20%2F%3E%3Cpath%20d%3D%22M4.6%2015.2v3.6a2.2%202.2%200%200%200%202.2%202.2h10.4a2.2%202.2%200%200%200%202.2-2.2v-3.6%22%20%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+  --icon-src: '/icons/download.svg';
+}
+
+.icon[data-symbol='star'] {
+  --icon: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M12%202.6l2.9%206%206.6.9-4.8%204.6%201.2%206.5-5.9-3.1-5.9%203.1%201.2-6.5L2.5%209.5l6.6-.9z%22%20%2F%3E%3C%2Fsvg%3E');
+  --icon-src: '/icons/star.svg';
+}
+
 .icon[data-symbol='shield.fill'] {
   --icon: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M12%202.3%204.3%205.4v6.1c0%204.7%203.2%208.8%207.7%2010.2%204.5-1.4%207.7-5.5%207.7-10.2V5.4Z%22%20%2F%3E%3C%2Fsvg%3E');
   --icon-src: '/icons/shield.svg';

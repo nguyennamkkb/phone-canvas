@@ -62,6 +62,8 @@ const SYMBOLS: Record<string, string> = {
   trend: 'trend.svg',
   tag: 'tag.svg',
   moon: 'moon.svg',
+  download: 'download.svg',
+  star: 'star.svg',
   'shield.fill': 'shield.svg',
   'leaf.fill': 'leaf.svg',
   'heart.fill': 'heart.svg',

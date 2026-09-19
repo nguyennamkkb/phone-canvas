@@ -1644,3 +1644,147 @@ figure {
 .t-secondary {
   color: var(--label-2);
 }
+
+/* ============================================================================
+ * Freud app — cream ground, espresso ink, marker headings
+ *
+ * Same paper language as the moodtracker theme, pushed further: every reading
+ * is colour-coded (green = positive, ember = negative), every state has a face
+ * and a label, and section titles are handwritten. New classes only; nothing
+ * above this banner is touched.
+ * ========================================================================== */
+
+.nav-round.is-dark {
+  background: var(--espresso);
+  color: var(--paper);
+}
+
+.seg.is-dark {
+  background: var(--espresso);
+  color: var(--paper);
+}
+
+.searchbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s2);
+  flex: 0 0 auto;
+  height: 46px;
+  padding: 0 var(--s4);
+  border-radius: var(--r-full);
+  background: var(--bg-grouped);
+  color: var(--clay);
+  font-size: var(--t-subhead);
+}
+
+/* a 10px colour key: Positive / Negative legend, achievement rows */
+.swatch {
+  display: block;
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--r-full);
+}
+
+/* freud bars sit on the mood ramp, not the learning pastels */
+.bar.is-pos {
+  background: var(--sage-deep);
+}
+
+.bar.is-neg {
+  background: var(--ember);
+}
+
+/* the value dot at the foot of each freud bar */
+.bar-dot {
+  display: block;
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-full);
+  background: var(--sage-deep);
+}
+
+.bar-dot.is-neg {
+  background: var(--ember);
+}
+
+/* the range slider under the freud chart: line with two knob handles */
+.timeline {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s2);
+  flex: 0 0 auto;
+}
+
+.timeline-line {
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 2px;
+  border-radius: var(--r-full);
+  background: var(--hairline);
+}
+
+.timeline-knob {
+  display: block;
+  flex: 0 0 auto;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--r-full);
+  background: var(--espresso);
+}
+
+/* one mood face with its day label: Mood History, AI Predictions */
+.face-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* one cell of the Health Journal dot grid */
+.dotcell {
+  display: block;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 13px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.dotcell.is-dim {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+/* a compact chart for dense screens: same vocabulary, shorter columns */
+.chart.is-compact {
+  height: 132px;
+}
+
+/* a smaller score ring for tiles that cannot afford the full 132 */
+.bubble.is-sm {
+  width: 104px;
+  height: 104px;
+}
+
+/* a thumbnail bar sparkline inside a tile: fixed track, percentage bars */
+.minibars {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 3px;
+  height: 56px;
+  flex: 0 0 auto;
+}
+
+.minibar {
+  flex: 1 1 0;
+  min-width: 0;
+  border-radius: var(--r-full);
+  background: rgba(255, 255, 255, 0.55);
+}
