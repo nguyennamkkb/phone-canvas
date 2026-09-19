@@ -36,4 +36,11 @@ export const SCREEN_FILES: ScreenFile[] = [
   { id: 'onboarding-checkin', title: 'Onboarding 2 · Check in', file: 'onboarding-checkin.html' },
   { id: 'onboarding-insights', title: 'Onboarding 3 · Patterns', file: 'onboarding-insights.html' },
   { id: 'onboarding-reminder', title: 'Onboarding 4 · Reminder', file: 'onboarding-reminder.html' },
+  { id: 'home', title: 'Home · Today', file: 'home.html' },
+  { id: 'checkin', title: 'Check in', file: 'checkin.html' },
+  { id: 'insights', title: 'Insights', file: 'insights.html' },
+  { id: 'history', title: 'History', file: 'history.html' },
+  { id: 'journal', title: 'Journal', file: 'journal.html' },
+  { id: 'entry', title: 'Entry', file: 'entry.html' },
+  { id: 'profile', title: 'Profile', file: 'profile.html' },
 ]

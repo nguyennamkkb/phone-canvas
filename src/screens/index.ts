@@ -20,6 +20,13 @@ import onboardingWelcome from './onboarding-welcome.html?raw'
 import onboardingCheckin from './onboarding-checkin.html?raw'
 import onboardingInsights from './onboarding-insights.html?raw'
 import onboardingReminder from './onboarding-reminder.html?raw'
+import home from './home.html?raw'
+import checkin from './checkin.html?raw'
+import insights from './insights.html?raw'
+import history from './history.html?raw'
+import journal from './journal.html?raw'
+import entry from './entry.html?raw'
+import profile from './profile.html?raw'
 
 const RAW: Record<string, string> = {
   splash,
@@ -27,6 +34,13 @@ const RAW: Record<string, string> = {
   'onboarding-checkin': onboardingCheckin,
   'onboarding-insights': onboardingInsights,
   'onboarding-reminder': onboardingReminder,
+  home,
+  checkin,
+  insights,
+  history,
+  journal,
+  entry,
+  profile,
 }
 
 export type ScreenDef = ScreenFile & { html: string }

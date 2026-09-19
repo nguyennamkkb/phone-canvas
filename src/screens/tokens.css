@@ -77,18 +77,20 @@
   --bolt: #facc15;
 
   /* ---- moodtracker palette ---- */
-  --paper: #f6f2ec;
-  --card: #fffdfa;
-  --espresso: #3a2b22;
-  --clay: #8a7d72;
-  --hairline: rgba(58, 43, 34, 0.13);
-  --sage: #a9bc84;
-  --sage-deep: #7f9a5e;
-  --sage-soft: #e6ecda;
-  --ember: #f2824b;
-  --ember-soft: #fbe3d5;
-  --lilac: #b6aeee;
-  --lilac-soft: #e9e6fa;
+  --paper: #f4efe6;
+  --card: #fffdf9;
+  --espresso: #33241c;
+  --clay: #8b7a6b;
+  --hairline: rgba(51, 36, 28, 0.14);
+  --sage: #a8be7c;
+  --sage-deep: #6e8b4a;
+  --sage-soft: #dce7c4;
+  --ember: #f2814b;
+  --ember-soft: #fbdfcb;
+  --lilac: #b3a8f0;
+  --lilac-soft: #e4dffb;
+  --sun: #f2c14e;
+  --sun-soft: #fbedcb;
   --mood-1: #c0574b;
   --mood-2: #e08a63;
   --mood-3: #dcc46a;
@@ -1135,6 +1137,51 @@ figure {
   background: var(--card);
 }
 
+/* Colour is the structure, not the decoration. A hero card is a block of
+   colour that a screen is built around — the way the reference designs use a
+   green card and an orange card side by side instead of two white ones. */
+.hero-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  flex: 0 0 auto;
+  padding: var(--s5);
+  border-radius: 32px;
+  background: var(--sage-soft);
+}
+
+.band {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  flex: 0 0 auto;
+  padding: var(--s4);
+  border-radius: 26px;
+}
+
+.band.is-lilac { background: var(--lilac-soft); }
+.band.is-sun { background: var(--sun-soft); }
+.band.is-ember { background: var(--ember-soft); }
+.band.is-sage { background: var(--sage-soft); }
+
+/* the mood picker: faces big enough to read as faces, ringed when chosen */
+.mood-orb {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 5px;
+  border: 3px solid transparent;
+  border-radius: var(--r-full);
+}
+
+.mood-orb.is-on {
+  border-color: var(--sage-deep);
+  background: var(--card);
+}
+
 /* a section heading written by hand — the app's one editorial gesture */
 .t-hand {
   font-family: var(--font-hand);
@@ -1240,6 +1287,73 @@ figure {
 .mood-dot.is-4 { background: var(--mood-4); }
 .mood-dot.is-5 { background: var(--mood-5); }
 .mood-dot.is-empty { background: transparent; border: 1px dashed var(--hairline); }
+
+/* shape-agnostic mood tints — the same five colours on a dot, a day cell, a bar */
+.fill-1 { background: var(--mood-1); }
+.fill-2 { background: var(--mood-2); }
+.fill-3 { background: var(--mood-3); }
+.fill-4 { background: var(--mood-4); }
+.fill-5 { background: var(--mood-5); }
+
+/* the month grid: seven equal columns, built from rows — never display:grid,
+   and every cell needs min-width: 0 or the columns go unequal */
+.cal-row {
+  display: flex;
+  flex-direction: row;
+  gap: var(--s1);
+}
+
+.cal-cell {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 36px;
+  border-radius: 12px;
+  color: var(--espresso);
+  font-size: var(--t-footnote);
+  font-weight: 600;
+}
+
+.cal-cell.is-quiet {
+  color: var(--clay);
+  font-weight: 400;
+}
+
+.cal-cell.is-today {
+  border: 2px solid var(--espresso);
+}
+
+.cal-head {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  min-width: 0;
+  color: var(--clay);
+  font-size: var(--t-caption);
+  font-weight: 600;
+}
+
+/* the picker: five faces, the chosen one ringed */
+.mood-pick {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 5px;
+  border: 2px solid transparent;
+  border-radius: var(--r-full);
+}
+
+.mood-pick.is-on {
+  border-color: var(--sage);
+}
 
 /* the floating dock */
 .dock {

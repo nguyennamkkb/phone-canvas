@@ -1,20 +1,30 @@
 <div class="screen app-mood">
-  <div class="body-fixed" style="align-items: center">
+  <div class="body-fixed" style="align-items: center; padding: 0 var(--s6)">
     <div class="spacer"></div>
 
-    <img class="art" src="/images/mood-mark.svg" data-asset="MoodMark" width="128" height="128" alt="Moodtracker" />
+    <div class="col" style="align-items: center; gap: var(--s5)">
+      <img class="art" src="/images/mascot-happy.svg" data-asset="MascotHappy" width="196" height="203" alt="Moodtracker" />
 
-    <div class="col" style="align-items: center; gap: var(--s2); padding-top: var(--s5)">
-      <div style="font-size: 30px; font-weight: 700; line-height: 36px; letter-spacing: -0.8px">
-        Moodtracker
+      <div class="col" style="align-items: center; gap: var(--s2)">
+        <div class="t-hand" style="font-size: 42px; line-height: 50px">Moodtracker</div>
+        <p class="t-subhead" style="color: var(--clay); text-align: center">
+          A few taps a day. No streaks to break.
+        </p>
       </div>
-      <div class="t-hand" style="font-size: 19px; color: var(--clay)">how are you, really?</div>
     </div>
 
     <div class="spacer"></div>
 
-    <div class="t-footnote" style="color: var(--clay); padding-bottom: var(--s8)">
-      A few taps a day. No streaks to break.
+    <div class="band is-sage" style="width: 100%; margin-bottom: var(--s6)">
+      <div class="row" style="gap: var(--s3)">
+        <span class="chip-icon" style="background: var(--card)">
+          <span class="icon icon-sm" data-symbol="sparkles"></span>
+        </span>
+        <div class="grow col" style="gap: 1px">
+          <div class="t-footnote" style="color: var(--clay)">Coming up</div>
+          <div class="t-subhead">Your first check-in takes ten seconds</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
