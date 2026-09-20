@@ -49,7 +49,7 @@ export function Board({
   onBack,
   onTogglePanel,
 }: BoardProps) {
-  const { mode, frameStyle, panelVisible } = useBoardSettings()
+  const { mode, frameStyle, panelVisible, tokenTheme, onTokenThemeChange } = useBoardSettings()
   const { fitView } = useReactFlow()
   const nodesInitialized = useNodesInitialized()
   const didFit = useRef(false)
@@ -147,6 +147,23 @@ export function Board({
             onClick={() => onFrameStyleChange('device')}
           >
             Khung máy
+          </button>
+        </div>
+
+        <div className="segmented" title="Chế độ màu của cả board (sáng/tối theo project tokens.css)">
+          <button
+            type="button"
+            className={tokenTheme === 'light' ? 'is-on' : ''}
+            onClick={() => onTokenThemeChange?.('light')}
+          >
+            Sáng
+          </button>
+          <button
+            type="button"
+            className={tokenTheme === 'dark' ? 'is-on' : ''}
+            onClick={() => onTokenThemeChange?.('dark')}
+          >
+            Tối
           </button>
         </div>
 

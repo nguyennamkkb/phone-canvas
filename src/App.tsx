@@ -7,6 +7,7 @@ import type { CanvasMode, FrameStyle } from './canvas/BoardContext'
 import type { PhoneNodeData } from './canvas/PhoneNode'
 import type { PhoneFlowNode } from './canvas/PhoneNode'
 import type { BoardNode } from './canvas/TokenNode'
+import { useTokenTheme } from './tokens/store'
 import { DEFAULT_DEVICE_ID, getDevice } from './frame/devices'
 import { InspectorProvider, useInspector } from './inspect/InspectorContext'
 import { SpecPanel } from './inspect/SpecPanel'
@@ -122,6 +123,7 @@ function BoardView({
 }) {
   const [mode, setMode] = useState<CanvasMode>('move')
   const [frameStyle, setFrameStyle] = useState<FrameStyle>('plain')
+  const [tokenTheme, setTokenTheme] = useTokenTheme(project.id)
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null)
 
   const opening = useMemo(() => {
@@ -187,8 +189,16 @@ function BoardView({
   }, [selectedNodeId, onDeleteNode])
 
   const boardSettings = useMemo(
-    () => ({ mode, frameStyle, activeNodeId: selectedNodeId, panelVisible, onDeleteNode }),
-    [mode, frameStyle, selectedNodeId, panelVisible, onDeleteNode],
+    () => ({
+      mode,
+      frameStyle,
+      activeNodeId: selectedNodeId,
+      panelVisible,
+      onDeleteNode,
+      tokenTheme,
+      onTokenThemeChange: setTokenTheme,
+    }),
+    [mode, frameStyle, selectedNodeId, panelVisible, onDeleteNode, tokenTheme, setTokenTheme],
   )
 
   const onConnect = useCallback(

@@ -26,6 +26,8 @@ export type BuildOptions = {
   projectId?: string
   /** color mode — sets data-theme on <html> */
   theme?: 'light' | 'dark'
+  /** v2 draft overrides, layered last so they preview over everything */
+  extraCss?: string | null
 }
 
 /** project override stylesheets, in load order after the shared ones */
@@ -46,6 +48,9 @@ const PROJECT_CSS: Record<string, string> = {
  */
 export function buildSrcDoc(options: BuildOptions): string {
   const projectCss = (options.projectId && PROJECT_CSS[options.projectId]) || null
+  const stylesheets = [tokensCss, iconsCss, iconSetCss]
+  if (projectCss) stylesheets.push(projectCss)
+  if (options.extraCss) stylesheets.push(options.extraCss)
   return composeScreenDoc({
     html: options.html,
     device: options.device,
@@ -53,9 +58,7 @@ export function buildSrcDoc(options: BuildOptions): string {
     token: options.token,
     lightStatusBar: options.lightStatusBar,
     theme: options.theme,
-    stylesheets: projectCss
-      ? [tokensCss, iconsCss, iconSetCss, projectCss]
-      : [tokensCss, iconsCss, iconSetCss],
+    stylesheets,
     bridgeJs,
   })
 }

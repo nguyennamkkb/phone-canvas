@@ -45,6 +45,7 @@ type Options = {
   screens: string[]
   devices: string[]
   projects: string[]
+  themes: string[]
   scale: number
   out: string
 }
@@ -55,6 +56,7 @@ Export phone screens to PNG.
   --screen <id>    screen to export, repeatable, or "all"   (default: all)
   --project <id>   project to export (union with --screen), repeatable
   --device <id>    device to render at, repeatable, or "all" (default: reference)
+  --theme <mode>   light, dark, or all, repeatable            (default: light)
   --scale <n>      pixel density multiplier                  (default: 2)
   --out <dir>      output directory                          (default: exports)
   --list           print available screens and devices, then exit
@@ -67,10 +69,11 @@ Examples
 `.trim()
 
 function parseArgs(argv: string[]): Options {
-  const options: Options = { screens: ['all'], devices: ['reference'], projects: [], scale: 2, out: 'exports' }
+  const options: Options = { screens: ['all'], devices: ['reference'], projects: [], themes: ['light'], scale: 2, out: 'exports' }
   const screens: string[] = []
   const devices: string[] = []
   const projects: string[] = []
+  const themes: string[] = []
 
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]
@@ -97,6 +100,9 @@ function parseArgs(argv: string[]): Options {
       case '--device':
         devices.push(next())
         break
+      case '--theme':
+        themes.push(next())
+        break
       case '--scale': {
         const scale = Number(next())
         if (!Number.isFinite(scale) || scale <= 0) throw new Error('--scale must be a positive number')
@@ -113,6 +119,7 @@ function parseArgs(argv: string[]): Options {
 
   options.screens = screens.length ? screens : ['all']
   options.devices = devices.length ? devices : ['reference']
+  options.themes = themes.length ? themes : ['light']
   options.projects = projects
   return options
 }
@@ -470,12 +477,16 @@ async function main(): Promise<void> {
   const devices = options.devices.includes('all')
     ? DEVICES.map((device) => device.id)
     : options.devices
+  const themes = options.themes.includes('all') ? ['light', 'dark'] : options.themes
 
   for (const id of screens) {
     if (!allScreens.includes(id)) fail(`unknown screen "${id}". Try --list`)
   }
   for (const id of devices) {
     if (!DEVICES.some((device) => device.id === id)) fail(`unknown device "${id}". Try --list`)
+  }
+  for (const id of themes) {
+    if (id !== 'light' && id !== 'dark') fail(`unknown theme "${id}". Try --list`)
   }
 
   const sharedStyles = await Promise.all(
@@ -503,16 +514,19 @@ async function main(): Promise<void> {
     for (const deviceId of devices) {
       const device = getDevice(deviceId)
       // no bridge: an export carries no measurement scaffolding
-      documents.set(
-        `${screenId}--${deviceId}`,
-        composeScreenDoc({
-          html,
-          device,
-          stylesheets,
-          bridgeJs: null,
-          lightStatusBar: screen.lightStatusBar,
-        }),
-      )
+      for (const theme of themes) {
+        documents.set(
+          `${screenId}--${deviceId}--${theme}`,
+          composeScreenDoc({
+            html,
+            device,
+            stylesheets,
+            bridgeJs: null,
+            lightStatusBar: screen.lightStatusBar,
+            theme: theme as 'light' | 'dark',
+          }),
+        )
+      }
     }
   }
 
@@ -523,19 +537,22 @@ async function main(): Promise<void> {
     for (const screenId of screens) {
       for (const deviceId of devices) {
         const device = getDevice(deviceId)
-        const url = `${site.origin}/screen/${screenId}--${deviceId}`
-        const png = await renderPng(browser.cdp, url, device.width, device.height, options.scale)
+        for (const theme of themes) {
+          const url = `${site.origin}/screen/${screenId}--${deviceId}--${theme}`
+          const png = await renderPng(browser.cdp, url, device.width, device.height, options.scale)
 
-        const suffix = devices.length > 1 ? `-${device.id}` : ''
-        const file = path.join(outDir, `${screenId}${suffix}@${options.scale}x.png`)
-        await writeFile(file, png)
-        written++
-        // PNG IHDR: width at byte 16, height at byte 20, big-endian
-        const pngWidth = png.readUInt32BE(16)
-        const pngHeight = png.readUInt32BE(20)
-        console.log(
-          `${display(file)}  ${pngWidth}×${pngHeight}  ${(png.length / 1024).toFixed(0)} KB`,
-        )
+          const devSuffix = devices.length > 1 ? `-${deviceId}` : ''
+          const themeSuffix = theme === 'dark' ? '-dark' : ''
+          const file = path.join(outDir, `${screenId}${devSuffix}${themeSuffix}@${options.scale}x.png`)
+          await writeFile(file, png)
+          written++
+          // PNG IHDR: width at byte 16, height at byte 20, big-endian
+          const pngWidth = png.readUInt32BE(16)
+          const pngHeight = png.readUInt32BE(20)
+          console.log(
+            `${display(file)}  ${pngWidth}×${pngHeight}  ${(png.length / 1024).toFixed(0)} KB`,
+          )
+        }
       }
     }
   } finally {

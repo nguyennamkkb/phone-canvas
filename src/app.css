@@ -1109,3 +1109,123 @@ input:focus-visible {
   border: 2px solid transparent;
   background-clip: content-box;
 }
+
+/* v2/v3 token table: editing, audit, diff. Board chrome, never measured. */
+
+.token-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+.token-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid #e4e4e7;
+  border-radius: 999px;
+  background: #f4f4f5;
+  color: #27272a;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.token-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.token-btn.is-danger {
+  background: transparent;
+  color: #c8452b;
+  border-color: #f0c9bf;
+}
+
+.token-btn.is-mini {
+  height: 22px;
+  padding: 0 8px;
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.token-section.is-warn h4 {
+  color: #c8452b;
+}
+
+.token-section.is-warn .token-name {
+  color: #c8452b;
+}
+
+.token-row.is-unused .token-name,
+.token-cell.is-unused .token-name {
+  opacity: 0.45;
+}
+
+.token-row.is-draft .token-name,
+.token-cell.is-draft .token-name {
+  font-weight: 700;
+}
+
+.token-row.is-draft .token-swatch,
+.token-cell.is-draft .token-input {
+  outline: 2px solid #f2c81c;
+  outline-offset: 1px;
+}
+
+.token-swatch {
+  position: relative;
+  overflow: hidden;
+}
+
+.token-picker {
+  position: absolute;
+  inset: -4px;
+  width: calc(100% + 8px);
+  height: calc(100% + 8px);
+  opacity: 0;
+  cursor: pointer;
+  padding: 0;
+  border: 0;
+}
+
+.token-x {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: #f2c81c;
+  color: #27272a;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.token-input {
+  margin-left: auto;
+  flex: 0 0 auto;
+  width: 76px;
+  padding: 1px 6px;
+  border: 1px solid #e4e4e7;
+  border-radius: 6px;
+  background: #fafafa;
+  color: #27272a;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  text-align: right;
+}
+
+.token-input:focus {
+  outline: 2px solid #007aff;
+  outline-offset: 0;
+  background: #ffffff;
+}

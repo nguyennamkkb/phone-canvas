@@ -87,6 +87,21 @@ export function tokensOf(projectId: string): Token[] {
   })
 }
 
+/** follow var(--x) chains to the final value (cycle-safe, 10 hops max) */
+export function resolveRef(value: string, vars: Map<string, string>): string {
+  let v = value
+  const seen = new Set<string>()
+  for (let i = 0; i < 10; i++) {
+    const m = /var\(\s*(--[a-z0-9-]+)\s*\)/.exec(v)
+    if (!m?.[1] || seen.has(m[1])) return v
+    seen.add(m[1])
+    const next = vars.get(m[1])
+    if (!next) return v
+    v = next
+  }
+  return v
+}
+
 /* ------------------------------------------------- color matching (panel) -- */
 
 /**

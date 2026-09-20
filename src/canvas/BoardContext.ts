@@ -1,4 +1,5 @@
 import { createContext, useContext } from 'react'
+import type { ThemeMode } from '../tokens/tokens'
 
 /**
  * `move`    — iframes are inert; drag/pan the board like any canvas.
@@ -30,6 +31,10 @@ export type BoardSettings = {
   panelVisible: boolean
   /** remove a screen instance from the board (null outside a board) */
   onDeleteNode: ((id: string) => void) | null
+  /** board color mode — flips every screen iframe via data-theme (v3) */
+  tokenTheme: ThemeMode
+  /** null outside a board */
+  onTokenThemeChange: ((mode: ThemeMode) => void) | null
 }
 
 export const BoardContext = createContext<BoardSettings>({
@@ -38,6 +43,8 @@ export const BoardContext = createContext<BoardSettings>({
   activeNodeId: null,
   panelVisible: true,
   onDeleteNode: null,
+  tokenTheme: 'light',
+  onTokenThemeChange: null,
 })
 
 export function useBoardSettings(): BoardSettings {

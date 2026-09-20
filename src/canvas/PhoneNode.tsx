@@ -4,6 +4,7 @@ import { getDevice } from '../frame/devices'
 import { buildSrcDoc } from '../extractor/buildSrcDoc'
 import { SCREEN_BY_ID } from '../screens'
 import { projectOfScreen } from '../projects/projects'
+import { draftCss, useTokenDraft } from '../tokens/store'
 import { useBoardSettings } from './BoardContext'
 import { useInspector } from '../inspect/InspectorContext'
 
@@ -18,7 +19,7 @@ const PLAIN_RADIUS = 16
 
 function PhoneNodeInner({ id, data }: NodeProps) {
   const d = data as unknown as PhoneNodeData
-  const { mode, frameStyle, activeNodeId, onDeleteNode } = useBoardSettings()
+  const { mode, frameStyle, activeNodeId, onDeleteNode, tokenTheme } = useBoardSettings()
   const { registerFrame, sizes } = useInspector()
   const frameRef = useRef<HTMLIFrameElement>(null)
   // stable per node instance: the parent uses it to route messages reliably
@@ -34,6 +35,8 @@ function PhoneNodeInner({ id, data }: NodeProps) {
   const contentH = sizes[id] ?? device.height
 
   const projectId = screen ? (projectOfScreen(screen.id)?.id ?? undefined) : undefined
+  const [draft] = useTokenDraft(projectId ?? '')
+  const extraCss = useMemo(() => draftCss(draft), [draft])
 
   const srcDoc = useMemo(
     () =>
@@ -45,9 +48,11 @@ function PhoneNodeInner({ id, data }: NodeProps) {
             token,
             lightStatusBar: screen.lightStatusBar,
             projectId,
+            theme: tokenTheme,
+            extraCss,
           })
         : '<!doctype html><p style="font:14px system-ui;padding:24px">Screen not found</p>',
-    [screen, device, id, token, projectId],
+    [screen, device, id, token, projectId, tokenTheme, extraCss],
   )
 
   useEffect(() => {

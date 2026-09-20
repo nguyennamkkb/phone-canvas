@@ -1,4 +1,5 @@
 import { useInspector } from './InspectorContext'
+import { useBoardSettings } from '../canvas/BoardContext'
 import type { PhoneNodeData } from '../canvas/PhoneNode'
 import type { BoardNode } from '../canvas/TokenNode'
 import { projectOfScreen } from '../projects/projects'
@@ -194,12 +195,13 @@ function Detail({ node, lookup }: { node: SpecNode; lookup: (raw: string) => str
 
 export function SpecPanel({ nodes, selectedNodeId, onPatchNode, onDeleteNode }: SpecPanelProps) {
   const { specs, selection, select, selected } = useInspector()
+  const { tokenTheme } = useBoardSettings()
 
   const found = nodes.find((n) => n.id === selectedNodeId) ?? null
   // the token table is reference, never a spec target
   const node = found && found.type === 'phone' ? found : null
   const projectId = node ? (projectOfScreen(node.data.screenId)?.id ?? '') : ''
-  const lookup = (raw: string) => tokenNameForColor(projectId, raw)
+  const lookup = (raw: string) => tokenNameForColor(projectId, raw, tokenTheme)
   const specList = node ? (specs[node.id] ?? []) : []
 
   const hasSpec = specList.length > 0
