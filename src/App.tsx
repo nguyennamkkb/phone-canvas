@@ -160,6 +160,8 @@ function BoardView({
     (id: string) => {
       const target = nodes.find((n) => n.id === id)
       if (!target || target.type !== 'phone') return
+      const title = SCREEN_BY_ID.get(target.data.screenId)?.title ?? target.data.screenId
+      if (!window.confirm(`Xóa màn hình "${title}" khỏi board? File html giữ nguyên.`)) return
       const screenId = target.data.screenId
       setNodes((ns) => ns.filter((n) => n.id !== id))
       setEdges((es) => es.filter((e) => e.source !== id && e.target !== id))

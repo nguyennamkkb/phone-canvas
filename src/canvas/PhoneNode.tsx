@@ -24,6 +24,8 @@ function PhoneNodeInner({ id, data }: NodeProps) {
   const frameRef = useRef<HTMLIFrameElement>(null)
   // stable per node instance: the parent uses it to route messages reliably
   const [token] = useState(() => `t${Math.random().toString(36).slice(2, 10)}`)
+  // transient copy feedback for the screen id chip
+  const [copiedId, setCopiedId] = useState(false)
 
   const selected = activeNodeId === id
 
@@ -68,6 +70,21 @@ function PhoneNodeInner({ id, data }: NodeProps) {
     <div className="phone-node">
       <div className="phone-label">
         <span className="phone-label-title">{screen?.title ?? d.screenId}</span>
+        <button
+          type="button"
+          className="phone-id"
+          title={screen ? `${projectId ?? '?'}/${screen.id} · ${screen.file} (click để chép id)` : 'click để chép id'}
+          onClick={(e) => {
+            e.stopPropagation()
+            const ref = projectId ? `${projectId}/${d.screenId}` : d.screenId
+            void navigator.clipboard.writeText(ref).then(() => {
+              setCopiedId(true)
+              window.setTimeout(() => setCopiedId(false), 1200)
+            })
+          }}
+        >
+          {copiedId ? 'Đã chép' : `#${projectId ? `${projectId}/` : ''}${d.screenId}`}
+        </button>
         <span className="phone-label-size">
           {device.width} × {Math.round(contentH)}
         </span>
