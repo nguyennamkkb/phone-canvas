@@ -1,4 +1,4 @@
-import { toRgba, tokensOf } from './tokens'
+import { projectTokensOf, toRgba } from './tokens'
 
 /**
  * v2 SwiftUI handoff: the project's tokens as a Color/CGFloat extension.
@@ -30,7 +30,7 @@ function pxNumber(value: string): number | null {
 }
 
 export function swiftUITokens(projectId: string, title: string): string {
-  const tokens = tokensOf(projectId)
+  const tokens = projectTokensOf(projectId)
   const lines: string[] = [
     'import SwiftUI',
     '',

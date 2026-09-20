@@ -1,6 +1,6 @@
 import { memo, useMemo, useState } from 'react'
 import type { Node, NodeProps } from '@xyflow/react'
-import { resolveRef, toRgba, tokensOf } from '../tokens/tokens'
+import { projectTokensOf, toRgba } from '../tokens/tokens'
 import type { ThemeMode, Token, TokenGroup } from '../tokens/tokens'
 import { draftSize, promoteCss, useTokenDraft } from '../tokens/store'
 import { usageOf } from '../tokens/usage'
@@ -17,6 +17,12 @@ export type TokenFlowNode = Node<TokenNodeData, 'token'>
 
 /** everything that can sit on a project board */
 export type BoardNode = PhoneFlowNode | TokenFlowNode
+
+const PROJECT_ACCENT: Record<string, string> = {
+  'mood-core': '#7c9448',
+  freud: '#f47f42',
+  onboarding: '#9d8ff0',
+}
 
 const GROUPS: Array<{ id: TokenGroup; title: string }> = [
   { id: 'color', title: 'Màu · sáng / tối' },
@@ -91,7 +97,7 @@ function ColorRow({
         title="Click để chép mã màu"
         onClick={() => onCopy(theme === 'dark' ? dark : light)}
       >
-        {copied ? 'Đã chép ✓' : theme === 'dark' ? dark : light}
+        {copied ? 'Đã chép' : theme === 'dark' ? dark : light}
       </button>
     </div>
   )
@@ -145,34 +151,13 @@ function TokenNodeInner({ data }: NodeProps) {
   const [copied, setCopied] = useState<string | null>(null)
   const [copiedVal, setCopiedVal] = useState<string | null>(null)
 
-  const tokens = useMemo(() => tokensOf(d.projectId), [d.projectId])
-  const global = useMemo(() => tokensOf(''), [])
+  const tokens = useMemo(() => projectTokensOf(d.projectId), [d.projectId])
   const { used, undefinedVars } = useMemo(() => usageOf(d.projectId), [d.projectId])
   const useByName = useMemo(() => {
     const m = new Map<string, { count: number; screens: number }>()
     for (const u of used) m.set(u.name, { count: u.count, screens: u.screens.length })
     return m
   }, [used])
-
-  const globalByName = useMemo(() => new Map(global.map((t) => [t.name, t])), [global])
-
-  // v3 diff: project values that differ from (or are absent in) global.
-  // Compared RESOLVED (var(--paper) vs #faf8f5 is not a diff), so the list
-  // only holds real divergence: project-only names and true value changes.
-  // Each row records which mode differs so the tooltip says the true thing.
-  const diffs = useMemo(() => {
-    const gL = new Map(global.map((t) => [t.name, t.light]))
-    const gD = new Map(global.map((t) => [t.name, t.dark]))
-    const pL = new Map(tokens.map((t) => [t.name, t.light]))
-    const pD = new Map(tokens.map((t) => [t.name, t.dark]))
-    return tokens.flatMap((t) => {
-      const base = globalByName.get(t.name)
-      if (!base) return [{ token: t, base: null as Token | null, lightDiff: true, darkDiff: true }]
-      const lightDiff = resolveRef(t.light, pL) !== resolveRef(base.light, gL)
-      const darkDiff = resolveRef(t.dark, pD) !== resolveRef(base.dark, gD)
-      return lightDiff || darkDiff ? [{ token: t, base, lightDiff, darkDiff }] : []
-    })
-  }, [tokens, global, globalByName])
 
   const eff = (t: Token, mode: ThemeMode): string =>
     draft.values[t.name]?.[mode] ?? (mode === 'dark' ? t.dark : t.light)
@@ -197,14 +182,21 @@ function TokenNodeInner({ data }: NodeProps) {
 
   return (
     <div className="token-node">
-      <div className="token-label">
-        <span className="token-label-title">Design tokens · {d.title}</span>
-        <span className="token-label-size">
-          {tokens.length} biến{nDraft > 0 ? ` · ${nDraft} nháp` : ''}
-        </span>
-      </div>
+      <div
+        className="token-frame nodrag"
+        style={{ ['--frame-accent' as string]: PROJECT_ACCENT[d.projectId] ?? '#007aff' }}
+      >
+        <div className="token-accent" />
+        <header className="token-head">
+          <span className="token-dot" />
+          <span className="token-head-text">
+            <span className="token-title">{d.title}</span>
+            <span className="token-sub">
+              Design tokens · {tokens.length} biến{nDraft > 0 ? ` · ${nDraft} nháp` : ''}
+            </span>
+          </span>
+        </header>
 
-      <div className="token-card nodrag">
         <div className="token-actions">
           <button
             type="button"
@@ -235,8 +227,11 @@ function TokenNodeInner({ data }: NodeProps) {
         </div>
 
         {undefinedVars.length > 0 && (
-          <div className="token-section is-warn">
-            <h4>Chưa định nghĩa ({undefinedVars.length})</h4>
+          <details className="token-section is-warn" open>
+            <summary>
+              <span>Chưa định nghĩa</span>
+              <span className="token-count">{undefinedVars.length}</span>
+            </summary>
             {undefinedVars.map((u) => (
               <div className="token-row" key={u.name} title={`dùng ở: ${u.screens.join(', ')}`}>
                 <code className="token-name">{u.name}</code>
@@ -245,58 +240,18 @@ function TokenNodeInner({ data }: NodeProps) {
                 </span>
               </div>
             ))}
-          </div>
-        )}
-
-        {diffs.length > 0 && (
-          <div className="token-section">
-            <h4>Khác global ({diffs.length})</h4>
-            {diffs.map(({ token: t, base, lightDiff, darkDiff }) => {
-              const parts: string[] = []
-              if (base && lightDiff) parts.push(`sáng: ${base.light} → ${t.light}`)
-              if (base && darkDiff) parts.push(`tối: ${base.dark} → ${t.dark}`)
-              return (
-                <div
-                  className="token-row"
-                  key={t.name}
-                  title={
-                    base
-                      ? parts.join('\n')
-                      : 'chỉ project này có (không hoàn nguyên được)'
-                  }
-                >
-                  <span
-                    className="token-swatch"
-                    style={{ background: `linear-gradient(90deg, ${t.light} 50%, ${t.dark} 50%)` }}
-                  />
-                  <code className="token-name">{t.name}</code>
-                  {base && (
-                    <button
-                      type="button"
-                      className="token-btn is-mini"
-                      title={`Hoàn nguyên về global (${base.light}) — xem trước dưới dạng nháp`}
-                      onClick={() => {
-                        setDraft(t.name, 'light', base.light)
-                        setDraft(t.name, 'dark', base.dark)
-                      }}
-                    >
-                      hoàn nguyên
-                    </button>
-                  )}
-                </div>
-              )
-            })}
-          </div>
+          </details>
         )}
 
         {GROUPS.map((g) => {
           const list = tokens.filter((t) => t.group === g.id)
           if (list.length === 0) return null
           return (
-            <div className="token-section" key={g.id}>
-              <h4>
-                {g.title} ({list.length})
-              </h4>
+            <details className="token-section" key={g.id} open={g.id === 'color'}>
+              <summary>
+                <span>{g.title}</span>
+                <span className="token-count">{list.length}</span>
+              </summary>
               {g.id === 'color' ? (
                 <div className="token-colors">
                   {list.map((t) => (
@@ -331,7 +286,7 @@ function TokenNodeInner({ data }: NodeProps) {
                   ))}
                 </div>
               )}
-            </div>
+            </details>
           )
         })}
       </div>

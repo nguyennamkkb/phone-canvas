@@ -46,12 +46,15 @@ function parseVars(css: string): Array<[string, string]> {
   return out
 }
 
-/** split a project/global file into light vars + dark-override vars */
+/** split a project/global file into light vars + dark-override vars.
+ *  Files keep :root first, then one :root[data-theme='dark'] block closed
+ *  by a `}` on its own line — the match stops there so later blocks
+ *  (shared scales) stay in light. */
 function splitModes(css: string): { light: Array<[string, string]>; dark: Array<[string, string]> } {
   const clean = stripComments(css)
-  const darkMatch = /:root\[data-theme=['"]dark['"]\]\s*\{([\s\S]*)\}\s*$/.exec(clean)
+  const darkMatch = /:root\[data-theme=['"]dark['"]\]\s*\{([\s\S]*?)^\}/m.exec(clean)
   const darkSrc = darkMatch?.[1] ?? ''
-  const lightSrc = darkMatch ? clean.slice(0, darkMatch.index) : clean
+  const lightSrc = darkMatch ? clean.replace(darkMatch[0], '') : clean
   return { light: parseVars(lightSrc), dark: parseVars(darkSrc) }
 }
 
@@ -87,19 +90,17 @@ export function tokensOf(projectId: string): Token[] {
   })
 }
 
-/** follow var(--x) chains to the final value (cycle-safe, 10 hops max) */
-export function resolveRef(value: string, vars: Map<string, string>): string {
-  let v = value
-  const seen = new Set<string>()
-  for (let i = 0; i < 10; i++) {
-    const m = /var\(\s*(--[a-z0-9-]+)\s*\)/.exec(v)
-    if (!m?.[1] || seen.has(m[1])) return v
-    seen.add(m[1])
-    const next = vars.get(m[1])
-    if (!next) return v
-    v = next
-  }
-  return v
+/** project-file tokens only — the app's own system, no global fallback.
+ *  Unknown ids (custom boards) resolve to []. Spec/lookup still uses the
+ *  merged tokensOf(); this is purely what the board table displays. */
+export function projectTokensOf(projectId: string): Token[] {
+  const project = splitModes(PROJECT_CSS[projectId] ?? '')
+  const light = new Map(project.light)
+  const dark = new Map(project.dark)
+  return [...light.keys()].map((name) => {
+    const l = light.get(name) ?? ''
+    return { name, group: groupOf(name, l), light: l, dark: dark.get(name) ?? l }
+  })
 }
 
 /* ------------------------------------------------- color matching (panel) -- */
