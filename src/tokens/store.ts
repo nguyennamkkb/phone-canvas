@@ -16,6 +16,8 @@ export type TokenDraft = { values: DraftValues }
 
 const DRAFT_PREFIX = 'pc.tokens.draft.'
 const THEME_PREFIX = 'pc.tokens.theme.'
+const UI_THEME_KEY = 'pc.ui.theme'
+const UI_EVENT = 'pc:ui-theme'
 const EVENT = 'pc:tokens'
 
 const EMPTY: TokenDraft = { values: {} }
@@ -99,6 +101,43 @@ export function useTokenDraft(projectId: string): [TokenDraft, (name: string, mo
 export function loadTheme(projectId: string): ThemeMode {
   if (!projectId) return 'light'
   return read<ThemeMode>(THEME_PREFIX + projectId, 'light') === 'dark' ? 'dark' : 'light'
+}
+
+/**
+ * App-chrome theme toàn cục (5.1): toolbar/panel/dashboard/dock theo board.
+ * Board toggle ghi cả per-project (iframe) lẫn key này (chrome + dashboard).
+ */
+export function loadUiTheme(): ThemeMode {
+  try {
+    return localStorage.getItem(UI_THEME_KEY) === 'dark' ? 'dark' : 'light'
+  } catch {
+    return 'light'
+  }
+}
+
+export function useUiTheme(): [ThemeMode, (mode: ThemeMode) => void] {
+  const [theme, setTheme] = useState<ThemeMode>(() => loadUiTheme())
+
+  useEffect(() => {
+    const onEvent = (e: Event) => {
+      const next = (e as CustomEvent).detail as ThemeMode
+      setTheme(next === 'dark' ? 'dark' : 'light')
+    }
+    window.addEventListener(UI_EVENT, onEvent)
+    return () => window.removeEventListener(UI_EVENT, onEvent)
+  }, [])
+
+  const set = useCallback((mode: ThemeMode) => {
+    try {
+      localStorage.setItem(UI_THEME_KEY, mode)
+    } catch {
+      /* ignore */
+    }
+    setTheme(mode)
+    window.dispatchEvent(new CustomEvent(UI_EVENT, { detail: mode }))
+  }, [])
+
+  return [theme, set]
 }
 
 export function useTokenTheme(projectId: string): [ThemeMode, (mode: ThemeMode) => void] {

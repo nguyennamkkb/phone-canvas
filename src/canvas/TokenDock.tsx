@@ -1,28 +1,19 @@
-import { memo, useMemo, useState } from 'react'
-import type { Node, NodeProps } from '@xyflow/react'
+import { useMemo, useState } from 'react'
 import { projectTokensOf } from '../tokens/tokens'
 import type { ThemeMode, Token, TokenGroup } from '../tokens/tokens'
 import { draftSize, useTokenDraft } from '../tokens/store'
 import { usageOf } from '../tokens/usage'
 import { useBoardSettings } from './BoardContext'
-import type { PhoneFlowNode } from './PhoneNode'
 import { TokenColorRow } from './token-table/TokenColorRow'
 import { TokenSizeCell } from './token-table/TokenSizeCell'
 import { TokenDraftActions } from './token-table/TokenDraftActions'
 
-export type TokenNodeData = {
+export type TokenDockProps = {
   projectId: string
   title: string
+  collapsed: boolean
+  onToggle: () => void
 }
-
-export type TokenFlowNode = Node<TokenNodeData, 'token'>
-
-/**
- * Mọi node trên board hiện tại đều là phone (2.1) — token-table đã rời
- * canvas thành dock trái. TokenFlowNode giữ lại cho migration: board cũ
- * trong localStorage vẫn có thể chứa nó, BoardView lọc bỏ im lặng.
- */
-export type BoardNode = PhoneFlowNode
 
 const PROJECT_ACCENT: Record<string, string> = {
   'mood-core': '#7c9448',
@@ -37,14 +28,17 @@ const GROUPS: Array<{ id: TokenGroup; title: string }> = [
   { id: 'type', title: 'Chữ' },
 ]
 
-function TokenNodeInner({ data }: NodeProps) {
-  const d = data as unknown as TokenNodeData
+/**
+ * Token-dock trái (2.1) — cùng `token-table/` như TokenNode cũ, nhưng render
+ * ngoài canvas nên không lọt vào fit-view/minimap và không bị kéo lạc.
+ */
+export function TokenDock({ projectId, title, collapsed, onToggle }: TokenDockProps) {
   const { tokenTheme } = useBoardSettings()
-  const [draft, setDraft, clearDraft] = useTokenDraft(d.projectId)
+  const [draft, setDraft, clearDraft] = useTokenDraft(projectId)
   const [copiedVal, setCopiedVal] = useState<string | null>(null)
 
-  const tokens = useMemo(() => projectTokensOf(d.projectId), [d.projectId])
-  const { used, undefinedVars } = useMemo(() => usageOf(d.projectId), [d.projectId])
+  const tokens = useMemo(() => projectTokensOf(projectId), [projectId])
+  const { used, undefinedVars } = useMemo(() => usageOf(projectId), [projectId])
   const useByName = useMemo(() => {
     const m = new Map<string, { count: number; screens: number }>()
     for (const u of used) m.set(u.name, { count: u.count, screens: u.screens.length })
@@ -63,26 +57,54 @@ function TokenNodeInner({ data }: NodeProps) {
 
   const nDraft = draftSize(draft)
 
+  if (collapsed) {
+    return (
+      <aside className="token-dock is-collapsed" aria-label="Design tokens (đang thu gọn)">
+        <button
+          type="button"
+          className="token-dock-expand"
+          onClick={onToggle}
+          title="Hiện bảng tokens"
+          aria-label="Hiện bảng tokens"
+        >
+          ◈
+        </button>
+        <span className="token-dock-vertical" title={`${tokens.length} biến${nDraft > 0 ? ` · ${nDraft} nháp` : ''}`}>
+          Tokens
+        </span>
+      </aside>
+    )
+  }
+
   return (
-    <div className="token-node">
+    <aside className="token-dock" aria-label={`Design tokens · ${title}`}>
       <div
-        className="token-frame nodrag"
-        style={{ ['--frame-accent' as string]: PROJECT_ACCENT[d.projectId] ?? '#007aff' }}
+        className="token-frame token-dock-frame"
+        style={{ ['--frame-accent' as string]: PROJECT_ACCENT[projectId] ?? '#007aff' }}
       >
         <div className="token-accent" />
         <header className="token-head">
           <span className="token-dot" />
           <span className="token-head-text">
-            <span className="token-title">{d.title}</span>
+            <span className="token-title">{title}</span>
             <span className="token-sub">
               Design tokens · {tokens.length} biến{nDraft > 0 ? ` · ${nDraft} nháp` : ''}
             </span>
           </span>
+          <button
+            type="button"
+            className="token-dock-collapse"
+            onClick={onToggle}
+            title="Thu gọn bảng tokens"
+            aria-label="Thu gọn bảng tokens"
+          >
+            «
+          </button>
         </header>
 
         <TokenDraftActions
-          projectId={d.projectId}
-          projectTitle={d.title}
+          projectId={projectId}
+          projectTitle={title}
           draft={draft}
           onClear={clearDraft}
         />
@@ -151,8 +173,6 @@ function TokenNodeInner({ data }: NodeProps) {
           )
         })}
       </div>
-    </div>
+    </aside>
   )
 }
-
-export const TokenNode = memo(TokenNodeInner)

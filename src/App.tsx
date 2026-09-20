@@ -4,6 +4,7 @@ import { Dashboard } from './projects/Dashboard'
 import { ErrorBoundary } from './shell/ErrorBoundary'
 import { useHashRoute } from './shell/useHashRoute'
 import { InspectorProvider } from './inspect/InspectorContext'
+import { useUiTheme } from './tokens/store'
 import type { Project } from './projects/projects'
 import {
   allProjects,
@@ -31,6 +32,8 @@ export function App() {
   const [custom, setCustom] = useState<Project[]>(() => loadCustomProjects())
   const [route, go] = useHashRoute()
   const [panelVisible, setPanelVisible] = useState<boolean>(() => loadPanelVisible())
+  // app-chrome theme toàn cục (5.1) — board ghi, dashboard đọc
+  const [uiTheme, setUiTheme] = useUiTheme()
 
   const projects = useMemo(() => allProjects(custom), [custom])
   // URL is the source of truth (2.1); unknown ids fall to a not-found view
@@ -163,12 +166,14 @@ export function App() {
             />
           </ErrorBoundary>
       ) : (
-        <div className="app app-dashboard">
+        <div className="app app-dashboard" data-theme={uiTheme}>
           <Dashboard
             projects={projects}
             onOpen={openProject}
             onCreate={createProject}
             onDelete={deleteProject}
+            uiTheme={uiTheme}
+            onUiTheme={setUiTheme}
           />
         </div>
       )}

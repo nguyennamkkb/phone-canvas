@@ -29,12 +29,22 @@ export type BoardSettings = {
   activeNodeId: string | null
   /** right sidebar collapsed or not — cosmetic, never changes measurements */
   panelVisible: boolean
-  /** remove a screen instance from the board (null outside a board) */
-  onDeleteNode: ((id: string) => void) | null
+  /** node đang hỏi xóa inline (5.2) — null khi không hỏi */
+  deleteConfirmId: string | null
+  /** mở hộp hỏi xóa tại chỗ thay vì window.confirm (5.2) */
+  onRequestDelete: ((id: string) => void) | null
+  /** xác nhận xóa sau khi đã hỏi */
+  onConfirmDelete: ((id: string) => void) | null
+  /** đóng hộp hỏi xóa */
+  onCancelDelete: (() => void) | null
   /** board color mode — flips every screen iframe via data-theme (v3) */
   tokenTheme: ThemeMode
   /** null outside a board */
   onTokenThemeChange: ((mode: ThemeMode) => void) | null
+  /** focused screen for 100% review (3.3) — null when in overview */
+  focusedNodeId: string | null
+  /** zoom a screen to 100% centered (null outside a board) */
+  onFocusNode: ((id: string) => void) | null
 }
 
 export const BoardContext = createContext<BoardSettings>({
@@ -42,9 +52,14 @@ export const BoardContext = createContext<BoardSettings>({
   frameStyle: 'plain',
   activeNodeId: null,
   panelVisible: true,
-  onDeleteNode: null,
+  deleteConfirmId: null,
+  onRequestDelete: null,
+  onConfirmDelete: null,
+  onCancelDelete: null,
   tokenTheme: 'light',
   onTokenThemeChange: null,
+  focusedNodeId: null,
+  onFocusNode: null,
 })
 
 export function useBoardSettings(): BoardSettings {

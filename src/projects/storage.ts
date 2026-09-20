@@ -22,6 +22,7 @@ import { BUILTIN_PROJECTS } from './projects'
 const BOARD_PREFIX = 'pc.board.'
 const CUSTOM_KEY = 'pc.projects.custom'
 const PANEL_KEY = 'pc.ui.panelVisible'
+const DOCK_KEY = 'pc.ui.dockCollapsed'
 
 export type BoardSnapshot = {
   v: 2
@@ -122,4 +123,12 @@ export function loadPanelVisible(): boolean {
 
 export function savePanelVisible(visible: boolean): void {
   safeSet(PANEL_KEY, visible ? '1' : '0')
+}
+
+export function loadDockCollapsed(): boolean {
+  return safeGet(DOCK_KEY) === '1'
+}
+
+export function saveDockCollapsed(collapsed: boolean): void {
+  safeSet(DOCK_KEY, collapsed ? '1' : '0')
 }

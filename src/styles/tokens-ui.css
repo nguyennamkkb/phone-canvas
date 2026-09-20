@@ -67,7 +67,7 @@
   font-size: 14px;
   font-weight: 700;
   letter-spacing: -0.1px;
-  color: #18181b;
+  color: var(--chrome-text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -75,7 +75,7 @@
 
 .token-sub {
   font-size: 11.5px;
-  color: #71717a;
+  color: var(--chrome-muted);
   white-space: nowrap;
 }
 
@@ -93,7 +93,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #71717a;
+  color: var(--chrome-muted);
   cursor: pointer;
   list-style: none;
   user-select: none;
@@ -113,7 +113,7 @@
   height: 16px;
   border-radius: 999px;
   background: rgba(120, 120, 145, 0.14);
-  color: #52525b;
+  color: var(--chrome-text-2);
   font-size: 12px;
   font-weight: 600;
 }
@@ -132,7 +132,7 @@
   padding: 0 7px;
   border-radius: 999px;
   background: rgba(120, 120, 145, 0.14);
-  color: #52525b;
+  color: var(--chrome-text-2);
   font-size: 11px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
@@ -168,7 +168,7 @@
   white-space: nowrap;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 11.5px;
-  color: #27272a;
+  color: var(--chrome-text-2);
 }
 
 .token-val {
@@ -176,7 +176,7 @@
   flex: 0 0 auto;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 11px;
-  color: #71717a;
+  color: var(--chrome-muted);
 }
 
 .token-grid {
@@ -203,7 +203,7 @@
 .token-empty {
   margin: 0;
   font-size: 12px;
-  color: #71717a;
+  color: var(--chrome-muted);
 }
 
 .token-frame::-webkit-scrollbar {
@@ -218,7 +218,7 @@
 }
 
 .token-frame:hover::-webkit-scrollbar-thumb {
-  background: #d9d9e0;
+  background: var(--chrome-border);
   border: 2px solid transparent;
   background-clip: content-box;
 }
@@ -245,10 +245,10 @@
   align-items: center;
   height: 28px;
   padding: 0 10px;
-  border: 1px solid #e4e4e7;
+  border: 1px solid var(--chrome-input-border);
   border-radius: 999px;
-  background: #f4f4f5;
-  color: #27272a;
+  background: var(--chrome-surface-2);
+  color: var(--chrome-text-2);
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -336,10 +336,10 @@
   flex: 0 0 auto;
   width: 76px;
   padding: 1px 6px;
-  border: 1px solid #e4e4e7;
+  border: 1px solid var(--chrome-input-border);
   border-radius: 6px;
-  background: #fafafa;
-  color: #27272a;
+  background: var(--chrome-surface);
+  color: var(--chrome-text-2);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 11px;
   text-align: right;
@@ -348,7 +348,7 @@
 .token-input:focus {
   outline: 2px solid #007aff;
   outline-offset: 0;
-  background: #ffffff;
+  background: var(--chrome-surface);
 }
 
 /* ============================================================================
@@ -448,5 +448,91 @@
 
 .token-val.is-copy:hover {
   background: rgba(120, 120, 145, 0.14);
-  color: #18181b;
+  color: var(--chrome-text);
+}
+
+/* ============================================================================
+ * Token dock trái (2.1) — ngoài canvas, collapsible, không lọt fit/minimap.
+ * ========================================================================== */
+
+.token-dock {
+  flex: 0 0 auto;
+  width: 320px;
+  min-height: 0;
+  max-height: 100%;
+  overflow-y: auto;
+  border-right: 1px solid rgba(255, 255, 255, 0.6);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.72));
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  padding: 12px;
+}
+
+.token-dock-frame {
+  max-height: none;
+  overflow: visible;
+}
+
+.token-dock-collapse {
+  margin-left: auto;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.55));
+  color: var(--chrome-muted);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.token-dock-collapse:hover {
+  color: var(--chrome-text);
+}
+
+.token-dock.is-collapsed {
+  width: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 0;
+}
+
+.token-dock-expand {
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.55));
+  color: var(--chrome-text-2);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.token-dock-expand:hover {
+  color: var(--chrome-text);
+}
+
+.token-dock-vertical {
+  writing-mode: vertical-rl;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--chrome-faint);
+}
+
+/* màn hẹp: dock thành overlay trái như panel phải */
+@media (max-width: 900px) {
+  .token-dock:not(.is-collapsed) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 20;
+    width: min(320px, 88vw);
+    box-shadow: 12px 0 40px rgba(0, 0, 0, 0.16);
+  }
 }

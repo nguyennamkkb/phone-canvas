@@ -7,12 +7,12 @@
   position: relative;
   flex: 1 1 auto;
   min-height: 0;
-  background: #f6f6f8;
+  background: var(--chrome-bg);
 }
 
 /* the minimap must never hide the thing you are designing */
 .react-flow__minimap {
-  border: 1px solid #e9e9ee;
+  border: 1px solid var(--chrome-border);
   border-radius: 12px;
   overflow: hidden;
   opacity: 0.35;
@@ -30,12 +30,12 @@
 }
 
 .react-flow__controls-button {
-  border-bottom: 1px solid #f0f0f3;
-  background: #ffffff;
+  border-bottom: 1px solid var(--chrome-border);
+  background: var(--chrome-surface);
 }
 
 .react-flow__controls-button:hover {
-  background: #f4f4f6;
+  background: var(--chrome-surface-2);
 }
 
 .toolbar {
@@ -47,8 +47,6 @@
   align-items: center;
   gap: 7px;
   max-width: calc(100% - 28px);
-  overflow-x: auto;
-  scrollbar-width: none;
   padding: 6px 8px;
   border-radius: 15px;
   border: 1px solid rgba(0, 0, 0, 0.07);
@@ -60,26 +58,22 @@
     0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
-.toolbar::-webkit-scrollbar {
-  display: none;
-}
-
 .segmented {
   display: flex;
   flex: 0 0 auto;
   padding: 3px;
   border-radius: 10px;
-  background: #efeff2;
+  background: var(--chrome-raised);
 }
 
 .segmented button {
   border: 0;
   border-radius: 7px;
-  padding: 7px 13px;
+  padding: 7px 10px;
   font-size: 12px;
   font-weight: 500;
   line-height: 1;
-  color: #63636b;
+  color: var(--chrome-muted);
   background: transparent;
   cursor: pointer;
   white-space: nowrap;
@@ -87,12 +81,12 @@
 }
 
 .segmented button:hover:not(.is-on) {
-  color: #18181b;
+  color: var(--chrome-text);
 }
 
 .segmented button.is-on {
-  background: #ffffff;
-  color: #18181b;
+  background: var(--chrome-surface);
+  color: var(--chrome-text);
   font-weight: 600;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
@@ -101,11 +95,11 @@
   flex: 0 0 auto;
   border: 0;
   border-radius: 9px;
-  padding: 8px 12px;
+  padding: 8px 10px;
   font-size: 12px;
   font-weight: 500;
   line-height: 1;
-  color: #3f3f46;
+  color: var(--chrome-text-2);
   background: transparent;
   cursor: pointer;
   white-space: nowrap;
@@ -113,12 +107,32 @@
 }
 
 .tool:hover {
-  background: #efeff2;
-  color: #18181b;
+  background: var(--chrome-raised);
+  color: var(--chrome-text);
 }
 
 .tool:active {
   transform: scale(0.96);
+}
+
+/* icon-only tool for secondary actions (fit, panel toggle) — 1.1 */
+.tool-icon {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  border-radius: 50%;
+}
+
+/* copy-board-link feedback (5.3) */
+.toolbar-copied {
+  font-size: 11px;
+  font-weight: 600;
+  color: #0a5fbf;
+  white-space: nowrap;
 }
 
 .tool:disabled {
@@ -163,7 +177,7 @@
   gap: 12px;
   padding: 32px;
   text-align: center;
-  background: #f6f6f8;
+  background: var(--chrome-bg);
 }
 
 /* narrow viewport: the inspector becomes an overlay with its own close */
@@ -219,27 +233,27 @@
   font-size: 14.5px;
   font-weight: 650;
   letter-spacing: -0.1px;
-  color: #18181b;
+  color: var(--chrome-text);
 }
 
 .board-empty p {
   margin: 8px 0 0;
   font-size: 12.5px;
   line-height: 1.7;
-  color: #52525b;
+  color: var(--chrome-text-2);
 }
 
 .board-empty code {
   padding: 1px 5px;
   border-radius: 5px;
-  background: #f4f4f5;
+  background: var(--chrome-surface-2);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 11.5px;
-  color: #3f3f46;
+  color: var(--chrome-text-2);
 }
 
 .board-empty-note {
-  color: #a1a1aa !important;
+  color: var(--chrome-faint) !important;
 }
 
 /* ------------------------------------------------------------------ phone -- */
@@ -258,20 +272,20 @@
   padding: 0 4px;
   font-size: 11px;
   line-height: 1;
-  color: #71717a;
+  color: var(--chrome-muted);
 }
 
 .phone-label-title {
   font-weight: 650;
   letter-spacing: -0.1px;
-  color: #3f3f46;
+  color: var(--chrome-text-2);
 }
 
 .phone-label-size {
   font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
   font-size: 10px;
   font-variant-numeric: tabular-nums;
-  color: #b6b6be;
+  color: var(--chrome-faint);
 }
 
 /* screen identity chip — click copies the manifest id (ai đọc/sửa theo id này) */
@@ -289,14 +303,14 @@
   backdrop-filter: blur(12px) saturate(1.5);
   -webkit-backdrop-filter: blur(12px) saturate(1.5);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  color: #52525b;
+  color: var(--chrome-text-2);
   font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
   font-size: 10px;
   cursor: pointer;
 }
 
 .phone-id:hover {
-  color: #18181b;
+  color: var(--chrome-text);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.7));
 }
 
@@ -309,7 +323,7 @@
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.94);
-  color: #8e8e96;
+  color: var(--chrome-muted);
   font-size: 13px;
   font-weight: 600;
   line-height: 1;
@@ -347,9 +361,9 @@
 
 /* plain frame: just a rectangle, drawn with a ring so it costs no layout */
 .phone.is-plain {
-  background: #ffffff;
+  background: var(--chrome-surface);
   box-shadow:
-    0 0 0 1px #e7e7ec,
+    0 0 0 1px var(--chrome-border),
     0 1px 2px rgba(0, 0, 0, 0.04),
     0 16px 40px rgba(0, 0, 0, 0.08);
 }
@@ -364,12 +378,161 @@
 .phone-screen {
   position: relative;
   overflow: hidden;
-  background: #ffffff;
+  background: var(--chrome-surface);
 }
 
 .phone-screen iframe {
   display: block;
   border: 0;
+}
+
+/* click-through đo ở move mode (3.1): overlay trong suốt trên iframe inert —
+   click đo element, drag vẫn di chuyển node vì iframe không nhận sự kiện */
+.phone-clickthrough {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: transparent;
+  cursor: crosshair;
+}
+
+/* focus-mode (3.3): màn đang duyệt viền tím để phân biệt với chọn thường */
+.phone.is-focused {
+  box-shadow:
+    0 0 0 3px #af52de,
+    0 0 0 7px rgba(175, 82, 222, 0.18),
+    0 12px 34px rgba(0, 0, 0, 0.18);
+}
+
+.phone.is-plain.is-focused {
+  box-shadow:
+    0 0 0 3px #af52de,
+    0 0 0 7px rgba(175, 82, 222, 0.18),
+    0 16px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* measure mode: cursor gợi ý trên chrome của node (3.2) */
+.phone-node.is-inspect .phone-label {
+  cursor: crosshair;
+}
+
+/* hint-bar (3.2): dải gợi ý dưới cùng board-wrap, không phải toast */
+.hint-bar {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  z-index: 10;
+  transform: translateX(-50%);
+  max-width: calc(100% - 32px);
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: linear-gradient(180deg, rgba(24, 24, 27, 0.88), rgba(24, 24, 27, 0.72));
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.2);
+  color: #fafafa;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.hint-bar b {
+  font-weight: 700;
+}
+
+/* undo-bar (5.2): hoàn-tác-nhanh sau khi xóa, chung 1 chỗ với hint-bar */
+.undo-bar {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  z-index: 11;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: calc(100% - 32px);
+  padding: 7px 8px 7px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: linear-gradient(180deg, rgba(24, 24, 27, 0.88), rgba(24, 24, 27, 0.72));
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.2);
+  color: #fafafa;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.undo-bar.has-hint {
+  bottom: 56px;
+}
+
+.undo-btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 6px 12px;
+  background: #007aff;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.undo-btn:hover {
+  background: #0a64d1;
+}
+
+/* InlineConfirm (5.2): hỏi xóa tại chỗ, dùng chung node × và panel */
+.inline-confirm {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  padding: 3px 4px 3px 10px;
+  border-radius: 999px;
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #7f1d1d;
+  white-space: nowrap;
+}
+
+.inline-confirm-msg {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.inline-confirm-yes {
+  border: 0;
+  border-radius: 999px;
+  padding: 4px 10px;
+  background: #dc2626;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.inline-confirm-yes:hover {
+  background: #b91c1c;
+}
+
+.inline-confirm-no {
+  border: 1px solid var(--chrome-input-border);
+  border-radius: 999px;
+  padding: 4px 10px;
+  background: #fff;
+  color: var(--chrome-text-2);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.inline-confirm-no:hover {
+  background: var(--chrome-surface-2);
 }
 
 .phone-island {

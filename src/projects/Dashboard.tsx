@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import type { ThemeMode } from '../tokens/tokens'
 import type { Project } from './projects'
 import { countOf, coverOf } from './projects'
 import { SCREEN_BY_ID } from '../screens'
@@ -8,6 +9,8 @@ export type DashboardProps = {
   onOpen: (id: string) => void
   onCreate: (title: string) => void
   onDelete: (id: string) => void
+  uiTheme: ThemeMode
+  onUiTheme: (mode: ThemeMode) => void
 }
 
 function initials(title: string): string {
@@ -46,7 +49,7 @@ function Cover({ project }: { project: Project }) {
   )
 }
 
-export function Dashboard({ projects, onOpen, onCreate, onDelete }: DashboardProps) {
+export function Dashboard({ projects, onOpen, onCreate, onDelete, uiTheme, onUiTheme }: DashboardProps) {
   const [query, setQuery] = useState('')
   const [draft, setDraft] = useState('')
 
@@ -78,6 +81,22 @@ export function Dashboard({ projects, onOpen, onCreate, onDelete }: DashboardPro
           <p className="dash-sub">Mỗi dự án là một bảng các màn hình. Chọn để mở board.</p>
         </div>
         <div className="dash-actions">
+          <div className="segmented" title="Chế độ màu của dashboard">
+            <button
+              type="button"
+              className={uiTheme === 'light' ? 'is-on' : ''}
+              onClick={() => onUiTheme('light')}
+            >
+              Sáng
+            </button>
+            <button
+              type="button"
+              className={uiTheme === 'dark' ? 'is-on' : ''}
+              onClick={() => onUiTheme('dark')}
+            >
+              Tối
+            </button>
+          </div>
           <input
             className="dash-search"
             placeholder="Tìm dự án…"

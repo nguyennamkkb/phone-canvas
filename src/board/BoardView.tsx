@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ReactFlowProvider, addEdge, useEdgesState, useNodesState } from '@xyflow/react'
 import type { Connection, Edge } from '@xyflow/react'
 import { Board } from '../canvas/Board'
@@ -7,14 +7,16 @@ import type { CanvasMode, FrameStyle } from '../canvas/BoardContext'
 import type { PhoneNodeData } from '../canvas/PhoneNode'
 import type { PhoneFlowNode } from '../canvas/PhoneNode'
 import type { BoardNode } from '../canvas/TokenNode'
-import { useTokenTheme } from '../tokens/store'
+import { TokenDock } from '../canvas/TokenDock'
+import { useTokenTheme, useUiTheme } from '../tokens/store'
+import type { ThemeMode } from '../tokens/tokens'
 import { DEFAULT_DEVICE_ID, getDevice } from '../frame/devices'
 import { useInspector } from '../inspect/InspectorContext'
 import { SpecPanel } from '../inspect/SpecPanel'
 import { SCREEN_BY_ID, SCREENS } from '../screens'
 import type { Project } from '../projects/projects'
 import { resolveScreens } from '../projects/projects'
-import { loadBoard, saveBoard } from '../projects/storage'
+import { loadBoard, loadDockCollapsed, saveBoard, saveDockCollapsed } from '../projects/storage'
 import { ErrorBoundary } from '../shell/ErrorBoundary'
 
 const COLUMN_GAP = 120
@@ -42,32 +44,21 @@ function makeNode(projectId: string, screenId: string, x: number): PhoneFlowNode
   }
 }
 
-const TOKEN_NODE_W = 340
+/** legacy token-table node shape — board cũ có thể còn, lọc bỏ im lặng (2.2) */
+type LegacyBoardNode = PhoneFlowNode | { id: string; type: string; position: { x: number; y: number }; data: Record<string, unknown> }
 
-function tokenNode(project: Project): BoardNode {
-  return {
-    id: `${project.id}-tokens`,
-    type: 'token',
-    position: { x: -(TOKEN_NODE_W + COLUMN_GAP), y: 0 },
-    data: { projectId: project.id, title: project.title },
-  }
-}
-
-/** a saved board from before tokens existed gains the table, kept left of all screens */
-function withTokenNode(project: Project, nodes: BoardNode[]): BoardNode[] {
-  const phones = nodes.filter((n) => n.type === 'phone')
-  const table = tokenNode(project)
-  if (phones.length > 0) {
-    const minX = Math.min(...phones.map((n) => n.position.x))
-    table.position = { x: minX - TOKEN_NODE_W - COLUMN_GAP, y: 0 }
-  }
-  return [table, ...phones]
+function isPhoneNode(n: LegacyBoardNode): n is PhoneFlowNode {
+  return (
+    n.type === 'phone' &&
+    typeof (n.data as PhoneNodeData).screenId === 'string' &&
+    SCREEN_BY_ID.has((n.data as PhoneNodeData).screenId)
+  )
 }
 
 function freshNodes(project: Project): BoardNode[] {
   counters[project.id] = 0
   let x = 0
-  const out: BoardNode[] = [tokenNode(project)]
+  const out: BoardNode[] = []
   for (const sid of resolveScreens(project)) {
     const node = makeNode(project.id, sid, x)
     if (node) {
@@ -87,10 +78,9 @@ function openingNodes(project: Project): { nodes: BoardNode[]; edges: Edge[] } {
       if (m) max = Math.max(max, Number(m[1]))
     }
     counters[project.id] = max
-    const phones = saved.nodes.filter(
-      (n) => n.type === 'phone' && SCREEN_BY_ID.has(n.data.screenId),
-    )
-    return { nodes: withTokenNode(project, phones), edges: saved.edges }
+    // board cũ có token node: lọc im lặng, giữ nguyên vị trí phone (2.2)
+    const phones = (saved.nodes as LegacyBoardNode[]).filter(isPhoneNode)
+    if (phones.length > 0) return { nodes: phones, edges: saved.edges }
   }
   return { nodes: freshNodes(project), edges: [] as Edge[] }
 }
@@ -115,7 +105,15 @@ function BoardViewInner({
   const [mode, setMode] = useState<CanvasMode>('move')
   const [frameStyle, setFrameStyle] = useState<FrameStyle>('plain')
   const [tokenTheme, setTokenTheme] = useTokenTheme(project.id)
+  const [, setUiTheme] = useUiTheme()
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null)
+  const [dockCollapsed, setDockCollapsed] = useState<boolean>(() => loadDockCollapsed())
+  // focus-mode (3.3): màn đang duyệt ở 100%, null khi ở tổng quan
+  const [focusedNodeId, setFocusedNodeId] = useState<string | null>(null)
+  // xóa inline 2 bước (5.2): hỏi tại chỗ → xóa → hoàn tác nhanh trong 6s
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
+  const [undone, setUndone] = useState<{ node: PhoneFlowNode; screenId: string } | null>(null)
+  const undoTimer = useRef<number | undefined>(undefined)
   const { select } = useInspector()
 
   const opening = useMemo(() => openingNodes(project), [project])
@@ -126,24 +124,54 @@ function BoardViewInner({
     saveBoard(project.id, { nodes, edges })
   }, [project.id, nodes, edges])
 
-  const onDeleteNode = useCallback(
+  const onRequestDelete = useCallback((id: string) => {
+    setConfirmDeleteId(id)
+  }, [])
+
+  const onCancelDelete = useCallback(() => {
+    setConfirmDeleteId(null)
+  }, [])
+
+  const onConfirmDelete = useCallback(
     (id: string) => {
       const target = nodes.find((n) => n.id === id)
-      if (!target || target.type !== 'phone') return
-      const title = SCREEN_BY_ID.get(target.data.screenId)?.title ?? target.data.screenId
-      if (!window.confirm(`Xóa màn hình "${title}" khỏi board? File html giữ nguyên.`)) return
+      if (!target) {
+        setConfirmDeleteId(null)
+        return
+      }
+      const snapshot: PhoneFlowNode = {
+        ...target,
+        data: { ...target.data },
+        position: { ...target.position },
+      }
       const screenId = target.data.screenId
       setNodes((ns) => ns.filter((n) => n.id !== id))
       setEdges((es) => es.filter((e) => e.source !== id && e.target !== id))
       setSelectedNodeId((sel) => (sel === id ? null : sel))
+      setFocusedNodeId((f) => (f === id ? null : f))
+      setConfirmDeleteId(null)
       select(null)
-      const last = !nodes.some(
-        (n) => n.id !== id && n.type === 'phone' && n.data.screenId === screenId,
-      )
+      const last = !nodes.some((n) => n.id !== id && n.data.screenId === screenId)
       if (last) onUntrackScreen(project.id, screenId)
+      // hoàn-tác-nhanh: giữ snapshot 6s, hết hạn thì thôi
+      window.clearTimeout(undoTimer.current)
+      setUndone({ node: snapshot, screenId })
+      undoTimer.current = window.setTimeout(() => setUndone(null), 6000)
     },
     [nodes, project.id, onUntrackScreen, setNodes, setEdges, select],
   )
+
+  const onUndoDelete = useCallback(() => {
+    const last = undone
+    if (!last) return
+    window.clearTimeout(undoTimer.current)
+    setUndone(null)
+    onTrackScreen(project.id, last.screenId)
+    setNodes((ns) => (ns.some((n) => n.id === last.node.id) ? ns : [...ns, last.node]))
+    setSelectedNodeId(last.node.id)
+  }, [undone, project.id, onTrackScreen, setNodes])
+
+  useEffect(() => () => window.clearTimeout(undoTimer.current), [])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -151,12 +179,31 @@ function BoardViewInner({
       if (t && (t.tagName === 'INPUT' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return
       if ((e.key === 'Delete' || e.key === 'Backspace') && selectedNodeId) {
         e.preventDefault()
-        onDeleteNode(selectedNodeId)
+        onRequestDelete(selectedNodeId)
       }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [selectedNodeId, onDeleteNode])
+  }, [selectedNodeId, onRequestDelete])
+
+  // focus đi đôi với select để inspector bám theo màn đang duyệt (3.3)
+  const onFocusNode = useCallback((id: string) => {
+    setFocusedNodeId(id)
+    setSelectedNodeId(id)
+  }, [])
+
+  const onExitFocus = useCallback(() => {
+    setFocusedNodeId(null)
+  }, [])
+
+  // board toggle đổi cả iframe (per-project) lẫn app chrome toàn cục (5.1)
+  const onBoardThemeChange = useCallback(
+    (mode: ThemeMode) => {
+      setTokenTheme(mode)
+      setUiTheme(mode)
+    },
+    [setTokenTheme, setUiTheme],
+  )
 
   const settings = useMemo(
     () => ({
@@ -164,11 +211,16 @@ function BoardViewInner({
       frameStyle,
       activeNodeId: selectedNodeId,
       panelVisible,
-      onDeleteNode,
+      deleteConfirmId: confirmDeleteId,
+      onRequestDelete,
+      onConfirmDelete,
+      onCancelDelete,
       tokenTheme,
-      onTokenThemeChange: setTokenTheme,
+      onTokenThemeChange: onBoardThemeChange,
+      focusedNodeId,
+      onFocusNode,
     }),
-    [mode, frameStyle, selectedNodeId, panelVisible, onDeleteNode, tokenTheme, setTokenTheme],
+    [mode, frameStyle, selectedNodeId, panelVisible, confirmDeleteId, onRequestDelete, onConfirmDelete, onCancelDelete, tokenTheme, onBoardThemeChange, focusedNodeId, onFocusNode],
   )
 
   const onConnect = useCallback(
@@ -178,11 +230,7 @@ function BoardViewInner({
 
   const onPatchNode = useCallback(
     (id: string, patch: Partial<PhoneNodeData>) => {
-      setNodes((ns) =>
-        ns.map((n) =>
-          n.id === id && n.type === 'phone' ? { ...n, data: { ...n.data, ...patch } } : n,
-        ),
-      )
+      setNodes((ns) => ns.map((n) => (n.id === id ? { ...n, data: { ...n.data, ...patch } } : n)))
     },
     [setNodes],
   )
@@ -196,8 +244,7 @@ function BoardViewInner({
       setNodes((ns) => {
         let sid = screenId
         if (!sid) {
-          const onBoard = (s: string) =>
-            ns.some((n) => n.type === 'phone' && n.data.screenId === s)
+          const onBoard = (s: string) => ns.some((n) => n.data.screenId === s)
           sid = pool.find((s) => !onBoard(s)) ?? pool[ns.length % pool.length]
           if (!sid) return ns
         }
@@ -215,6 +262,13 @@ function BoardViewInner({
     },
     [project.id, projectScreenIds, onTrackScreen, setNodes],
   )
+
+  const onToggleDock = useCallback(() => {
+    setDockCollapsed((v) => {
+      saveDockCollapsed(!v)
+      return !v
+    })
+  }, [])
 
   return (
     <BoardContext.Provider value={settings}>
@@ -241,7 +295,7 @@ function BoardViewInner({
         nodes={nodes}
         edges={edges}
         projectTitle={project.title}
-        screenCount={nodes.filter((n) => n.type === 'phone').length}
+        screenCount={nodes.length}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
@@ -251,13 +305,32 @@ function BoardViewInner({
         onAddScreen={onAddScreen}
         onBack={onBack}
         onTogglePanel={onTogglePanel}
+        focusedNodeId={focusedNodeId}
+        onFocusNode={onFocusNode}
+        onExitFocus={onExitFocus}
+        undoTitle={undone ? (SCREEN_BY_ID.get(undone.screenId)?.title ?? undone.screenId) : null}
+        onUndo={onUndoDelete}
+        projectId={project.id}
+        projectScreenIds={projectScreenIds}
+        dock={
+          <TokenDock
+            projectId={project.id}
+            title={project.title}
+            collapsed={dockCollapsed}
+            onToggle={onToggleDock}
+          />
+        }
         panel={
           panelVisible ? (
             <SpecPanel
               nodes={nodes}
               selectedNodeId={selectedNodeId}
               onPatchNode={onPatchNode}
-              onDeleteNode={onDeleteNode}
+              deleteConfirmId={confirmDeleteId}
+              onRequestDelete={onRequestDelete}
+              onConfirmDelete={onConfirmDelete}
+              onCancelDelete={onCancelDelete}
+              onFocusScreen={onFocusNode}
               onClosePanel={onTogglePanel}
             />
           ) : null

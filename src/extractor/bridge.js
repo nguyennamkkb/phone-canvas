@@ -246,6 +246,14 @@
     var top = r.top - 20
     badge.style.left = r.left + 'px'
     badge.style.top = (top < 0 ? r.bottom + 4 : top) + 'px'
+    // the badge itself must never widen the document: a nowrap label past
+    // the right edge is a permanent iframe scrollbar under "Always" scrollbars
+    try {
+      var maxLeft = window.innerWidth - badge.offsetWidth - 4
+      if (maxLeft >= 4 && r.left > maxLeft) badge.style.left = maxLeft + 'px'
+    } catch (_) {
+      /* measure failed — badge stays where it is */
+    }
   }
 
   function hide() {
@@ -307,6 +315,29 @@
       if (d.token && d.token !== token) return
       emptyTries = 0
       refresh()
+    } else if (d.type === 'pickAt') {
+      // parent overlay forwarded a move-mode click (3.1): hit-test at the
+      // given iframe-viewport coords and select exactly like a direct click
+      if (d.token && d.token !== token) return
+      var px = typeof d.x === 'number' ? d.x : -1
+      var py = typeof d.y === 'number' ? d.y : -1
+      if (px < 0 || py < 0) return
+      var found = null
+      try {
+        found = document.elementFromPoint(px, py)
+      } catch (_) {
+        found = null
+      }
+      var picked = found && found.closest ? found.closest('[data-pc-id]') : null
+      if (!picked) {
+        selectedId = null
+        hide()
+        post({ type: 'select', id: null })
+        return
+      }
+      selectedId = picked.getAttribute('data-pc-id')
+      show(picked)
+      post({ type: 'select', id: selectedId })
     }
   })
 

@@ -1,6 +1,39 @@
 /* phone-canvas styles — one file per feature, same class names.
  * main.tsx imports shell.css first, then board/panel/tokens-ui.
  */
+
+/* app-chrome theme vars (5.1): mọi bề mặt/chữ/viền của toolbar, panel,
+ * dashboard, dock đi qua đây. Iframe đo đạc dùng tokens.css riêng nên số đo
+ * không đổi khi đổi theme. Màu ngữ nghĩa (accent, danger, role dots) giữ hex. */
+:root {
+  --chrome-bg: #f6f6f8;
+  --chrome-surface: #ffffff;
+  --chrome-surface-2: #f4f4f5;
+  --chrome-raised: #efeff2;
+  --chrome-border: #e9e9ee;
+  --chrome-border-soft: #f1f1f4;
+  --chrome-input-border: #e3e3e8;
+  --chrome-text: #18181b;
+  --chrome-text-2: #3f3f46;
+  --chrome-muted: #71717a;
+  --chrome-faint: #a1a1aa;
+}
+
+.app[data-theme='dark'],
+.app-dashboard[data-theme='dark'] {
+  --chrome-bg: #1c1c1e;
+  --chrome-surface: #2c2c2e;
+  --chrome-surface-2: #3a3a3c;
+  --chrome-raised: #48484a;
+  --chrome-border: #48484a;
+  --chrome-border-soft: #38383a;
+  --chrome-input-border: #555558;
+  --chrome-text: #f5f5f7;
+  --chrome-text-2: #d8d8de;
+  --chrome-muted: #a1a1aa;
+  --chrome-faint: #71717a;
+}
+
 *,
 *::before,
 *::after {
@@ -17,8 +50,8 @@ body,
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro', system-ui, sans-serif;
-  color: #18181b;
-  background: #f6f6f8;
+  color: var(--chrome-text);
+  background: var(--chrome-bg);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -82,7 +115,7 @@ input:focus-visible {
 .dash-sub {
   margin: 6px 0 0;
   font-size: 13.5px;
-  color: #71717a;
+  color: var(--chrome-muted);
 }
 
 .dash-actions {
@@ -99,19 +132,19 @@ input:focus-visible {
 
 .dash-search {
   height: 34px;
-  border: 1px solid #e3e3e8;
+  border: 1px solid var(--chrome-input-border);
   border-radius: 10px;
   padding: 0 12px;
   font-size: 12.5px;
-  background: #fff;
-  color: #18181b;
+  background: var(--chrome-surface);
+  color: var(--chrome-text);
   min-width: 176px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
   transition: border-color 140ms ease, box-shadow 140ms ease;
 }
 
 .dash-search::placeholder {
-  color: #b6b6be;
+  color: var(--chrome-faint);
 }
 
 .dash-search:focus {
@@ -154,16 +187,16 @@ input:focus-visible {
 
 .dash-card {
   position: relative;
-  border: 1px solid #e9e9ee;
+  border: 1px solid var(--chrome-border);
   border-radius: 18px;
-  background: #fff;
+  background: var(--chrome-surface);
   overflow: hidden;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   transition: box-shadow 180ms ease, transform 180ms ease, border-color 180ms ease;
 }
 
 .dash-card:hover {
-  border-color: #e0e0e6;
+  border-color: var(--chrome-border);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
   transform: translateY(-2px);
 }
@@ -180,12 +213,12 @@ input:focus-visible {
 
 .dash-cover {
   height: 200px;
-  background: #f1f1f4;
+  background: var(--chrome-surface-2);
   overflow: hidden;
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  border-bottom: 1px solid #f0f0f3;
+  border-bottom: 1px solid var(--chrome-border);
 }
 
 .dash-cover img {
@@ -213,7 +246,7 @@ input:focus-visible {
 
 .dash-cover-name {
   font-size: 11.5px;
-  color: #71717a;
+  color: var(--chrome-muted);
 }
 
 .dash-meta {
@@ -246,7 +279,7 @@ input:focus-visible {
   margin: 5px 0 0;
   font-size: 12.5px;
   line-height: 1.55;
-  color: #71717a;
+  color: var(--chrome-muted);
 }
 
 .dash-count {
@@ -256,7 +289,7 @@ input:focus-visible {
   font-weight: 600;
   letter-spacing: 0.4px;
   text-transform: uppercase;
-  color: #b0b0b9;
+  color: var(--chrome-faint);
   font-variant-numeric: tabular-nums;
 }
 
@@ -267,7 +300,7 @@ input:focus-visible {
   border: 1px solid rgba(0, 0, 0, 0.06);
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(8px);
-  color: #71717a;
+  color: var(--chrome-muted);
   font-size: 11px;
   font-weight: 600;
   border-radius: 8px;
@@ -298,9 +331,12 @@ input:focus-visible {
   font-size: 13px;
   font-weight: 650;
   letter-spacing: -0.1px;
-  color: #18181b;
+  color: var(--chrome-text);
   padding: 0 2px 0 4px;
   white-space: nowrap;
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .toolbar-count {
@@ -311,8 +347,8 @@ input:focus-visible {
   justify-content: center;
   padding: 0 6px;
   border-radius: 999px;
-  background: #f0f0f3;
-  color: #71717a;
+  background: var(--chrome-surface-2);
+  color: var(--chrome-muted);
   font-size: 11px;
   font-weight: 650;
   font-variant-numeric: tabular-nums;
@@ -322,7 +358,7 @@ input:focus-visible {
   flex: 0 0 auto;
   width: 1px;
   height: 20px;
-  background: #e9e9ee;
+  background: var(--chrome-border);
 }
 
 .tool-select {
@@ -331,14 +367,23 @@ input:focus-visible {
   padding: 7px 6px 7px 10px;
   font-size: 12px;
   font-weight: 500;
-  color: #3f3f46;
+  color: var(--chrome-text-2);
   background: transparent;
   cursor: pointer;
   max-width: 148px;
 }
 
 .tool-select:hover {
-  background: #f0f0f3;
+  background: var(--chrome-surface-2);
+}
+
+/* compact variant inside the board toolbar (1.1): icon-sized trigger,
+   full titles live in the dropdown itself */
+.tool-select-compact {
+  width: 34px;
+  max-width: 34px;
+  padding-right: 0;
+  text-overflow: clip;
 }
 
 /* board canvas column: flow + toolbar (panel is a sibling of this, not a child) */

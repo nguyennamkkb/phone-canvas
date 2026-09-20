@@ -160,6 +160,9 @@ figure {
   width: 100%;
   min-height: 0;
   background: var(--bg);
+  /* Màn hình không bao giờ cuộn ngang: rộng đúng bằng device, thừa 1px
+     cũng thành thanh cuộn trong iframe. Dọc vẫn giãn tự do (min-height). */
+  overflow-x: hidden;
 }
 
 /* the scrolling middle band: VStack middle with .frame(maxHeight: .infinity) */
@@ -179,6 +182,8 @@ figure {
   flex-direction: column;
   flex: 1 1 auto;
   min-height: 0;
+  /* như .body: kẹp ngang để trang trí thò ra 1px không thành thanh cuộn */
+  overflow-x: hidden;
 }
 
 .row {

@@ -14,14 +14,29 @@ export type SpecPanelProps = {
   nodes: BoardNode[]
   selectedNodeId: string | null
   onPatchNode: (id: string, patch: Partial<PhoneNodeData>) => void
-  onDeleteNode: (id: string) => void
+  deleteConfirmId: string | null
+  onRequestDelete: (id: string) => void
+  onConfirmDelete: (id: string) => void
+  onCancelDelete: () => void
+  /** focus màn đầu board — CTA của empty-state (4.1) */
+  onFocusScreen: (id: string) => void
   /** close the overlay panel on narrow viewports (2.4) — no-op on desktop */
   onClosePanel?: () => void
 }
 
 
 
-export function SpecPanel({ nodes, selectedNodeId, onPatchNode, onDeleteNode, onClosePanel }: SpecPanelProps) {
+export function SpecPanel({
+  nodes,
+  selectedNodeId,
+  onPatchNode,
+  deleteConfirmId,
+  onRequestDelete,
+  onConfirmDelete,
+  onCancelDelete,
+  onFocusScreen,
+  onClosePanel,
+}: SpecPanelProps) {
   const { specs, selection, select, selected, requestRecapture } = useInspector()
   const { tokenTheme } = useBoardSettings()
   const found = nodes.find((n) => n.id === selectedNodeId) ?? null
@@ -30,6 +45,7 @@ export function SpecPanel({ nodes, selectedNodeId, onPatchNode, onDeleteNode, on
   const projectId = node ? (projectOfScreen(node.data.screenId)?.id ?? '') : ''
   const lookup = (raw: string) => tokenNameForColor(projectId, raw, tokenTheme)
   const specList = node ? (specs[node.id] ?? []) : []
+  const firstNodeId = nodes.length > 0 ? nodes[0]?.id ?? null : null
 
   const hasSpec = specList.length > 0
   // spec timeout (2.3): a node mounted but silent is stuck, not loading
@@ -49,6 +65,14 @@ export function SpecPanel({ nodes, selectedNodeId, onPatchNode, onDeleteNode, on
   const copySpec = () => {
     void navigator.clipboard.writeText(copyPayloadText(copyPayloadFor(selectedNodeId, specList, selected)))
   }
+  // Copy JSON nói rõ vì sao disabled (4.1) thay vì nút chết khó hiểu
+  const copyReason = !node
+    ? 'Chọn một màn hình để chép spec'
+    : !hasSpec && nodeTimedOut
+      ? 'Chưa đọc được DOM — thử đọc lại rồi chép'
+      : !hasSpec
+        ? 'Đang đọc DOM — xong sẽ chép được'
+        : ''
 
   return (
     <aside className="panel">
@@ -60,7 +84,13 @@ export function SpecPanel({ nodes, selectedNodeId, onPatchNode, onDeleteNode, on
           <button type="button" className="ghost panel-close" onClick={onClosePanel} title="Đóng panel">
             Đóng ✕
           </button>
-          <button type="button" className="ghost" onClick={copySpec} disabled={!hasSpec}>
+          <button
+            type="button"
+            className="ghost"
+            onClick={copySpec}
+            disabled={!hasSpec}
+            title={copyReason || 'Chép spec ra clipboard'}
+          >
             Copy JSON
           </button>
         </span>
@@ -68,10 +98,18 @@ export function SpecPanel({ nodes, selectedNodeId, onPatchNode, onDeleteNode, on
 
       <div className="panel-body">
         {!node && (
-          <p className="empty">
-            Chọn một màn hình trên bảng (chế độ <b>Di chuyển</b>), rồi bật <b>Đo đạc</b> và
-            click vào từng phần tử.
-          </p>
+          <div className="empty">
+            <p>
+              Click một màn hình trên bảng để xem thông số SwiftUI của nó.
+            </p>
+            {firstNodeId ? (
+              <button type="button" className="ghost" onClick={() => onFocusScreen(firstNodeId)}>
+                Focus màn đầu
+              </button>
+            ) : (
+              <p>Thêm một màn vào board trước (ô + Màn hình).</p>
+            )}
+          </div>
         )}
 
         {node && (
@@ -80,17 +118,22 @@ export function SpecPanel({ nodes, selectedNodeId, onPatchNode, onDeleteNode, on
             screenId={node.data.screenId}
             deviceId={node.data.deviceId}
             onPatchNode={onPatchNode}
-            onDeleteNode={onDeleteNode}
+            deleteConfirmId={deleteConfirmId}
+            onRequestDelete={onRequestDelete}
+            onConfirmDelete={onConfirmDelete}
+            onCancelDelete={onCancelDelete}
           />
         )}
 
-        {node && !hasSpec && !nodeTimedOut && <p className="empty">Đang đọc DOM…</p>}
+        {node && !hasSpec && !nodeTimedOut && (
+          <p className="empty">Đang đọc DOM… (Copy JSON chờ xong bước này)</p>
+        )}
 
         {node && !hasSpec && nodeTimedOut && (
           <div className="empty">
             <p>
               Không đọc được DOM của màn này sau 8 giây — iframe có thể bị chặn hoặc bridge
-              chưa chạy.
+              chưa chạy. (Copy JSON chờ đọc xong.)
             </p>
             <button
               type="button"
