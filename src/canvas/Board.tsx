@@ -10,19 +10,20 @@ import {
 } from '@xyflow/react'
 import type { Edge, NodeTypes, OnConnect, OnEdgesChange, OnNodesChange } from '@xyflow/react'
 import { PhoneNode } from './PhoneNode'
-import type { PhoneFlowNode } from './PhoneNode'
+import { TokenNode } from './TokenNode'
+import type { BoardNode } from './TokenNode'
 import { useBoardSettings } from './BoardContext'
 import type { CanvasMode, FrameStyle } from './BoardContext'
 import { SCREENS } from '../screens'
 
-const nodeTypes = { phone: PhoneNode } as unknown as NodeTypes
+const nodeTypes = { phone: PhoneNode, token: TokenNode } as unknown as NodeTypes
 
 export type BoardProps = {
-  nodes: PhoneFlowNode[]
+  nodes: BoardNode[]
   edges: Edge[]
   projectTitle: string
   screenCount: number
-  onNodesChange: OnNodesChange<PhoneFlowNode>
+  onNodesChange: OnNodesChange<BoardNode>
   onEdgesChange: OnEdgesChange
   onConnect: OnConnect
   onSelectNode: (id: string | null) => void
@@ -67,7 +68,7 @@ export function Board({
 
   return (
     <div className="board">
-      <ReactFlow<PhoneFlowNode>
+      <ReactFlow<BoardNode>
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
@@ -84,7 +85,11 @@ export function Board({
         minZoom={0.1}
         maxZoom={2.5}
         proOptions={{ hideAttribution: true }}
-        onNodeClick={(_, node) => onSelectNode(node.id)}
+        onNodeClick={(_, node) => {
+          // the token table is reference, not a screen — clicking it selects nothing
+          if (node.type !== 'phone') return
+          onSelectNode(node.id)
+        }}
         onPaneClick={() => onSelectNode(null)}
       >
         <Background variant={BackgroundVariant.Dots} gap={24} size={1.5} color="#d4d4d8" />
@@ -191,7 +196,7 @@ export function Board({
         </button>
       </div>
 
-      {nodes.length === 0 && (
+      {screenCount === 0 && (
         <div className="board-empty">
           <div className="board-empty-title">Bảng đang trống</div>
           <p>

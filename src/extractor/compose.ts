@@ -32,6 +32,8 @@ export type ComposeOptions = {
   token?: string
   /** dark surfaces need a light status bar */
   lightStatusBar?: boolean
+  /** color mode — sets data-theme on <html> so project tokens.css can switch */
+  theme?: 'light' | 'dark'
 }
 
 /**
@@ -120,7 +122,8 @@ function homeIndicatorHtml(device: Device): string {
 }
 
 export function composeScreenDoc(options: ComposeOptions): string {
-  const { html, device, stylesheets, bridgeJs = null, nodeId, token, lightStatusBar } = options
+  const { html, device, stylesheets, bridgeJs = null, nodeId, token, lightStatusBar, theme } = options
+  const themeAttr = theme === 'dark' ? ' data-theme="dark"' : ''
 
   const styles = stylesheets.map((css) => `<style>${css}</style>`).join('\n')
 
@@ -132,7 +135,7 @@ export function composeScreenDoc(options: ComposeOptions): string {
     : ''
 
   return `<!doctype html>
-<html lang="en">
+<html lang="en"${themeAttr}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">

@@ -4,7 +4,9 @@ import type { Connection, Edge } from '@xyflow/react'
 import { Board } from './canvas/Board'
 import { BoardContext } from './canvas/BoardContext'
 import type { CanvasMode, FrameStyle } from './canvas/BoardContext'
-import type { PhoneFlowNode, PhoneNodeData } from './canvas/PhoneNode'
+import type { PhoneNodeData } from './canvas/PhoneNode'
+import type { PhoneFlowNode } from './canvas/PhoneNode'
+import type { BoardNode } from './canvas/TokenNode'
 import { DEFAULT_DEVICE_ID, getDevice } from './frame/devices'
 import { InspectorProvider, useInspector } from './inspect/InspectorContext'
 import { SpecPanel } from './inspect/SpecPanel'
@@ -52,10 +54,32 @@ function makeNode(projectId: string, screenId: string, x: number): PhoneFlowNode
   }
 }
 
-function freshNodes(project: Project): PhoneFlowNode[] {
+const TOKEN_NODE_W = 340
+
+function tokenNode(project: Project): BoardNode {
+  return {
+    id: `${project.id}-tokens`,
+    type: 'token',
+    position: { x: -(TOKEN_NODE_W + COLUMN_GAP), y: 0 },
+    data: { projectId: project.id, title: project.title },
+  }
+}
+
+/** a saved board from before tokens existed gains the table, kept left of all screens */
+function withTokenNode(project: Project, nodes: BoardNode[]): BoardNode[] {
+  const phones = nodes.filter((n) => n.type === 'phone')
+  const table = tokenNode(project)
+  if (phones.length > 0) {
+    const minX = Math.min(...phones.map((n) => n.position.x))
+    table.position = { x: minX - TOKEN_NODE_W - COLUMN_GAP, y: 0 }
+  }
+  return [table, ...phones]
+}
+
+function freshNodes(project: Project): BoardNode[] {
   counters[project.id] = 0
   let x = 0
-  const out: PhoneFlowNode[] = []
+  const out: BoardNode[] = [tokenNode(project)]
   for (const sid of resolveScreens(project)) {
     const node = makeNode(project.id, sid, x)
     if (node) {
@@ -110,15 +134,18 @@ function BoardView({
         if (m) max = Math.max(max, Number(m[1]))
       }
       counters[project.id] = max
-      // drop nodes whose screen no longer exists (renamed file, etc.)
-      const nodes = saved.nodes.filter((n) => SCREEN_BY_ID.has(n.data.screenId))
-      return { nodes, edges: saved.edges }
+      // drop phone nodes whose screen no longer exists (renamed file, etc.),
+      // then ensure the token table is present (boards saved before it existed)
+      const phones = saved.nodes.filter(
+        (n) => n.type === 'phone' && SCREEN_BY_ID.has(n.data.screenId),
+      )
+      return { nodes: withTokenNode(project, phones), edges: saved.edges }
     }
     const nodes = freshNodes(project)
     return { nodes, edges: [] as Edge[] }
   }, [project])
 
-  const [nodes, setNodes, onNodesChange] = useNodesState<PhoneFlowNode>(opening.nodes)
+  const [nodes, setNodes, onNodesChange] = useNodesState<BoardNode>(opening.nodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(opening.edges)
 
   // persist layout (debounced by React batching — save on every change is fine
@@ -130,15 +157,17 @@ function BoardView({
   const onDeleteNode = useCallback(
     (id: string) => {
       const target = nodes.find((n) => n.id === id)
+      if (!target || target.type !== 'phone') return
+      const screenId = target.data.screenId
       setNodes((ns) => ns.filter((n) => n.id !== id))
       setEdges((es) => es.filter((e) => e.source !== id && e.target !== id))
       setSelectedNodeId((sel) => (sel === id ? null : sel))
       // custom project: forget the screen once its last instance is gone,
       // so the card count/cover stay true
-      if (target) {
-        const last = !nodes.some((n) => n.id !== id && n.data.screenId === target.data.screenId)
-        if (last) onUntrackScreen(project.id, target.data.screenId)
-      }
+      const last = !nodes.some(
+        (n) => n.id !== id && n.type === 'phone' && n.data.screenId === screenId,
+      )
+      if (last) onUntrackScreen(project.id, screenId)
     },
     [nodes, project.id, onUntrackScreen, setNodes, setEdges],
   )
@@ -170,7 +199,9 @@ function BoardView({
   const onPatchNode = useCallback(
     (id: string, patch: Partial<PhoneNodeData>) => {
       setNodes((ns) =>
-        ns.map((n) => (n.id === id ? { ...n, data: { ...n.data, ...patch } } : n)),
+        ns.map((n) =>
+          n.id === id && n.type === 'phone' ? { ...n, data: { ...n.data, ...patch } } : n,
+        ),
       )
     },
     [setNodes],
@@ -188,7 +219,9 @@ function BoardView({
         if (!sid) {
           // prefer the first project screen not already on the board,
           // otherwise cycle through the project list
-          sid = pool.find((s) => !ns.some((n) => n.data.screenId === s)) ?? pool[ns.length % pool.length]
+          const onBoard = (s: string) =>
+            ns.some((n) => n.type === 'phone' && n.data.screenId === s)
+          sid = pool.find((s) => !onBoard(s)) ?? pool[ns.length % pool.length]
           if (!sid) return ns
         }
         if (!SCREEN_BY_ID.has(sid)) return ns
@@ -216,7 +249,7 @@ function BoardView({
               nodes={nodes}
               edges={edges}
               projectTitle={project.title}
-              screenCount={nodes.length}
+              screenCount={nodes.filter((n) => n.type === 'phone').length}
               onNodesChange={onNodesChange}
               onEdgesChange={onEdgesChange}
               onConnect={onConnect}

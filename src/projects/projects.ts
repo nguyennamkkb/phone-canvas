@@ -19,6 +19,11 @@ export function resolveScreens(project: Project): string[] {
   return project.screenIds.filter((id) => SCREEN_BY_ID.has(id))
 }
 
+/** builtin project that owns a screen, or null (custom projects own none yet) */
+export function projectOfScreen(screenId: string): Project | null {
+  return BUILTIN_PROJECTS.find((p) => p.screenIds.includes(screenId)) ?? null
+}
+
 export function coverOf(project: Project): string | null {
   const ids = resolveScreens(project)
   if (ids.length === 0) return null

@@ -3,6 +3,7 @@ import type { Node, NodeProps } from '@xyflow/react'
 import { getDevice } from '../frame/devices'
 import { buildSrcDoc } from '../extractor/buildSrcDoc'
 import { SCREEN_BY_ID } from '../screens'
+import { projectOfScreen } from '../projects/projects'
 import { useBoardSettings } from './BoardContext'
 import { useInspector } from '../inspect/InspectorContext'
 
@@ -32,6 +33,8 @@ function PhoneNodeInner({ id, data }: NodeProps) {
   // the node grows to match. A long screen simply makes a long rectangle.
   const contentH = sizes[id] ?? device.height
 
+  const projectId = screen ? (projectOfScreen(screen.id)?.id ?? undefined) : undefined
+
   const srcDoc = useMemo(
     () =>
       screen
@@ -41,9 +44,10 @@ function PhoneNodeInner({ id, data }: NodeProps) {
             nodeId: id,
             token,
             lightStatusBar: screen.lightStatusBar,
+            projectId,
           })
         : '<!doctype html><p style="font:14px system-ui;padding:24px">Screen not found</p>',
-    [screen, device, id, token],
+    [screen, device, id, token, projectId],
   )
 
   useEffect(() => {

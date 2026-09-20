@@ -478,7 +478,7 @@ async function main(): Promise<void> {
     if (!DEVICES.some((device) => device.id === id)) fail(`unknown device "${id}". Try --list`)
   }
 
-  const stylesheets = await Promise.all(
+  const sharedStyles = await Promise.all(
     STYLESHEETS.map((name) => readFile(path.join(SCREENS_DIR, name), 'utf8')),
   )
   const outDir = path.resolve(ROOT, options.out)
@@ -490,8 +490,16 @@ async function main(): Promise<void> {
     const screen = SCREEN_BY_ID.get(screenId)
     if (!screen) fail(`unknown screen "${screenId}". Try --list`)
     // screen.file is relative to the repo root (project/<id>/<name>.html);
-    // shared stylesheets still come from src/screens/
+    // shared stylesheets still come from src/screens/, then the owning
+    // project's tokens.css — the same order the board uses.
     const html = await readFile(path.join(ROOT, screen.file), 'utf8')
+    const owner = BUILTIN_PROJECTS.find((p) => p.screenIds.includes(screenId))
+    const projectTokens = owner
+      ? await readFile(path.join(ROOT, 'project', owner.id, 'tokens.css'), 'utf8').catch(
+          () => null,
+        )
+      : null
+    const stylesheets = projectTokens ? [...sharedStyles, projectTokens] : sharedStyles
     for (const deviceId of devices) {
       const device = getDevice(deviceId)
       // no bridge: an export carries no measurement scaffolding

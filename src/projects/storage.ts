@@ -1,5 +1,5 @@
 import type { Edge } from '@xyflow/react'
-import type { PhoneFlowNode } from '../canvas/PhoneNode'
+import type { BoardNode } from '../canvas/TokenNode'
 import type { Project } from './projects'
 import { BUILTIN_PROJECTS } from './projects'
 
@@ -21,7 +21,7 @@ const LAST_KEY = 'pc.ui.lastProject'
 const PANEL_KEY = 'pc.ui.panelVisible'
 
 export type BoardSnapshot = {
-  nodes: PhoneFlowNode[]
+  nodes: BoardNode[]
   edges: Edge[]
 }
 

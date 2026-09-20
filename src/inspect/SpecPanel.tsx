@@ -1,11 +1,14 @@
 import { useInspector } from './InspectorContext'
-import type { PhoneNodeData, PhoneFlowNode } from '../canvas/PhoneNode'
+import type { PhoneNodeData } from '../canvas/PhoneNode'
+import type { BoardNode } from '../canvas/TokenNode'
+import { projectOfScreen } from '../projects/projects'
+import { tokenNameForColor } from '../tokens/tokens'
 import { DEVICES } from '../frame/devices'
 import { SCREENS } from '../screens'
 import type { SpecNode } from '../spec/types'
 
 export type SpecPanelProps = {
-  nodes: PhoneFlowNode[]
+  nodes: BoardNode[]
   selectedNodeId: string | null
   onPatchNode: (id: string, patch: Partial<PhoneNodeData>) => void
   onDeleteNode: (id: string) => void
@@ -36,11 +39,16 @@ function Field({ label, value, mono = true }: { label: string; value: string; mo
   )
 }
 
-function Detail({ node }: { node: SpecNode }) {
+function Detail({ node, lookup }: { node: SpecNode; lookup: (raw: string) => string | null }) {
   const t = node.typography
   const su = node.surface
   // a leaf has no layout of its own; showing "hướng: none" is just noise
   const isContainer = ['VStack', 'HStack', 'ZStack', 'Block'].includes(node.role)
+  // a computed color that matches a token reports its name: #7c9448 = --sage-deep
+  const tn = (raw: string) => {
+    const name = lookup(raw)
+    return name ? `  = ${name}` : ''
+  }
 
   return (
     <div className="detail">
@@ -65,7 +73,11 @@ function Detail({ node }: { node: SpecNode }) {
           <Field label="asset" value={node.image.kind === 'asset' ? node.image.asset : ''} mono={false} />
           <Field
             label="tint"
-            value={node.image.tintHex ? `${node.image.tintHex}  ${node.image.tint}` : ''}
+            value={
+              node.image.tintHex
+                ? `${node.image.tintHex}  ${node.image.tint}${tn(node.image.tint)}`
+                : ''
+            }
           />
           {node.image.kind === 'inline' && (
             <p className="warn">
@@ -144,17 +156,28 @@ function Detail({ node }: { node: SpecNode }) {
           <Field label="tracking" value={`${px(t.tracking)}`} />
           <Field label="align" value={t.align} mono={false} />
           <Field label="transform" value={t.transform === 'none' ? '' : t.transform} mono={false} />
-          <Field label="color" value={`${t.colorHex}  ${t.color}`} />
+          <Field label="color" value={`${t.colorHex}  ${t.color}${tn(t.color)}`} />
         </div>
       )}
 
       <div className="section">
         <h4>Nền & viền</h4>
-        <Field label="background" value={su.backgroundAlpha === 0 ? '—' : `${su.backgroundHex}  ${su.background}`} />
+        <Field
+          label="background"
+          value={
+            su.backgroundAlpha === 0
+              ? '—'
+              : `${su.backgroundHex}  ${su.background}${tn(su.background)}`
+          }
+        />
         <Field label="radius" value={su.radius ? `${px(su.radius)} pt` : ''} />
         <Field
           label="border"
-          value={su.borderWidth ? `${px(su.borderWidth)} pt  ${su.borderHex || su.borderColor}` : ''}
+          value={
+            su.borderWidth
+              ? `${px(su.borderWidth)} pt  ${su.borderHex || su.borderColor}${tn(su.borderColor)}`
+              : ''
+          }
         />
         <Field label="shadow" value={su.shadow === 'none' ? '' : su.shadow} />
       </div>
@@ -172,8 +195,12 @@ function Detail({ node }: { node: SpecNode }) {
 export function SpecPanel({ nodes, selectedNodeId, onPatchNode, onDeleteNode }: SpecPanelProps) {
   const { specs, selection, select, selected } = useInspector()
 
-  const node = nodes.find((n) => n.id === selectedNodeId) ?? null
-  const specList = selectedNodeId ? (specs[selectedNodeId] ?? []) : []
+  const found = nodes.find((n) => n.id === selectedNodeId) ?? null
+  // the token table is reference, never a spec target
+  const node = found && found.type === 'phone' ? found : null
+  const projectId = node ? (projectOfScreen(node.data.screenId)?.id ?? '') : ''
+  const lookup = (raw: string) => tokenNameForColor(projectId, raw)
+  const specList = node ? (specs[node.id] ?? []) : []
 
   const hasSpec = specList.length > 0
 
@@ -278,7 +305,7 @@ export function SpecPanel({ nodes, selectedNodeId, onPatchNode, onDeleteNode }: 
             </div>
 
             {selected ? (
-              <Detail node={selected} />
+              <Detail node={selected} lookup={lookup} />
             ) : (
               <p className="empty">
                 Chọn một dòng trong cây, hoặc bật <b>Đo đạc</b> rồi click trực tiếp vào màn

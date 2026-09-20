@@ -966,3 +966,146 @@ input:focus-visible {
   border: 2px solid transparent;
   background-clip: content-box;
 }
+
+/* ============================================================================
+ * Token table node — the project's design system, always on the board.
+ * Read-only reference: the source of truth stays in project/<id>/tokens.css.
+ * ========================================================================== */
+
+.token-node {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 340px;
+}
+
+.token-label {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 4px;
+}
+
+.token-label-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #27272a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.token-label-size {
+  font-size: 12px;
+  color: #71717a;
+  white-space: nowrap;
+}
+
+.token-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 720px;
+  overflow-y: auto;
+  padding: 12px;
+  border: 1px solid #e4e4e7;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.token-section h4 {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #71717a;
+}
+
+.token-colors {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.token-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  min-height: 22px;
+}
+
+.token-swatch {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.token-name {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px;
+  color: #27272a;
+}
+
+.token-val {
+  margin-left: auto;
+  flex: 0 0 auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  color: #71717a;
+}
+
+.token-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px 8px;
+}
+
+.token-cell {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px;
+  min-width: 0;
+}
+
+.token-cell .token-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.token-empty {
+  margin: 0;
+  font-size: 12px;
+  color: #71717a;
+}
+
+.token-card::-webkit-scrollbar {
+  width: 8px;
+}
+
+.token-card::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: transparent;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.token-card:hover::-webkit-scrollbar-thumb {
+  background: #d9d9e0;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
