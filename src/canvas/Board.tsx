@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   Background,
   BackgroundVariant,
@@ -20,18 +20,24 @@ const nodeTypes = { phone: PhoneNode } as unknown as NodeTypes
 export type BoardProps = {
   nodes: PhoneFlowNode[]
   edges: Edge[]
+  projectTitle: string
+  screenCount: number
   onNodesChange: OnNodesChange<PhoneFlowNode>
   onEdgesChange: OnEdgesChange
   onConnect: OnConnect
   onSelectNode: (id: string | null) => void
   onModeChange: (mode: CanvasMode) => void
   onFrameStyleChange: (style: FrameStyle) => void
-  onAddScreen: () => void
+  onAddScreen: (screenId?: string) => void
+  onBack: () => void
+  onTogglePanel: () => void
 }
 
 export function Board({
   nodes,
   edges,
+  projectTitle,
+  screenCount,
   onNodesChange,
   onEdgesChange,
   onConnect,
@@ -39,11 +45,14 @@ export function Board({
   onModeChange,
   onFrameStyleChange,
   onAddScreen,
+  onBack,
+  onTogglePanel,
 }: BoardProps) {
-  const { mode, frameStyle } = useBoardSettings()
+  const { mode, frameStyle, panelVisible } = useBoardSettings()
   const { fitView } = useReactFlow()
   const nodesInitialized = useNodesInitialized()
   const didFit = useRef(false)
+  const [pick, setPick] = useState('')
 
   // react-flow measures nodes asynchronously; fitting before that is a no-op
   useEffect(() => {
@@ -90,6 +99,18 @@ export function Board({
       </ReactFlow>
 
       <div className="toolbar">
+        <div className="toolbar-group">
+          <button type="button" className="tool tool-back" onClick={onBack} title="Về Dashboard">
+            ←
+          </button>
+          <span className="toolbar-project" title={`${screenCount} màn hình`}>
+            {projectTitle}
+          </span>
+          <span className="toolbar-count">{screenCount}</span>
+        </div>
+
+        <span className="toolbar-sep" />
+
         <div className="segmented">
           <button
             type="button"
@@ -124,16 +145,49 @@ export function Board({
           </button>
         </div>
 
+        <span className="toolbar-sep" />
+
+        <select
+          className="tool tool-select"
+          value={pick}
+          onChange={(e) => {
+            const id = e.target.value
+            if (id) {
+              onAddScreen(id)
+              setPick('')
+            }
+          }}
+          title="Thêm màn hình cụ thể"
+        >
+          <option value="">+ Màn hình</option>
+          {SCREENS.map((s) => (
+            <option key={s.id} value={s.id}>
+              {s.title}
+            </option>
+          ))}
+        </select>
         <button
           type="button"
           className="tool"
-          onClick={onAddScreen}
+          onClick={() => onAddScreen()}
           disabled={SCREENS.length === 0}
+          title="Thêm màn tiếp theo của dự án"
         >
-          + Màn hình
+          +
         </button>
         <button type="button" className="tool" onClick={handleFit}>
           Vừa khung
+        </button>
+
+        <span className="toolbar-sep" />
+
+        <button
+          type="button"
+          className="tool"
+          onClick={onTogglePanel}
+          title="Ẩn/hiện panel phải (Cmd/Ctrl+.)"
+        >
+          {panelVisible ? 'Ẩn panel →' : '← Hiện panel'}
         </button>
       </div>
 
@@ -141,9 +195,9 @@ export function Board({
         <div className="board-empty">
           <div className="board-empty-title">Bảng đang trống</div>
           <p>
-            Viết <code>src/screens/&lt;tên&gt;.html</code>, khai báo một dòng trong{' '}
-            <code>src/screens/manifest.ts</code>, rồi thêm import <code>?raw</code> và một dòng
-            trong <code>RAW</code> ở <code>src/screens/index.ts</code>.
+            Chọn một màn trong ô <code>+ Màn hình</code> để thêm vào dự án này, hoặc viết{' '}
+            <code>project/&lt;dự-án&gt;/&lt;tên&gt;.html</code> mới rồi khai báo trong{' '}
+            <code>src/screens/manifest.ts</code>.
           </p>
           <p className="board-empty-note">
             Chưa chắc cách dựng? Hỏi agent — skill <code>phone-canvas</code> có sẵn quy trình và

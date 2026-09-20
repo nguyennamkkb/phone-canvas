@@ -36,7 +36,7 @@ src/screens/index.ts        binds the manifest to ?raw imports; throws on a dupl
 src/screens/tokens.css      spacing, colour, type, and the component vocabulary
 src/screens/icons.css       base .icon rules (hand-written)
 src/screens/icon-set.css    GENERATED — do not edit
-src/screens/<name>.html     the screens
+project/<project>/<name>.html         the screens, one folder per project
 src/extractor/bridge.js     runs INSIDE the iframe: capture, hover, click, height
 src/extractor/compose.ts    stylesheets + chrome + screen + bridge → one document
 src/spec/infer.ts           the only place that knows about SwiftUI
@@ -49,10 +49,11 @@ public/images/              full-colour art
 
 ## Adding a screen
 
-1. Write `src/screens/<name>.html`
-2. Add one line to `SCREEN_FILES` in `src/screens/manifest.ts`
+1. Write `project/<project>/<name>.html`
+2. Add one line to `SCREEN_FILES` in `src/screens/manifest.ts` (`file` is relative to repo root)
 3. Add the matching `?raw` import and one line to `RAW` in `src/screens/index.ts`
    — it throws at startup if you forget
+4. Add its id to the project's `screenIds` in `src/projects/builtin.ts`
 
 ## Icons
 

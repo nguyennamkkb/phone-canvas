@@ -26,12 +26,18 @@ export type BoardSettings = {
    * would silently blank the spec panel a second after you picked a node.
    */
   activeNodeId: string | null
+  /** right sidebar collapsed or not — cosmetic, never changes measurements */
+  panelVisible: boolean
+  /** remove a screen instance from the board (null outside a board) */
+  onDeleteNode: ((id: string) => void) | null
 }
 
 export const BoardContext = createContext<BoardSettings>({
   mode: 'move',
   frameStyle: 'plain',
   activeNodeId: null,
+  panelVisible: true,
+  onDeleteNode: null,
 })
 
 export function useBoardSettings(): BoardSettings {

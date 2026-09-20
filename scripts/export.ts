@@ -31,6 +31,7 @@ import { fileURLToPath } from 'node:url'
 
 import { DEVICES, getDevice } from '../src/frame/devices.ts'
 import { SCREEN_FILES } from '../src/screens/manifest.ts'
+import { BUILTIN_PROJECTS } from '../src/projects/builtin.ts'
 import { composeScreenDoc } from '../src/extractor/compose.ts'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -43,6 +44,7 @@ const STYLESHEETS = ['tokens.css', 'icons.css', 'icon-set.css']
 type Options = {
   screens: string[]
   devices: string[]
+  projects: string[]
   scale: number
   out: string
 }
@@ -51,6 +53,7 @@ const HELP = `
 Export phone screens to PNG.
 
   --screen <id>    screen to export, repeatable, or "all"   (default: all)
+  --project <id>   project to export (union with --screen), repeatable
   --device <id>    device to render at, repeatable, or "all" (default: reference)
   --scale <n>      pixel density multiplier                  (default: 2)
   --out <dir>      output directory                          (default: exports)
@@ -64,9 +67,10 @@ Examples
 `.trim()
 
 function parseArgs(argv: string[]): Options {
-  const options: Options = { screens: ['all'], devices: ['reference'], scale: 2, out: 'exports' }
+  const options: Options = { screens: ['all'], devices: ['reference'], projects: [], scale: 2, out: 'exports' }
   const screens: string[] = []
   const devices: string[] = []
+  const projects: string[] = []
 
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]
@@ -87,6 +91,9 @@ function parseArgs(argv: string[]): Options {
       case '--screen':
         screens.push(next())
         break
+      case '--project':
+        projects.push(next())
+        break
       case '--device':
         devices.push(next())
         break
@@ -106,6 +113,7 @@ function parseArgs(argv: string[]): Options {
 
   options.screens = screens.length ? screens : ['all']
   options.devices = devices.length ? devices : ['reference']
+  options.projects = projects
   return options
 }
 
@@ -437,9 +445,25 @@ async function main(): Promise<void> {
   if (options.screens.length === 0 && options.devices.length === 0) {
     console.log('screens:')
     for (const screen of SCREEN_FILES) console.log(`  ${screen.id.padEnd(20)} ${screen.title}`)
+    console.log('projects:')
+    for (const project of BUILTIN_PROJECTS)
+      console.log(`  ${project.id.padEnd(20)} ${project.title} (${project.screenIds.length} screens)`)
     console.log('devices:')
     for (const device of DEVICES) console.log(`  ${device.id.padEnd(20)} ${device.name}`)
     return
+  }
+
+  // --project unions its screens into the export set (still compatible with --screen)
+  if (options.projects.length > 0) {
+    const fromProjects: string[] = []
+    for (const pid of options.projects) {
+      const project = BUILTIN_PROJECTS.find((p) => p.id === pid)
+      if (!project) fail(`unknown project "${pid}". Try --list`)
+      fromProjects.push(...project.screenIds)
+    }
+    const explicit = options.screens.includes('all') ? [] : options.screens
+    const merged = [...explicit, ...fromProjects]
+    options.screens = merged.length ? [...new Set(merged)] : ['all']
   }
 
   const screens = options.screens.includes('all') ? allScreens : options.screens
@@ -465,7 +489,9 @@ async function main(): Promise<void> {
   for (const screenId of screens) {
     const screen = SCREEN_BY_ID.get(screenId)
     if (!screen) fail(`unknown screen "${screenId}". Try --list`)
-    const html = await readFile(path.join(SCREENS_DIR, screen.file), 'utf8')
+    // screen.file is relative to the repo root (project/<id>/<name>.html);
+    // shared stylesheets still come from src/screens/
+    const html = await readFile(path.join(ROOT, screen.file), 'utf8')
     for (const deviceId of devices) {
       const device = getDevice(deviceId)
       // no bridge: an export carries no measurement scaffolding

@@ -8,6 +8,7 @@ export type SpecPanelProps = {
   nodes: PhoneFlowNode[]
   selectedNodeId: string | null
   onPatchNode: (id: string, patch: Partial<PhoneNodeData>) => void
+  onDeleteNode: (id: string) => void
 }
 
 const px = (v: number) => (Number.isInteger(v) ? String(v) : v.toFixed(2))
@@ -168,7 +169,7 @@ function Detail({ node }: { node: SpecNode }) {
   )
 }
 
-export function SpecPanel({ nodes, selectedNodeId, onPatchNode }: SpecPanelProps) {
+export function SpecPanel({ nodes, selectedNodeId, onPatchNode, onDeleteNode }: SpecPanelProps) {
   const { specs, selection, select, selected } = useInspector()
 
   const node = nodes.find((n) => n.id === selectedNodeId) ?? null
@@ -229,6 +230,17 @@ export function SpecPanel({ nodes, selectedNodeId, onPatchNode }: SpecPanelProps
                   </option>
                 ))}
               </select>
+            </div>
+            <div className="picker-row">
+              <span className="field-key">Màn này</span>
+              <button
+                type="button"
+                className="ghost danger"
+                onClick={() => onDeleteNode(node.id)}
+                title="Xóa màn hình khỏi board (Delete)"
+              >
+                Xóa khỏi board
+              </button>
             </div>
           </div>
         )}

@@ -1,0 +1,425 @@
+- generic [ref=f190e5]:
+  - application [ref=f190e6]:
+    - generic [ref=f190e8]:
+      - generic:
+        - generic:
+          - group [ref=f190e9]:
+            - generic [ref=f190e10]:
+              - generic [ref=f190e11]:
+                - generic [ref=f190e12]: Home · Today
+                - generic [ref=f190e13]: 390 × 844
+              - iframe [ref=f190e16]:
+                - generic [ref=f191e2]:
+                  - generic: 9:41
+                  - generic [ref=f191e5]:
+                    - generic [ref=f191e6]:
+                      - generic [ref=f191e7]:
+                        - generic [ref=f191e8] [cursor=pointer]: Tue. 25 Jan
+                        - generic [ref=f191e10]: 7d streak
+                      - button "Notifications" [ref=f191e12] [cursor=pointer]
+                    - generic [ref=f191e15]:
+                      - generic [ref=f191e16]:
+                        - generic [ref=f191e17]:
+                          - generic [ref=f191e18]: Pocket Companion
+                          - generic [ref=f191e19]: Hi, Shinomiya!
+                        - paragraph [ref=f191e21]: "\"You've been balanced for 3 days. Ready for a quick mindful check-in?\""
+                        - button "Check in now" [ref=f191e23] [cursor=pointer]
+                      - img "Smartphone Mascot Companion" [ref=f191e26]
+                    - generic [ref=f191e27]: Mindful Vitals
+                    - generic [ref=f191e30]:
+                      - generic [ref=f191e31]:
+                        - generic [ref=f191e32]:
+                          - generic [ref=f191e33]: Freud Score
+                          - generic [ref=f191e36]: +4 today
+                        - generic [ref=f191e37]:
+                          - generic [ref=f191e38]: "85"
+                          - generic [ref=f191e39]: Flourishing
+                        - generic [ref=f191e40]: Top 15% mindful zone
+                      - generic [ref=f191e41]:
+                        - generic [ref=f191e42]:
+                          - generic [ref=f191e43]: Mood Rhythm
+                          - generic [ref=f191e46]: 7 days
+                        - generic [ref=f191e47]:
+                          - generic [ref=f191e48]: Peaceful
+                          - generic [ref=f191e49]: Good & steady
+                    - generic [ref=f191e58]:
+                      - generic [ref=f191e59]: Today's Rituals with Buddy
+                      - generic [ref=f191e60]: 2 of 3 done
+                    - generic [ref=f191e61]:
+                      - generic [ref=f191e62]:
+                        - generic [ref=f191e65]:
+                          - generic [ref=f191e66]: Morning Feeling Check-in
+                          - generic [ref=f191e67]: Completed · Felt Peaceful at 08:30
+                        - generic [ref=f191e68]: +10 pts
+                      - generic [ref=f191e69]:
+                        - generic [ref=f191e72]:
+                          - generic [ref=f191e73]: 5-Min Calming Escape
+                          - generic [ref=f191e74]: Soothing audio with subtitles
+                        - button "Start" [ref=f191e75] [cursor=pointer]
+                      - generic [ref=f191e80]:
+                        - generic [ref=f191e81]: Evening Gratitude Note
+                        - generic [ref=f191e82]: One good moment from today · 20:00
+                    - navigation [ref=f191e85]
+          - group [ref=f190e17]:
+            - generic [ref=f190e18]:
+              - generic [ref=f190e19]:
+                - generic [ref=f190e20]: Check in
+                - generic [ref=f190e21]: 390 × 844
+              - iframe [ref=f190e24]:
+                - generic [ref=f192e2]:
+                  - generic: 9:41
+                  - generic [ref=f192e5]:
+                    - generic [ref=f192e6]:
+                      - button "Close" [ref=f192e7] [cursor=pointer]
+                      - generic [ref=f192e9]: Check in
+                      - generic [ref=f192e10]: 14:20
+                    - generic [ref=f192e13]:
+                      - heading "How are you right now?" [level=1] [ref=f192e14]
+                      - generic [ref=f192e15]: Tuesday, 16 September
+                    - img "Happy smartphone mascot checking in" [ref=f192e17]
+                    - generic [ref=f192e18]:
+                      - generic [ref=f192e19]: Good
+                      - generic [ref=f192e20]: Better than yesterday · Peaceful & light
+                    - generic [ref=f192e21]:
+                      - generic [ref=f192e22]:
+                        - img "Awful" [ref=f192e23]
+                        - generic [ref=f192e24]: Awful
+                      - generic [ref=f192e25]:
+                        - img "Bad" [ref=f192e26]
+                        - generic [ref=f192e27]: Bad
+                      - generic [ref=f192e28]:
+                        - img "Okay" [ref=f192e29]
+                        - generic [ref=f192e30]: Okay
+                      - generic [ref=f192e31]:
+                        - img "Good" [ref=f192e33]
+                        - generic [ref=f192e34]: Good
+                      - generic [ref=f192e35]:
+                        - img "Great" [ref=f192e36]
+                        - generic [ref=f192e37]: Great
+                    - generic [ref=f192e38]:
+                      - generic [ref=f192e39]: What is behind it?
+                      - generic [ref=f192e40]:
+                        - generic [ref=f192e41]: Sleep
+                        - generic [ref=f192e43]: Work
+                        - generic [ref=f192e45]: People
+                        - generic [ref=f192e47]: Health
+                        - generic [ref=f192e49]: Weather
+                        - generic [ref=f192e51]: Family
+                    - generic [ref=f192e53]:
+                      - generic [ref=f192e54]: Add a note
+                      - generic [ref=f192e55]: Optional. A line is enough.
+                    - button "Save check-in" [ref=f192e57] [cursor=pointer]
+          - group [ref=f190e25]:
+            - generic [ref=f190e26]:
+              - generic [ref=f190e27]:
+                - generic [ref=f190e28]: Insights
+                - generic [ref=f190e29]: 390 × 844
+              - iframe [ref=f190e32]:
+                - generic [ref=f193e2]:
+                  - generic: 9:41
+                  - generic [ref=f193e5]:
+                    - generic [ref=f193e6]:
+                      - generic [ref=f193e7]: September 2025
+                      - button "Share Insights" [ref=f193e11] [cursor=pointer]
+                    - generic [ref=f193e14]:
+                      - img "Smartphone Mascot holding blooming graph" [ref=f193e16]
+                      - generic [ref=f193e17]:
+                        - generic [ref=f193e18]: Buddy's Pattern Lab
+                        - generic [ref=f193e19]:
+                          - generic [ref=f193e20]: "78"
+                          - generic [ref=f193e21]: / 100 steady
+                        - paragraph [ref=f193e22]:
+                          - text: Your mood garden bloomed
+                          - strong [ref=f193e23]: +12% higher
+                          - text: than August across 24 check-ins.
+                    - generic [ref=f193e24]:
+                      - generic [ref=f193e25]:
+                        - generic [ref=f193e26]: 14-Day Mood Flow
+                        - generic [ref=f193e27] [cursor=pointer]: Flourishing
+                      - generic [ref=f193e57]:
+                        - generic [ref=f193e58]: 02 Sept
+                        - generic [ref=f193e59]: Today
+                    - generic [ref=f193e60]:
+                      - generic [ref=f193e61]:
+                        - generic [ref=f193e62]: Peak day
+                        - generic [ref=f193e65]: Saturday
+                        - generic [ref=f193e66]: Unwind & social
+                      - generic [ref=f193e67]:
+                        - generic [ref=f193e68]: Gentle day
+                        - generic [ref=f193e71]: Thursday
+                        - generic [ref=f193e72]: Needs quiet pace
+                    - generic [ref=f193e73]:
+                      - generic [ref=f193e74]: What Nourished You
+                      - generic [ref=f193e75]: 4 tags
+                    - generic [ref=f193e76]:
+                      - generic [ref=f193e77]: Good Sleep · 18
+                      - generic [ref=f193e79]: Nature Walk · 14
+                      - generic [ref=f193e81]: Loved Ones · 9
+                      - generic [ref=f193e83]: Mindfulness · 6
+                    - generic [ref=f193e89]:
+                      - generic [ref=f193e90]: Buddy's Tip for Thursday
+                      - generic [ref=f193e91]: Thursdays dip when work piles up. Schedule a 5-min calm escape ahead!
+                    - navigation [ref=f193e93]
+          - group [ref=f190e33]:
+            - generic [ref=f190e34]:
+              - generic [ref=f190e35]:
+                - generic [ref=f190e36]: History
+                - generic [ref=f190e37]: 390 × 844
+              - iframe [ref=f190e40]:
+                - generic [ref=f194e2]:
+                  - generic: 9:41
+                  - generic [ref=f194e5]:
+                    - generic [ref=f194e6]:
+                      - button "Back" [ref=f194e7] [cursor=pointer]
+                      - generic [ref=f194e9]: History
+                      - button "Jump to month" [ref=f194e10] [cursor=pointer]
+                    - generic [ref=f194e12]:
+                      - generic [ref=f194e13]: September 2025
+                      - button "2025" [ref=f194e14] [cursor=pointer]
+                    - generic [ref=f194e16]:
+                      - generic [ref=f194e17]:
+                        - generic [ref=f194e18]: M
+                        - generic [ref=f194e19]: T
+                        - generic [ref=f194e20]: W
+                        - generic [ref=f194e21]: T
+                        - generic [ref=f194e22]: F
+                        - generic [ref=f194e23]: S
+                        - generic [ref=f194e24]: S
+                      - generic [ref=f194e25]:
+                        - generic [ref=f194e26]: "1"
+                        - generic [ref=f194e27]: "2"
+                        - generic [ref=f194e28]: "3"
+                        - generic [ref=f194e29]: "4"
+                        - generic [ref=f194e30]: "5"
+                        - generic [ref=f194e31]: "6"
+                        - generic [ref=f194e32]: "7"
+                      - generic [ref=f194e33]:
+                        - generic [ref=f194e34]: "8"
+                        - generic [ref=f194e35]: "9"
+                        - generic [ref=f194e36]: "10"
+                        - generic [ref=f194e37]: "11"
+                        - generic [ref=f194e38]: "12"
+                        - generic [ref=f194e39]: "13"
+                        - generic [ref=f194e40]: "14"
+                      - generic [ref=f194e41]:
+                        - generic [ref=f194e42]: "15"
+                        - generic [ref=f194e43]: "16"
+                        - generic [ref=f194e44]: "17"
+                        - generic [ref=f194e45]: "18"
+                        - generic [ref=f194e46]: "19"
+                        - generic [ref=f194e47]: "20"
+                        - generic [ref=f194e48]: "21"
+                      - generic [ref=f194e49]:
+                        - generic [ref=f194e50]: "22"
+                        - generic [ref=f194e51]: "23"
+                        - generic [ref=f194e52]: "24"
+                        - generic [ref=f194e53]: "25"
+                        - generic [ref=f194e54]: "26"
+                        - generic [ref=f194e55]: "27"
+                        - generic [ref=f194e56]: "28"
+                      - generic [ref=f194e57]:
+                        - generic [ref=f194e58]: "29"
+                        - generic [ref=f194e59]: "30"
+                    - generic [ref=f194e65]:
+                      - generic [ref=f194e66]:
+                        - generic [ref=f194e67]: Entries
+                        - generic [ref=f194e68]: "15"
+                      - generic [ref=f194e69]:
+                        - generic [ref=f194e70]: Average
+                        - generic [ref=f194e71]: "3.7"
+                      - generic [ref=f194e72]:
+                        - generic [ref=f194e73]: Best day
+                        - generic [ref=f194e74]: 13th
+                    - generic [ref=f194e75]: September so far
+                    - generic [ref=f194e76]:
+                      - generic [ref=f194e80]:
+                        - generic [ref=f194e81]: Long walk, no phone
+                        - generic [ref=f194e82]: Sat 13 Sept · 18:40
+                      - generic [ref=f194e87]:
+                        - generic [ref=f194e88]: Slept badly, everything felt loud
+                        - generic [ref=f194e89]: Thu 11 Sept · 09:10
+                    - navigation [ref=f194e92]
+          - group [ref=f190e41]:
+            - generic [ref=f190e42]:
+              - generic [ref=f190e43]:
+                - generic [ref=f190e44]: Journal
+                - generic [ref=f190e45]: 390 × 844
+              - iframe [ref=f190e48]:
+                - generic [ref=f195e2]:
+                  - generic: 9:41
+                  - generic [ref=f195e5]:
+                    - generic [ref=f195e6]:
+                      - generic [ref=f195e7]: Journal
+                      - button "Search" [ref=f195e8] [cursor=pointer]
+                    - generic [ref=f195e10]:
+                      - generic [ref=f195e11]: All
+                      - generic [ref=f195e12]: Good days
+                      - generic [ref=f195e13]: Hard days
+                      - generic [ref=f195e14]: Notes
+                    - generic [ref=f195e16]:
+                      - generic [ref=f195e17]:
+                        - generic [ref=f195e20]:
+                          - generic [ref=f195e21]: Quiet morning, clear head
+                          - generic [ref=f195e22]: Today · 14:20
+                        - generic [ref=f195e23]: Sleep
+                      - generic [ref=f195e24]:
+                        - generic [ref=f195e27]:
+                          - generic [ref=f195e28]: Busy but fine
+                          - generic [ref=f195e29]: Today · 09:05
+                        - generic [ref=f195e30]: Work
+                      - generic [ref=f195e31]:
+                        - generic [ref=f195e34]:
+                          - generic [ref=f195e35]: Long walk, no phone
+                          - generic [ref=f195e36]: Sat 13 Sept · 18:40
+                        - generic [ref=f195e37]: Health
+                      - generic [ref=f195e38]:
+                        - generic [ref=f195e41]:
+                          - generic [ref=f195e42]: Slept badly, everything felt loud
+                          - generic [ref=f195e43]: Thu 11 Sept · 09:10
+                        - generic [ref=f195e44]: Sleep
+                      - generic [ref=f195e45]: Earlier
+                      - generic [ref=f195e46]:
+                        - generic [ref=f195e49]:
+                          - generic [ref=f195e50]: Good call with my sister
+                          - generic [ref=f195e51]: Tue 9 Sept · 21:15
+                        - generic [ref=f195e52]: People
+                      - generic [ref=f195e53]:
+                        - generic [ref=f195e56]:
+                          - generic [ref=f195e57]: The deadline moved and I took it badly
+                          - generic [ref=f195e58]: Mon 8 Sept · 16:30
+                        - generic [ref=f195e59]: Work
+                      - generic [ref=f195e63]:
+                        - generic [ref=f195e64]: Ordinary Saturday
+                        - generic [ref=f195e65]: Sat 6 Sept · 11:40
+                      - generic [ref=f195e69]:
+                        - generic [ref=f195e70]: Finished the book I kept restarting
+                        - generic [ref=f195e71]: Wed 3 Sept · 22:05
+                    - navigation [ref=f195e73]
+          - group [ref=f190e49]:
+            - generic [ref=f190e50]:
+              - generic [ref=f190e51]:
+                - generic [ref=f190e52]: Entry
+                - generic [ref=f190e53]: 390 × 844
+              - iframe [ref=f190e56]:
+                - generic [ref=f196e2]:
+                  - generic: 9:41
+                  - generic [ref=f196e5]:
+                    - generic [ref=f196e6]:
+                      - button "Back" [ref=f196e7] [cursor=pointer]
+                      - button "More" [ref=f196e9] [cursor=pointer]
+                    - generic [ref=f196e11]:
+                      - generic [ref=f196e14]: Good
+                      - generic [ref=f196e15]: Tuesday, 16 September · 14:20
+                    - generic [ref=f196e16]:
+                      - generic [ref=f196e17]: What was behind it
+                      - generic [ref=f196e18]:
+                        - generic [ref=f196e19]: Sleep
+                        - generic [ref=f196e20]: Work
+                        - generic [ref=f196e21]: People
+                    - generic [ref=f196e22]:
+                      - generic [ref=f196e23]: Note
+                      - paragraph [ref=f196e24]: Woke up before the alarm and stayed in bed anyway. The first hour was slow but the afternoon caught up. Nothing dramatic happened, which is probably why the day felt steady.
+                    - generic [ref=f196e25]:
+                      - generic [ref=f196e26]:
+                        - generic [ref=f196e28]: Mood
+                        - generic [ref=f196e29]: 4 of 5
+                      - generic [ref=f196e30]:
+                        - generic [ref=f196e32]: Slept
+                        - generic [ref=f196e33]: 6h 20m
+                    - generic [ref=f196e34]: Nearby in time
+                    - generic [ref=f196e35]:
+                      - generic [ref=f196e39]:
+                        - generic [ref=f196e40]: Busy but fine
+                        - generic [ref=f196e41]: Today · 09:05
+                      - generic [ref=f196e46]:
+                        - generic [ref=f196e47]: Long walk, no phone
+                        - generic [ref=f196e48]: Sat 13 Sept · 18:40
+                    - generic [ref=f196e50]:
+                      - button "Edit note" [ref=f196e51] [cursor=pointer]
+                      - button "Edit entry" [ref=f196e53] [cursor=pointer]
+          - group [ref=f190e57]:
+            - generic [ref=f190e58]:
+              - generic [ref=f190e59]:
+                - generic [ref=f190e60]: Profile
+                - generic [ref=f190e61]: 390 × 844
+              - iframe [ref=f190e64]:
+                - generic [ref=f197e2]:
+                  - generic: 9:41
+                  - generic [ref=f197e5]:
+                    - generic [ref=f197e6]:
+                      - button "Back" [ref=f197e7] [cursor=pointer]
+                      - generic [ref=f197e9]: Profile
+                    - generic [ref=f197e10]:
+                      - img "Your profile" [ref=f197e11]
+                      - generic [ref=f197e12]: Olive Castillo
+                      - generic [ref=f197e13]: Checking in since March · 148 entries
+                    - generic [ref=f197e14]:
+                      - generic [ref=f197e15]:
+                        - generic [ref=f197e17]: "6"
+                        - generic [ref=f197e18]: day streak
+                      - generic [ref=f197e19]:
+                        - generic [ref=f197e21]: "3.8"
+                        - generic [ref=f197e22]: average mood
+                    - generic [ref=f197e23]:
+                      - generic [ref=f197e24]: Reminders
+                      - generic [ref=f197e26]:
+                        - generic [ref=f197e27]: Morning
+                        - generic [ref=f197e28]: 08:30 · after you wake up
+                      - generic [ref=f197e32]:
+                        - generic [ref=f197e33]: Midday
+                        - generic [ref=f197e34]: 13:00 · a pause between things
+                      - generic [ref=f197e38]:
+                        - generic [ref=f197e39]: Evening
+                        - generic [ref=f197e40]: 21:30 · before the day closes
+                    - generic [ref=f197e43]: Your data
+                    - generic [ref=f197e44]:
+                      - generic [ref=f197e48]:
+                        - generic [ref=f197e49]: Export entries
+                        - generic [ref=f197e50]: CSV, JSON or plain text
+                      - generic [ref=f197e55]:
+                        - generic [ref=f197e56]: Theme
+                        - generic [ref=f197e57]: Follow the system
+                      - generic [ref=f197e62]:
+                        - generic [ref=f197e63]: Privacy
+                        - generic [ref=f197e64]: Entries stay on this device
+                    - button "Delete all entries" [ref=f197e66] [cursor=pointer]
+                    - navigation [ref=f197e68]
+    - generic "Control Panel" [ref=f190e65]:
+      - button "Zoom In" [ref=f190e66] [cursor=pointer]
+      - button "Zoom Out" [ref=f190e69] [cursor=pointer]
+      - button "Fit View" [ref=f190e72] [cursor=pointer]
+    - img "Mini Map" [ref=f190e76]
+  - generic [ref=f190e85]:
+    - generic [ref=f190e86]:
+      - button "←" [ref=f190e87] [cursor=pointer]
+      - generic "7 màn hình" [ref=f190e88]: Mood Core
+      - generic [ref=f190e89]: "7"
+    - generic [ref=f190e91]:
+      - button "Di chuyển" [ref=f190e92] [cursor=pointer]
+      - button "Đo đạc" [ref=f190e93] [cursor=pointer]
+    - generic [ref=f190e94]:
+      - button "Khung đơn giản" [ref=f190e95] [cursor=pointer]
+      - button "Khung máy" [ref=f190e96] [cursor=pointer]
+    - combobox "Thêm màn hình cụ thể" [ref=f190e98] [cursor=pointer]:
+      - option "+ Màn hình" [selected]
+      - option "Splash"
+      - option "Onboarding 1 · Hello"
+      - option "Onboarding 2 · Check in"
+      - option "Onboarding 3 · Patterns"
+      - option "Onboarding 4 · Search"
+      - option "Onboarding 5 · Reminders"
+      - option "Onboarding 6 · Listen"
+      - option "Onboarding 7 · Watch"
+      - option "Home · Today"
+      - option "Check in"
+      - option "Insights"
+      - option "History"
+      - option "Journal"
+      - option "Entry"
+      - option "Profile"
+      - option "Freud · Score"
+      - option "Freud · Dashboard"
+      - option "Freud · Mood Stats"
+    - button "+" [ref=f190e99] [cursor=pointer]
+    - button "Vừa khung" [ref=f190e100] [cursor=pointer]
+    - button "← Hiện panel" [ref=f190e102] [cursor=pointer]

@@ -203,11 +203,20 @@ src/
 │  ├─ BoardContext.ts     mode · frame style · active node
 │  └─ PhoneNode.tsx       one screen = one node (rectangle + iframe)
 ├─ frame/devices.ts       width + safe areas (the only device data that matters)
+├─ project/               one folder per project, each holds its screens
+│  ├─ onboarding/*.html   splash + onb-* (8 màn)
+│  ├─ mood-core/*.html    home, checkin, journal… (7 màn)
+│  └─ freud/*.html        freud-score, freud-home, mood-stats (3 màn)
 ├─ screens/
 │  ├─ tokens.css          spacing, colour, type — the styling vocabulary
 │  ├─ icons.css           glyph → SF Symbol → file
-│  ├─ index.ts            screen registry (the app; the exporter reads the directory)
-│  └─ *.html              the screens themselves
+│  ├─ index.ts            screen registry (the app; the exporter reads the manifest)
+│  └─ manifest.ts         id · title · file (file is relative to repo root)
+├─ projects/
+│  ├─ builtin.ts          project definitions (Node-safe, used by exporter)
+│  ├─ projects.ts         resolve/cover/count helpers (app)
+│  ├─ storage.ts          per-project boards + custom projects (localStorage)
+│  └─ Dashboard.tsx       project picker: grid, search, + Dự án
 ├─ extractor/
 │  ├─ bridge.js           runs INSIDE the iframe: capture, hover, click, height
 │  ├─ compose.ts          stylesheets + chrome + screen + bridge → one document
@@ -222,8 +231,9 @@ src/
 
 ## Adding a screen
 
-1. Write `src/screens/my-screen.html` — see `docs/screen-authoring.md`.
-2. Register it in `src/screens/index.ts`.
+1. Write `project/<project>/my-screen.html` — see `docs/screen-authoring.md`.
+2. Register it in `src/screens/manifest.ts` (`file` is relative to repo root) and `src/screens/index.ts`.
+3. Add its id to the project's `screenIds` in `src/projects/builtin.ts`.
 
 The authoring contract is what you hand an LLM. It is the difference between
 HTML that maps cleanly to SwiftUI and HTML that does not.

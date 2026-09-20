@@ -1,0 +1,34 @@
+- generic [ref=f58e4]:
+  - banner [ref=f58e5]:
+    - generic [ref=f58e6]:
+      - heading "Dự án (3)" [level=1] [ref=f58e7]:
+        - text: Dự án
+        - generic [ref=f58e8]: (3)
+      - paragraph [ref=f58e9]: Mỗi dự án là một bảng các màn hình. Chọn để mở board.
+    - generic [ref=f58e10]:
+      - textbox "Tìm dự án…" [ref=f58e11]
+      - generic [ref=f58e12]:
+        - textbox "+ Tên dự án mới…" [ref=f58e13]
+        - button "+ Dự án" [disabled] [ref=f58e14]
+  - generic [ref=f58e15]:
+    - article [ref=f58e16]:
+      - button "Onboarding 1 · Hello Onboarding Splash + 7 màn giới thiệu đầu app 8 màn hình" [ref=f58e17] [cursor=pointer]:
+        - img "Onboarding 1 · Hello" [ref=f58e19]
+        - generic [ref=f58e20]:
+          - heading "Onboarding" [level=3] [ref=f58e22]
+          - paragraph [ref=f58e23]: Splash + 7 màn giới thiệu đầu app
+          - generic [ref=f58e24]: 8 màn hình
+    - article [ref=f58e25]:
+      - 'button "Home · Today Mood Core Luồng chính: home, check-in, journal, insights 7 màn hình" [ref=f58e26] [cursor=pointer]':
+        - img "Home · Today" [ref=f58e28]
+        - generic [ref=f58e29]:
+          - heading "Mood Core" [level=3] [ref=f58e31]
+          - paragraph [ref=f58e32]: "Luồng chính: home, check-in, journal, insights"
+          - generic [ref=f58e33]: 7 màn hình
+    - article [ref=f58e34]:
+      - button "Freud · Dashboard Freud Score, dashboard, mood stats 3 màn hình" [ref=f58e35] [cursor=pointer]:
+        - img "Freud · Dashboard" [ref=f58e37]
+        - generic [ref=f58e38]:
+          - heading "Freud" [level=3] [ref=f58e40]
+          - paragraph [ref=f58e41]: Score, dashboard, mood stats
+          - generic [ref=f58e42]: 3 màn hình

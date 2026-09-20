@@ -1,0 +1,86 @@
+- generic [ref=f68e97]:
+  - application [ref=f68e98]:
+    - group [ref=f68e135]:
+      - generic [ref=f68e136]:
+        - generic [ref=f68e137]:
+          - generic [ref=f68e138]: Profile
+          - generic [ref=f68e139]: 390 × 844
+        - iframe [ref=f68e142]:
+          - generic [ref=f70e2]:
+            - generic: 9:41
+            - generic [ref=f70e5]:
+              - generic [ref=f70e6]:
+                - button "Back" [ref=f70e7] [cursor=pointer]
+                - generic [ref=f70e9]: Profile
+              - generic [ref=f70e10]:
+                - img "Your profile" [ref=f70e11]
+                - generic [ref=f70e12]: Olive Castillo
+                - generic [ref=f70e13]: Checking in since March · 148 entries
+              - generic [ref=f70e14]:
+                - generic [ref=f70e15]:
+                  - generic [ref=f70e17]: "6"
+                  - generic [ref=f70e18]: day streak
+                - generic [ref=f70e19]:
+                  - generic [ref=f70e21]: "3.8"
+                  - generic [ref=f70e22]: average mood
+              - generic [ref=f70e23]:
+                - generic [ref=f70e24]: Reminders
+                - generic [ref=f70e26]:
+                  - generic [ref=f70e27]: Morning
+                  - generic [ref=f70e28]: 08:30 · after you wake up
+                - generic [ref=f70e32]:
+                  - generic [ref=f70e33]: Midday
+                  - generic [ref=f70e34]: 13:00 · a pause between things
+                - generic [ref=f70e38]:
+                  - generic [ref=f70e39]: Evening
+                  - generic [ref=f70e40]: 21:30 · before the day closes
+              - generic [ref=f70e43]: Your data
+              - generic [ref=f70e44]:
+                - generic [ref=f70e48]:
+                  - generic [ref=f70e49]: Export entries
+                  - generic [ref=f70e50]: CSV, JSON or plain text
+                - generic [ref=f70e55]:
+                  - generic [ref=f70e56]: Theme
+                  - generic [ref=f70e57]: Follow the system
+                - generic [ref=f70e62]:
+                  - generic [ref=f70e63]: Privacy
+                  - generic [ref=f70e64]: Entries stay on this device
+              - button "Delete all entries" [ref=f70e66] [cursor=pointer]
+              - navigation [ref=f70e68]
+    - generic "Control Panel" [ref=f68e101]:
+      - button "Zoom In" [ref=f68e102] [cursor=pointer]
+      - button "Zoom Out" [ref=f68e105] [cursor=pointer]
+      - button "Fit View" [ref=f68e108] [cursor=pointer]
+    - img "Mini Map" [ref=f68e112]
+  - generic [ref=f68e114]:
+    - button "←" [ref=f68e115] [cursor=pointer]
+    - generic "1 màn hình" [ref=f68e144]: UI Test Demo
+    - generic [ref=f68e117]:
+      - button "Di chuyển" [ref=f68e118] [cursor=pointer]
+      - button "Đo đạc" [ref=f68e119] [cursor=pointer]
+    - generic [ref=f68e120]:
+      - button "Khung đơn giản" [ref=f68e121] [cursor=pointer]
+      - button "Khung máy" [ref=f68e122] [cursor=pointer]
+    - combobox "Thêm màn hình cụ thể" [ref=f68e123] [cursor=pointer]:
+      - option "+ Màn hình" [selected]
+      - option "Splash"
+      - option "Onboarding 1 · Hello"
+      - option "Onboarding 2 · Check in"
+      - option "Onboarding 3 · Patterns"
+      - option "Onboarding 4 · Search"
+      - option "Onboarding 5 · Reminders"
+      - option "Onboarding 6 · Listen"
+      - option "Onboarding 7 · Watch"
+      - option "Home · Today"
+      - option "Check in"
+      - option "Insights"
+      - option "History"
+      - option "Journal"
+      - option "Entry"
+      - option "Profile"
+      - option "Freud · Score"
+      - option "Freud · Dashboard"
+      - option "Freud · Mood Stats"
+    - button "+" [ref=f68e124] [cursor=pointer]
+    - button "Vừa khung" [ref=f68e125] [cursor=pointer]
+    - button "← Hiện panel" [ref=f68e126] [cursor=pointer]

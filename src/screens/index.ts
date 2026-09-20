@@ -7,7 +7,7 @@ import type { ScreenFile } from './manifest'
  * file only resolves it.
  *
  * Adding a screen:
- *   1. write `src/screens/<name>.html`
+ *   1. write `project/<project>/<name>.html`
  *   2. add the entry to SCREEN_FILES in ./manifest.ts
  *   3. add its `?raw` import below and one line to RAW
  *
@@ -15,24 +15,24 @@ import type { ScreenFile } from './manifest'
  * missing, rather than rendering a blank frame.
  */
 
-import splash from './splash.html?raw'
-import onbHello from './onb-hello.html?raw'
-import onbCheckin from './onb-checkin.html?raw'
-import onbInsights from './onb-insights.html?raw'
-import onbSearch from './onb-search.html?raw'
-import onbRemind from './onb-remind.html?raw'
-import onbListen from './onb-listen.html?raw'
-import onbWatch from './onb-watch.html?raw'
-import home from './home.html?raw'
-import checkin from './checkin.html?raw'
-import insights from './insights.html?raw'
-import history from './history.html?raw'
-import journal from './journal.html?raw'
-import entry from './entry.html?raw'
-import profile from './profile.html?raw'
-import freudScore from './freud-score.html?raw'
-import freudHome from './freud-home.html?raw'
-import moodStats from './mood-stats.html?raw'
+import splash from '../../project/onboarding/splash.html?raw'
+import onbHello from '../../project/onboarding/onb-hello.html?raw'
+import onbCheckin from '../../project/onboarding/onb-checkin.html?raw'
+import onbInsights from '../../project/onboarding/onb-insights.html?raw'
+import onbSearch from '../../project/onboarding/onb-search.html?raw'
+import onbRemind from '../../project/onboarding/onb-remind.html?raw'
+import onbListen from '../../project/onboarding/onb-listen.html?raw'
+import onbWatch from '../../project/onboarding/onb-watch.html?raw'
+import home from '../../project/mood-core/home.html?raw'
+import checkin from '../../project/mood-core/checkin.html?raw'
+import insights from '../../project/mood-core/insights.html?raw'
+import history from '../../project/mood-core/history.html?raw'
+import journal from '../../project/mood-core/journal.html?raw'
+import entry from '../../project/mood-core/entry.html?raw'
+import profile from '../../project/mood-core/profile.html?raw'
+import freudScore from '../../project/freud/freud-score.html?raw'
+import freudHome from '../../project/freud/freud-home.html?raw'
+import moodStats from '../../project/freud/mood-stats.html?raw'
 
 const RAW: Record<string, string> = {
   splash,

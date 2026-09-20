@@ -1,0 +1,45 @@
+- generic [ref=f78e4]:
+  - banner [ref=f78e5]:
+    - generic [ref=f78e6]:
+      - heading "Dự án (4)" [level=1] [ref=f78e7]:
+        - text: Dự án
+        - generic [ref=f78e8]: (4)
+      - paragraph [ref=f78e9]: Mỗi dự án là một bảng các màn hình. Chọn để mở board.
+    - generic [ref=f78e10]:
+      - textbox "Tìm dự án…" [ref=f78e11]
+      - generic [ref=f78e12]:
+        - textbox "+ Tên dự án mới…" [ref=f78e13]
+        - button "+ Dự án" [disabled] [ref=f78e14]
+  - generic [ref=f78e15]:
+    - article [ref=f78e16]:
+      - button "Onboarding 1 · Hello Onboarding Splash + 7 màn giới thiệu đầu app 8 màn hình" [ref=f78e17] [cursor=pointer]:
+        - img "Onboarding 1 · Hello" [ref=f78e19]
+        - generic [ref=f78e20]:
+          - heading "Onboarding" [level=3] [ref=f78e22]
+          - paragraph [ref=f78e23]: Splash + 7 màn giới thiệu đầu app
+          - generic [ref=f78e24]: 8 màn hình
+    - article [ref=f78e25]:
+      - 'button "Home · Today Mood Core Luồng chính: home, check-in, journal, insights 7 màn hình" [ref=f78e26] [cursor=pointer]':
+        - img "Home · Today" [ref=f78e28]
+        - generic [ref=f78e29]:
+          - heading "Mood Core" [level=3] [ref=f78e31]
+          - paragraph [ref=f78e32]: "Luồng chính: home, check-in, journal, insights"
+          - generic [ref=f78e33]: 7 màn hình
+    - article [ref=f78e34]:
+      - button "F Freud · Dashboard Freud Score, dashboard, mood stats 3 màn hình" [ref=f78e35] [cursor=pointer]:
+        - generic [ref=f78e36]:
+          - generic [ref=f78e37]: F
+          - generic [ref=f78e38]: Freud · Dashboard
+        - generic [ref=f78e39]:
+          - heading "Freud" [level=3] [ref=f78e41]
+          - paragraph [ref=f78e42]: Score, dashboard, mood stats
+          - generic [ref=f78e43]: 3 màn hình
+    - article [ref=f78e44]:
+      - button "Á áđá tự tạo 0 màn hình" [ref=f78e45] [cursor=pointer]:
+        - generic [ref=f78e46]: Á
+        - generic [ref=f78e48]:
+          - generic [ref=f78e49]:
+            - heading "áđá" [level=3] [ref=f78e50]
+            - generic [ref=f78e51]: tự tạo
+          - generic [ref=f78e52]: 0 màn hình
+      - button "Xóa" [ref=f78e53] [cursor=pointer]

@@ -1,0 +1,45 @@
+- generic [ref=f131e396]:
+  - banner [ref=f131e397]:
+    - generic [ref=f131e398]:
+      - heading "Dự án (4)" [level=1] [ref=f131e399]:
+        - text: Dự án
+        - generic [ref=f131e400]: (4)
+      - paragraph [ref=f131e401]: Mỗi dự án là một bảng các màn hình. Chọn để mở board.
+    - generic [ref=f131e402]:
+      - textbox "Tìm dự án…" [ref=f131e403]
+      - generic [ref=f131e404]:
+        - textbox "+ Tên dự án mới…" [ref=f131e405]
+        - button "+ Dự án" [disabled] [ref=f131e406]
+  - generic [ref=f131e407]:
+    - article [ref=f131e408]:
+      - button "Onboarding 1 · Hello Onboarding Splash + 7 màn giới thiệu đầu app 8 màn hình" [ref=f131e409] [cursor=pointer]:
+        - img "Onboarding 1 · Hello" [ref=f131e411]
+        - generic [ref=f131e412]:
+          - heading "Onboarding" [level=3] [ref=f131e414]
+          - paragraph [ref=f131e415]: Splash + 7 màn giới thiệu đầu app
+          - generic [ref=f131e416]: 8 màn hình
+    - article [ref=f131e417]:
+      - 'button "Home · Today Mood Core Luồng chính: home, check-in, journal, insights 7 màn hình" [ref=f131e418] [cursor=pointer]':
+        - img "Home · Today" [ref=f131e420]
+        - generic [ref=f131e421]:
+          - heading "Mood Core" [level=3] [ref=f131e423]
+          - paragraph [ref=f131e424]: "Luồng chính: home, check-in, journal, insights"
+          - generic [ref=f131e425]: 7 màn hình
+    - article [ref=f131e426]:
+      - button "F Freud · Dashboard Freud Score, dashboard, mood stats 3 màn hình" [ref=f131e427] [cursor=pointer]:
+        - generic [ref=f131e428]:
+          - generic [ref=f131e429]: F
+          - generic [ref=f131e430]: Freud · Dashboard
+        - generic [ref=f131e431]:
+          - heading "Freud" [level=3] [ref=f131e433]
+          - paragraph [ref=f131e434]: Score, dashboard, mood stats
+          - generic [ref=f131e435]: 3 màn hình
+    - article [ref=f131e436]:
+      - button "Á áđá tự tạo 0 màn hình" [ref=f131e437] [cursor=pointer]:
+        - generic [ref=f131e438]: Á
+        - generic [ref=f131e440]:
+          - generic [ref=f131e441]:
+            - heading "áđá" [level=3] [ref=f131e442]
+            - generic [ref=f131e443]: tự tạo
+          - generic [ref=f131e444]: 0 màn hình
+      - button "Xóa" [ref=f131e445] [cursor=pointer]

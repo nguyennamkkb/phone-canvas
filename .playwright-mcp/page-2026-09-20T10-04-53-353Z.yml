@@ -1,0 +1,96 @@
+- generic [ref=e161]:
+  - application [ref=e162]:
+    - group [ref=e199]:
+      - generic [ref=e200]:
+        - generic [ref=e201]:
+          - generic [ref=e202]: Home · Today
+          - generic [ref=e203]: 390 × 844
+        - iframe [ref=e206]:
+          - generic [ref=f4e2]:
+            - generic: 9:41
+            - generic [ref=f4e5]:
+              - generic [ref=f4e6]:
+                - generic [ref=f4e7]:
+                  - generic [ref=f4e8] [cursor=pointer]: Tue. 25 Jan
+                  - generic [ref=f4e10]: 7d streak
+                - button "Notifications" [ref=f4e12] [cursor=pointer]
+              - generic [ref=f4e15]:
+                - generic [ref=f4e16]:
+                  - generic [ref=f4e17]:
+                    - generic [ref=f4e18]: Pocket Companion
+                    - generic [ref=f4e19]: Hi, Shinomiya!
+                  - paragraph [ref=f4e21]: "\"You've been balanced for 3 days. Ready for a quick mindful check-in?\""
+                  - button "Check in now" [ref=f4e23] [cursor=pointer]
+                - img "Smartphone Mascot Companion" [ref=f4e26]
+              - generic [ref=f4e27]: Mindful Vitals
+              - generic [ref=f4e30]:
+                - generic [ref=f4e31]:
+                  - generic [ref=f4e32]:
+                    - generic [ref=f4e33]: Freud Score
+                    - generic [ref=f4e36]: +4 today
+                  - generic [ref=f4e37]:
+                    - generic [ref=f4e38]: "85"
+                    - generic [ref=f4e39]: Flourishing
+                  - generic [ref=f4e40]: Top 15% mindful zone
+                - generic [ref=f4e41]:
+                  - generic [ref=f4e42]:
+                    - generic [ref=f4e43]: Mood Rhythm
+                    - generic [ref=f4e46]: 7 days
+                  - generic [ref=f4e47]:
+                    - generic [ref=f4e48]: Peaceful
+                    - generic [ref=f4e49]: Good & steady
+              - generic [ref=f4e58]:
+                - generic [ref=f4e59]: Today's Rituals with Buddy
+                - generic [ref=f4e60]: 2 of 3 done
+              - generic [ref=f4e61]:
+                - generic [ref=f4e62]:
+                  - generic [ref=f4e65]:
+                    - generic [ref=f4e66]: Morning Feeling Check-in
+                    - generic [ref=f4e67]: Completed · Felt Peaceful at 08:30
+                  - generic [ref=f4e68]: +10 pts
+                - generic [ref=f4e69]:
+                  - generic [ref=f4e72]:
+                    - generic [ref=f4e73]: 5-Min Calming Escape
+                    - generic [ref=f4e74]: Soothing audio with subtitles
+                  - button "Start" [ref=f4e75] [cursor=pointer]
+                - generic [ref=f4e80]:
+                  - generic [ref=f4e81]: Evening Gratitude Note
+                  - generic [ref=f4e82]: One good moment from today · 20:00
+              - navigation [ref=f4e85]
+    - generic "Control Panel" [ref=e165]:
+      - button "Zoom In" [ref=e166] [cursor=pointer]
+      - button "Zoom Out" [ref=e169] [cursor=pointer]
+      - button "Fit View" [ref=e172] [cursor=pointer]
+    - img "Mini Map" [ref=e176]
+  - generic [ref=e178]:
+    - button "←" [ref=e179] [cursor=pointer]
+    - generic "1 màn hình" [ref=e208]: Test E2E
+    - generic [ref=e181]:
+      - button "Di chuyển" [ref=e182] [cursor=pointer]
+      - button "Đo đạc" [ref=e183] [cursor=pointer]
+    - generic [ref=e184]:
+      - button "Khung đơn giản" [ref=e185] [cursor=pointer]
+      - button "Khung máy" [ref=e186] [cursor=pointer]
+    - combobox "Thêm màn hình cụ thể" [ref=e187] [cursor=pointer]:
+      - option "+ Màn hình" [selected]
+      - option "Splash"
+      - option "Onboarding 1 · Hello"
+      - option "Onboarding 2 · Check in"
+      - option "Onboarding 3 · Patterns"
+      - option "Onboarding 4 · Search"
+      - option "Onboarding 5 · Reminders"
+      - option "Onboarding 6 · Listen"
+      - option "Onboarding 7 · Watch"
+      - option "Home · Today"
+      - option "Check in"
+      - option "Insights"
+      - option "History"
+      - option "Journal"
+      - option "Entry"
+      - option "Profile"
+      - option "Freud · Score"
+      - option "Freud · Dashboard"
+      - option "Freud · Mood Stats"
+    - button "+" [ref=e188] [cursor=pointer]
+    - button "Vừa khung" [ref=e189] [cursor=pointer]
+    - button "← Hiện panel" [ref=e190] [cursor=pointer]

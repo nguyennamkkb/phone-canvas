@@ -1,0 +1,45 @@
+- generic [ref=f5e45]:
+  - banner [ref=f5e46]:
+    - generic [ref=f5e47]:
+      - heading "Dự án (4)" [level=1] [ref=f5e48]:
+        - text: Dự án
+        - generic [ref=f5e49]: (4)
+      - paragraph [ref=f5e50]: Mỗi dự án là một bảng các màn hình. Chọn để mở board.
+    - generic [ref=f5e51]:
+      - textbox "Tìm dự án…" [ref=f5e52]
+      - generic [ref=f5e53]:
+        - textbox "+ Tên dự án mới…" [ref=f5e54]
+        - button "+ Dự án" [disabled] [ref=f5e55]
+  - generic [ref=f5e56]:
+    - article [ref=f5e57]:
+      - button "Onboarding 1 · Hello Onboarding Splash + 7 màn giới thiệu đầu app 8 màn hình" [ref=f5e58] [cursor=pointer]:
+        - img "Onboarding 1 · Hello" [ref=f5e60]
+        - generic [ref=f5e61]:
+          - heading "Onboarding" [level=3] [ref=f5e63]
+          - paragraph [ref=f5e64]: Splash + 7 màn giới thiệu đầu app
+          - generic [ref=f5e65]: 8 màn hình
+    - article [ref=f5e66]:
+      - 'button "Home · Today Mood Core Luồng chính: home, check-in, journal, insights 7 màn hình" [ref=f5e67] [cursor=pointer]':
+        - img "Home · Today" [ref=f5e69]
+        - generic [ref=f5e70]:
+          - heading "Mood Core" [level=3] [ref=f5e72]
+          - paragraph [ref=f5e73]: "Luồng chính: home, check-in, journal, insights"
+          - generic [ref=f5e74]: 7 màn hình
+    - article [ref=f5e75]:
+      - button "F Freud · Dashboard Freud Score, dashboard, mood stats 3 màn hình" [ref=f5e76] [cursor=pointer]:
+        - generic [ref=f5e77]:
+          - generic [ref=f5e78]: F
+          - generic [ref=f5e79]: Freud · Dashboard
+        - generic [ref=f5e80]:
+          - heading "Freud" [level=3] [ref=f5e82]
+          - paragraph [ref=f5e83]: Score, dashboard, mood stats
+          - generic [ref=f5e84]: 3 màn hình
+    - article [ref=f5e85]:
+      - button "TE Test E2E tự tạo 0 màn hình" [ref=f5e86] [cursor=pointer]:
+        - generic [ref=f5e87]: TE
+        - generic [ref=f5e89]:
+          - generic [ref=f5e90]:
+            - heading "Test E2E" [level=3] [ref=f5e91]
+            - generic [ref=f5e92]: tự tạo
+          - generic [ref=f5e93]: 0 màn hình
+      - button "Xóa" [ref=f5e94] [cursor=pointer]

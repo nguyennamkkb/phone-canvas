@@ -1,0 +1,165 @@
+<div class="screen app-mood">
+  <div class="body-fixed" style="padding: 0 var(--s5)">
+    <!-- Top Bar: Date, Streak & Notification -->
+    <div class="row" style="justify-content: space-between; padding-top: var(--s4); align-items: center">
+      <div class="row" style="gap: var(--s2)">
+        <span class="pill-ghost" style="height: 32px">
+          <span class="icon icon-xs" data-symbol="calendar"></span>
+          Tue. 25 Jan
+        </span>
+        <span class="chip" style="background: var(--ember-soft); color: var(--espresso); border-radius: var(--r-full); height: 32px">
+          <span class="icon icon-xs" data-symbol="flame" style="color: var(--ember)"></span>
+          7d streak
+        </span>
+      </div>
+      <button class="nav-round" aria-label="Notifications">
+        <span class="icon icon-sm" data-symbol="bell"></span>
+      </button>
+    </div>
+
+    <!-- Hero Mascot Sanctuary Card -->
+    <div class="hero-card" style="margin-top: var(--s3); background: var(--sage-soft); border-radius: 28px; padding: var(--s4); position: relative; overflow: hidden">
+      <div class="row" style="justify-content: space-between; align-items: center">
+        <!-- Left: Companion Dialogue & Action -->
+        <div class="col" style="gap: var(--s2); flex: 1 1 0; z-index: 2">
+          <div class="col" style="gap: 2px">
+            <div class="t-caption" style="color: var(--sage-deep); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px">Pocket Companion</div>
+            <div class="t-title2" style="color: var(--espresso); font-weight: 700">Hi, Shinomiya!</div>
+          </div>
+          
+          <div style="background: rgba(255, 255, 255, 0.85); border-radius: var(--r-lg); padding: var(--s2) var(--s3)">
+            <p class="t-subhead" style="color: var(--espresso); line-height: 20px">
+              "You've been balanced for 3 days. Ready for a quick mindful check-in?"
+            </p>
+          </div>
+
+          <div class="row" style="gap: var(--s2); padding-top: var(--s1)">
+            <button class="pill-sage" style="height: 34px; padding: 0 var(--s3); font-size: var(--t-subhead); font-weight: 600">
+              <span class="icon icon-xs" data-symbol="sparkles"></span>
+              Check in now
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: 2D Mascot Companion Artwork -->
+        <div class="col" style="align-items: center; justify-content: center; width: 136px; flex: 0 0 auto">
+          <img class="art" src="/images/onb-hello.png"
+               data-asset="MascotCompanion" width="136" height="136"
+               alt="Smartphone Mascot Companion"
+               style="object-fit: contain" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Section: Mindful Vitals (Bento Grid) -->
+    <div class="row" style="justify-content: space-between; padding-top: var(--s4); align-items: center">
+      <div class="t-headline">Mindful Vitals</div>
+      <span class="icon icon-sm" data-symbol="ellipsis" style="color: var(--clay)"></span>
+    </div>
+
+    <div class="row" style="gap: var(--s3); padding-top: var(--s2)">
+      <!-- Card 1: Mental Score -->
+      <div class="stat-tile is-sage" style="flex: 1 1 0; padding: var(--s3); border-radius: 20px">
+        <div class="row" style="justify-content: space-between; align-items: center">
+          <div class="row" style="gap: var(--s1)">
+            <span class="icon icon-xs" data-symbol="heart" style="color: var(--card)"></span>
+            <span class="t-footnote">Freud Score</span>
+          </div>
+          <span class="t-caption" style="color: var(--card); opacity: 0.85">+4 today</span>
+        </div>
+        <div class="bubble is-sm" style="border-color: var(--card); background: transparent; align-self: center; margin: var(--s2) 0">
+          <div class="t-stat">85</div>
+          <div class="t-caption">Flourishing</div>
+        </div>
+        <div class="t-caption" style="color: var(--card); text-align: center; opacity: 0.9">Top 15% mindful zone</div>
+      </div>
+
+      <!-- Card 2: Weekly Rhythm -->
+      <div class="stat-tile is-ember" style="flex: 1 1 0; padding: var(--s3); border-radius: 20px">
+        <div class="row" style="justify-content: space-between; align-items: center">
+          <div class="row" style="gap: var(--s1)">
+            <span class="icon icon-xs" data-symbol="sparkles" style="color: var(--card)"></span>
+            <span class="t-footnote">Mood Rhythm</span>
+          </div>
+          <span class="t-caption" style="color: var(--card); opacity: 0.85">7 days</span>
+        </div>
+        <div class="col" style="gap: 2px; align-items: center; margin: var(--s1) 0">
+          <div class="t-title3" style="color: var(--card); font-weight: 700">Peaceful</div>
+          <div class="t-caption" style="color: var(--card); opacity: 0.9">Good & steady</div>
+        </div>
+        <div class="row" style="height: 38px; align-items: flex-end; gap: 6px; justify-content: center">
+          <span style="height: 45%; width: 8px; border-radius: var(--r-full); background: rgba(255,255,255,0.65)"></span>
+          <span style="height: 65%; width: 8px; border-radius: var(--r-full); background: rgba(255,255,255,0.65)"></span>
+          <span style="height: 55%; width: 8px; border-radius: var(--r-full); background: rgba(255,255,255,0.65)"></span>
+          <span style="height: 80%; width: 8px; border-radius: var(--r-full); background: rgba(255,255,255,0.65)"></span>
+          <span style="height: 70%; width: 8px; border-radius: var(--r-full); background: rgba(255,255,255,0.65)"></span>
+          <span style="height: 100%; width: 8px; border-radius: var(--r-full); background: #ffffff"></span>
+          <span style="height: 75%; width: 8px; border-radius: var(--r-full); background: rgba(255,255,255,0.35)"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section: Today's Mindful Rituals -->
+    <div class="row" style="justify-content: space-between; padding-top: var(--s4); align-items: center">
+      <div class="t-headline">Today's Rituals with Buddy</div>
+      <span class="t-footnote" style="color: var(--sage-deep); font-weight: 600">2 of 3 done</span>
+    </div>
+
+    <div class="col" style="gap: var(--s2); padding-top: var(--s2)">
+      <!-- Ritual 1: Morning Check-in (Done) -->
+      <div class="row-card" style="border-radius: 18px; padding: var(--s3)">
+        <span class="chip-icon" style="background: var(--sage-soft); border-radius: var(--r-full); width: 36px; height: 36px">
+          <span class="icon icon-xs" data-symbol="checkmark" style="color: var(--sage-deep)"></span>
+        </span>
+        <div class="grow col" style="gap: 1px">
+          <div class="t-subhead" style="font-weight: 600; color: var(--espresso)">Morning Feeling Check-in</div>
+          <div class="t-caption" style="color: var(--clay)">Completed · Felt Peaceful at 08:30</div>
+        </div>
+        <span class="chip" style="background: var(--sage-soft); color: var(--sage-deep); font-size: var(--t-caption)">+10 pts</span>
+      </div>
+
+      <!-- Ritual 2: Audio Escape (Interactive) -->
+      <div class="row-card" style="border-radius: 18px; padding: var(--s3); background: var(--card)">
+        <span class="chip-icon" style="background: var(--lilac-soft); border-radius: var(--r-full); width: 36px; height: 36px">
+          <span class="icon icon-xs" data-symbol="moon" style="color: var(--lilac)"></span>
+        </span>
+        <div class="grow col" style="gap: 1px">
+          <div class="t-subhead" style="font-weight: 600; color: var(--espresso)">5-Min Calming Escape</div>
+          <div class="t-caption" style="color: var(--clay)">Soothing audio with subtitles</div>
+        </div>
+        <button class="pill-ghost" style="height: 28px; padding: 0 var(--s2); font-size: var(--t-caption); color: var(--espresso)">
+          Start <span class="icon icon-xs" data-symbol="arrow.right"></span>
+        </button>
+      </div>
+
+      <!-- Ritual 3: Evening Gratitude -->
+      <div class="row-card" style="border-radius: 18px; padding: var(--s3); background: var(--card)">
+        <span class="chip-icon" style="background: var(--sun-soft); border-radius: var(--r-full); width: 36px; height: 36px">
+          <span class="icon icon-xs" data-symbol="pencil" style="color: var(--sun)"></span>
+        </span>
+        <div class="grow col" style="gap: 1px">
+          <div class="t-subhead" style="font-weight: 600; color: var(--espresso)">Evening Gratitude Note</div>
+          <div class="t-caption" style="color: var(--clay)">One good moment from today · 20:00</div>
+        </div>
+        <span class="icon icon-xs" data-symbol="clock" style="color: var(--clay)"></span>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <!-- Bottom Dock Navigation -->
+    <div style="padding: var(--s3) 0 var(--s2)">
+      <nav class="dock">
+        <span class="dock-item is-on"><span class="icon" data-symbol="house"></span></span>
+        <span class="dock-item"><span class="icon" data-symbol="bubble.left"></span></span>
+        <span class="dock-item">
+          <span class="dock-plus" style="background: var(--espresso); color: var(--paper)">
+            <span class="icon icon-sm" data-symbol="plus"></span>
+          </span>
+        </span>
+        <span class="dock-item"><span class="icon" data-symbol="chart.bar"></span></span>
+        <span class="dock-item"><span class="icon" data-symbol="person"></span></span>
+      </nav>
+    </div>
+  </div>
+</div>

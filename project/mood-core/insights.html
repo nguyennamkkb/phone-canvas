@@ -1,0 +1,152 @@
+<div class="screen app-mood">
+  <div class="body-fixed" style="padding: 0 var(--s5)">
+    <!-- Header: Period Selector & Share -->
+    <div class="row" style="justify-content: space-between; padding-top: var(--s4); align-items: center">
+      <div class="row" style="gap: var(--s2); align-items: center">
+        <span class="pill-ghost" style="height: 32px">
+          <span class="icon icon-xs" data-symbol="calendar"></span>
+          September 2025
+          <span class="icon icon-xs" data-symbol="chevron.down"></span>
+        </span>
+      </div>
+      <button class="nav-round" aria-label="Share Insights">
+        <span class="icon icon-sm" data-symbol="square.and.arrow.up"></span>
+      </button>
+    </div>
+
+    <!-- Hero Companion Insight Card -->
+    <div class="hero-card" style="margin-top: var(--s3); background: var(--lilac-soft); border-radius: 28px; padding: var(--s4); position: relative; overflow: hidden">
+      <div class="row" style="justify-content: space-between; align-items: center">
+        <!-- Left: Mascot holding blooming chart -->
+        <div class="col" style="align-items: center; justify-content: center; width: 132px; flex: 0 0 auto">
+          <img class="art" src="/images/onb-insights.png"
+               data-asset="MascotInsights" width="132" height="132"
+               alt="Smartphone Mascot holding blooming graph"
+               style="object-fit: contain" />
+        </div>
+
+        <!-- Right: Analysis & Score -->
+        <div class="col" style="gap: var(--s1); flex: 1 1 0; padding-left: var(--s2)">
+          <div class="t-caption" style="color: var(--lilac); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px">
+            Buddy's Pattern Lab
+          </div>
+          <div class="row" style="align-items: baseline; gap: var(--s2)">
+            <span class="t-large-title" style="font-size: 34px; line-height: 36px; color: var(--espresso)">78</span>
+            <span class="t-footnote" style="color: var(--clay)">/ 100 steady</span>
+          </div>
+          <p class="t-caption" style="color: var(--espresso); line-height: 16px; opacity: 0.85">
+            Your mood garden bloomed <strong style="color: var(--sage-deep)">+12% higher</strong> than August across 24 check-ins.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 14-Day Rhythm Chart -->
+    <div class="paper-card" style="margin-top: var(--s3); padding: var(--s3) var(--s4); gap: var(--s2)">
+      <div class="row" style="justify-content: space-between; align-items: center">
+        <div class="t-headline">14-Day Mood Flow</div>
+        <span class="pill-soft" style="font-size: var(--t-caption); height: 24px; padding: 0 var(--s2)">Flourishing</span>
+      </div>
+      
+      <div class="chart" style="height: 80px; gap: 6px; align-items: flex-end; padding-top: var(--s2)">
+        <div class="chart-col"><div class="bar" style="height: 62%"></div></div>
+        <div class="chart-col"><div class="bar" style="height: 48%"></div></div>
+        <div class="chart-col"><div class="bar" style="height: 74%"></div></div>
+        <div class="chart-col"><div class="bar" style="height: 40%"></div></div>
+        <div class="chart-col"><div class="bar" style="height: 56%"></div></div>
+        <div class="chart-col"><div class="bar" style="height: 84%"></div></div>
+        <div class="chart-col"><div class="bar is-peak" style="height: 100%; background: var(--ember)"></div></div>
+        <div class="chart-col"><div class="bar" style="height: 66%"></div></div>
+        <div class="chart-col"><div class="bar" style="height: 44%"></div></div>
+        <div class="chart-col"><div class="bar" style="height: 58%"></div></div>
+        <div class="chart-col"><div class="bar" style="height: 78%"></div></div>
+        <div class="chart-col"><div class="bar" style="height: 52%"></div></div>
+        <div class="chart-col"><div class="bar" style="height: 70%"></div></div>
+        <div class="chart-col"><div class="bar" style="height: 88%; background: var(--sage)"></div></div>
+      </div>
+
+      <div class="row" style="justify-content: space-between; padding-top: 2px">
+        <span class="t-caption" style="color: var(--clay)">02 Sept</span>
+        <span class="t-caption" style="color: var(--clay)">Today</span>
+      </div>
+    </div>
+
+    <!-- Best & Gentle Days (Bento) -->
+    <div class="row" style="gap: var(--s3); padding-top: var(--s3)">
+      <div class="stat-tile is-sage-soft" style="flex: 1 1 0; border-radius: 18px; padding: var(--s3)">
+        <div class="row" style="gap: var(--s1); align-items: center">
+          <span class="icon icon-xs" data-symbol="sparkles" style="color: var(--sage-deep)"></span>
+          <span class="t-caption" style="color: var(--clay)">Peak day</span>
+        </div>
+        <div class="t-headline" style="padding-top: 2px; color: var(--espresso)">Saturday</div>
+        <div class="t-caption" style="color: var(--sage-deep); font-weight: 500">Unwind & social</div>
+      </div>
+
+      <div class="stat-tile is-ember-soft" style="flex: 1 1 0; border-radius: 18px; padding: var(--s3)">
+        <div class="row" style="gap: var(--s1); align-items: center">
+          <span class="icon icon-xs" data-symbol="moon" style="color: var(--ember)"></span>
+          <span class="t-caption" style="color: var(--clay)">Gentle day</span>
+        </div>
+        <div class="t-headline" style="padding-top: 2px; color: var(--espresso)">Thursday</div>
+        <div class="t-caption" style="color: var(--ember); font-weight: 500">Needs quiet pace</div>
+      </div>
+    </div>
+
+    <!-- What Nourished You -->
+    <div class="row" style="justify-content: space-between; padding-top: var(--s3); align-items: center">
+      <div class="t-headline">What Nourished You</div>
+      <span class="t-caption" style="color: var(--clay)">4 tags</span>
+    </div>
+
+    <div class="row" style="gap: var(--s2); align-items: flex-start; flex-wrap: wrap; padding-top: var(--s2)">
+      <span class="chip" style="background: var(--card)">
+        <span class="icon icon-xs" data-symbol="moon" style="color: var(--lilac)"></span>
+        Good Sleep · 18
+      </span>
+      <span class="chip" style="background: var(--card)">
+        <span class="icon icon-xs" data-symbol="heart" style="color: var(--ember)"></span>
+        Nature Walk · 14
+      </span>
+      <span class="chip" style="background: var(--card)">
+        <span class="icon icon-xs" data-symbol="person" style="color: var(--sage-deep)"></span>
+        Loved Ones · 9
+      </span>
+      <span class="chip" style="background: var(--card)">
+        <span class="icon icon-xs" data-symbol="sparkles" style="color: var(--sun)"></span>
+        Mindfulness · 6
+      </span>
+    </div>
+
+    <!-- Buddy's Gentle Recommendation Card -->
+    <div class="paper-card" style="margin-top: var(--s3); background: var(--sage-soft); border-radius: 20px; padding: var(--s3); gap: var(--s2)">
+      <div class="row" style="gap: var(--s3); align-items: center">
+        <span class="chip-icon" style="background: var(--card); border-radius: var(--r-full); width: 36px; height: 36px">
+          <span class="icon icon-xs" data-symbol="sparkles" style="color: var(--sage-deep)"></span>
+        </span>
+        <div class="grow col" style="gap: 1px">
+          <div class="t-subhead" style="font-weight: 600; color: var(--espresso)">Buddy's Tip for Thursday</div>
+          <div class="t-caption" style="color: var(--clay); line-height: 16px">
+            Thursdays dip when work piles up. Schedule a 5-min calm escape ahead!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <!-- Bottom Dock Navigation -->
+    <div style="padding: var(--s3) 0 var(--s2)">
+      <nav class="dock">
+        <span class="dock-item"><span class="icon" data-symbol="house"></span></span>
+        <span class="dock-item"><span class="icon" data-symbol="bubble.left"></span></span>
+        <span class="dock-item">
+          <span class="dock-plus" style="background: var(--espresso); color: var(--paper)">
+            <span class="icon icon-sm" data-symbol="plus"></span>
+          </span>
+        </span>
+        <span class="dock-item is-on"><span class="icon" data-symbol="chart.bar"></span></span>
+        <span class="dock-item"><span class="icon" data-symbol="person"></span></span>
+      </nav>
+    </div>
+  </div>
+</div>

@@ -10,7 +10,7 @@ every element off the live DOM, and reports the numbers you need to write SwiftU
 
 Two artefacts matter, and they are not the same thing:
 
-- **the screen** — `src/screens/<name>.html`, what you author
+- **the screen** — `project/<project>/<name>.html`, what you author
 - **the spec** — what the panel reads off it, and the actual deliverable
 
 A screen that looks right but reports `Block (out of subset)` is **not finished**.

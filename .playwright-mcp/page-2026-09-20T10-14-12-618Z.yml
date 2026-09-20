@@ -1,0 +1,197 @@
+- generic [ref=f131e5]:
+  - application [ref=f131e6]:
+    - generic [ref=f131e8]:
+      - generic:
+        - generic:
+          - group [ref=f131e9]:
+            - generic [ref=f131e10]:
+              - generic [ref=f131e11]:
+                - generic [ref=f131e12]: Freud · Score
+                - generic [ref=f131e13]: 390 × 844
+              - iframe [ref=f131e16]:
+                - generic [ref=f132e2]:
+                  - generic: 9:41
+                  - generic [ref=f132e5]:
+                    - generic [ref=f132e6]:
+                      - button "Back" [ref=f132e7] [cursor=pointer]
+                      - button "About this score" [ref=f132e9] [cursor=pointer]
+                    - generic [ref=f132e11]:
+                      - generic [ref=f132e12]: Freud Score
+                      - generic [ref=f132e13]: See your mental score insights
+                    - generic [ref=f132e14]:
+                      - generic [ref=f132e15]: Positive
+                      - generic [ref=f132e18]: Negative
+                      - button "Monthly" [ref=f132e21] [cursor=pointer]
+                    - generic [ref=f132e66]:
+                      - generic [ref=f132e67]: 09 Jan
+                      - generic [ref=f132e68]: 09 Feb
+                    - generic [ref=f132e69]:
+                      - generic [ref=f132e70]: Mood History
+                      - generic [ref=f132e73]:
+                        - generic [ref=f132e74]: Mon
+                        - generic [ref=f132e78]: Tue
+                        - generic [ref=f132e82]: Wed
+                        - generic [ref=f132e86]: Thu
+                        - generic [ref=f132e90]: Fri
+                        - generic [ref=f132e94]: Sat
+                        - generic [ref=f132e98]: Sun
+                    - generic [ref=f132e102]:
+                      - generic [ref=f132e105]: Recommendations
+                      - generic [ref=f132e106]: 78+
+                    - navigation [ref=f132e110]
+          - group [ref=f131e17]:
+            - generic [ref=f131e18]:
+              - generic [ref=f131e19]:
+                - generic [ref=f131e20]: Freud · Dashboard
+                - generic [ref=f131e21]: 390 × 844
+              - iframe [ref=f131e24]:
+                - generic [ref=f133e2]:
+                  - generic: 9:41
+                  - generic [ref=f133e5]:
+                    - generic [ref=f133e6]:
+                      - generic [ref=f133e7] [cursor=pointer]: Tue. 25 Jan 2025
+                      - button "Download report" [ref=f133e9] [cursor=pointer]
+                    - generic [ref=f133e11]:
+                      - img "Shinomiya" [ref=f133e12]
+                      - generic [ref=f133e13]: Hi, Shinomiya!
+                    - generic [ref=f133e14]:
+                      - generic [ref=f133e15]: Pro Member
+                      - generic [ref=f133e17]: 80%
+                      - generic [ref=f133e19]: Happy
+                    - generic [ref=f133e21]: Search anything…
+                    - generic [ref=f133e24]: Mental Health Metrics
+                    - generic [ref=f133e27]:
+                      - generic [ref=f133e28]:
+                        - generic [ref=f133e29]: Freud Score
+                        - generic [ref=f133e32]:
+                          - generic [ref=f133e33]: "80"
+                          - generic [ref=f133e34]: Healthy
+                      - generic [ref=f133e35]:
+                        - generic [ref=f133e36]: Mood
+                        - generic [ref=f133e39]: Sad
+                    - generic [ref=f133e51]:
+                      - generic [ref=f133e52]: Health Journal
+                      - generic [ref=f133e55]: 31/365
+                    - generic [ref=f133e82]: Mindful Tracker
+                    - generic [ref=f133e88]:
+                      - generic [ref=f133e89]: Mindful Hours
+                      - generic [ref=f133e90]: 2.5h/8h
+                    - navigation [ref=f133e93]
+          - group [ref=f131e25]:
+            - generic [ref=f131e26]:
+              - generic [ref=f131e27]:
+                - generic [ref=f131e28]: Freud · Mood Stats
+                - generic [ref=f131e29]: 390 × 844
+              - iframe [ref=f131e32]:
+                - generic [ref=f134e2]:
+                  - generic: 9:41
+                  - generic [ref=f134e5]:
+                    - generic [ref=f134e6]:
+                      - button "Back" [ref=f134e7] [cursor=pointer]
+                      - button "Statistics" [ref=f134e9] [cursor=pointer]
+                    - generic [ref=f134e11]:
+                      - generic [ref=f134e12]: Mood Stats
+                      - generic [ref=f134e13]: See your mood through the day.
+                    - generic [ref=f134e14]:
+                      - generic [ref=f134e15]: All
+                      - generic [ref=f134e16]: Days
+                      - generic [ref=f134e17]: Weeks
+                      - generic [ref=f134e18]: Months
+                      - generic [ref=f134e19]: Years
+                    - generic [ref=f134e20]:
+                      - img "Mood wave through the day" [ref=f134e21]
+                      - generic [ref=f134e22]:
+                        - generic [ref=f134e23]: Mon
+                        - generic [ref=f134e24]: Tue
+                        - generic [ref=f134e25]: Wed
+                        - generic [ref=f134e26]: Thu
+                        - generic [ref=f134e27]: Fri
+                        - generic [ref=f134e28]: Sat
+                        - generic [ref=f134e29]: Sun
+                    - generic [ref=f134e30]:
+                      - generic [ref=f134e31]: AI Mood Predictions
+                      - generic [ref=f134e32] [cursor=pointer]: Next 1w
+                    - generic [ref=f134e36]:
+                      - generic [ref=f134e37]: Mon
+                      - generic [ref=f134e41]: Tue
+                      - generic [ref=f134e45]: Wed
+                      - generic [ref=f134e49]: Thu
+                      - generic [ref=f134e53]: Fri
+                      - generic [ref=f134e57]: Sat
+                      - generic [ref=f134e61]: Sun
+                    - navigation [ref=f134e67]
+          - group [ref=f131e33]:
+            - generic [ref=f131e34]:
+              - generic [ref=f131e35]:
+                - generic [ref=f131e36]: Freud · Score
+                - generic [ref=f131e37]: 390 × 844
+              - iframe [ref=f131e40]:
+                - generic [ref=f135e2]:
+                  - generic: 9:41
+                  - generic [ref=f135e5]:
+                    - generic [ref=f135e6]:
+                      - button "Back" [ref=f135e7] [cursor=pointer]
+                      - button "About this score" [ref=f135e9] [cursor=pointer]
+                    - generic [ref=f135e11]:
+                      - generic [ref=f135e12]: Freud Score
+                      - generic [ref=f135e13]: See your mental score insights
+                    - generic [ref=f135e14]:
+                      - generic [ref=f135e15]: Positive
+                      - generic [ref=f135e18]: Negative
+                      - button "Monthly" [ref=f135e21] [cursor=pointer]
+                    - generic [ref=f135e66]:
+                      - generic [ref=f135e67]: 09 Jan
+                      - generic [ref=f135e68]: 09 Feb
+                    - generic [ref=f135e69]:
+                      - generic [ref=f135e70]: Mood History
+                      - generic [ref=f135e73]:
+                        - generic [ref=f135e74]: Mon
+                        - generic [ref=f135e78]: Tue
+                        - generic [ref=f135e82]: Wed
+                        - generic [ref=f135e86]: Thu
+                        - generic [ref=f135e90]: Fri
+                        - generic [ref=f135e94]: Sat
+                        - generic [ref=f135e98]: Sun
+                    - generic [ref=f135e102]:
+                      - generic [ref=f135e105]: Recommendations
+                      - generic [ref=f135e106]: 78+
+                    - navigation [ref=f135e110]
+    - generic "Control Panel" [ref=f131e41]:
+      - button "Zoom In" [ref=f131e42] [cursor=pointer]
+      - button "Zoom Out" [ref=f131e45] [cursor=pointer]
+      - button "Fit View" [ref=f131e48] [cursor=pointer]
+    - img "Mini Map" [ref=f131e52]
+  - generic [ref=f131e58]:
+    - generic [ref=f131e59]:
+      - button "←" [ref=f131e60] [cursor=pointer]
+      - generic "4 màn hình" [ref=f131e61]: Freud
+      - generic [ref=f131e62]: "4"
+    - generic [ref=f131e64]:
+      - button "Di chuyển" [ref=f131e65] [cursor=pointer]
+      - button "Đo đạc" [ref=f131e66] [cursor=pointer]
+    - generic [ref=f131e67]:
+      - button "Khung đơn giản" [ref=f131e68] [cursor=pointer]
+      - button "Khung máy" [ref=f131e69] [cursor=pointer]
+    - combobox "Thêm màn hình cụ thể" [ref=f131e71] [cursor=pointer]:
+      - option "+ Màn hình" [selected]
+      - option "Splash"
+      - option "Onboarding 1 · Hello"
+      - option "Onboarding 2 · Check in"
+      - option "Onboarding 3 · Patterns"
+      - option "Onboarding 4 · Search"
+      - option "Onboarding 5 · Reminders"
+      - option "Onboarding 6 · Listen"
+      - option "Onboarding 7 · Watch"
+      - option "Home · Today"
+      - option "Check in"
+      - option "Insights"
+      - option "History"
+      - option "Journal"
+      - option "Entry"
+      - option "Profile"
+      - option "Freud · Score"
+      - option "Freud · Dashboard"
+      - option "Freud · Mood Stats"
+    - button "+" [ref=f131e72] [cursor=pointer]
+    - button "Vừa khung" [ref=f131e73] [cursor=pointer]
+    - button "← Hiện panel" [ref=f131e75] [cursor=pointer]

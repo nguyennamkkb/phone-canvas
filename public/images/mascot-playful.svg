@@ -1,0 +1,191 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%" fill="none">
+  <!-- Defs: Gradients & Shadows for depth -->
+  <defs>
+    <!-- Warm Creamy Yellow Body Gradient -->
+    <linearGradient id="bodyGrad" x1="200" y1="90" x2="200" y2="330" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFF2A8" />
+      <stop offset="60%" stop-color="#FFDE59" />
+      <stop offset="100%" stop-color="#F7C934" />
+    </linearGradient>
+
+    <!-- Belly Highlight Gradient -->
+    <linearGradient id="bellyGrad" x1="200" y1="210" x2="200" y2="310" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95" />
+      <stop offset="100%" stop-color="#FFF8E0" stop-opacity="0.8" />
+    </linearGradient>
+
+    <!-- Playful Coral Orange Gradient (Ears, Cheeks, Accents) -->
+    <linearGradient id="coralGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FF7E5F" />
+      <stop offset="100%" stop-color="#FF5252" />
+    </linearGradient>
+
+    <!-- Vibrant Mint Cyan Accent -->
+    <linearGradient id="mintGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4EECD4" />
+      <stop offset="100%" stop-color="#26C6DA" />
+    </linearGradient>
+
+    <!-- Soft Drop Shadow -->
+    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#E2B120" flood-opacity="0.25" />
+    </filter>
+
+    <!-- Ground Shadow Filter -->
+    <filter id="groundGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" />
+    </filter>
+  </defs>
+
+  <!-- 1. Background Playful Floating Elements (Stars, Confetti, Bubbles) -->
+  <g id="ambient-playful">
+    <!-- Ground Ambient Shadow (Squishy Hover / Bounce) -->
+    <ellipse cx="200" cy="358" rx="84" ry="16" fill="#4A341E" opacity="0.12" filter="url(#groundGlow)" />
+
+    <!-- Sparkle Top Left (Mint) -->
+    <path d="M 85 95 Q 92 105 102 112 Q 92 119 85 129 Q 78 119 68 112 Q 78 105 85 95 Z" fill="url(#mintGrad)" opacity="0.85" />
+    <circle cx="68" cy="85" r="5" fill="#FF7E5F" opacity="0.75" />
+
+    <!-- Sparkle Top Right (Coral Orange) -->
+    <path d="M 320 80 Q 326 89 335 95 Q 326 101 320 110 Q 314 101 305 95 Q 314 89 320 80 Z" fill="url(#coralGrad)" opacity="0.85" />
+    <circle cx="340" cy="125" r="4.5" fill="#4EECD4" opacity="0.75" />
+
+    <!-- Little floating bubbles -->
+    <circle cx="95" cy="270" r="8" fill="#4EECD4" opacity="0.4" />
+    <circle cx="75" cy="290" r="4.5" fill="#FFDE59" opacity="0.6" />
+    <circle cx="330" cy="250" r="9" fill="#FF7E5F" opacity="0.35" />
+    <circle cx="310" cy="285" r="5.5" fill="#4EECD4" opacity="0.5" />
+  </g>
+
+  <!-- 2. Main Mascot Body Group -->
+  <g id="mascot-character" filter="url(#softShadow)">
+
+    <!-- BACK / ACCESSORY: Little Playful Wagging Tail -->
+    <path d="M 270 260 C 310 270 330 240 325 215 C 320 195 305 200 300 210 C 295 220 280 245 265 252 Z"
+          fill="#F7C934" stroke="#4A2810" stroke-width="5" stroke-linejoin="round" />
+    <circle cx="316" cy="204" r="8" fill="url(#coralGrad)" />
+
+    <!-- LEGS & STUBBY FEET (Chubby, bouncy standing pose) -->
+    <!-- Left Foot -->
+    <g id="left-foot">
+      <ellipse cx="152" cy="334" rx="28" ry="19" fill="#FFDE59" stroke="#4A2810" stroke-width="5.5" />
+      <ellipse cx="145" cy="338" rx="7" ry="5" fill="#FFF8E0" opacity="0.6" />
+    </g>
+    <!-- Right Foot (slightly angled out for bouncy stance) -->
+    <g id="right-foot">
+      <ellipse cx="248" cy="334" rx="28" ry="19" fill="#FFDE59" stroke="#4A2810" stroke-width="5.5" />
+      <ellipse cx="241" cy="338" rx="7" ry="5" fill="#FFF8E0" opacity="0.6" />
+    </g>
+
+    <!-- LEFT EAR (Floppy, chubby animal ear with coral inside) -->
+    <g id="left-ear">
+      <path d="M 125 140 C 95 85 110 40 145 55 C 170 66 175 110 162 135 Z"
+            fill="url(#bodyGrad)" stroke="#4A2810" stroke-width="5.5" stroke-linejoin="round" />
+      <!-- Inner Ear -->
+      <path d="M 128 120 C 112 85 122 58 142 68 C 156 75 158 105 150 118 Z"
+            fill="url(#coralGrad)" opacity="0.9" />
+    </g>
+
+    <!-- RIGHT EAR (Playfully tilted/perked up) -->
+    <g id="right-ear">
+      <path d="M 275 140 C 305 85 290 40 255 55 C 230 66 225 110 238 135 Z"
+            fill="url(#bodyGrad)" stroke="#4A2810" stroke-width="5.5" stroke-linejoin="round" />
+      <!-- Inner Ear -->
+      <path d="M 272 120 C 288 85 278 58 258 68 C 244 75 242 105 250 118 Z"
+            fill="url(#coralGrad)" opacity="0.9" />
+    </g>
+
+    <!-- SQUISHY CHUBBY MAIN BODY (Pear/marshmallow rounded shape) -->
+    <path id="body-shape"
+          d="M 200 100 
+             C 285 100 315 155 310 235 
+             C 305 315 265 338 200 338 
+             C 135 338 95 315 90 235 
+             C 85 155 115 100 200 100 Z"
+          fill="url(#bodyGrad)" stroke="#4A2810" stroke-width="5.5" stroke-linejoin="round" />
+
+    <!-- BELLY PATCH (Soft cream marshmallow tummy) -->
+    <ellipse cx="200" cy="254" rx="72" ry="62" fill="url(#bellyGrad)" />
+
+    <!-- SPROUT / ANTENNA ON HEAD (Playful digital bud with a heart/sprout) -->
+    <g id="head-sprout">
+      <path d="M 200 102 C 200 78 206 65 216 56" stroke="#4A2810" stroke-width="4.5" stroke-linecap="round" fill="none" />
+      <!-- Sprout Leaf 1 (Mint green) -->
+      <path d="M 216 56 C 228 44 242 50 238 64 C 226 68 218 62 216 56 Z" fill="url(#mintGrad)" stroke="#4A2810" stroke-width="3.5" />
+      <!-- Sprout Leaf 2 / Flower bud -->
+      <circle cx="212" cy="48" r="7" fill="url(#coralGrad)" stroke="#4A2810" stroke-width="3.5" />
+      <circle cx="210" cy="46" r="2.2" fill="#FFFFFF" />
+    </g>
+
+    <!-- LEFT ARM (Excited, waving up in a playful hello!) -->
+    <g id="left-arm-wave">
+      <path d="M 106 205 C 75 190 52 165 62 145 C 72 125 96 148 112 178 Z"
+            fill="url(#bodyGrad)" stroke="#4A2810" stroke-width="5.5" stroke-linejoin="round" />
+      <!-- Paw pads -->
+      <ellipse cx="68" cy="148" rx="6" ry="5" fill="url(#coralGrad)" />
+      <circle cx="62" cy="138" r="2.5" fill="url(#coralGrad)" />
+      <circle cx="70" cy="135" r="2.5" fill="url(#coralGrad)" />
+    </g>
+
+    <!-- RIGHT ARM (Chubby hand resting happily on tummy/hip) -->
+    <g id="right-arm">
+      <path d="M 294 205 C 322 220 326 250 310 262 C 295 272 284 252 282 232 Z"
+            fill="url(#bodyGrad)" stroke="#4A2810" stroke-width="5.5" stroke-linejoin="round" />
+      <ellipse cx="306" cy="254" rx="5" ry="4" fill="url(#coralGrad)" />
+    </g>
+
+    <!-- 3. PLAYFUL FACIAL FEATURES -->
+    <g id="face-features">
+      <!-- ROSY CHEEKS (Soft cheerful coral blush) -->
+      <ellipse cx="140" cy="216" rx="16" ry="10" fill="#FF7E5F" opacity="0.65" />
+      <ellipse cx="260" cy="216" rx="16" ry="10" fill="#FF7E5F" opacity="0.65" />
+      <!-- Extra cute blush lines -->
+      <line x1="132" y1="216" x2="148" y2="216" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity="0.8" />
+      <line x1="252" y1="216" x2="268" y2="216" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity="0.8" />
+
+      <!-- BIG PLAYFUL EYES -->
+      <!-- Left Eye -->
+      <g id="left-eye">
+        <ellipse cx="162" cy="184" rx="13" ry="17" fill="#2E1B0E" />
+        <!-- Big Top Highlight -->
+        <ellipse cx="166" cy="177" rx="5.5" ry="7" fill="#FFFFFF" />
+        <!-- Small Bottom Catchlight -->
+        <circle cx="158" cy="192" r="2.8" fill="#FFFFFF" />
+      </g>
+
+      <!-- Right Eye (Happy/Winking or Big Cheerful Eye) -->
+      <g id="right-eye">
+        <ellipse cx="238" cy="184" rx="13" ry="17" fill="#2E1B0E" />
+        <!-- Big Top Highlight -->
+        <ellipse cx="242" cy="177" rx="5.5" ry="7" fill="#FFFFFF" />
+        <!-- Small Bottom Catchlight -->
+        <circle cx="234" cy="192" r="2.8" fill="#FFFFFF" />
+      </g>
+
+      <!-- LITTLE BUTTON NOSE -->
+      <ellipse cx="200" cy="195" rx="5.5" ry="4" fill="#FF7E5F" />
+
+      <!-- OPEN HAPPY PLAYFUL MOUTH (Big cheerful smile showing tongue & tiny cute tooth) -->
+      <path d="M 182 208 C 182 208 190 236 200 236 C 210 236 218 208 218 208 C 224 207 222 204 218 205 C 208 207 192 207 182 205 C 178 204 176 207 182 208 Z"
+            fill="#7A1818" stroke="#4A2810" stroke-width="4.5" stroke-linejoin="round" />
+      <!-- Tongue -->
+      <path d="M 188 224 C 194 220 206 220 212 224 C 209 234 191 234 188 224 Z" fill="#FF7E5F" />
+      <!-- Cute tiny tooth at top corner -->
+      <path d="M 188 206 L 192 212 L 196 206 Z" fill="#FFFFFF" />
+    </g>
+
+    <!-- ACCESSORY: Cute Mini Crossbody Bag (like a phone frame / canvas tool) -->
+    <g id="crossbody-satchel">
+      <!-- Strap across body -->
+      <path d="M 145 158 C 168 195 210 250 252 278" stroke="#4EECD4" stroke-width="7" stroke-linecap="round" fill="none" />
+      <path d="M 145 158 C 168 195 210 250 252 278" stroke="#4A2810" stroke-width="2" stroke-linecap="round" fill="none" stroke-dasharray="2 6" />
+
+      <!-- Little Phone Bag / Pouch -->
+      <rect x="238" y="260" width="34" height="42" rx="9" fill="url(#coralGrad)" stroke="#4A2810" stroke-width="4" transform="rotate(-15 255 281)" />
+      <!-- Mini screen on pouch -->
+      <rect x="243" y="266" width="24" height="28" rx="5" fill="#FFFFFF" transform="rotate(-15 255 281)" opacity="0.9" />
+      <circle cx="254" cy="279" r="4" fill="#4EECD4" />
+    </g>
+
+  </g>
+</svg>

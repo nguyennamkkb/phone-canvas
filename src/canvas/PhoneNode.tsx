@@ -17,7 +17,7 @@ const PLAIN_RADIUS = 16
 
 function PhoneNodeInner({ id, data }: NodeProps) {
   const d = data as unknown as PhoneNodeData
-  const { mode, frameStyle, activeNodeId } = useBoardSettings()
+  const { mode, frameStyle, activeNodeId, onDeleteNode } = useBoardSettings()
   const { registerFrame, sizes } = useInspector()
   const frameRef = useRef<HTMLIFrameElement>(null)
   // stable per node instance: the parent uses it to route messages reliably
@@ -62,6 +62,19 @@ function PhoneNodeInner({ id, data }: NodeProps) {
         <span className="phone-label-size">
           {device.width} × {Math.round(contentH)}
         </span>
+        {onDeleteNode && (
+          <button
+            type="button"
+            className="phone-delete"
+            title="Xóa màn hình khỏi board (Delete)"
+            onClick={(e) => {
+              e.stopPropagation()
+              onDeleteNode(id)
+            }}
+          >
+            ×
+          </button>
+        )}
       </div>
 
       <div
