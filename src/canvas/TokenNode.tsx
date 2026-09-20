@@ -38,6 +38,8 @@ function ColorRow({
   theme,
   onPick,
   onRevert,
+  copied,
+  onCopy,
 }: {
   token: Token
   draftLight?: string
@@ -46,6 +48,8 @@ function ColorRow({
   theme: ThemeMode
   onPick: (value: string) => void
   onRevert: () => void
+  copied: boolean
+  onCopy: (text: string) => void
 }) {
   const light = draftLight ?? token.light
   const dark = draftDark ?? token.dark
@@ -81,7 +85,14 @@ function ColorRow({
           ×
         </button>
       )}
-      <span className="token-val">{theme === 'dark' ? dark : light}</span>
+      <button
+        type="button"
+        className="token-val is-copy"
+        title="Click để chép mã màu"
+        onClick={() => onCopy(theme === 'dark' ? dark : light)}
+      >
+        {copied ? 'Đã chép ✓' : theme === 'dark' ? dark : light}
+      </button>
     </div>
   )
 }
@@ -132,6 +143,7 @@ function TokenNodeInner({ data }: NodeProps) {
   const { tokenTheme } = useBoardSettings()
   const [draft, setDraft, clearDraft] = useTokenDraft(d.projectId)
   const [copied, setCopied] = useState<string | null>(null)
+  const [copiedVal, setCopiedVal] = useState<string | null>(null)
 
   const tokens = useMemo(() => tokensOf(d.projectId), [d.projectId])
   const global = useMemo(() => tokensOf(''), [])
@@ -172,6 +184,13 @@ function TokenNodeInner({ data }: NodeProps) {
 
   const copyText = (text: string, what: string) => {
     void navigator.clipboard.writeText(text).then(() => flash(what))
+  }
+
+  const copyVal = (name: string, text: string) => {
+    void navigator.clipboard.writeText(text).then(() => {
+      setCopiedVal(name)
+      window.setTimeout(() => setCopiedVal((c) => (c === name ? null : c)), 1200)
+    })
   }
 
   const nDraft = draftSize(draft)
@@ -293,6 +312,8 @@ function TokenNodeInner({ data }: NodeProps) {
                         setDraft(t.name, 'light', '')
                         setDraft(t.name, 'dark', '')
                       }}
+                      copied={copiedVal === t.name}
+                      onCopy={(text) => copyVal(t.name, text)}
                     />
                   ))}
                 </div>
