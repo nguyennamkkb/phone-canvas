@@ -1,0 +1,84 @@
+<div class="screen app-mood">
+  <div class="body-fixed" style="padding: 0 var(--s5)">
+    <div class="row" style="justify-content: space-between; padding-top: var(--s4); align-items: center">
+      <button class="close-btn" aria-label="Close">
+        <span class="icon icon-xs" data-symbol="xmark"></span>
+      </button>
+      <div class="t-subhead">Check in</div>
+      <div class="row" style="gap: var(--s1); align-items: center">
+        <span class="icon icon-xs" data-symbol="clock" style="color: var(--clay)"></span>
+        <span class="t-caption" style="color: var(--clay)">14:20</span>
+      </div>
+    </div>
+
+    <div class="col" style="align-items: center; gap: var(--s1); padding-top: var(--s3); text-align: center">
+      <h1 class="t-title2" style="text-align: center">How are you right now?</h1>
+      <div class="t-footnote" style="color: var(--clay)">Tuesday, 16 September · say the word</div>
+    </div>
+
+    <!-- Words: one big tappable word per mood, the pick banded -->
+    <div class="col" style="gap: var(--s1); padding-top: var(--s3)">
+      <div class="row" style="align-items: center; gap: var(--s3); padding: var(--s2) var(--s4); border-radius: var(--r-lg)">
+        <div class="t-title2 grow" style="font-weight: 400; color: var(--clay)">Awful</div>
+        <img class="art" src="/images/mood-awful.svg" width="40" height="40" alt="Awful" />
+      </div>
+      <div class="row" style="align-items: center; gap: var(--s3); padding: var(--s2) var(--s4); border-radius: var(--r-lg)">
+        <div class="t-title2 grow" style="font-weight: 400; color: var(--clay)">Bad</div>
+        <img class="art" src="/images/mood-bad.svg" width="40" height="40" alt="Bad" />
+      </div>
+      <div class="row" style="align-items: center; gap: var(--s3); padding: var(--s2) var(--s4); border-radius: var(--r-lg)">
+        <div class="t-title2 grow" style="font-weight: 400; color: var(--clay)">Okay</div>
+        <img class="art" src="/images/mood-okay.svg" width="40" height="40" alt="Okay" />
+      </div>
+      <div class="row" style="align-items: center; gap: var(--s3); padding: var(--s2) var(--s4); border-radius: var(--r-lg); background: var(--sage-soft)">
+        <div class="t-title2 grow" style="color: var(--espresso)">Good</div>
+        <img class="art" src="/images/mood-good.svg" width="40" height="40" alt="Good" />
+      </div>
+      <div class="row" style="align-items: center; gap: var(--s3); padding: var(--s2) var(--s4); border-radius: var(--r-lg)">
+        <div class="t-title2 grow" style="font-weight: 400; color: var(--clay)">Great</div>
+        <img class="art" src="/images/mood-great.svg" width="40" height="40" alt="Great" />
+      </div>
+    </div>
+
+    <div class="col" style="gap: var(--s2); padding-top: var(--s4)">
+      <div class="t-headline">What is behind it?</div>
+      <div class="row" style="gap: var(--s2); align-items: flex-start; flex-wrap: wrap">
+        <span class="chip is-active">
+          <span class="icon icon-xs" data-symbol="moon"></span>
+          Sleep
+        </span>
+        <span class="chip">
+          <span class="icon icon-xs" data-symbol="folder"></span>
+          Work
+        </span>
+        <span class="chip">
+          <span class="icon icon-xs" data-symbol="person"></span>
+          People
+        </span>
+        <span class="chip">
+          <span class="icon icon-xs" data-symbol="heart"></span>
+          Health
+        </span>
+        <span class="chip">
+          <span class="icon icon-xs" data-symbol="sparkles"></span>
+          Weather
+        </span>
+        <span class="chip">
+          <span class="icon icon-xs" data-symbol="house"></span>
+          Family
+        </span>
+      </div>
+    </div>
+
+    <div class="col" style="gap: var(--s2); padding-top: var(--s3)">
+      <div class="t-headline">Add a note</div>
+      <div class="text-field">Optional. A line is enough.</div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div style="padding: var(--s3) 0 var(--s4)">
+      <button class="pill-sage" style="width: 100%">Save check-in</button>
+    </div>
+  </div>
+</div>

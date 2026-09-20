@@ -14,6 +14,11 @@ import onbListen from '../../project/onboarding/onb-listen.html?raw'
 import onbWatch from '../../project/onboarding/onb-watch.html?raw'
 import home from '../../project/mood-core/home.html?raw'
 import checkin from '../../project/mood-core/checkin.html?raw'
+import checkinLadder from '../../project/mood-core/checkin-ladder.html?raw'
+import checkinCards from '../../project/mood-core/checkin-cards.html?raw'
+import checkinDial from '../../project/mood-core/checkin-dial.html?raw'
+import checkinWords from '../../project/mood-core/checkin-words.html?raw'
+import checkinSlider from '../../project/mood-core/checkin-slider.html?raw'
 import insights from '../../project/mood-core/insights.html?raw'
 import history from '../../project/mood-core/history.html?raw'
 import journal from '../../project/mood-core/journal.html?raw'
@@ -34,6 +39,11 @@ const RAW: Record<string, string> = {
   'onb-watch': onbWatch,
   'home': home,
   'checkin': checkin,
+  'checkin-ladder': checkinLadder,
+  'checkin-cards': checkinCards,
+  'checkin-dial': checkinDial,
+  'checkin-words': checkinWords,
+  'checkin-slider': checkinSlider,
   'insights': insights,
   'history': history,
   'journal': journal,

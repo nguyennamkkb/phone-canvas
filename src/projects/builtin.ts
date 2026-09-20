@@ -36,7 +36,7 @@ export const BUILTIN_PROJECTS: ProjectDef[] = [
     id: 'mood-core',
     title: 'Mood Core',
     description: 'Luồng chính: home, check-in, journal, insights',
-    screenIds: ['home', 'checkin', 'insights', 'history', 'journal', 'entry', 'profile'],
+    screenIds: ['home', 'checkin', 'checkin-ladder', 'checkin-cards', 'checkin-dial', 'checkin-words', 'checkin-slider', 'insights', 'history', 'journal', 'entry', 'profile'],
     coverId: 'home',
   },
   {

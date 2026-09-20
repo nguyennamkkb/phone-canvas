@@ -5,3 +5,8 @@ exports
 *.local
 .playwright-mcp/
 .agents/skills/agent-sprite-forge/
+
+# local agent tooling
+.opencode/
+.pi/
+.qwen/

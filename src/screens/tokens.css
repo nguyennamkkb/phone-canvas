@@ -1180,6 +1180,59 @@ figure {
 .band.is-ember { background: var(--ember-soft); }
 .band.is-sage { background: var(--sage-soft); }
 
+/* a mood dial: faces placed by coordinate on an arc inside a declared
+   composite box (the one place coordinates beat flow). Positions are
+   precomputed: left = 50 + r·sin θ, top from the arc centre. Never centre
+   with a transform — the spec reports the wrong box. */
+.mood-dial {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  flex: 0 0 auto;
+}
+
+.mood-dial-face {
+  position: absolute;
+}
+
+.mood-dial-face {
+  margin: -22px 0 0 -22px;
+}
+
+.mood-dial-face.is-big {
+  margin: -28px 0 0 -28px;
+}
+
+/* a continuous mood slider: gradient track in the five mood colours with a
+   thumb at the current pick. Ticks sit in even slots underneath. */
+.mood-track {
+  position: relative;
+  width: 100%;
+  height: 44px;
+  flex: 0 0 auto;
+}
+
+.mood-track-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 16px;
+  height: 12px;
+  border-radius: var(--r-full);
+  background: linear-gradient(90deg, var(--mood-1), var(--mood-2), var(--mood-3), var(--mood-4), var(--mood-5));
+}
+
+.mood-thumb {
+  position: absolute;
+  top: 22px;
+  width: 28px;
+  height: 28px;
+  margin: -14px 0 0 -14px;
+  border-radius: var(--r-full);
+  background: var(--card);
+  box-shadow: 0 3px 10px rgba(51, 36, 28, 0.25);
+}
+
 /* the mood picker: faces big enough to read as faces, ringed when chosen */
 .mood-orb {
   display: flex;
@@ -1842,4 +1895,21 @@ figure {
   min-width: 0;
   border-radius: var(--r-full);
   background: rgba(255, 255, 255, 0.55);
+}
+
+/* day letters under a .minibars sparkline: same slot geometry (flex + 3px
+   gap), so each letter sits under its bar. Colour comes from the tile. */
+.minibar-labels {
+  display: flex;
+  flex-direction: row;
+  gap: 3px;
+}
+
+.minibar-label {
+  flex: 1 1 0;
+  min-width: 0;
+  text-align: center;
+  font-size: var(--t-caption);
+  font-weight: 400;
+  line-height: 16px;
 }

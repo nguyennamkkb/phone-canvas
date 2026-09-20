@@ -1,7 +1,7 @@
 <div class="screen app-mood">
-  <div class="body-fixed" style="padding: 0 var(--s5)">
-    <!-- Top Bar: Date, Streak & Notification -->
-    <div class="row" style="justify-content: space-between; padding-top: var(--s4); align-items: center">
+  <!-- Top: tinted bleed region (top bar + greeting + primary action) -->
+  <div class="hero-bleed">
+    <div class="row" style="justify-content: space-between; align-items: center">
       <div class="row" style="gap: var(--s2)">
         <span class="pill-ghost" style="height: 32px">
           <span class="icon icon-xs" data-symbol="calendar"></span>
@@ -17,97 +17,95 @@
       </button>
     </div>
 
-    <!-- Hero Mascot Sanctuary Card -->
-    <div class="hero-card" style="margin-top: var(--s3); background: var(--sage-soft); border-radius: 28px; padding: var(--s4); position: relative; overflow: hidden">
-      <div class="row" style="justify-content: space-between; align-items: center">
-        <!-- Left: Companion Dialogue & Action -->
-        <div class="col" style="gap: var(--s2); flex: 1 1 0; z-index: 2">
-          <div class="col" style="gap: 2px">
-            <div class="t-caption" style="color: var(--sage-deep); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px">Pocket Companion</div>
-            <div class="t-title2" style="color: var(--espresso); font-weight: 700">Hi, Shinomiya!</div>
-          </div>
-          
-          <div style="background: var(--on-colour-wash); border-radius: var(--r-lg); padding: var(--s2) var(--s3)">
-            <p class="t-subhead" style="color: var(--espresso); line-height: 20px">
-              "You've been balanced for 3 days. Ready for a quick mindful check-in?"
-            </p>
-          </div>
-
-          <div class="row" style="gap: var(--s2); padding-top: var(--s1)">
-            <button class="pill-sage" style="height: 34px; padding: 0 var(--s3); font-size: var(--t-subhead); font-weight: 600">
-              <span class="icon icon-xs" data-symbol="sparkles"></span>
-              Check in now
-            </button>
-          </div>
-        </div>
-
-        <!-- Right: 2D Mascot Companion Artwork -->
-        <div class="col" style="align-items: center; justify-content: center; width: 136px; flex: 0 0 auto">
-          <img class="art" src="/images/onb-hello.png"
-               data-asset="MascotCompanion" width="136" height="136"
-               alt="Smartphone Mascot Companion"
-               style="object-fit: contain" />
-        </div>
+    <div class="row" style="justify-content: space-between; align-items: center">
+      <div class="col grow" style="gap: var(--s1)">
+        <div class="t-caption" style="color: var(--sage-deep); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px">Pocket Companion</div>
+        <div class="t-title1" style="color: var(--espresso)">Hi, Shinomiya!</div>
+        <div class="t-subhead" style="color: var(--espresso)">Balanced 3 days — ready for a quick check-in?</div>
       </div>
+      <img class="art" src="/images/onb-hello.png"
+           data-asset="MascotCompanion" width="128" height="128"
+           alt="Smartphone Mascot Companion"
+           style="object-fit: contain" />
     </div>
 
-    <!-- Section: Mindful Vitals (Bento Grid) -->
+    <div class="row">
+      <button class="pill-sage">
+        <span class="icon icon-xs" data-symbol="sparkles"></span>
+        Check in now
+      </button>
+    </div>
+  </div>
+
+  <div class="body-fixed" style="padding: 0 var(--s5)">
+    <!-- Middle: Mindful Vitals (equal-height bento) -->
     <div class="row" style="justify-content: space-between; padding-top: var(--s4); align-items: center">
       <div class="t-headline">Mindful Vitals</div>
       <span class="icon icon-sm" data-symbol="ellipsis" style="color: var(--clay)"></span>
     </div>
 
-    <div class="row" style="gap: var(--s3); padding-top: var(--s2)">
+    <div class="row" style="gap: var(--s3); padding-top: var(--s2); align-items: stretch">
       <!-- Card 1: Mental Score -->
-      <div class="stat-tile is-sage" style="flex: 1 1 0; padding: var(--s3); border-radius: 20px">
-        <div class="row" style="justify-content: space-between; align-items: center">
-          <div class="row" style="gap: var(--s1)">
-            <span class="icon icon-xs" data-symbol="heart" style="color: var(--card)"></span>
-            <span class="t-footnote">Freud Score</span>
-          </div>
-          <span class="t-caption" style="color: var(--card); opacity: 0.85">+4 today</span>
+      <div class="stat-tile is-sage" style="flex: 1 1 0; justify-content: space-between; padding: var(--s3); border-radius: 20px">
+        <div class="row" style="gap: var(--s1)">
+          <span class="icon icon-xs" data-symbol="heart" style="color: var(--card)"></span>
+          <span class="t-footnote" style="color: var(--card)">Freud Score</span>
         </div>
-        <div class="bubble is-sm" style="border-color: var(--card); background: transparent; align-self: center; margin: var(--s2) 0">
-          <div class="t-stat">85</div>
-          <div class="t-caption">Flourishing</div>
+        <div class="bubble is-sm" style="border-color: var(--card); background: transparent; align-self: center">
+          <div class="t-stat" style="color: var(--card)">85</div>
+          <div class="t-caption" style="color: var(--card)">Flourishing</div>
         </div>
-        <div class="t-caption" style="color: var(--card); text-align: center; opacity: 0.9">Top 15% mindful zone</div>
+        <div class="t-caption" style="color: var(--card); text-align: center; opacity: 0.9">Top 15% · +4 today</div>
       </div>
 
       <!-- Card 2: Weekly Rhythm -->
-      <div class="stat-tile is-ember" style="flex: 1 1 0; padding: var(--s3); border-radius: 20px">
-        <div class="row" style="justify-content: space-between; align-items: center">
-          <div class="row" style="gap: var(--s1)">
-            <span class="icon icon-xs" data-symbol="sparkles" style="color: var(--card)"></span>
-            <span class="t-footnote">Mood Rhythm</span>
-          </div>
-          <span class="t-caption" style="color: var(--card); opacity: 0.85">7 days</span>
+      <div class="stat-tile is-ember" style="flex: 1 1 0; justify-content: space-between; padding: var(--s3); border-radius: 20px">
+        <div class="row" style="gap: var(--s1)">
+          <span class="icon icon-xs" data-symbol="sparkles" style="color: var(--card)"></span>
+          <span class="t-footnote" style="color: var(--card)">Mood Rhythm</span>
         </div>
-        <div class="col" style="gap: 2px; align-items: center; margin: var(--s1) 0">
+        <div class="col" style="gap: 2px; align-items: center">
           <div class="t-title3" style="color: var(--card); font-weight: 700">Peaceful</div>
-          <div class="t-caption" style="color: var(--card); opacity: 0.9">Good & steady</div>
+          <div class="t-caption" style="color: var(--card); opacity: 0.9">Good &amp; steady</div>
         </div>
-        <div class="row" style="height: 38px; align-items: flex-end; gap: 6px; justify-content: center">
-          <span style="height: 45%; width: 8px; border-radius: var(--r-full); background: var(--on-colour-bar)"></span>
-          <span style="height: 65%; width: 8px; border-radius: var(--r-full); background: var(--on-colour-bar)"></span>
-          <span style="height: 55%; width: 8px; border-radius: var(--r-full); background: var(--on-colour-bar)"></span>
-          <span style="height: 80%; width: 8px; border-radius: var(--r-full); background: var(--on-colour-bar)"></span>
-          <span style="height: 70%; width: 8px; border-radius: var(--r-full); background: var(--on-colour-bar)"></span>
-          <span style="height: 100%; width: 8px; border-radius: var(--r-full); background: var(--card)"></span>
-          <span style="height: 75%; width: 8px; border-radius: var(--r-full); background: var(--on-colour-bar-dim)"></span>
+        <div class="col" style="gap: var(--s1)">
+          <div class="minibars">
+            <span class="minibar" style="height: 45%; background: var(--on-colour-bar)"></span>
+            <span class="minibar" style="height: 65%; background: var(--on-colour-bar)"></span>
+            <span class="minibar" style="height: 55%; background: var(--on-colour-bar)"></span>
+            <span class="minibar" style="height: 80%; background: var(--on-colour-bar)"></span>
+            <span class="minibar" style="height: 70%; background: var(--on-colour-bar)"></span>
+            <span class="minibar" style="height: 100%; background: var(--card)"></span>
+            <span class="minibar" style="height: 75%; background: var(--on-colour-bar-dim)"></span>
+          </div>
+          <div class="minibar-labels">
+            <span class="minibar-label" style="color: var(--card)">M</span>
+            <span class="minibar-label" style="color: var(--card)">T</span>
+            <span class="minibar-label" style="color: var(--card)">W</span>
+            <span class="minibar-label" style="color: var(--card)">T</span>
+            <span class="minibar-label" style="color: var(--card)">F</span>
+            <span class="minibar-label" style="color: var(--card)">S</span>
+            <span class="minibar-label" style="color: var(--card)">S</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Section: Today's Mindful Rituals -->
+    <!-- Middle: Today's Rituals with progress meter -->
     <div class="row" style="justify-content: space-between; padding-top: var(--s4); align-items: center">
-      <div class="t-headline">Today's Rituals with Buddy</div>
+      <div class="t-headline">Today's Rituals</div>
       <span class="t-footnote" style="color: var(--sage-deep); font-weight: 600">2 of 3 done</span>
+    </div>
+
+    <div class="meter" style="margin-top: var(--s2)">
+      <span class="meter-seg is-on"></span>
+      <span class="meter-seg is-on"></span>
+      <span class="meter-seg"></span>
     </div>
 
     <div class="col" style="gap: var(--s2); padding-top: var(--s2)">
       <!-- Ritual 1: Morning Check-in (Done) -->
-      <div class="row-card" style="border-radius: 18px; padding: var(--s3)">
+      <div class="row-card" style="border-radius: 18px; padding: var(--s3); background: var(--card)">
         <span class="chip-icon" style="background: var(--sage-soft); border-radius: var(--r-full); width: 36px; height: 36px">
           <span class="icon icon-xs" data-symbol="checkmark" style="color: var(--sage-deep)"></span>
         </span>

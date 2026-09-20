@@ -13,55 +13,37 @@
 
     <div class="col" style="align-items: center; gap: var(--s1); padding-top: var(--s3); text-align: center">
       <h1 class="t-title2" style="text-align: center">How are you right now?</h1>
-      <div class="t-footnote" style="color: var(--clay)">Tuesday, 16 September</div>
+      <div class="t-footnote" style="color: var(--clay)">Tuesday, 16 September · pick a card</div>
     </div>
 
-    <!-- Stage: the current pick, reflected back (art + reading in one band) -->
-    <div class="band is-sage" style="margin-top: var(--s3)">
-      <div class="row" style="align-items: center">
-        <img class="art" src="/images/onb-checkin.png"
-             data-asset="CheckinHeroGood" width="120" height="120"
-             alt="Happy smartphone mascot checking in"
-             style="object-fit: contain" />
+    <!-- Featured pick: dark card with the big reading -->
+    <div style="background: var(--espresso); border-radius: 28px; padding: var(--s4); margin-top: var(--s3)">
+      <div class="row" style="align-items: center; gap: var(--s4)">
+        <img class="art" src="/images/mood-good.svg" width="84" height="84" alt="Good" />
         <div class="col grow" style="gap: 2px">
-          <div class="t-title1" style="color: var(--espresso)">Good</div>
-          <div class="t-subhead" style="color: var(--espresso)">Better than yesterday</div>
-          <div class="t-caption" style="color: var(--clay)">Peaceful &amp; light</div>
+          <div class="t-caption" style="color: var(--paper); opacity: 0.75">Today's pick</div>
+          <div class="t-title1" style="color: var(--card)">Good</div>
+          <div class="t-subhead" style="color: var(--paper)">Better than yesterday</div>
         </div>
       </div>
     </div>
 
-    <!-- Picker: five orbs, the chosen one ringed -->
-    <div class="row" style="justify-content: space-between; padding-top: var(--s4)">
-      <div class="col" style="align-items: center; gap: var(--s1)">
-        <div class="mood-orb">
-          <img class="art" src="/images/mood-awful.svg" width="48" height="48" alt="Awful" />
-        </div>
-        <span class="t-caption" style="color: var(--clay)">Awful</span>
+    <!-- Rail: all five faces, the pick ringed -->
+    <div class="row" style="justify-content: space-between; align-items: center; padding-top: var(--s4)">
+      <div class="mood-orb">
+        <img class="art" src="/images/mood-awful.svg" width="40" height="40" alt="Awful" />
       </div>
-      <div class="col" style="align-items: center; gap: var(--s1)">
-        <div class="mood-orb">
-          <img class="art" src="/images/mood-bad.svg" width="48" height="48" alt="Bad" />
-        </div>
-        <span class="t-caption" style="color: var(--clay)">Bad</span>
+      <div class="mood-orb">
+        <img class="art" src="/images/mood-bad.svg" width="40" height="40" alt="Bad" />
       </div>
-      <div class="col" style="align-items: center; gap: var(--s1)">
-        <div class="mood-orb">
-          <img class="art" src="/images/mood-okay.svg" width="48" height="48" alt="Okay" />
-        </div>
-        <span class="t-caption" style="color: var(--clay)">Okay</span>
+      <div class="mood-orb">
+        <img class="art" src="/images/mood-okay.svg" width="40" height="40" alt="Okay" />
       </div>
-      <div class="col" style="align-items: center; gap: var(--s1)">
-        <div class="mood-orb">
-          <img class="art" src="/images/mood-good.svg" width="48" height="48" alt="Good" />
-        </div>
-        <span class="t-caption" style="color: var(--espresso); font-weight: 600">Good</span>
+      <div class="mood-orb is-on">
+        <img class="art" src="/images/mood-good.svg" width="40" height="40" alt="Good" />
       </div>
-      <div class="col" style="align-items: center; gap: var(--s1)">
-        <div class="mood-orb">
-          <img class="art" src="/images/mood-great.svg" width="48" height="48" alt="Great" />
-        </div>
-        <span class="t-caption" style="color: var(--clay)">Great</span>
+      <div class="mood-orb">
+        <img class="art" src="/images/mood-great.svg" width="40" height="40" alt="Great" />
       </div>
     </div>
 
