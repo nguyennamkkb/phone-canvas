@@ -22,9 +22,10 @@ gates, every time.
 Every screen is made the same way. Steps 3 and 6 are the ones people skip and
 then pay for.
 
-1. **Inspect** — read `src/screens/manifest.ts`, `src/screens/tokens.css`, and
-   two or three existing screens. A new screen joins a design system; it does
-   not invent one.
+1. **Inspect** — read `src/screens/manifest.ts`, the project's own
+   `project/<id>/tokens.css` (its design system — see
+   `recipes/design-tokens.md`), and two or three existing screens. A new
+   screen joins a design system; it does not invent one.
 2. **Model** — before any markup, write down: purpose, primary action, primary
    information, persistent controls, what scrolls. If you cannot name the
    primary action, you do not understand the screen yet.
@@ -92,6 +93,7 @@ Do not report a screen as done while any of these is true:
   why
 - you have not looked at the exported PNG
 - the SwiftUI for the primary action is not derivable from the spec
+- `npm run lint:tokens` reports an error
 
 ## Recipes
 
@@ -104,3 +106,4 @@ classes it uses.
 | browse, inbox, settings, search results | `recipes/list-screen.md` |
 | score, stats, overview, anything with a chart | `recipes/dashboard.md` |
 | modal action menu, preview, short form, filter | `recipes/bottom-sheet.md` |
+| new project palette, token edit, dark mode, handoff | `recipes/design-tokens.md` |
