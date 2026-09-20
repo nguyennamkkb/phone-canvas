@@ -1,301 +1,42 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { ReactFlowProvider, addEdge, useEdgesState, useNodesState } from '@xyflow/react'
-import type { Connection, Edge } from '@xyflow/react'
-import { Board } from './canvas/Board'
-import { BoardContext } from './canvas/BoardContext'
-import type { CanvasMode, FrameStyle } from './canvas/BoardContext'
-import type { PhoneNodeData } from './canvas/PhoneNode'
-import type { PhoneFlowNode } from './canvas/PhoneNode'
-import type { BoardNode } from './canvas/TokenNode'
-import { useTokenTheme } from './tokens/store'
-import { DEFAULT_DEVICE_ID, getDevice } from './frame/devices'
-import { InspectorProvider, useInspector } from './inspect/InspectorContext'
-import { SpecPanel } from './inspect/SpecPanel'
-import { SCREEN_BY_ID, SCREENS } from './screens'
+import { BoardView } from './board/BoardView'
 import { Dashboard } from './projects/Dashboard'
+import { ErrorBoundary } from './shell/ErrorBoundary'
+import { useHashRoute } from './shell/useHashRoute'
+import { InspectorProvider } from './inspect/InspectorContext'
 import type { Project } from './projects/projects'
-import { resolveScreens } from './projects/projects'
 import {
   allProjects,
   clearBoard,
-  loadBoard,
   loadCustomProjects,
-  loadLastProject,
   loadPanelVisible,
-  saveBoard,
   saveCustomProjects,
-  saveLastProject,
   savePanelVisible,
 } from './projects/storage'
-
-const COLUMN_GAP = 120
-
-function nodeWidth(deviceId: string): number {
-  const d = getDevice(deviceId)
-  return d.width + d.bezel * 2
-}
-
-// Node ids are prefixed per project so two boards never share an identity —
-// react-flow + the iframe token router both key on node id.
-let counters: Record<string, number> = {}
-
-function nextNodeId(projectId: string): string {
-  counters[projectId] = (counters[projectId] ?? 0) + 1
-  return `${projectId}-n${counters[projectId]}`
-}
-
-function makeNode(projectId: string, screenId: string, x: number): PhoneFlowNode | null {
-  const screen = SCREEN_BY_ID.get(screenId)
-  if (!screen) return null
-  return {
-    id: nextNodeId(projectId),
-    type: 'phone',
-    position: { x, y: 0 },
-    data: { screenId: screen.id, deviceId: DEFAULT_DEVICE_ID },
-  }
-}
-
-const TOKEN_NODE_W = 340
-
-function tokenNode(project: Project): BoardNode {
-  return {
-    id: `${project.id}-tokens`,
-    type: 'token',
-    position: { x: -(TOKEN_NODE_W + COLUMN_GAP), y: 0 },
-    data: { projectId: project.id, title: project.title },
-  }
-}
-
-/** a saved board from before tokens existed gains the table, kept left of all screens */
-function withTokenNode(project: Project, nodes: BoardNode[]): BoardNode[] {
-  const phones = nodes.filter((n) => n.type === 'phone')
-  const table = tokenNode(project)
-  if (phones.length > 0) {
-    const minX = Math.min(...phones.map((n) => n.position.x))
-    table.position = { x: minX - TOKEN_NODE_W - COLUMN_GAP, y: 0 }
-  }
-  return [table, ...phones]
-}
-
-function freshNodes(project: Project): BoardNode[] {
-  counters[project.id] = 0
-  let x = 0
-  const out: BoardNode[] = [tokenNode(project)]
-  for (const sid of resolveScreens(project)) {
-    const node = makeNode(project.id, sid, x)
-    if (node) {
-      out.push(node)
-      x += nodeWidth(DEFAULT_DEVICE_ID) + COLUMN_GAP
-    }
-  }
-  return out
-}
 
 function slug(title: string): string {
   const s = title
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[̀-ͯ]/g, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .slice(0, 32)
   return s || `project-${Date.now().toString(36)}`
 }
 
-/* ------------------------------------------------------------ board view -- */
-
-function BoardView({
-  project,
-  panelVisible,
-  onTogglePanel,
-  onBack,
-  onTrackScreen,
-  onUntrackScreen,
-}: {
-  project: Project
-  panelVisible: boolean
-  onTogglePanel: () => void
-  onBack: () => void
-  /** record an added screen into a custom project's screenIds (count/cover stay true) */
-  onTrackScreen: (projectId: string, screenId: string) => void
-  /** forget a removed screen once its last instance is gone */
-  onUntrackScreen: (projectId: string, screenId: string) => void
-}) {
-  const [mode, setMode] = useState<CanvasMode>('move')
-  const [frameStyle, setFrameStyle] = useState<FrameStyle>('plain')
-  const [tokenTheme, setTokenTheme] = useTokenTheme(project.id)
-  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null)
-
-  const opening = useMemo(() => {
-    const saved = loadBoard(project.id)
-    if (saved && saved.nodes.length > 0) {
-      // resume the counter so new ids never collide with restored ones
-      let max = 0
-      for (const n of saved.nodes) {
-        const m = /-n(\d+)$/.exec(n.id)
-        if (m) max = Math.max(max, Number(m[1]))
-      }
-      counters[project.id] = max
-      // drop phone nodes whose screen no longer exists (renamed file, etc.),
-      // then ensure the token table is present (boards saved before it existed)
-      const phones = saved.nodes.filter(
-        (n) => n.type === 'phone' && SCREEN_BY_ID.has(n.data.screenId),
-      )
-      return { nodes: withTokenNode(project, phones), edges: saved.edges }
-    }
-    const nodes = freshNodes(project)
-    return { nodes, edges: [] as Edge[] }
-  }, [project])
-
-  const [nodes, setNodes, onNodesChange] = useNodesState<BoardNode>(opening.nodes)
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(opening.edges)
-
-  // persist layout (debounced by React batching — save on every change is fine
-  // for boards of tens of nodes)
-  useEffect(() => {
-    saveBoard(project.id, { nodes, edges })
-  }, [project.id, nodes, edges])
-
-  const onDeleteNode = useCallback(
-    (id: string) => {
-      const target = nodes.find((n) => n.id === id)
-      if (!target || target.type !== 'phone') return
-      const title = SCREEN_BY_ID.get(target.data.screenId)?.title ?? target.data.screenId
-      if (!window.confirm(`Xóa màn hình "${title}" khỏi board? File html giữ nguyên.`)) return
-      const screenId = target.data.screenId
-      setNodes((ns) => ns.filter((n) => n.id !== id))
-      setEdges((es) => es.filter((e) => e.source !== id && e.target !== id))
-      setSelectedNodeId((sel) => (sel === id ? null : sel))
-      // custom project: forget the screen once its last instance is gone,
-      // so the card count/cover stay true
-      const last = !nodes.some(
-        (n) => n.id !== id && n.type === 'phone' && n.data.screenId === screenId,
-      )
-      if (last) onUntrackScreen(project.id, screenId)
-    },
-    [nodes, project.id, onUntrackScreen, setNodes, setEdges],
-  )
-
-  // Delete/Backspace removes the selected screen — never while typing
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      const t = e.target as HTMLElement | null
-      if (t && (t.tagName === 'INPUT' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return
-      if ((e.key === 'Delete' || e.key === 'Backspace') && selectedNodeId) {
-        e.preventDefault()
-        onDeleteNode(selectedNodeId)
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [selectedNodeId, onDeleteNode])
-
-  const boardSettings = useMemo(
-    () => ({
-      mode,
-      frameStyle,
-      activeNodeId: selectedNodeId,
-      panelVisible,
-      onDeleteNode,
-      tokenTheme,
-      onTokenThemeChange: setTokenTheme,
-    }),
-    [mode, frameStyle, selectedNodeId, panelVisible, onDeleteNode, tokenTheme, setTokenTheme],
-  )
-
-  const onConnect = useCallback(
-    (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
-    [setEdges],
-  )
-
-  const onPatchNode = useCallback(
-    (id: string, patch: Partial<PhoneNodeData>) => {
-      setNodes((ns) =>
-        ns.map((n) =>
-          n.id === id && n.type === 'phone' ? { ...n, data: { ...n.data, ...patch } } : n,
-        ),
-      )
-    },
-    [setNodes],
-  )
-
-  const projectScreenIds = useMemo(() => resolveScreens(project), [project])
-
-  const onAddScreen = useCallback(
-    (screenId?: string) => {
-      const id = nextNodeId(project.id)
-      // an empty (custom) project has no list to cycle — fall back to all screens
-      const pool = projectScreenIds.length > 0 ? projectScreenIds : SCREENS.map((s) => s.id)
-      setNodes((ns) => {
-        let sid = screenId
-        if (!sid) {
-          // prefer the first project screen not already on the board,
-          // otherwise cycle through the project list
-          const onBoard = (s: string) =>
-            ns.some((n) => n.type === 'phone' && n.data.screenId === s)
-          sid = pool.find((s) => !onBoard(s)) ?? pool[ns.length % pool.length]
-          if (!sid) return ns
-        }
-        if (!SCREEN_BY_ID.has(sid)) return ns
-        onTrackScreen(project.id, sid)
-        const right = ns.reduce((max, n) => Math.max(max, n.position.x), 0)
-        const node: PhoneFlowNode = {
-          id,
-          type: 'phone',
-          position: { x: ns.length === 0 ? 0 : right + nodeWidth(DEFAULT_DEVICE_ID) + COLUMN_GAP, y: 0 },
-          data: { screenId: sid, deviceId: DEFAULT_DEVICE_ID },
-        }
-        return [...ns, node]
-      })
-    },
-    [project.id, projectScreenIds, onTrackScreen, setNodes],
-  )
-
-  return (
-    <BoardContext.Provider value={boardSettings}>
-      {/* remount flow per project so fitView/minimap never bleed across boards */}
-      <ReactFlowProvider key={project.id}>
-        <div className={`app${panelVisible ? '' : ' is-panel-hidden'}`}>
-          <div className="canvas-area">
-            <Board
-              nodes={nodes}
-              edges={edges}
-              projectTitle={project.title}
-              screenCount={nodes.filter((n) => n.type === 'phone').length}
-              onNodesChange={onNodesChange}
-              onEdgesChange={onEdgesChange}
-              onConnect={onConnect}
-              onSelectNode={setSelectedNodeId}
-              onModeChange={setMode}
-              onFrameStyleChange={setFrameStyle}
-              onAddScreen={onAddScreen}
-              onBack={onBack}
-              onTogglePanel={onTogglePanel}
-            />
-          </div>
-          {panelVisible && (
-            <SpecPanel
-              nodes={nodes}
-              selectedNodeId={selectedNodeId}
-              onPatchNode={onPatchNode}
-              onDeleteNode={onDeleteNode}
-            />
-          )}
-        </div>
-      </ReactFlowProvider>
-    </BoardContext.Provider>
-  )
-}
-
 /* ------------------------------------------------------------------ app -- */
 
 export function App() {
   const [custom, setCustom] = useState<Project[]>(() => loadCustomProjects())
-  const [activeId, setActiveId] = useState<string | null>(() => loadLastProject())
+  const [route, go] = useHashRoute()
   const [panelVisible, setPanelVisible] = useState<boolean>(() => loadPanelVisible())
 
   const projects = useMemo(() => allProjects(custom), [custom])
-  const active = projects.find((p) => p.id === activeId) ?? null
+  // URL is the source of truth (2.1); unknown ids fall to a not-found view
+  const active =
+    route.view === 'board' ? (projects.find((p) => p.id === route.projectId) ?? null) : null
+  const unknownProject = route.view === 'board' && !active ? route.projectId : null
 
   const togglePanel = useCallback(() => {
     setPanelVisible((v) => {
@@ -316,15 +57,12 @@ export function App() {
     return () => window.removeEventListener('keydown', onKey)
   }, [togglePanel])
 
-  const openProject = useCallback((id: string) => {
-    setActiveId(id)
-    saveLastProject(id)
-  }, [])
+  const openProject = useCallback(
+    (id: string) => go({ view: 'board', projectId: id }),
+    [go],
+  )
 
-  const closeProject = useCallback(() => {
-    setActiveId(null)
-    saveLastProject(null)
-  }, [])
+  const closeProject = useCallback(() => go({ view: 'dashboard' }), [go])
 
   const createProject = useCallback(
     (title: string) => {
@@ -340,38 +78,32 @@ export function App() {
   )
 
   // remember screens added to a custom project so its card count/cover stay true
-  const trackScreen = useCallback(
-    (projectId: string, screenId: string) => {
-      setCustom((prev) => {
-        if (!prev.some((p) => p.id === projectId)) return prev
-        const next = prev.map((p) =>
-          p.id === projectId && !p.screenIds.includes(screenId)
-            ? { ...p, screenIds: [...p.screenIds, screenId] }
-            : p,
-        )
-        saveCustomProjects(next)
-        return next
-      })
-    },
-    [],
-  )
+  const trackScreen = useCallback((projectId: string, screenId: string) => {
+    setCustom((prev) => {
+      if (!prev.some((p) => p.id === projectId)) return prev
+      const next = prev.map((p) =>
+        p.id === projectId && !p.screenIds.includes(screenId)
+          ? { ...p, screenIds: [...p.screenIds, screenId] }
+          : p,
+      )
+      saveCustomProjects(next)
+      return next
+    })
+  }, [])
 
   // forget screens removed from a custom project so its card count/cover stay true
-  const untrackScreen = useCallback(
-    (projectId: string, screenId: string) => {
-      setCustom((prev) => {
-        if (!prev.some((p) => p.id === projectId)) return prev
-        const next = prev.map((p) =>
-          p.id === projectId
-            ? { ...p, screenIds: p.screenIds.filter((s) => s !== screenId) }
-            : p,
-        )
-        saveCustomProjects(next)
-        return next
-      })
-    },
-    [],
-  )
+  const untrackScreen = useCallback((projectId: string, screenId: string) => {
+    setCustom((prev) => {
+      if (!prev.some((p) => p.id === projectId)) return prev
+      const next = prev.map((p) =>
+        p.id === projectId
+          ? { ...p, screenIds: p.screenIds.filter((s) => s !== screenId) }
+          : p,
+      )
+      saveCustomProjects(next)
+      return next
+    })
+  }, [])
 
   const deleteProject = useCallback(
     (id: string) => {
@@ -379,23 +111,57 @@ export function App() {
       setCustom(next)
       saveCustomProjects(next)
       clearBoard(id)
-      if (activeId === id) closeProject()
+      if (route.view === 'board' && route.projectId === id) closeProject()
     },
-    [custom, activeId, closeProject],
+    [custom, route, closeProject],
   )
 
   return (
     <InspectorProvider>
-      {active ? (
-        <BoardView
-          key={active.id}
-          project={active}
-          panelVisible={panelVisible}
-          onTogglePanel={togglePanel}
-          onBack={closeProject}
-          onTrackScreen={trackScreen}
-          onUntrackScreen={untrackScreen}
-        />
+      {unknownProject ? (
+        <div className="app app-dashboard">
+          <div className="dash">
+            <div className="board-empty is-static">
+              <div className="board-empty-title">Không tìm thấy dự án “{unknownProject}”</div>
+              <p>
+                Liên kết này trỏ tới một board không còn tồn tại (đã xóa hoặc sai id).
+              </p>
+              <button type="button" className="dash-btn" onClick={closeProject}>
+                Về Dashboard
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : active ? (
+        <ErrorBoundary
+          fallback={(retry) => (
+            <div className="app app-dashboard">
+              <div className="dash">
+                <div className="board-empty is-static" role="alert">
+                  <div className="board-empty-title">Board gặp lỗi</div>
+                  <p>Bố cục đã lưu của bạn vẫn còn trong bộ nhớ trình duyệt.</p>
+                  <button type="button" className="dash-btn" onClick={retry}>
+                    Thử mở lại board
+                  </button>{' '}
+                  <button type="button" className="ghost" onClick={closeProject}>
+                    Về Dashboard
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        >
+          {/* remount flow per project so fitView/minimap never bleed across boards */}
+          <BoardView
+              key={active.id}
+              project={active}
+              panelVisible={panelVisible}
+              onTogglePanel={togglePanel}
+              onBack={closeProject}
+              onTrackScreen={trackScreen}
+              onUntrackScreen={untrackScreen}
+            />
+          </ErrorBoundary>
       ) : (
         <div className="app app-dashboard">
           <Dashboard
@@ -408,12 +174,4 @@ export function App() {
       )}
     </InspectorProvider>
   )
-}
-
-// re-export for InspectorProvider internals that clear per-board state
-export function useInspectorSelectionReset() {
-  const { select } = useInspector()
-  useEffect(() => {
-    select(null)
-  }, [select])
 }

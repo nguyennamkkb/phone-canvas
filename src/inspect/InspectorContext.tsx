@@ -21,6 +21,8 @@ type InspectorValue = {
   selection: Selection | null
   select: (sel: Selection | null) => void
   registerFrame: (nodeId: string, el: HTMLIFrameElement | null, token: string) => void
+  /** ask an iframe to re-run capture (2.3 retry after timeout) */
+  requestRecapture: (nodeId: string) => void
   /** ancestor chain of the current selection, root first */
   ancestry: SpecNode[]
   childrenOf: (id: string) => SpecNode[]
@@ -90,6 +92,34 @@ export function InspectorProvider({ children }: { children: ReactNode }) {
     })
   }, [selection, specs])
 
+  const requestRecapture = useCallback((nodeId: string) => {
+    const entry = frames.current.get(nodeId)
+    if (!entry) return
+    setSpecs((prev) => {
+      if (!(nodeId in prev)) return prev
+      const next = { ...prev }
+      delete next[nodeId]
+      return next
+    })
+    // nudge the bridge without a full remount: reselecting null re-runs its
+    // highlight path, and a changed token forces a fresh capture round-trip
+    entry.el.contentWindow?.postMessage(
+      { pc: true, type: 'recapture', token: entry.token },
+      '*',
+    )
+    // belt and suspenders: reload the frame if the bridge ignores us
+    window.setTimeout(() => {
+      const still = frames.current.get(nodeId)
+      if (still && still.el.contentWindow) {
+        try {
+          still.el.contentWindow.location.reload()
+        } catch {
+          /* sandboxed reload fallback: parent remounts via key change */
+        }
+      }
+    }, 1500)
+  }, [])
+
   const select = useCallback((sel: Selection | null) => setSelection(sel), [])
 
   const selectedList = selection ? (specs[selection.nodeId] ?? []) : []
@@ -118,8 +148,8 @@ export function InspectorProvider({ children }: { children: ReactNode }) {
   )
 
   const value = useMemo<InspectorValue>(
-    () => ({ specs, sizes, selection, select, registerFrame, ancestry, childrenOf, selected }),
-    [specs, sizes, selection, select, registerFrame, ancestry, childrenOf, selected],
+    () => ({ specs, sizes, selection, select, registerFrame, requestRecapture, ancestry, childrenOf, selected }),
+    [specs, sizes, selection, select, registerFrame, requestRecapture, ancestry, childrenOf, selected],
   )
 
   return <InspectorContext.Provider value={value}>{children}</InspectorContext.Provider>

@@ -10,7 +10,12 @@
     "export": "node --disable-warning=ExperimentalWarning scripts/export.ts",
     "icons": "node --disable-warning=ExperimentalWarning scripts/icons.ts",
     "lint:tokens": "node --disable-warning=ExperimentalWarning scripts/tokens-lint.ts",
-    "lint": "npm run typecheck && npm run lint:tokens"
+    "lint:subset": "node --disable-warning=ExperimentalWarning scripts/subset-lint.ts",
+    "new-screen": "node --disable-warning=ExperimentalWarning scripts/new-screen.ts",
+    "test": "vitest run",
+    "lint": "npm run typecheck && npm run lint:tokens && npm run lint:subset",
+    "screens:sync": "node --disable-warning=ExperimentalWarning scripts/gen-registry.ts",
+    "gate": "npm run lint && npm test"
   },
   "keywords": [],
   "author": "",
@@ -27,6 +32,7 @@
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
     "typescript": "^7.0.2",
-    "vite": "^8.3.0"
+    "vite": "^8.3.0",
+    "vitest": "^5.0.1"
   }
 }

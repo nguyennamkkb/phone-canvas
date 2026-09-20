@@ -302,6 +302,11 @@
       var el = viewportEl.querySelector('[data-pc-id="' + d.id + '"]')
       if (el) show(el)
       else hide()
+    } else if (d.type === 'recapture') {
+      // parent panel hit the 8s no-spec timeout and asked for a fresh capture
+      if (d.token && d.token !== token) return
+      emptyTries = 0
+      refresh()
     }
   })
 

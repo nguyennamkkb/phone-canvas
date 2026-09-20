@@ -1,0 +1,400 @@
+/* phone-canvas styles — one file per feature, same class names.
+ * main.tsx imports shell.css first, then board/panel/tokens-ui.
+ */
+/* ------------------------------------------------------------------ board -- */
+
+.board {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  background: #f6f6f8;
+}
+
+/* the minimap must never hide the thing you are designing */
+.react-flow__minimap {
+  border: 1px solid #e9e9ee;
+  border-radius: 12px;
+  overflow: hidden;
+  opacity: 0.35;
+  transition: opacity 140ms ease;
+}
+
+.react-flow__minimap:hover {
+  opacity: 1;
+}
+
+.react-flow__controls {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 8px 24px rgba(0, 0, 0, 0.07);
+}
+
+.react-flow__controls-button {
+  border-bottom: 1px solid #f0f0f3;
+  background: #ffffff;
+}
+
+.react-flow__controls-button:hover {
+  background: #f4f4f6;
+}
+
+.toolbar {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  max-width: calc(100% - 28px);
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 6px 8px;
+  border-radius: 15px;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.05),
+    0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.toolbar::-webkit-scrollbar {
+  display: none;
+}
+
+.segmented {
+  display: flex;
+  flex: 0 0 auto;
+  padding: 3px;
+  border-radius: 10px;
+  background: #efeff2;
+}
+
+.segmented button {
+  border: 0;
+  border-radius: 7px;
+  padding: 7px 13px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  color: #63636b;
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 140ms ease, color 140ms ease, box-shadow 140ms ease;
+}
+
+.segmented button:hover:not(.is-on) {
+  color: #18181b;
+}
+
+.segmented button.is-on {
+  background: #ffffff;
+  color: #18181b;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.tool {
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 9px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  color: #3f3f46;
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 140ms ease, color 140ms ease, transform 100ms ease;
+}
+
+.tool:hover {
+  background: #efeff2;
+  color: #18181b;
+}
+
+.tool:active {
+  transform: scale(0.96);
+}
+
+.tool:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.tool:disabled:hover {
+  background: transparent;
+}
+
+.tool-back {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  border-radius: 50%;
+}
+
+/* an empty board is a state, not a failure — say what to do next.
+   The card floats above the canvas (overlay variant) so it never shifts layout. */
+.board-empty-overlay {
+  position: absolute;
+  left: 50%;
+  top: 44px;
+  z-index: 5;
+  transform: translateX(-50%);
+}
+
+/* boundary recovery card for a crashed board */
+.board-error {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px;
+  text-align: center;
+  background: #f6f6f8;
+}
+
+/* narrow viewport: the inspector becomes an overlay with its own close */
+@media (max-width: 900px) {
+  .app > .panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+    width: min(384px, 92vw);
+    flex-basis: auto;
+    box-shadow: -12px 0 40px rgba(0, 0, 0, 0.16);
+  }
+  /* overlay-only close button: hidden on desktop where the toolbar toggle owns this */
+  .app > .panel .panel-close {
+    display: inline-block;
+  }
+}
+
+/* desktop: the toolbar toggle owns panel visibility, not a header button */
+.app > .panel .panel-close {
+  display: none;
+}
+
+/* an empty board is a state, not a failure — say what to do next */
+.board-empty {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 5;
+  width: 430px;
+  max-width: calc(100% - 48px);
+  padding: 28px 32px;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.09);
+  text-align: center;
+}
+
+/* static variant for full-page states (unknown project, boundary fallback) */
+.board-empty.is-static {
+  position: static;
+  transform: none;
+  margin: 72px auto;
+}
+
+.board-empty-title {
+  font-size: 14.5px;
+  font-weight: 650;
+  letter-spacing: -0.1px;
+  color: #18181b;
+}
+
+.board-empty p {
+  margin: 8px 0 0;
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: #52525b;
+}
+
+.board-empty code {
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: #f4f4f5;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px;
+  color: #3f3f46;
+}
+
+.board-empty-note {
+  color: #a1a1aa !important;
+}
+
+/* ------------------------------------------------------------------ phone -- */
+
+.phone-node {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.phone-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 4px;
+  font-size: 11px;
+  line-height: 1;
+  color: #71717a;
+}
+
+.phone-label-title {
+  font-weight: 650;
+  letter-spacing: -0.1px;
+  color: #3f3f46;
+}
+
+.phone-label-size {
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  color: #b6b6be;
+}
+
+/* screen identity chip — click copies the manifest id (ai đọc/sửa theo id này) */
+.phone-id {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 999px;
+  padding: 2px 8px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.55));
+  backdrop-filter: blur(12px) saturate(1.5);
+  -webkit-backdrop-filter: blur(12px) saturate(1.5);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  color: #52525b;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.phone-id:hover {
+  color: #18181b;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.7));
+}
+
+.phone-delete {
+  display: none;
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  margin-left: auto;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.94);
+  color: #8e8e96;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  transition: color 120ms ease, border-color 120ms ease, transform 100ms ease;
+}
+
+.phone-node:hover .phone-delete {
+  display: inline-flex;
+}
+
+.phone-delete:hover {
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.phone-delete:active {
+  transform: scale(0.9);
+}
+
+.phone {
+  background: #1c1c1e;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.18);
+  transition: box-shadow 120ms ease;
+}
+
+.phone.is-selected {
+  box-shadow:
+    0 0 0 3px #007aff,
+    0 12px 34px rgba(0, 0, 0, 0.18);
+}
+
+/* plain frame: just a rectangle, drawn with a ring so it costs no layout */
+.phone.is-plain {
+  background: #ffffff;
+  box-shadow:
+    0 0 0 1px #e7e7ec,
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 16px 40px rgba(0, 0, 0, 0.08);
+}
+
+.phone.is-plain.is-selected {
+  box-shadow:
+    0 0 0 2px #007aff,
+    0 0 0 6px rgba(0, 122, 255, 0.14),
+    0 16px 40px rgba(0, 0, 0, 0.08);
+}
+
+.phone-screen {
+  position: relative;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.phone-screen iframe {
+  display: block;
+  border: 0;
+}
+
+.phone-island {
+  position: absolute;
+  top: 11px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 122px;
+  height: 36px;
+  border-radius: 999px;
+  background: #000000;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.phone-notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 164px;
+  height: 30px;
+  border-radius: 0 0 18px 18px;
+  background: #000000;
+  z-index: 5;
+  pointer-events: none;
+}
+

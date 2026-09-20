@@ -30,6 +30,11 @@
   --sage-wash: #edf2df;
   --ember: #f47f42;
   --ember-soft: #fde3d2;
+  /* white-on-colour overlays: speech bubble on the hero card, sparkline bars
+     on the ember tile — translucent card white, theme-aware via --card */
+  --on-colour-wash: rgba(255, 255, 255, 0.85);
+  --on-colour-bar: rgba(255, 255, 255, 0.65);
+  --on-colour-bar-dim: rgba(255, 255, 255, 0.35);
   --lilac: #9d8ff0;
   --lilac-soft: #e3defa;
   --sun: #e7c65a;
@@ -63,6 +68,9 @@
   --sage-wash: #2c3325;
   --ember: #f47f42;
   --ember-soft: #4d3125;
+  --on-colour-wash: rgba(43, 33, 26, 0.72);
+  --on-colour-bar: rgba(246, 241, 231, 0.6);
+  --on-colour-bar-dim: rgba(246, 241, 231, 0.32);
   --lilac: #9d8ff0;
   --lilac-soft: #38324e;
   --sun: #e7c65a;

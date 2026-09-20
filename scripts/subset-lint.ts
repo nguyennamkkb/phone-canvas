@@ -1,0 +1,126 @@
+#!/usr/bin/env node
+// @ts-nocheck — small zero-dep cli, checked by running it, not by tsc
+/**
+ * Subset lint (4.3 gate): screens must stay inside the SwiftUI-mappable subset.
+ *
+ *   npm run lint:subset
+ *
+ * Rules (error, exit 1):
+ *   banned layout  display:grid | float: | transform: | clip-path: | filter:
+ *                  (position:absolute is allowed — composite graphics use it;
+ *                  bridge/infer reads it as ZStack + offset)
+ *   nameless art   inline <svg> in screen markup (use .icon[data-symbol] or img.art)
+ *   un-symbolled   class="... icon ..." without a data-symbol attribute
+ *   unknown token  var(--x) with no definition (same rule as lint:tokens error)
+ *
+ * Messages name file:line + the fix. Warnings (hardcoded colors) stay in
+ * lint:tokens — this gate only fails on structural violations.
+ */
+
+import { readFile } from 'node:fs/promises'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+import { SCREEN_FILES } from '../src/screens/manifest.ts'
+import { BUILTIN_PROJECTS } from '../src/projects/builtin.ts'
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
+
+const BANNED = [
+  { re: /display\s*:\s*grid/i, what: 'display:grid — dùng flex .row/.col (VStack/HStack)' },
+  { re: /float\s*:\s*(left|right)/i, what: 'float — dùng flex layout' },
+  { re: /(^|[^-\w])transform\s*:/gim, what: 'transform — spec đọc sai box; composite graphic dùng left/top % + margin âm' },
+  { re: /clip-path\s*:/i, what: 'clip-path — ngoài subset, extractor báo Block' },
+  { re: /filter\s*:/i, what: 'filter — ngoài subset (lưu ý: đây cũng bắt -webkit-filter nếu có)' },
+]
+
+const VAR_RE = /var\(\s*(--[a-z0-9-]+)/g
+const DEF_RE = /--([a-z0-9-]+)\s*:\s*[^;{}]+;/g
+const IGNORED = new Set(['--icon'])
+const IGNORED_PREFIX = ['--device-', '--safe-', '--status-']
+
+function lineOf(src, index) {
+  return src.slice(0, index).split('\n').length
+}
+
+async function definedVars() {
+  const global = await readFile(path.join(ROOT, 'src/screens/tokens.css'), 'utf8')
+  const names = new Set()
+  for (const m of global.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(DEF_RE)) names.add(`--${m[1]}`)
+  const perProject = new Map()
+  for (const p of BUILTIN_PROJECTS) {
+    const set = new Set(names)
+    try {
+      const css = await readFile(path.join(ROOT, 'project', p.id, 'tokens.css'), 'utf8')
+      for (const m of css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(DEF_RE)) set.add(`--${m[1]}`)
+    } catch { /* no project file */ }
+    perProject.set(p.id, set)
+  }
+  return { names, perProject }
+}
+
+function isTokenVar(name) {
+  if (IGNORED.has(name)) return false
+  return !IGNORED_PREFIX.some((p) => name.startsWith(p))
+}
+
+async function main() {
+  const { names, perProject } = await definedVars()
+  const ownerOf = new Map()
+  for (const p of BUILTIN_PROJECTS) for (const sid of p.screenIds) ownerOf.set(sid, p.id)
+
+  let errors = 0
+  const err = (file, line, msg) => {
+    console.error(`error  ${file}:${line}  ${msg}`)
+    errors += 1
+  }
+
+  for (const screen of SCREEN_FILES) {
+    const html = await readFile(path.join(ROOT, screen.file), 'utf8')
+    const pid = ownerOf.get(screen.id)
+    const known = (pid && perProject.get(pid)) || names
+
+    // 1. banned layout declarations (skip HTML comments so docs in comments don't fail)
+    const stripped = html.replace(/<!--[\s\S]*?-->/g, (c) => '\n'.repeat(c.split('\n').length - 1))
+    for (const { re, what } of BANNED) {
+      const m = re.exec(stripped)
+      if (m) err(screen.file, lineOf(stripped, m.index), what)
+    }
+
+    // 2. inline <svg> — nameless art
+    for (const m of html.matchAll(/<svg[\s>]/gi)) {
+      err(screen.file, lineOf(html, m.index), 'inline <svg> — không có tên cho Image("…"); dùng <span class="icon" data-symbol="…"> hoặc <img class="art">')
+    }
+
+    // 3. .icon glyph without data-symbol — only the exact `icon` class token
+    // counts (chip-icon / icon-btn / icon-btn-soft are containers, not glyphs)
+    for (const m of html.matchAll(/<[^>]*class="[^"]*"[^>]*>/gi)) {
+      const cm = /class="([^"]*)"/i.exec(m[0])
+      if (!cm) continue
+      const classes = cm[1].split(/\s+/)
+      if (!classes.includes('icon')) continue
+      if (!/data-symbol\s*=\s*"/i.test(m[0])) {
+        err(screen.file, lineOf(html, m.index), '.icon thiếu data-symbol — spec không nói được tên SF Symbol')
+      }
+    }
+
+    // 4. unknown var(--x)
+    VAR_RE.lastIndex = 0
+    let vm
+    const seen = new Set()
+    while ((vm = VAR_RE.exec(html)) !== null) {
+      const name = vm[1]
+      if (!isTokenVar(name) || seen.has(name)) continue
+      seen.add(name)
+      if (!known.has(name)) err(screen.file, lineOf(html, vm.index), `${name} chưa định nghĩa (resolves to guaranteed-invalid)`)
+    }
+  }
+
+  console.log(`\n${errors} lỗi subset`)
+  if (errors > 0) process.exit(1)
+}
+
+main().catch((error) => {
+  console.error(`lint:subset: ${error instanceof Error ? error.message : String(error)}`)
+  process.exit(1)
+})

@@ -1,0 +1,452 @@
+/* phone-canvas styles — one file per feature, same class names.
+ * main.tsx imports shell.css first, then board/panel/tokens-ui.
+ */
+/* ============================================================================
+ * Token table node — the project's design system, always on the board.
+ * Read-only reference: the source of truth stays in project/<id>/tokens.css.
+ * ========================================================================== */
+
+.token-node {
+  width: 360px;
+}
+
+/* the token table is a panel, not a phone: header + sticky actions +
+   collapsible sections under one accent bar in the project's own color */
+.token-frame {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-height: 760px;
+  overflow-y: auto;
+  border-radius: 22px;
+  padding: 0 12px 12px;
+}
+
+.token-accent {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  height: 4px;
+  margin: 0 -12px;
+  border-radius: 22px 22px 0 0;
+  background: var(--frame-accent, #007aff);
+}
+
+.token-head {
+  position: sticky;
+  top: 4px;
+  z-index: 2;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  margin: 0 -12px;
+  padding: 10px 14px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.72));
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  border-bottom: 1px solid rgba(50, 50, 80, 0.08);
+}
+
+.token-dot {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--frame-accent, #007aff);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6);
+}
+
+.token-head-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.token-title {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.1px;
+  color: #18181b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.token-sub {
+  font-size: 11.5px;
+  color: #71717a;
+  white-space: nowrap;
+}
+
+.token-section {
+  padding: 2px 0;
+}
+
+.token-section summary {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 2px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #71717a;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.token-section summary::-webkit-details-marker {
+  display: none;
+}
+
+.token-section summary::before {
+  content: '+';
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: rgba(120, 120, 145, 0.14);
+  color: #52525b;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.token-section[open] summary::before {
+  content: '-';
+}
+
+.token-count {
+  margin-left: auto;
+  min-width: 22px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: rgba(120, 120, 145, 0.14);
+  color: #52525b;
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.token-colors {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.token-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  min-height: 22px;
+}
+
+.token-swatch {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.token-name {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px;
+  color: #27272a;
+}
+
+.token-val {
+  margin-left: auto;
+  flex: 0 0 auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  color: #71717a;
+}
+
+.token-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px 8px;
+}
+
+.token-cell {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px;
+  min-width: 0;
+}
+
+.token-cell .token-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.token-empty {
+  margin: 0;
+  font-size: 12px;
+  color: #71717a;
+}
+
+.token-frame::-webkit-scrollbar {
+  width: 8px;
+}
+
+.token-frame::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: transparent;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.token-frame:hover::-webkit-scrollbar-thumb {
+  background: #d9d9e0;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+/* v2/v3 token table: editing, audit, diff. Board chrome, never measured. */
+
+.token-actions {
+  position: sticky;
+  top: 57px;
+  z-index: 2;
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  margin: 0 -12px;
+  padding: 8px 14px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.5));
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  border-bottom: 1px solid rgba(50, 50, 80, 0.08);
+}
+
+.token-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid #e4e4e7;
+  border-radius: 999px;
+  background: #f4f4f5;
+  color: #27272a;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.token-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.token-btn.is-danger {
+  background: transparent;
+  color: #c8452b;
+  border-color: #f0c9bf;
+}
+
+.token-btn.is-mini {
+  height: 22px;
+  padding: 0 8px;
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.token-section.is-warn summary {
+  color: #c8452b;
+}
+
+.token-section.is-warn .token-name {
+  color: #c8452b;
+}
+
+.token-row.is-unused .token-name,
+.token-cell.is-unused .token-name {
+  opacity: 0.45;
+}
+
+.token-row.is-draft .token-name,
+.token-cell.is-draft .token-name {
+  font-weight: 700;
+}
+
+.token-row.is-draft .token-swatch,
+.token-cell.is-draft .token-input {
+  outline: 2px solid #f2c81c;
+  outline-offset: 1px;
+}
+
+.token-swatch {
+  position: relative;
+  overflow: hidden;
+}
+
+.token-picker {
+  position: absolute;
+  inset: -4px;
+  width: calc(100% + 8px);
+  height: calc(100% + 8px);
+  opacity: 0;
+  cursor: pointer;
+  padding: 0;
+  border: 0;
+}
+
+.token-x {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: #f2c81c;
+  color: #27272a;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.token-input {
+  margin-left: auto;
+  flex: 0 0 auto;
+  width: 76px;
+  padding: 1px 6px;
+  border: 1px solid #e4e4e7;
+  border-radius: 6px;
+  background: #fafafa;
+  color: #27272a;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  text-align: right;
+}
+
+.token-input:focus {
+  outline: 2px solid #007aff;
+  outline-offset: 0;
+  background: #ffffff;
+}
+
+/* ============================================================================
+ * iOS 26 fake glass — app chrome only (toolbar, cards, panel). Never screens:
+ * what is measured must stay opaque. All "glass" is one gradient + blur +
+ * top highlight; no refraction, no backdrop masks — giả thôi.
+ * ========================================================================== */
+
+.toolbar {
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.5));
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.25),
+    0 10px 34px rgba(50, 50, 80, 0.13);
+}
+
+.segmented {
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 999px;
+  background: rgba(120, 120, 145, 0.14);
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow: inset 0 1px 2px rgba(50, 50, 80, 0.08);
+}
+
+.segmented button {
+  border-radius: 999px;
+}
+
+.segmented button.is-on {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.7));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    0 2px 10px rgba(50, 50, 80, 0.14);
+}
+
+.tool-select,
+.tool {
+  border-radius: 999px;
+}
+
+.tool-select:hover,
+.tool:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.toolbar-count {
+  background: rgba(120, 120, 145, 0.14);
+  box-shadow: inset 0 1px 2px rgba(50, 50, 80, 0.08);
+}
+
+.token-frame {
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.6));
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 12px 36px rgba(50, 50, 80, 0.13);
+}
+
+.panel {
+  border-left: 1px solid rgba(255, 255, 255, 0.6);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.72));
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+}
+
+.ghost,
+.token-btn {
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.55));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 2px 8px rgba(50, 50, 80, 0.08);
+}
+
+.ghost:hover:not(:disabled),
+.token-btn:hover:not(:disabled) {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.7));
+}
+
+/* click-to-copy color value */
+.token-val.is-copy {
+  border: 0;
+  padding: 1px 6px;
+  margin-right: -6px;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.token-val.is-copy:hover {
+  background: rgba(120, 120, 145, 0.14);
+  color: #18181b;
+}

@@ -1,0 +1,353 @@
+/* phone-canvas styles — one file per feature, same class names.
+ * main.tsx imports shell.css first, then board/panel/tokens-ui.
+ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro', system-ui, sans-serif;
+  color: #18181b;
+  background: #f6f6f8;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgba(0, 122, 255, 0.16);
+}
+
+button,
+select,
+input {
+  font-family: inherit;
+}
+
+button:focus-visible,
+select:focus-visible,
+input:focus-visible {
+  outline: 2px solid rgba(0, 122, 255, 0.55);
+  outline-offset: 1px;
+}
+
+.app {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.app.is-panel-hidden .panel {
+  display: none;
+}
+
+.app-dashboard {
+  display: block;
+  overflow-y: auto;
+}
+
+/* -------------------------------------------------------------- dashboard -- */
+
+.dash {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 48px 28px 72px;
+}
+
+.dash-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.dash-head h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.dash-sub {
+  margin: 6px 0 0;
+  font-size: 13.5px;
+  color: #71717a;
+}
+
+.dash-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.dash-create {
+  display: flex;
+  gap: 8px;
+}
+
+.dash-search {
+  height: 34px;
+  border: 1px solid #e3e3e8;
+  border-radius: 10px;
+  padding: 0 12px;
+  font-size: 12.5px;
+  background: #fff;
+  color: #18181b;
+  min-width: 176px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.dash-search::placeholder {
+  color: #b6b6be;
+}
+
+.dash-search:focus {
+  outline: none;
+  border-color: rgba(0, 122, 255, 0.55);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.14);
+}
+
+.dash-btn {
+  height: 34px;
+  border: 1px solid #18181b;
+  border-radius: 10px;
+  padding: 0 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  background: #18181b;
+  color: #fff;
+  cursor: pointer;
+  transition: background 140ms ease, transform 140ms ease;
+}
+
+.dash-btn:hover:not(:disabled) {
+  background: #2b2b30;
+}
+
+.dash-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.dash-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.dash-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 18px;
+}
+
+.dash-card {
+  position: relative;
+  border: 1px solid #e9e9ee;
+  border-radius: 18px;
+  background: #fff;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 180ms ease, transform 180ms ease, border-color 180ms ease;
+}
+
+.dash-card:hover {
+  border-color: #e0e0e6;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.dash-open {
+  display: block;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.dash-cover {
+  height: 200px;
+  background: #f1f1f4;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  border-bottom: 1px solid #f0f0f3;
+}
+
+.dash-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+
+.dash-cover-fallback {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #eef5ff, #f4f4f5);
+}
+
+.dash-cover-initials {
+  font-size: 34px;
+  font-weight: 750;
+  letter-spacing: -0.5px;
+  color: #007aff;
+}
+
+.dash-cover-name {
+  font-size: 11.5px;
+  color: #71717a;
+}
+
+.dash-meta {
+  padding: 14px 16px 16px;
+}
+
+.dash-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dash-title-row h3 {
+  margin: 0;
+  font-size: 14.5px;
+  font-weight: 650;
+  letter-spacing: -0.1px;
+}
+
+.dash-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: #0a5fbf;
+  background: #e6f0ff;
+  border-radius: 999px;
+  padding: 2px 7px;
+}
+
+.dash-desc {
+  margin: 5px 0 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: #71717a;
+}
+
+.dash-count {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: #b0b0b9;
+  font-variant-numeric: tabular-nums;
+}
+
+.dash-delete {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  color: #71717a;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 5px 10px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 140ms ease, color 140ms ease, border-color 140ms ease;
+}
+
+.dash-card:hover .dash-delete,
+.dash-delete:focus-visible {
+  opacity: 1;
+}
+
+.dash-delete:hover {
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+.toolbar-project {
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: -0.1px;
+  color: #18181b;
+  padding: 0 2px 0 4px;
+  white-space: nowrap;
+}
+
+.toolbar-count {
+  min-width: 22px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: #f0f0f3;
+  color: #71717a;
+  font-size: 11px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.toolbar-sep {
+  flex: 0 0 auto;
+  width: 1px;
+  height: 20px;
+  background: #e9e9ee;
+}
+
+.tool-select {
+  border: 1px solid transparent;
+  border-radius: 9px;
+  padding: 7px 6px 7px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #3f3f46;
+  background: transparent;
+  cursor: pointer;
+  max-width: 148px;
+}
+
+.tool-select:hover {
+  background: #f0f0f3;
+}
+
+/* board canvas column: flow + toolbar (panel is a sibling of this, not a child) */
+.board-wrap {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+

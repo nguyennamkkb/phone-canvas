@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import type { ReactNode } from 'react'
 import {
   Background,
   BackgroundVariant,
@@ -12,15 +13,19 @@ import type { Edge, NodeTypes, OnConnect, OnEdgesChange, OnNodesChange } from '@
 import { PhoneNode } from './PhoneNode'
 import { TokenNode } from './TokenNode'
 import type { BoardNode } from './TokenNode'
-import { useBoardSettings } from './BoardContext'
+import type { BoardSettings } from './BoardContext'
 import type { CanvasMode, FrameStyle } from './BoardContext'
 import { SCREENS } from '../screens'
 
 const nodeTypes = { phone: PhoneNode, token: TokenNode } as unknown as NodeTypes
 
 export type BoardProps = {
+  /** active-node + mode + theme state, owned by BoardView (3.1) */
+  settings: BoardSettings
   nodes: BoardNode[]
   edges: Edge[]
+  /** inspector panel element — rendered as canvas sibling in .app, overlay under the narrow breakpoint (2.4) */
+  panel: ReactNode
   projectTitle: string
   screenCount: number
   onNodesChange: OnNodesChange<BoardNode>
@@ -35,8 +40,10 @@ export type BoardProps = {
 }
 
 export function Board({
+  settings,
   nodes,
   edges,
+  panel,
   projectTitle,
   screenCount,
   onNodesChange,
@@ -49,7 +56,7 @@ export function Board({
   onBack,
   onTogglePanel,
 }: BoardProps) {
-  const { mode, frameStyle, panelVisible, tokenTheme, onTokenThemeChange } = useBoardSettings()
+  const { mode, frameStyle, panelVisible, tokenTheme, onTokenThemeChange } = settings
   const { fitView } = useReactFlow()
   const nodesInitialized = useNodesInitialized()
   const didFit = useRef(false)
@@ -67,7 +74,9 @@ export function Board({
   }, [fitView])
 
   return (
-    <div className="board">
+    <div className="app">
+      <div className="board-wrap">
+      <div className="board">
       <ReactFlow<BoardNode>
         nodes={nodes}
         edges={edges}
@@ -84,7 +93,7 @@ export function Board({
         fitViewOptions={{ padding: 0.12 }}
         minZoom={0.1}
         maxZoom={2.5}
-        proOptions={{ hideAttribution: true }}
+        proOptions={{ hideAttribution: false }}
         onNodeClick={(_, node) => {
           // the token table is reference, not a screen — clicking it selects nothing
           if (node.type !== 'phone') return
@@ -214,12 +223,12 @@ export function Board({
       </div>
 
       {screenCount === 0 && (
-        <div className="board-empty">
+        <div className="board-empty board-empty-overlay">
           <div className="board-empty-title">Bảng đang trống</div>
           <p>
-            Chọn một màn trong ô <code>+ Màn hình</code> để thêm vào dự án này, hoặc viết{' '}
-            <code>project/&lt;dự-án&gt;/&lt;tên&gt;.html</code> mới rồi khai báo trong{' '}
-            <code>src/screens/manifest.ts</code>.
+            Chọn một màn trong ô <code>+ Màn hình</code> để thêm vào dự án này, hoặc chạy{' '}
+            <code>npm run new-screen -- --project &lt;dự-án&gt; --name &lt;tên&gt;</code> để dựng
+            màn mới từ mẫu đúng contract.
           </p>
           <p className="board-empty-note">
             Chưa chắc cách dựng? Hỏi agent — skill <code>phone-canvas</code> có sẵn quy trình và
@@ -227,6 +236,9 @@ export function Board({
           </p>
         </div>
       )}
-    </div>
+      </div>
+      </div>
+      {panel}
+  </div>
   )
 }
