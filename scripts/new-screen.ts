@@ -7,7 +7,7 @@
  *
  * Writes `project/<id>/<name>.html` from a contract-valid template, then wires:
  *   1. `src/screens/manifest.ts` — SCREEN_FILES entry
- *   2. `src/screens/index.ts`    — `?raw` import + RAW line
+ *   2. `src/screens/generated.ts` — regenerated `?raw` registry (via screens:sync)
  *   3. `src/projects/builtin.ts` — append id to the owning project's screenIds
  *
  * Refuses bad input (unknown project, bad slug, duplicate id) WITHOUT writing.
@@ -112,10 +112,9 @@ async function main() {
     fail(`bad --name "${name}" — use kebab-case, e.g. my-screen`)
   }
 
-  const [manifestSrc, builtinSrc, indexSrc] = await Promise.all([
+  const [manifestSrc, builtinSrc] = await Promise.all([
     readFile(path.join(ROOT, 'src/screens/manifest.ts'), 'utf8'),
     readFile(path.join(ROOT, 'src/projects/builtin.ts'), 'utf8'),
-    readFile(path.join(ROOT, 'src/screens/index.ts'), 'utf8'),
   ])
 
   if (!builtinSrc.includes(`id: '${project}'`)) {
@@ -172,7 +171,7 @@ async function main() {
 
   console.log(`created ${file}`)
   console.log(`wired: manifest + generated.ts + builtin.ts [${project}]`)
-  console.log('next: npm run lint:tokens && npm run build')
+  console.log('next: npm run lint && npm run build')
 }
 
 main().catch((e) => fail(e instanceof Error ? e.message : String(e)))
