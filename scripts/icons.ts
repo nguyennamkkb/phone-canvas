@@ -58,6 +58,7 @@ const SYMBOLS: Record<string, string> = {
   'square.on.square': 'duplicate.svg',
   bell: 'bell.svg',
   sparkles: 'sparkles.svg',
+  'face.smiling': 'face-smiling.svg',
   flame: 'flame.svg',
   trend: 'trend.svg',
   tag: 'tag.svg',

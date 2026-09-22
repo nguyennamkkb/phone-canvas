@@ -17,6 +17,7 @@ import { SCREEN_BY_ID, SCREENS } from '../screens'
 import type { Project } from '../projects/projects'
 import { resolveScreens } from '../projects/projects'
 import { loadBoard, loadDockCollapsed, saveBoard, saveDockCollapsed } from '../projects/storage'
+import { missingScreenIds } from './reconcile'
 import { ErrorBoundary } from '../shell/ErrorBoundary'
 
 const COLUMN_GAP = 120
@@ -69,7 +70,7 @@ function freshNodes(project: Project): BoardNode[] {
   return out
 }
 
-function openingNodes(project: Project): { nodes: BoardNode[]; edges: Edge[] } {
+function openingNodes(project: Project): { nodes: BoardNode[]; edges: Edge[]; removed: string[] } {
   const saved = loadBoard(project.id)
   if (saved && saved.nodes.length > 0) {
     let max = 0
@@ -80,9 +81,38 @@ function openingNodes(project: Project): { nodes: BoardNode[]; edges: Edge[] } {
     counters[project.id] = max
     // board cũ có token node: lọc im lặng, giữ nguyên vị trí phone (2.2)
     const phones = (saved.nodes as LegacyBoardNode[]).filter(isPhoneNode)
-    if (phones.length > 0) return { nodes: phones, edges: saved.edges }
+    if (phones.length > 0) return { nodes: phones, edges: saved.edges, removed: saved.removed }
   }
-  return { nodes: freshNodes(project), edges: [] as Edge[] }
+  return { nodes: freshNodes(project), edges: [] as Edge[], removed: [] }
+}
+
+/**
+ * A saved board is the only thing here that persists, and therefore the only
+ * thing that can go quietly stale: add a screen to the manifest and a board
+ * saved before it existed will never show it. Reloading does not help — there
+ * is nothing being fetched. So the board reconciles on open and places every
+ * project screen that is neither on the board nor deliberately removed.
+ */
+function reconciledNodes(
+  project: Project,
+  nodes: BoardNode[],
+  removed: string[],
+): BoardNode[] {
+  const missing = missingScreenIds(
+    resolveScreens(project),
+    nodes.map((n) => n.data.screenId),
+    removed,
+  )
+  if (missing.length === 0) return nodes
+  const out = [...nodes]
+  let right = out.reduce((max, n) => Math.max(max, n.position.x), 0)
+  for (const screenId of missing) {
+    const node = makeNode(project.id, screenId, right === 0 ? 0 : right + nodeWidth(DEFAULT_DEVICE_ID) + COLUMN_GAP)
+    if (!node) continue
+    right = node.position.x
+    out.push(node)
+  }
+  return out
 }
 
 export type BoardViewProps = {
@@ -107,7 +137,7 @@ function BoardViewInner({
   const [tokenTheme, setTokenTheme] = useTokenTheme(project.id)
   const [, setUiTheme] = useUiTheme()
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null)
-  const [dockCollapsed, setDockCollapsed] = useState<boolean>(() => loadDockCollapsed())
+  const [dockCollapsed, setDockCollapsed] = useState<boolean>(() => loadDockCollapsed(project.id))
   // focus-mode (3.3): màn đang duyệt ở 100%, null khi ở tổng quan
   const [focusedNodeId, setFocusedNodeId] = useState<string | null>(null)
   // xóa inline 2 bước (5.2): hỏi tại chỗ → xóa → hoàn tác nhanh trong 6s
@@ -116,13 +146,22 @@ function BoardViewInner({
   const undoTimer = useRef<number | undefined>(undefined)
   const { select } = useInspector()
 
-  const opening = useMemo(() => openingNodes(project), [project])
+  const opening = useMemo(() => {
+    const saved = openingNodes(project)
+    return {
+      nodes: reconciledNodes(project, saved.nodes, saved.removed),
+      edges: saved.edges,
+      removed: saved.removed,
+    }
+  }, [project])
   const [nodes, setNodes, onNodesChange] = useNodesState<BoardNode>(opening.nodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(opening.edges)
+  // màn đã bị gỡ khỏi board: giữ lại để lần mở sau không tự thêm về
+  const [removed, setRemoved] = useState<string[]>(opening.removed)
 
   useEffect(() => {
-    saveBoard(project.id, { nodes, edges })
-  }, [project.id, nodes, edges])
+    saveBoard(project.id, { nodes, edges, removed })
+  }, [project.id, nodes, edges, removed])
 
   const onRequestDelete = useCallback((id: string) => {
     setConfirmDeleteId(id)
@@ -152,7 +191,10 @@ function BoardViewInner({
       setConfirmDeleteId(null)
       select(null)
       const last = !nodes.some((n) => n.id !== id && n.data.screenId === screenId)
-      if (last) onUntrackScreen(project.id, screenId)
+      if (last) {
+        onUntrackScreen(project.id, screenId)
+        setRemoved((r) => (r.includes(screenId) ? r : [...r, screenId]))
+      }
       // hoàn-tác-nhanh: giữ snapshot 6s, hết hạn thì thôi
       window.clearTimeout(undoTimer.current)
       setUndone({ node: snapshot, screenId })
@@ -167,6 +209,7 @@ function BoardViewInner({
     window.clearTimeout(undoTimer.current)
     setUndone(null)
     onTrackScreen(project.id, last.screenId)
+    setRemoved((r) => r.filter((s) => s !== last.screenId))
     setNodes((ns) => (ns.some((n) => n.id === last.node.id) ? ns : [...ns, last.node]))
     setSelectedNodeId(last.node.id)
   }, [undone, project.id, onTrackScreen, setNodes])
@@ -263,12 +306,16 @@ function BoardViewInner({
     [project.id, projectScreenIds, onTrackScreen, setNodes],
   )
 
+  useEffect(() => {
+    setDockCollapsed(loadDockCollapsed(project.id))
+  }, [project.id])
+
   const onToggleDock = useCallback(() => {
     setDockCollapsed((v) => {
-      saveDockCollapsed(!v)
+      saveDockCollapsed(project.id, !v)
       return !v
     })
-  }, [])
+  }, [project.id])
 
   return (
     <BoardContext.Provider value={settings}>

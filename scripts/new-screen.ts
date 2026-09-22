@@ -3,7 +3,7 @@
 /**
  * Scaffold a new screen (4.1–4.2):
  *
- *   npm run new-screen -- --project mood-core --name my-screen --title "My Screen"
+ *   npm run new-screen -- --project moodtracker --name my-screen --title "My Screen"
  *
  * Writes `project/<id>/<name>.html` from a contract-valid template, then wires:
  *   1. `src/screens/manifest.ts` — SCREEN_FILES entry
@@ -28,7 +28,7 @@ function usage() {
       '',
       '  npm run new-screen -- --project <id> --name <slug> --title "Title" [--dark]',
       '',
-      '  --project  builtin project id (onboarding | mood-core | freud)',
+      '  --project  builtin project id (moodtracker)',
       '  --name     kebab-case screen id, unique across all screens',
       '  --title    board/panel title',
       '  --dark     mark lightStatusBar (dark hero under the status bar)',
@@ -86,9 +86,9 @@ function template(title, themeClass) {
 `
 }
 
-/** project theme class: mood-core/freud screens opt into the warm theme */
+/** project theme class: moodtracker screens opt into the warm theme */
 function themeClass(projectId) {
-  return projectId === 'mood-core' || projectId === 'freud' ? ' app-mood' : ''
+  return projectId === 'moodtracker' ? ' app-mood' : ''
 }
 
 function fail(msg) {
@@ -139,12 +139,23 @@ async function main() {
   await mkdir(path.dirname(absFile), { recursive: true })
   await writeFile(absFile, template(title, themeClass(project)))
 
-  // 1. manifest entry — anchor on the closing of SCREEN_FILES
-  const manifestAnchor = '\n]'
-  if (!manifestSrc.includes(manifestAnchor)) fail('cannot find SCREEN_FILES closing in manifest.ts')
+  // 1. manifest entry — insert into SCREEN_FILES, empty list included
+  const marker = 'export const SCREEN_FILES: ScreenFile[] = ['
+  const open = manifestSrc.indexOf(marker)
+  if (open < 0) fail('cannot find SCREEN_FILES in manifest.ts')
+  const bodyStart = open + marker.length
+  const close = manifestSrc.indexOf(']', bodyStart)
+  if (close < 0) fail('cannot find SCREEN_FILES closing in manifest.ts')
   const statusProp = dark ? ', lightStatusBar: true' : ''
   const manifestEntry = `  { id: '${name}', title: '${title.replace(/'/g, "\\'")}', file: '${file}'${statusProp} },\n`
-  const manifestNext = manifestSrc.replace(manifestAnchor, `\n${manifestEntry}]`)
+  const body = manifestSrc.slice(bodyStart, close)
+  const manifestNext =
+    manifestSrc.slice(0, bodyStart) +
+    '\n' +
+    manifestEntry +
+    body.trimStart() +
+    ']' +
+    manifestSrc.slice(close + 1)
   await writeFile(path.join(ROOT, 'src/screens/manifest.ts'), manifestNext)
 
   // 2. regenerate the ?raw registry from the manifest (single source of truth).
@@ -163,10 +174,9 @@ async function main() {
   if (!m) fail(`cannot find screenIds for project "${project}" in builtin.ts`)
   const listText = m[1]
   const needsComma = /'[^']*'\s*$/.test(listText) && !/,\s*$/.test(listText)
-  const builtinNext = builtinSrc.replace(
-    screenIdsAnchor,
-    `${m[1]}${needsComma ? ',' : ''} '${name}'$2`,
-  )
+  // an empty list takes no separator: `[]` → `['a']`, not `[ 'a']`
+  const sep = /\[\s*$/.test(listText) ? '' : needsComma ? ', ' : ' '
+  const builtinNext = builtinSrc.replace(screenIdsAnchor, `${m[1]}${sep}'${name}'$2`)
   await writeFile(path.join(ROOT, 'src/projects/builtin.ts'), builtinNext)
 
   console.log(`created ${file}`)

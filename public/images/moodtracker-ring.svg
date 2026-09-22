@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none">
+  <!--
+    Score ring, reference style: a dashed track plus one solid arc.
+
+    r=100 → circumference 628.32.
+    Track: 16 dashes, pitch 628.32/16 = 39.27, dash 8 + round caps.
+    Arc: 80/100 → 0.80 × 628.32 = 502.66, starting at 12 o'clock.
+  -->
+  <g stroke="#FFFFFF" stroke-width="16" stroke-linecap="round" fill="none">
+    <circle cx="120" cy="120" r="100" stroke-opacity="0.32" stroke-dasharray="8 31.27" />
+    <circle
+      cx="120"
+      cy="120"
+      r="100"
+      stroke-dasharray="502.66 628.32"
+      transform="rotate(-90 120 120)"
+    />
+  </g>
+</svg>

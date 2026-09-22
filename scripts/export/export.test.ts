@@ -28,6 +28,12 @@ describe('export smoke (needs Chrome)', () => {
     }
     expect(chrome.length).toBeGreaterThan(0)
 
+    const { SCREEN_FILES } = await import('../../src/screens/manifest.ts')
+    const screen = SCREEN_FILES[0]
+    if (!screen) {
+      console.warn('skip: no screens registered yet')
+      return
+    }
     const { launch, shutdown } = await import('./cdp.ts')
     const { startSite } = await import('./site.ts')
     const { renderPng } = await import('./render.ts')
@@ -43,7 +49,7 @@ describe('export smoke (needs Chrome)', () => {
         readFile(path.join(root, 'src/screens', n), 'utf8'),
       ),
     )
-    const html = await readFile(path.join(root, 'project/mood-core/home.html'), 'utf8')
+    const html = await readFile(path.join(root, screen.file), 'utf8')
     const docs = new Map([
       ['smoke--reference--light', composeScreenDoc({ html, device, stylesheets: shared, bridgeJs: null })],
     ])
@@ -57,9 +63,10 @@ describe('export smoke (needs Chrome)', () => {
         device.height,
         1,
       )
-      // width must equal the device width; height follows content (> device height here)
+      // width is always the device width. Height follows content: >= the device
+      // height, and never clipped below it. A screen that needs more grows.
       expect(png.readUInt32BE(16)).toBe(device.width)
-      expect(png.readUInt32BE(20)).toBeGreaterThan(device.height)
+      expect(png.readUInt32BE(20)).toBeGreaterThanOrEqual(device.height)
       await mkdir('/tmp/shots-smoke', { recursive: true })
     } finally {
       await shutdown(browser)

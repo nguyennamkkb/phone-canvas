@@ -1,7 +1,5 @@
 import globalCss from '../screens/tokens.css?raw'
-import onboardingCss from '../../project/onboarding/tokens.css?raw'
-import moodCoreCss from '../../project/mood-core/tokens.css?raw'
-import freudCss from '../../project/freud/tokens.css?raw'
+import moodtrackerCss from '../../project/moodtracker/tokens.css?raw'
 
 /**
  * Design tokens as data — parsed from the same css files the iframes load,
@@ -28,9 +26,7 @@ export type Token = {
 type Rgba = [number, number, number, number]
 
 const PROJECT_CSS: Record<string, string> = {
-  onboarding: onboardingCss,
-  'mood-core': moodCoreCss,
-  freud: freudCss,
+  moodtracker: moodtrackerCss,
 }
 
 function stripComments(css: string): string {

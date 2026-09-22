@@ -2,9 +2,7 @@ import tokensCss from '../screens/tokens.css?raw'
 import iconsCss from '../screens/icons.css?raw'
 import iconSetCss from '../screens/icon-set.css?raw'
 import bridgeJs from '../extractor/bridge.js?raw'
-import onboardingTokens from '../../project/onboarding/tokens.css?raw'
-import moodCoreTokens from '../../project/mood-core/tokens.css?raw'
-import freudTokens from '../../project/freud/tokens.css?raw'
+import moodtrackerTokens from '../../project/moodtracker/tokens.css?raw'
 import type { Device } from '../frame/devices'
 import { composeScreenDoc } from './compose'
 
@@ -32,9 +30,7 @@ export type BuildOptions = {
 
 /** project override stylesheets, in load order after the shared ones */
 const PROJECT_CSS: Record<string, string> = {
-  onboarding: onboardingTokens,
-  'mood-core': moodCoreTokens,
-  freud: freudTokens,
+  moodtracker: moodtrackerTokens,
 }
 
 /**

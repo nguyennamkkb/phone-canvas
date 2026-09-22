@@ -89,6 +89,10 @@ export function Board({
   const [showAllScreens, setShowAllScreens] = useState(false)
   const scopedIds = projectScreenIds.length > 0 ? projectScreenIds : SCREENS.map((s) => s.id)
   const [copiedLink, setCopiedLink] = useState(false)
+  // toolbar compaction (board-layout): nhóm phụ gộp vào ⋯ khi board-wrap hẹp.
+  // Đo wrapper chứ không đo window — bật/tắt panel đổi ngang canvas mà window không đổi.
+  const wrapRef = useRef<HTMLDivElement>(null)
+  const [toolbarCompact, setToolbarCompact] = useState(false)
 
   const copyBoardLink = useCallback(() => {
     const url = `${window.location.origin}${window.location.pathname}${hrefFor({ view: 'board', projectId })}`
@@ -97,6 +101,16 @@ export function Board({
       window.setTimeout(() => setCopiedLink(false), 1600)
     })
   }, [projectId])
+  useEffect(() => {
+    const el = wrapRef.current
+    if (!el || typeof ResizeObserver === 'undefined') return
+    const ro = new ResizeObserver((entries) => {
+      const w = entries[0]?.contentRect.width ?? 0
+      setToolbarCompact(w > 0 && w < 720)
+    })
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
 
   // fit-view frames phone screens only (1.2) — token-dock (2.1) nằm ngoài
   // canvas nên mặc nhiên không lọt vào phép tính fit/minimap
@@ -233,7 +247,7 @@ export function Board({
   return (
     <div className="app" data-theme={tokenTheme}>
       {dock}
-      <div className="board-wrap">
+      <div className="board-wrap" ref={wrapRef}>
       <div className="board">
       <ReactFlow<BoardNode>
         nodes={nodes}
@@ -270,7 +284,7 @@ export function Board({
         />
       </ReactFlow>
 
-      <div className="toolbar">
+      <div className={toolbarCompact ? 'toolbar is-compact' : 'toolbar'}>
         <div className="toolbar-group">
           <button type="button" className="tool tool-back" onClick={onBack} title="Về Dashboard">
             ←
@@ -309,6 +323,7 @@ export function Board({
           </button>
         </div>
 
+        <div className="toolbar-optional">
         <div className="segmented">
           <button
             type="button"
@@ -342,6 +357,46 @@ export function Board({
             Tối
           </button>
         </div>
+        </div>
+        <details className="toolbar-more">
+          <summary className="tool tool-icon" title="Tùy chọn thêm">
+            ⋯
+          </summary>
+          <div className="toolbar-more-body">
+            <div className="segmented">
+              <button
+                type="button"
+                className={frameStyle === 'plain' ? 'is-on' : ''}
+                onClick={() => onFrameStyleChange('plain')}
+              >
+                Khung đơn giản
+              </button>
+              <button
+                type="button"
+                className={frameStyle === 'device' ? 'is-on' : ''}
+                onClick={() => onFrameStyleChange('device')}
+              >
+                Khung máy
+              </button>
+            </div>
+            <div className="segmented" title="Chế độ màu của cả board (sáng/tối theo project tokens.css)">
+              <button
+                type="button"
+                className={tokenTheme === 'light' ? 'is-on' : ''}
+                onClick={() => onTokenThemeChange?.('light')}
+              >
+                Sáng
+              </button>
+              <button
+                type="button"
+                className={tokenTheme === 'dark' ? 'is-on' : ''}
+                onClick={() => onTokenThemeChange?.('dark')}
+              >
+                Tối
+              </button>
+            </div>
+          </div>
+        </details>
 
         <span className="toolbar-sep" />
 

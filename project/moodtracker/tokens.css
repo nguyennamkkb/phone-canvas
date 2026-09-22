@@ -1,0 +1,1155 @@
+/* ============================================================================
+ * moodtracker/tokens.css — design system của project Moodtracker.
+ *
+ * Nạp SAU src/screens/tokens.css nên cùng specificity thì file này thắng.
+ * Bật dark bằng data-theme="dark" trên <html> (xem compose.ts).
+ *
+ * Palette lấy từ 2 reference:
+ *   - app      project/moodtracker/bb5b60….jpg  (nền kem, mực espresso, thẻ trắng)
+ *   - onboarding project/moodtracker/74f94b….jpg (nền lilac, art phẳng, doodle)
+ *
+ * Ba khối, theo thứ tự: màu light → màu dark → thang không đổi theo mode.
+ * Một màu thiếu bản dark là bug, không phải mặc định.
+ * ========================================================================== */
+
+:root {
+  /* ---- surfaces & text (light) ---- */
+  /* Nền kem của reference, nhưng đậm hơn #f8f4f3 vừa phải: ở mức 3% thì một
+     thẻ trắng đơn lẻ trên nền không tách ra được, nó thành một bóng ma. iOS
+     grouped cũng đi bước ~5% (#f2f2f7 → #ffffff). */
+  --bg: #f3ece7;
+  --bg-elevated: #ffffff;
+  --bg-grouped: #ede5e0;
+  --label: #4b3426;
+  --label-2: #79665d;
+  --label-3: rgba(75, 52, 38, 0.34);
+  --separator: rgba(75, 52, 38, 0.12);
+  --fill: rgba(75, 52, 38, 0.06);
+  --accent: #9ab068;
+  --accent-soft: #e7eddc;
+
+  /* ---- palette: app ---- */
+  --paper: #f3ece7;
+  --card: #ffffff;
+  --espresso: #4b3426;
+  --clay: #8a756a;
+  --hairline: rgba(75, 52, 38, 0.12);
+
+  --sage: #9ab068;
+  --sage-deep: #7a8b4f;
+  --sage-soft: #e7eddc;
+  --sage-wash: #f1f5e9;
+  --ember: #ff824c;
+  --ember-soft: #ffe5d8;
+  --lilac: #a18fff;
+  --lilac-soft: #e9e6ff;
+  --sun: #fbcd5d;
+  --sun-soft: #fdf0cf;
+  --coral: #ff8e6c;
+  --coral-soft: #ffe3da;
+  --taupe: #9c8878;
+  --taupe-soft: #ece6e1;
+  --rose: #d9808a;
+  --rose-deep: #c05f68;
+
+  /* white-on-colour overlays live in the mode-invariant block below: the
+     coloured tiles stay coloured in dark mode, so their white never flips */
+
+  /* ---- palette: onboarding ---- */
+  /* the lilac field the onboarding cards sit on, and the flat-art ink */
+  --playground: #9b85d7;
+  --ink: #2b2b29;
+  --cream-mint: #fdfffc;
+  --cream-peach: #fff8f0;
+  --cream-lime: #fcfef3;
+
+  --glass: rgba(255, 255, 255, 0.72);
+  --glass-line: rgba(75, 52, 38, 0.08);
+  --glass-pill: rgba(255, 255, 255, 0.92);
+  --scrim: rgba(43, 29, 22, 0.38);
+
+  --danger: #d6553c;
+  --success: #6f9a56;
+  --warning: #e0b73c;
+
+  /* ---- mood ramp: 1 awful → 5 great ----
+     the five faces are not a lightness ramp; each one is its own colour,
+     sampled from the reference's Mood History row. */
+  --mood-1: #a18fff;
+  --mood-2: #ff824c;
+  --mood-3: #9c8878;
+  --mood-4: #9ab068;
+  --mood-5: #fbcd5d;
+}
+
+:root[data-theme='dark'] {
+  --bg: #221a15;
+  --bg-elevated: #2c231d;
+  --bg-grouped: #332a23;
+  --label: #f6efe8;
+  --label-2: #b5a397;
+  --label-3: rgba(246, 239, 232, 0.42);
+  --separator: rgba(246, 239, 232, 0.14);
+  --fill: rgba(246, 239, 232, 0.08);
+  --accent: #a8bd78;
+  --accent-soft: #36402a;
+
+  --paper: #221a15;
+  --card: #2c231d;
+  --espresso: #f6efe8;
+  --clay: #b5a397;
+  --hairline: rgba(246, 239, 232, 0.14);
+
+  --sage: #a8bd78;
+  --sage-deep: #b8cc8a;
+  --sage-soft: #36402a;
+  --sage-wash: #2b3322;
+  --ember: #ff9366;
+  --ember-soft: #4c2e20;
+  --lilac: #b3a4ff;
+  --lilac-soft: #322c4d;
+  --sun: #fdd77a;
+  --sun-soft: #4a3f22;
+  --coral: #ff9d80;
+  --coral-soft: #4d2e26;
+  --taupe: #b3a094;
+  --taupe-soft: #3a322c;
+  --rose: #e3969f;
+  --rose-deep: #d4797f;
+
+  --playground: #6f5cb0;
+  --ink: #ece7e2;
+  --cream-mint: #2a2f2c;
+  --cream-peach: #332a24;
+  --cream-lime: #2c3128;
+
+  --glass: rgba(255, 255, 255, 0.1);
+  --glass-line: rgba(255, 255, 255, 0.14);
+  --glass-pill: rgba(255, 255, 255, 0.18);
+  --scrim: rgba(0, 0, 0, 0.5);
+
+  --danger: #e58a76;
+  --success: #a8bd78;
+  --warning: #e3c46a;
+
+  --mood-1: #b3a4ff;
+  --mood-2: #ff9366;
+  --mood-3: #b3a094;
+  --mood-4: #a8bd78;
+  --mood-5: #fdd77a;
+}
+
+/* ---- thang không đổi theo mode (project sở hữu, không đọc global) ---- */
+:root {
+  /* White on a coloured surface. Deliberately NOT in the dark block: a coloured
+     tile keeps its fill in both modes, so its white must not flip. */
+  --on-colour: #ffffff;
+  --on-colour-line: rgba(255, 255, 255, 0.55);
+
+  /* Nền cho tile điểm. Đậm hơn --sage một bậc vì trắng trên --sage (#9ab068)
+     chỉ được 2.39:1 — dưới cả ngưỡng 3:1 của chữ lớn, chứ đừng nói 4.5:1.
+     Ở #6b7a48 trắng đạt 4.66:1, và vòng cung trắng của ảnh ring nổi hơn hẳn.
+     Không đổi theo mode: mực trên nó là trắng ở cả hai. */
+  --sage-tile: #6b7a48;
+
+  /* ink for text and bars sitting on a mood colour. Same reason as above: the
+     whole mood ramp is mid-light in BOTH modes, so the ink on it must stay
+     dark — --espresso would flip to cream in dark mode and vanish into it. */
+  --on-mood: #4b3426;
+
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 20px;
+  --s6: 24px;
+  --s8: 32px;
+  --s10: 40px;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+  --r-full: 999px;
+  --font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
+    'Helvetica Neue', system-ui, sans-serif;
+  /* the reference headline is a rounded geometric bold. `ui-rounded` is SF Pro
+     Rounded on Apple platforms → SwiftUI `.fontDesign(.rounded)`, no webfont. */
+  --font-round: ui-rounded, 'SF Pro Rounded', 'Hiragino Maru Gothic ProN', system-ui,
+    sans-serif;
+  --font-hand: 'Bradley Hand', 'Marker Felt', 'Segoe Script', cursive;
+  --t-display: 40px;
+  --t-large: 34px;
+  --t-title1: 28px;
+  --t-title2: 22px;
+  --t-title3: 20px;
+  --t-headline: 17px;
+  --t-body: 17px;
+  --t-callout: 16px;
+  --t-subhead: 15px;
+  --t-footnote: 13px;
+  --t-caption: 12px;
+}
+
+/* ============================================================================
+ * Component vocabulary — Moodtracker.
+ *
+ * Chỉ những thứ chưa có trong src/screens/tokens.css mới được khai ở đây.
+ * Tái dùng: .screen .body .body-fixed .row .col .grow .spacer .inset
+ *           .icon .art .art-block .t-* .searchbar .avatar .stat-tile .card
+ *
+ * Mọi giá trị là token. Không có số literal nào trong file này ngoài kích
+ * thước hình học cố định (một ô icon 56pt, một FAB 64pt) — đó là hình, không
+ * phải theme, nên chúng không thuộc về token.
+ * ========================================================================== */
+
+/* ------------------------------------------------------------ onboarding -- */
+
+.mt-onb {
+  background: var(--cream-mint);
+}
+
+.mt-onb-title {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  font-family: var(--font-round);
+  font-size: var(--t-display);
+  font-weight: 700;
+  line-height: 46px;
+  letter-spacing: -0.8px;
+}
+
+/* hai dòng, hai sắc — sắc độ chứ không phải hai font */
+.mt-onb-title .is-a {
+  color: var(--sage);
+}
+.mt-onb-title .is-b {
+  color: var(--sage-deep);
+}
+
+.mt-onb-copy {
+  font-size: var(--t-subhead);
+  line-height: 21px;
+  color: var(--label-2);
+}
+
+.mt-cta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 56px;
+  padding: 0 var(--s5);
+  border: 0;
+  border-radius: var(--r-full);
+  font-family: var(--font-round);
+  font-size: var(--t-footnote);
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--ink);
+  cursor: pointer;
+}
+.mt-cta.is-sun {
+  background: var(--sun);
+}
+.mt-cta.is-coral {
+  background: var(--coral);
+  color: #ffffff;
+}
+.mt-cta.is-sage {
+  background: var(--sage);
+  color: #ffffff;
+}
+.mt-cta.is-cream {
+  background: var(--cream-mint);
+}
+.mt-cta.is-danger {
+  background: var(--danger);
+  color: #ffffff;
+}
+
+/* ground + headline tones per onboarding slide — one per step, so the four
+   read as a set rather than four unrelated cards */
+.mt-onb.is-peach {
+  background: var(--cream-peach);
+}
+.mt-onb.is-lime {
+  background: var(--cream-lime);
+}
+
+.mt-onb-title.is-rose .is-a {
+  color: var(--rose);
+}
+.mt-onb-title.is-rose .is-b {
+  color: var(--rose-deep);
+}
+.mt-onb-title.is-gold .is-a {
+  color: var(--sun);
+}
+.mt-onb-title.is-gold .is-b {
+  color: var(--warning);
+}
+
+/* ---------------------------------------------------------------- splash -- */
+
+.mt-splash {
+  background: var(--playground);
+}
+
+.mt-splash-body {
+  align-items: center;
+  justify-content: center;
+  gap: var(--s4);
+  padding: var(--s10) var(--s6) var(--s8);
+}
+
+.mt-splash-name {
+  font-family: var(--font-round);
+  font-size: var(--t-large);
+  font-weight: 700;
+  letter-spacing: -0.6px;
+  color: var(--cream-mint);
+}
+
+.mt-splash-tag {
+  font-size: var(--t-subhead);
+  line-height: 21px;
+  color: var(--on-colour-bar);
+  text-align: center;
+}
+
+/* ----------------------------------------------------------------- chrome -- */
+
+.mt-chip {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s2);
+  color: var(--label-2);
+  font-size: var(--t-footnote);
+  font-weight: 500;
+}
+
+/* ô tròn hairline ở góc phải navbar */
+.mt-round {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1.5px solid var(--label-3);
+  border-radius: var(--r-full);
+  background: transparent;
+  color: var(--label);
+  cursor: pointer;
+}
+
+/* chấm báo nằm trên vành, lệch về 1 giờ — left/top + margin âm, không transform */
+.mt-round-dot {
+  position: absolute;
+  left: 29px;
+  top: -3px;
+  width: 11px;
+  height: 11px;
+  border-radius: var(--r-full);
+  background: var(--ember);
+}
+
+.mt-greet {
+  font-family: var(--font-round);
+  font-size: var(--t-title1);
+  font-weight: 700;
+  line-height: 34px;
+  letter-spacing: -0.6px;
+  color: var(--label);
+}
+
+.mt-badges {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+}
+
+/* glyph + chữ, không nền — một dữ kiện, một glyph */
+.mt-meta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s1);
+  color: var(--label-2);
+  font-size: var(--t-footnote);
+  font-weight: 600;
+}
+.mt-meta .is-ember {
+  color: var(--ember);
+}
+
+/* Câu trả lời đứng cùng dòng với câu hỏi. Mực, không phải màu mood: sage
+   trên nền chỉ 2.0:1, và một chữ không đọc được thì không phải là câu trả
+   lời. Màu mood vẫn nằm ở vành và quầng của mặt đang chọn. */
+.mt-mood {
+  font-family: var(--font-round);
+  font-size: var(--t-headline);
+  font-weight: 700;
+  color: var(--label);
+}
+
+/* chevron disclosure của một row trong group list */
+.mt-chev {
+  color: var(--label-3);
+}
+
+.mt-section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+}
+
+.mt-section-title {
+  font-family: var(--font-round);
+  font-size: var(--t-title3);
+  font-weight: 700;
+  line-height: 25px;
+  letter-spacing: -0.4px;
+  color: var(--label);
+}
+
+/* ------------------------------------------------------------ stat tiles -- */
+
+/* .stat-tile đã lo nền/radius/padding; đây chỉ là phần hình vuông + xếp dọc */
+.mt-tile {
+  aspect-ratio: 1 / 1;
+  justify-content: space-between;
+  padding: var(--s3);
+}
+
+/* tile trắng — chỗ cho bảy cột mood đọc được */
+.mt-tile.is-card {
+  background: var(--card);
+  color: var(--label);
+}
+
+/* tile điểm: nền đậm đủ để mực trắng đạt 4.5:1. Con của nó thừa hưởng màu này
+   — pill, số 80 và chữ "Healthy" đều là currentColor, không literal nào. */
+.mt-tile.is-score {
+  background: var(--sage-tile);
+  color: var(--on-colour);
+}
+
+/* trên tile trắng, pill là hairline và số đọc là mực: bản trắng-trên-màu của
+   tile màu sẽ biến mất ở đây */
+.mt-tile.is-card .mt-tile-pill {
+  border-color: var(--separator);
+  color: var(--label-2);
+}
+
+.mt-tile.is-card .mt-tile-read {
+  color: var(--label);
+}
+
+.mt-tile-pill {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s1);
+  align-self: flex-start;
+  flex: 0 0 auto;
+  height: 28px;
+  padding: 0 var(--s3);
+  border: 1.5px solid var(--on-colour-line);
+  border-radius: var(--r-full);
+  font-size: var(--t-footnote);
+  font-weight: 700;
+}
+
+.mt-tile-read {
+  font-family: var(--font-round);
+  font-size: var(--t-title2);
+  font-weight: 700;
+  line-height: 28px;
+  color: #ffffff;
+}
+
+/* vòng điểm: ảnh phủ tuyệt đối trong một hộp relative, số nằm giữa theo flow */
+.mt-ring {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  flex: 0 0 auto;
+  width: 104px;
+  height: 104px;
+}
+
+.mt-ring-arcs {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.mt-ring-num {
+  font-family: var(--font-round);
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 32px;
+}
+
+/* cùng trắng, khác cỡ và độ đậm — phân cấp bằng chữ, không bằng opacity:
+   hạ alpha để làm mờ chữ là cách chắc chắn nhất để rơi dưới 4.5:1 */
+.mt-ring-cap {
+  font-size: var(--t-footnote);
+  font-weight: 600;
+}
+
+/* Bảy ngày của tuần. Chiều cao là MỨC (data, đặt inline như .bar); MÀU là
+   chính mood của ngày đó. Vì vậy nền phải là --card: một khối màu đặc sẽ ăn
+   mất màu của cột, và cột chỉ còn là một hình dạng vô nghĩa. */
+.mt-week {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: var(--s2);
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.mt-week-bar {
+  flex: 1 1 0;
+  min-width: 0;
+  border-radius: var(--r-full);
+}
+.mt-week-bar.is-1 {
+  background: var(--mood-1);
+}
+.mt-week-bar.is-2 {
+  background: var(--mood-2);
+}
+.mt-week-bar.is-3 {
+  background: var(--mood-3);
+}
+.mt-week-bar.is-4 {
+  background: var(--mood-4);
+}
+.mt-week-bar.is-5 {
+  background: var(--mood-5);
+}
+
+/* ------------------------------------------------------------------ card -- */
+
+.mt-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s3) var(--s4);
+  border-radius: var(--r-lg);
+  background: var(--card);
+  /* no outline. An outline around every block is what made these screens read
+     as a stack of boxes; on an iOS grouped screen the surface against the
+     ground is the edge, and a hairline is only used BETWEEN rows. */
+}
+
+.mt-card-icon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 52px;
+  height: 52px;
+  border-radius: 17px;
+  background: var(--sage-wash);
+  color: var(--sage-deep);
+}
+.mt-card-icon.is-lilac {
+  background: var(--lilac-soft);
+  color: var(--lilac);
+}
+
+.mt-card-title {
+  font-family: var(--font-round);
+  font-size: var(--t-headline);
+  font-weight: 700;
+  line-height: 22px;
+  color: var(--label);
+}
+
+.mt-card-sub {
+  font-size: var(--t-footnote);
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--label-2);
+}
+
+/* ---------------------------------------------------------------- tabbar -- */
+
+/* Apple's floating tab bar. A capsule inset from the screen edges, with the
+   selected item carried by a lighter pill inside it.
+
+   Our layer cannot blur (backdrop-filter is out of subset), so the glass is a
+   translucent fill over whatever the screen paints — it reads as glass, but it
+   is not a real material. */
+.mt-tabdock {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 0 0 auto;
+  padding: var(--s2) var(--s5);
+}
+
+.mt-tabbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 56px;
+  padding: 0 var(--s2);
+  border-radius: var(--r-full);
+  background: var(--glass);
+  border: 1px solid var(--glass-line);
+}
+
+.mt-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  flex: 0 0 auto;
+  height: 48px;
+  padding: 0 var(--s4);
+  border: 0;
+  border-radius: var(--r-full);
+  background: transparent;
+  color: var(--label);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 13px;
+  cursor: pointer;
+}
+
+.mt-tab.is-active {
+  background: var(--glass-pill);
+  color: var(--accent);
+}
+
+/* ------------------------------------------------------------------ home -- */
+
+.mt-body {
+  /* s1 dưới cùng: bù đúng phần tab dock thừa ra để khung đứng ở 844 */
+  padding: var(--s2) var(--s5) var(--s1);
+  gap: var(--s4);
+}
+
+/* the action block sits on the screen's own ground, not in a card — it is the
+   one thing the app exists for, so it does not get a surface */
+.mt-ask {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+}
+
+/* the avatar is one Image, not an HStack wrapping one — no wrapper span */
+.mt-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--r-full);
+  border: 1px solid var(--hairline);
+  background: var(--bg-grouped);
+}
+
+/* ------------------------------------------------------------ onboarding -- */
+
+/* .art-block mặc định 384 cao + đệm dưới 40; onboarding cần sát chữ hơn */
+.mt-onb-art {
+  height: 364px;
+  margin-bottom: 0;
+}
+
+/* ------------------------------------------------- app pages (all screens) -- */
+
+.mt-nav {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+}
+
+.mt-h1 {
+  font-family: var(--font-round);
+  font-size: var(--t-title1);
+  font-weight: 700;
+  line-height: 34px;
+  letter-spacing: -0.7px;
+  color: var(--label);
+}
+
+.mt-sub {
+  font-size: var(--t-subhead);
+  line-height: 21px;
+  color: var(--label-2);
+}
+
+/* ------------------------------------------------------------- bar chart -- */
+
+.mt-chart {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s2);
+  height: 148px;
+}
+
+.mt-chart-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--s2);
+  /* a flex item defaults to min-width:auto and refuses to shrink below its
+     content — equal columns need this or the one holding a label widens */
+  min-width: 0;
+  flex: 1 1 0;
+  height: 100%;
+}
+
+.mt-chart-bar {
+  width: 12px;
+  border-radius: var(--r-full);
+  background: var(--sage);
+}
+
+/* mirrored chart: positive above the baseline, negative below */
+.mt-mirror {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+}
+
+.mt-mirror-top {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: var(--s2);
+  height: 96px;
+}
+
+.mt-mirror-bottom {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--s2);
+  height: 34px;
+}
+
+.mt-mirror-baseline {
+  display: block;
+  height: 1px;
+  background: var(--separator);
+}
+
+.mt-bar-pos {
+  flex: 1 1 0;
+  min-width: 0;
+  border-radius: var(--r-full);
+  background: var(--sage);
+}
+
+.mt-bar-neg {
+  flex: 1 1 0;
+  min-width: 0;
+  border-radius: var(--r-full);
+  background: var(--ember);
+}
+
+.mt-legend {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s2);
+  font-size: var(--t-footnote);
+  font-weight: 600;
+  color: var(--label-2);
+}
+
+.mt-legend-dot {
+  display: block;
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--r-full);
+  background: var(--sage);
+}
+.mt-legend-dot.is-neg {
+  background: var(--ember);
+}
+
+/* ----------------------------------------------------------- check-in I/O -- */
+
+/* the five faces: a picker, so each one is a button with a selected ring */
+.mt-faces {
+  display: flex;
+  flex-direction: row;
+  gap: var(--s2);
+}
+
+.mt-face {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 64px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: var(--r-full);
+  background: transparent;
+  cursor: pointer;
+}
+
+/* The ring is INK, not the mood colour. The mood ramp is mid-light by design
+   (#9ab068 is 2.0:1 on the ground), so a mood-coloured ring would fail the 3:1
+   a selected state has to meet. Splitting the two jobs is also the clearer
+   read: ink says *selected*, the face says *which* mood. The colour is still
+   there, as the halo. */
+.mt-face.is-on {
+  border-color: var(--label);
+  background: color-mix(in srgb, var(--mood, var(--accent)) 30%, var(--bg));
+}
+
+.mt-meter {
+  display: flex;
+  flex-direction: row;
+  gap: var(--s1);
+  width: 100%;
+  height: 12px;
+}
+
+.mt-meter-seg {
+  flex: 1 1 0;
+  border-radius: var(--r-full);
+  background: var(--fill);
+}
+
+.mt-meter-seg.is-on {
+  background: var(--mood, var(--sage));
+}
+
+.mt-label {
+  font-size: var(--t-footnote);
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  color: var(--label-2);
+}
+
+/* ------------------------------------------------------------ month grid -- */
+
+.mt-cal-1 {
+  background: var(--mood-1);
+  color: #ffffff;
+}
+.mt-cal-2 {
+  background: var(--mood-2);
+  color: #ffffff;
+}
+.mt-cal-3 {
+  background: var(--mood-3);
+  color: #ffffff;
+}
+.mt-cal-4 {
+  background: var(--mood-4);
+  color: var(--ink);
+}
+.mt-cal-5 {
+  background: var(--mood-5);
+  color: var(--ink);
+}
+
+/* ------------------------------------------------------------ journal row -- */
+
+.mt-entry-when {
+  font-size: var(--t-footnote);
+  font-weight: 600;
+  color: var(--label-2);
+}
+
+.mt-entry-text {
+  font-size: var(--t-subhead);
+  line-height: 20px;
+  color: var(--label);
+}
+
+/* ---------------------------------------------------------------- profile -- */
+
+.mt-stat-row {
+  display: flex;
+  flex-direction: row;
+  gap: var(--s3);
+}
+
+.mt-stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  flex: 1 1 0;
+  min-width: 0;
+  padding: var(--s3) var(--s4);
+  border-radius: var(--r-lg);
+  background: var(--bg-grouped);
+}
+
+.mt-stat-value {
+  font-family: var(--font-round);
+  font-size: var(--t-title2);
+  font-weight: 700;
+  line-height: 26px;
+  color: var(--label);
+}
+
+.mt-stat-cap {
+  font-size: var(--t-caption);
+  font-weight: 600;
+  color: var(--label-2);
+}
+
+/* a row of tag chips that may run onto a second line */
+.mt-tags {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+
+/* grouped rows inside a card sit tighter than a standalone .action-row —
+   six of them in one column is where the profile screen got its extra height */
+.mt-card .action-row {
+  padding: var(--s2) 0;
+}
+
+/* a card that stacks its children instead of laying them in a row */
+.mt-card.is-stack {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* a group label INSIDE a card — the rounded face, so it agrees with the
+   section titles on home instead of speaking in a different voice */
+.mt-card-label {
+  font-family: var(--font-round);
+  font-size: var(--t-headline);
+  font-weight: 700;
+  line-height: 22px;
+  color: var(--label);
+}
+
+/* ------------------------------------------------------------- bottom sheet -- */
+
+/* Our layer cannot blur, so the ground behind a sheet is a flat dim rather
+   than a frosted view of the screen below it. `--scrim` composites over the
+   device background, which is why it is translucent. */
+.mt-sheet-screen {
+  background: var(--scrim);
+}
+
+.mt-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  flex: 0 0 auto;
+  /* the sheet is the last thing in a column, so it sits on the floor */
+  margin-top: auto;
+  padding: var(--s3) var(--s5) var(--s5);
+  border-radius: 28px 28px 0 0;
+  background: var(--card);
+}
+
+.mt-sheet-grab {
+  display: block;
+  align-self: center;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 5px;
+  border-radius: var(--r-full);
+  background: var(--label-3);
+}
+
+/* a field inside a white card: grouped fill, so it reads as an input rather
+   than as another surface */
+.mt-note {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  min-height: 104px;
+  padding: var(--s4);
+  border-radius: var(--r-xl);
+  /* crisp white on the cream ground, the same surface home's rows use. The
+     earlier mood-wash here read as a sickly green blob, not a place to write. */
+  background: var(--card);
+}
+
+/* One surface, text straight on it. There is no white card wrapped around this
+   and no second fill inside it — a fill nested in a card is what made the
+   first version read as a box inside a box. */
+.mt-note-text {
+  font-size: var(--t-subhead);
+  line-height: 21px;
+  color: var(--label-3);
+}
+
+/* -------------------------------------------------------- check-in hero -- */
+
+/* Centred and unboxed: the face row and the intensity under it are one gesture,
+   so the amount of the feeling is read right below the face that caused it. */
+.mt-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s3);
+  text-align: center;
+}
+
+.mt-hero .mt-faces {
+  width: 100%;
+}
+
+/* the chosen mood announced in its own colour — the payoff for the tap */
+.mt-mood-name {
+  font-family: var(--font-round);
+  font-size: var(--t-title2);
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  line-height: 28px;
+  color: var(--mood, var(--accent));
+}
+
+.mt-scale {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  width: 100%;
+}
+
+/* ------------------------------------------------------------ intensity -- */
+
+/* The screen's colour mass, built like home's stat tiles: a solid block of the
+   chosen mood. It is what stops this screen reading as an all-cream form, and
+   it answers the face you tapped instead of just reporting it. */
+.mt-scale-tile {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  gap: var(--s3);
+  padding: var(--s4);
+  border-radius: 28px;
+  background: var(--mood, var(--accent));
+  color: var(--on-mood);
+}
+
+.mt-scale-tile-title {
+  font-family: var(--font-round);
+  font-size: var(--t-subhead);
+  font-weight: 700;
+  color: var(--on-mood);
+}
+
+.mt-scale-tile .mt-label {
+  color: var(--on-mood);
+  opacity: 0.7;
+}
+
+/* on the tile the level is drawn in ink, not in the mood colour — a
+   mood-coloured bar on a mood-coloured tile would be invisible */
+.mt-scale-tile .mt-slider-track {
+  background: rgba(75, 52, 38, 0.2);
+}
+
+.mt-scale-tile .mt-slider-fill,
+.mt-scale-tile .mt-slider-knob {
+  background: var(--on-mood);
+}
+
+.mt-scale-tile .mt-slider-knob {
+  border-color: var(--mood, var(--accent));
+}
+
+/* One continuous track with a knob, the way a level control reads on iOS.
+   Five separate fat pills looked like a loading bar, not an amount. */
+.mt-slider {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: 28px;
+}
+
+.mt-slider-track {
+  width: 100%;
+  height: 6px;
+  border-radius: var(--r-full);
+  background: var(--fill);
+}
+
+.mt-slider-fill {
+  position: absolute;
+  left: 0;
+  top: 11px;
+  width: 62%;
+  height: 6px;
+  border-radius: var(--r-full);
+  background: var(--mood, var(--accent));
+}
+
+/* the card-coloured ring is what makes it read as a knob and not a dot */
+.mt-slider-knob {
+  position: absolute;
+  left: calc(62% - 11px);
+  top: 3px;
+  width: 22px;
+  height: 22px;
+  border: 3px solid var(--card);
+  border-radius: var(--r-full);
+  background: var(--mood, var(--accent));
+}
+
+/* ------------------------------------------------------- inset group list -- */
+
+/* One container per group, rows divided by a hairline. This is the structure
+   the app is built from: a group, not a pile of outlined cards. */
+.mt-group {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  border-radius: var(--r-lg);
+  background: var(--card);
+  /* clips the first and last row to the container's corners */
+  overflow: hidden;
+}
+
+.mt-group-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s3) var(--s4);
+  border-top: 1px solid var(--separator);
+}
+
+.mt-group-row:first-child {
+  border-top: 0;
+}

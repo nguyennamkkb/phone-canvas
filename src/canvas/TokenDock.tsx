@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { projectTokensOf } from '../tokens/tokens'
 import type { ThemeMode, Token, TokenGroup } from '../tokens/tokens'
 import { draftSize, useTokenDraft } from '../tokens/store'
 import { usageOf } from '../tokens/usage'
+import { loadDockCoachSeen, saveDockCoachSeen } from '../projects/storage'
 import { useBoardSettings } from './BoardContext'
 import { TokenColorRow } from './token-table/TokenColorRow'
 import { TokenSizeCell } from './token-table/TokenSizeCell'
@@ -36,6 +37,12 @@ export function TokenDock({ projectId, title, collapsed, onToggle }: TokenDockPr
   const { tokenTheme } = useBoardSettings()
   const [draft, setDraft, clearDraft] = useTokenDraft(projectId)
   const [copiedVal, setCopiedVal] = useState<string | null>(null)
+  const [coachVisible, setCoachVisible] = useState<boolean>(() => !loadDockCoachSeen())
+
+  const dismissCoach = useCallback(() => {
+    saveDockCoachSeen()
+    setCoachVisible(false)
+  }, [])
 
   const tokens = useMemo(() => projectTokensOf(projectId), [projectId])
   const { used, undefinedVars } = useMemo(() => usageOf(projectId), [projectId])
@@ -63,7 +70,10 @@ export function TokenDock({ projectId, title, collapsed, onToggle }: TokenDockPr
         <button
           type="button"
           className="token-dock-expand"
-          onClick={onToggle}
+          onClick={() => {
+            dismissCoach()
+            onToggle()
+          }}
           title="Hiện bảng tokens"
           aria-label="Hiện bảng tokens"
         >
@@ -72,6 +82,14 @@ export function TokenDock({ projectId, title, collapsed, onToggle }: TokenDockPr
         <span className="token-dock-vertical" title={`${tokens.length} biến${nDraft > 0 ? ` · ${nDraft} nháp` : ''}`}>
           Tokens
         </span>
+        {coachVisible && (
+          <div className="token-dock-coach" role="status">
+            Bảng tokens dời ra đây — bấm ◈ để mở.
+            <button type="button" className="token-dock-coach-close" onClick={dismissCoach} aria-label="Đã hiểu">
+              ×
+            </button>
+          </div>
+        )}
       </aside>
     )
   }

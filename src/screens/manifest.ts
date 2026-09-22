@@ -35,27 +35,5 @@ export type ScreenFile = {
 }
 
 export const SCREEN_FILES: ScreenFile[] = [
-  { id: 'splash', title: 'Splash', file: 'project/onboarding/splash.html', lightStatusBar: false },
-  { id: 'onb-hello', title: 'Onboarding 1 · Hello', file: 'project/onboarding/onb-hello.html' },
-  { id: 'onb-checkin', title: 'Onboarding 2 · Check in', file: 'project/onboarding/onb-checkin.html' },
-  { id: 'onb-insights', title: 'Onboarding 3 · Patterns', file: 'project/onboarding/onb-insights.html' },
-  { id: 'onb-search', title: 'Onboarding 4 · Search', file: 'project/onboarding/onb-search.html' },
-  { id: 'onb-remind', title: 'Onboarding 5 · Reminders', file: 'project/onboarding/onb-remind.html' },
-  { id: 'onb-listen', title: 'Onboarding 6 · Listen', file: 'project/onboarding/onb-listen.html' },
-  { id: 'onb-watch', title: 'Onboarding 7 · Watch', file: 'project/onboarding/onb-watch.html' },
-  { id: 'home', title: 'Home · Today', file: 'project/mood-core/home.html' },
-  { id: 'checkin', title: 'Check in', file: 'project/mood-core/checkin.html' },
-  { id: 'checkin-ladder', title: 'Check-in · Ladder', file: 'project/mood-core/checkin-ladder.html' },
-  { id: 'checkin-cards', title: 'Check-in · Cards', file: 'project/mood-core/checkin-cards.html' },
-  { id: 'checkin-dial', title: 'Check-in · Dial', file: 'project/mood-core/checkin-dial.html' },
-  { id: 'checkin-words', title: 'Check-in · Words', file: 'project/mood-core/checkin-words.html' },
-  { id: 'checkin-slider', title: 'Check-in · Slider', file: 'project/mood-core/checkin-slider.html' },
-  { id: 'insights', title: 'Insights', file: 'project/mood-core/insights.html' },
-  { id: 'history', title: 'History', file: 'project/mood-core/history.html' },
-  { id: 'journal', title: 'Journal', file: 'project/mood-core/journal.html' },
-  { id: 'entry', title: 'Entry', file: 'project/mood-core/entry.html' },
-  { id: 'profile', title: 'Profile', file: 'project/mood-core/profile.html' },
-  { id: 'freud-score', title: 'Freud · Score', file: 'project/freud/freud-score.html' },
-  { id: 'freud-home', title: 'Freud · Dashboard', file: 'project/freud/freud-home.html' },
-  { id: 'mood-stats', title: 'Freud · Mood Stats', file: 'project/freud/mood-stats.html' },
+  { id: 'home', title: 'Home · Today', file: 'project/moodtracker/home.html' },
 ]

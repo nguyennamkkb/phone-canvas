@@ -524,6 +524,48 @@
   color: var(--chrome-faint);
 }
 
+/* coach-mark một lần: rail gọn mặc định nên chỉ chỗ mở (board-layout) */
+.token-dock.is-collapsed {
+  position: relative;
+}
+
+.token-dock-coach {
+  position: absolute;
+  top: 12px;
+  left: calc(100% + 10px);
+  z-index: 21;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: max-content;
+  max-width: 240px;
+  padding: 9px 10px 9px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--chrome-text);
+}
+
+.token-dock-coach-close {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(120, 120, 145, 0.14);
+  color: var(--chrome-text-2);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.token-dock-coach-close:hover {
+  color: var(--chrome-text);
+}
+
 /* màn hẹp: dock thành overlay trái như panel phải */
 @media (max-width: 900px) {
   .token-dock:not(.is-collapsed) {

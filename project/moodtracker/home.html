@@ -1,0 +1,183 @@
+<!-- `--mood` is the mood logged today. The screen root sets it once so the
+     selected face and the word beside the question are the same colour without
+     either of them naming a colour. -->
+<div class="screen" style="--mood: var(--mood-4)">
+  <div class="body mt-body">
+    <div class="row" style="justify-content: space-between">
+      <span class="mt-chip">
+        <span class="icon icon-sm" data-symbol="calendar"></span>
+        Wed, 22 Jan
+      </span>
+      <button class="mt-round" aria-label="Notifications">
+        <span class="icon icon-sm" data-symbol="bell"></span>
+        <span class="mt-round-dot"></span>
+      </button>
+    </div>
+
+    <div class="row" style="gap: var(--s3)">
+      <img
+        class="art mt-avatar"
+        src="/images/avatar.svg"
+        data-asset="Olive"
+        width="52"
+        height="52"
+        alt="Olive"
+      />
+      <div class="col grow" style="gap: var(--s1)">
+        <span class="mt-greet">Hi, Olive</span>
+        <span class="mt-meta">
+          <span class="icon icon-xs is-ember" data-symbol="flame"></span>
+          7-day streak
+        </span>
+      </div>
+    </div>
+
+    <!-- The one thing this app is for. It is not in a card: the log is the
+         action, and an action does not need a surface around it. -->
+    <div class="mt-ask">
+      <div class="row" style="justify-content: space-between">
+        <span class="mt-section-title">How are you feeling?</span>
+        <span class="mt-mood">Good</span>
+      </div>
+      <div class="mt-faces" role="radiogroup" aria-label="How are you feeling?">
+        <button class="mt-face" role="radio" aria-checked="false" aria-label="Awful">
+          <img
+            class="art"
+            src="/images/mood-awful.svg"
+            data-asset="MoodAwful"
+            width="52"
+            height="52"
+            alt=""
+          />
+        </button>
+        <button class="mt-face" role="radio" aria-checked="false" aria-label="Bad">
+          <img
+            class="art"
+            src="/images/mood-bad.svg"
+            data-asset="MoodBad"
+            width="52"
+            height="52"
+            alt=""
+          />
+        </button>
+        <button class="mt-face" role="radio" aria-checked="false" aria-label="Okay">
+          <img
+            class="art"
+            src="/images/mood-okay.svg"
+            data-asset="MoodOkay"
+            width="52"
+            height="52"
+            alt=""
+          />
+        </button>
+        <button class="mt-face is-on" role="radio" aria-checked="true" aria-label="Good">
+          <img
+            class="art"
+            src="/images/mood-good.svg"
+            data-asset="MoodGood"
+            width="52"
+            height="52"
+            alt=""
+          />
+        </button>
+        <button class="mt-face" role="radio" aria-checked="false" aria-label="Great">
+          <img
+            class="art"
+            src="/images/mood-great.svg"
+            data-asset="MoodGreat"
+            width="52"
+            height="52"
+            alt=""
+          />
+        </button>
+      </div>
+    </div>
+
+    <div class="col" style="gap: var(--s3)">
+      <span class="mt-section-title">This week</span>
+      <div class="row" style="gap: var(--s3)">
+        <div class="stat-tile mt-tile is-card">
+          <span class="mt-tile-pill">Mood · 7 days</span>
+          <span class="mt-tile-read">Okay</span>
+          <div class="mt-week">
+            <i class="mt-week-bar is-3" style="height: 44px"></i>
+            <i class="mt-week-bar is-4" style="height: 56px"></i>
+            <i class="mt-week-bar is-5" style="height: 68px"></i>
+            <i class="mt-week-bar is-2" style="height: 32px"></i>
+            <i class="mt-week-bar is-3" style="height: 44px"></i>
+            <i class="mt-week-bar is-1" style="height: 20px"></i>
+            <i class="mt-week-bar is-4" style="height: 56px"></i>
+          </div>
+        </div>
+
+        <div class="stat-tile mt-tile is-score">
+          <span class="mt-tile-pill">
+            <span class="icon icon-xs" data-symbol="heart"></span>
+            Freud Score
+          </span>
+          <div class="mt-ring">
+            <img
+              class="art mt-ring-arcs"
+              src="/images/moodtracker-ring.svg"
+              data-asset="ScoreRing"
+              width="104"
+              height="104"
+              alt="Score ring"
+            />
+            <span class="mt-ring-num">80</span>
+            <span class="mt-ring-cap">Healthy</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col" style="gap: var(--s3)">
+      <span class="mt-section-title">Mindful Tracker</span>
+
+      <div class="mt-group">
+        <div class="mt-group-row">
+          <span class="mt-card-icon">
+            <span class="icon" data-symbol="clock"></span>
+          </span>
+          <div class="col grow" style="gap: 0">
+            <span class="mt-card-title">Mindful Hours</span>
+            <span class="mt-card-sub">2.5 of 8 hours</span>
+          </div>
+          <span class="icon icon-sm mt-chev" data-symbol="chevron.right"></span>
+        </div>
+
+        <div class="mt-group-row">
+          <span class="mt-card-icon is-lilac">
+            <span class="icon" data-symbol="book"></span>
+          </span>
+          <div class="col grow" style="gap: 0">
+            <span class="mt-card-title">Mood Journal</span>
+            <span class="mt-card-sub">12 entries</span>
+          </div>
+          <span class="icon icon-sm mt-chev" data-symbol="chevron.right"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-tabdock">
+    <nav class="mt-tabbar" role="tablist" aria-label="Sections">
+      <button class="mt-tab is-active" role="tab" aria-selected="true">Today
+        <span class="icon icon-sm" data-symbol="house"></span>
+        Today
+      </button>
+      <button class="mt-tab" role="tab" aria-selected="false">Journal
+        <span class="icon icon-sm" data-symbol="bubble.left"></span>
+        Journal
+      </button>
+      <button class="mt-tab" role="tab" aria-selected="false">Insights
+        <span class="icon icon-sm" data-symbol="chart.bar"></span>
+        Insights
+      </button>
+      <button class="mt-tab" role="tab" aria-selected="false">Profile
+        <span class="icon icon-sm" data-symbol="person"></span>
+        Profile
+      </button>
+    </nav>
+  </div>
+</div>

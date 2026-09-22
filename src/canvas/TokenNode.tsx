@@ -25,9 +25,7 @@ export type TokenFlowNode = Node<TokenNodeData, 'token'>
 export type BoardNode = PhoneFlowNode
 
 const PROJECT_ACCENT: Record<string, string> = {
-  'mood-core': '#7c9448',
-  freud: '#f47f42',
-  onboarding: '#9d8ff0',
+  moodtracker: '#7f9a5e',
 }
 
 const GROUPS: Array<{ id: TokenGroup; title: string }> = [

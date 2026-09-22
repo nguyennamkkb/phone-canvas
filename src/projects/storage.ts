@@ -6,7 +6,8 @@ import { BUILTIN_PROJECTS } from './projects'
 /**
  * Per-project persistence (localStorage, no backend).
  *
- * - `pc.board.<projectId>` → { nodes, edges }: layout survives reload.
+ * - `pc.board.<projectId>` → { nodes, edges, removed }: layout survives reload.
+ *   v3 added `removed`; v1/v2 read fine, so there is still no migration script.
  * - `pc.projects.custom`   → Project[]: user-created boards.
  * - `pc.ui.panelVisible`   → right sidebar collapsed or not.
  *
@@ -22,12 +23,25 @@ import { BUILTIN_PROJECTS } from './projects'
 const BOARD_PREFIX = 'pc.board.'
 const CUSTOM_KEY = 'pc.projects.custom'
 const PANEL_KEY = 'pc.ui.panelVisible'
-const DOCK_KEY = 'pc.ui.dockCollapsed'
+const DOCK_PREFIX = 'pc.ui.dock.'
+
+/**
+ * Every key this app owns starts with this. All of it is rebuildable, and none
+ * of it arrives over HTTP — which is why a stale entry is so confusing: the
+ * screen keeps rendering the old board or an uncommitted token draft, and
+ * reloading changes nothing because there is nothing to re-fetch.
+ */
+const KEY_PREFIX = 'pc.'
 
 export type BoardSnapshot = {
-  v: 2
+  v: 3
   nodes: BoardNode[]
   edges: Edge[]
+  /**
+   * Screen ids deliberately taken off this board. Without it, reconciliation
+   * on open would put back every screen the user deleted.
+   */
+  removed: string[]
 }
 
 function safeGet(key: string): string | null {
@@ -54,7 +68,9 @@ function safeDel(key: string): void {
   }
 }
 
-function validNodesEdges(parsed: { nodes?: unknown; edges?: unknown }): parsed is { nodes: BoardNode[]; edges: Edge[] } {
+function validNodesEdges(
+  parsed: { nodes?: unknown; edges?: unknown },
+): parsed is { nodes: BoardNode[]; edges: Edge[]; removed?: unknown } {
   if (!parsed || !Array.isArray(parsed.nodes) || !Array.isArray(parsed.edges)) return false
   // minimal shape check — a corrupt entry falls back to fresh layout
   return (parsed.nodes as unknown[]).every((n) => n !== null && typeof n === 'object' && typeof (n as { id?: unknown }).id === 'string' && 'data' in (n as object))
@@ -64,21 +80,36 @@ export function loadBoard(projectId: string): BoardSnapshot | null {
   const raw = safeGet(BOARD_PREFIX + projectId)
   if (!raw) return null
   try {
-    const parsed = JSON.parse(raw) as { v?: unknown; nodes?: unknown; edges?: unknown }
+    const parsed = JSON.parse(raw) as { nodes?: unknown; edges?: unknown; removed?: unknown }
     if (!validNodesEdges(parsed)) {
       console.warn(`[phone-canvas] ignoring corrupt board snapshot for "${projectId}"`)
       return null
     }
-    // v1 (no v) and v2 share the same nodes/edges shape — normalize on read
-    return { v: 2, nodes: parsed.nodes as BoardNode[], edges: parsed.edges as Edge[] }
+    // v1 (no v) and v2 share the nodes/edges shape and have no `removed` list;
+    // normalize on read rather than migrating
+    const removed = Array.isArray(parsed.removed)
+      ? parsed.removed.filter((x: unknown): x is string => typeof x === 'string')
+      : []
+    return { v: 3, nodes: parsed.nodes as BoardNode[], edges: parsed.edges as Edge[], removed }
   } catch {
     console.warn(`[phone-canvas] ignoring unreadable board snapshot for "${projectId}"`)
     return null
   }
 }
 
-export function saveBoard(projectId: string, snapshot: { nodes: BoardNode[]; edges: Edge[] }): void {
-  safeSet(BOARD_PREFIX + projectId, JSON.stringify({ v: 2, nodes: snapshot.nodes, edges: snapshot.edges }))
+export function saveBoard(
+  projectId: string,
+  snapshot: { nodes: BoardNode[]; edges: Edge[]; removed: string[] },
+): void {
+  safeSet(
+    BOARD_PREFIX + projectId,
+    JSON.stringify({
+      v: 3,
+      nodes: snapshot.nodes,
+      edges: snapshot.edges,
+      removed: snapshot.removed,
+    }),
+  )
 }
 
 export function clearBoard(projectId: string): void {
@@ -125,10 +156,42 @@ export function savePanelVisible(visible: boolean): void {
   safeSet(PANEL_KEY, visible ? '1' : '0')
 }
 
-export function loadDockCollapsed(): boolean {
-  return safeGet(DOCK_KEY) === '1'
+/** Token rail gọn/mở theo từng project (board-layout). Mặc định gọn để canvas thoáng. */
+export function loadDockCollapsed(projectId: string): boolean {
+  return safeGet(DOCK_PREFIX + projectId) !== '0'
 }
 
-export function saveDockCollapsed(collapsed: boolean): void {
-  safeSet(DOCK_KEY, collapsed ? '1' : '0')
+export function saveDockCollapsed(projectId: string, collapsed: boolean): void {
+  safeSet(DOCK_PREFIX + projectId, collapsed ? '1' : '0')
+}
+
+/** Coach-mark giới thiệu rail mới: hiện đúng một lần cho tới khi đóng. */
+const DOCK_COACH_KEY = 'pc.ui.dockCoachSeen'
+
+export function loadDockCoachSeen(): boolean {
+  return safeGet(DOCK_COACH_KEY) === '1'
+}
+
+export function saveDockCoachSeen(): void {
+  safeSet(DOCK_COACH_KEY, '1')
+}
+
+/**
+ * Wipe this app's local state and report what went. The file on disk is the
+ * source of truth for everything except board layout and uncommitted token
+ * drafts, so throwing all of it away is always safe — it just costs you the
+ * arrangement you had dragged out.
+ */
+export function clearAllLocalState(): string[] {
+  const doomed: string[] = []
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i)
+      if (key && key.startsWith(KEY_PREFIX)) doomed.push(key)
+    }
+    for (const key of doomed) localStorage.removeItem(key)
+  } catch {
+    /* private mode — there is nothing to clear */
+  }
+  return doomed
 }

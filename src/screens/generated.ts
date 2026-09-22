@@ -4,54 +4,10 @@
  * Single source of truth is src/screens/manifest.ts; run `npm run screens:sync`
  * (or `npm run new-screen`) after editing it. index.ts only re-exports this.
  */
-import splash from '../../project/onboarding/splash.html?raw'
-import onbHello from '../../project/onboarding/onb-hello.html?raw'
-import onbCheckin from '../../project/onboarding/onb-checkin.html?raw'
-import onbInsights from '../../project/onboarding/onb-insights.html?raw'
-import onbSearch from '../../project/onboarding/onb-search.html?raw'
-import onbRemind from '../../project/onboarding/onb-remind.html?raw'
-import onbListen from '../../project/onboarding/onb-listen.html?raw'
-import onbWatch from '../../project/onboarding/onb-watch.html?raw'
-import home from '../../project/mood-core/home.html?raw'
-import checkin from '../../project/mood-core/checkin.html?raw'
-import checkinLadder from '../../project/mood-core/checkin-ladder.html?raw'
-import checkinCards from '../../project/mood-core/checkin-cards.html?raw'
-import checkinDial from '../../project/mood-core/checkin-dial.html?raw'
-import checkinWords from '../../project/mood-core/checkin-words.html?raw'
-import checkinSlider from '../../project/mood-core/checkin-slider.html?raw'
-import insights from '../../project/mood-core/insights.html?raw'
-import history from '../../project/mood-core/history.html?raw'
-import journal from '../../project/mood-core/journal.html?raw'
-import entry from '../../project/mood-core/entry.html?raw'
-import profile from '../../project/mood-core/profile.html?raw'
-import freudScore from '../../project/freud/freud-score.html?raw'
-import freudHome from '../../project/freud/freud-home.html?raw'
-import moodStats from '../../project/freud/mood-stats.html?raw'
+import home from '../../project/moodtracker/home.html?raw'
 
 const RAW: Record<string, string> = {
-  'splash': splash,
-  'onb-hello': onbHello,
-  'onb-checkin': onbCheckin,
-  'onb-insights': onbInsights,
-  'onb-search': onbSearch,
-  'onb-remind': onbRemind,
-  'onb-listen': onbListen,
-  'onb-watch': onbWatch,
   'home': home,
-  'checkin': checkin,
-  'checkin-ladder': checkinLadder,
-  'checkin-cards': checkinCards,
-  'checkin-dial': checkinDial,
-  'checkin-words': checkinWords,
-  'checkin-slider': checkinSlider,
-  'insights': insights,
-  'history': history,
-  'journal': journal,
-  'entry': entry,
-  'profile': profile,
-  'freud-score': freudScore,
-  'freud-home': freudHome,
-  'mood-stats': moodStats,
 }
 
 export function rawFor(id: string): string | undefined {

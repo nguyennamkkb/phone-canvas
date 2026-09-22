@@ -17,33 +17,9 @@ export type ProjectDef = {
 
 export const BUILTIN_PROJECTS: ProjectDef[] = [
   {
-    id: 'onboarding',
-    title: 'Onboarding',
-    description: 'Splash + 7 màn giới thiệu đầu app',
-    screenIds: [
-      'splash',
-      'onb-hello',
-      'onb-checkin',
-      'onb-insights',
-      'onb-search',
-      'onb-remind',
-      'onb-listen',
-      'onb-watch',
-    ],
-    coverId: 'onb-hello',
-  },
-  {
-    id: 'mood-core',
-    title: 'Mood Core',
-    description: 'Luồng chính: home, check-in, journal, insights',
-    screenIds: ['home', 'checkin', 'checkin-ladder', 'checkin-cards', 'checkin-dial', 'checkin-words', 'checkin-slider', 'insights', 'history', 'journal', 'entry', 'profile'],
-    coverId: 'home',
-  },
-  {
-    id: 'freud',
-    title: 'Freud',
-    description: 'Score, dashboard, mood stats',
-    screenIds: ['freud-score', 'freud-home', 'mood-stats'],
-    coverId: 'freud-home',
+    id: 'moodtracker',
+    title: 'Moodtracker',
+    description: 'Mood journal: home',
+    screenIds: ['home'],
   },
 ]

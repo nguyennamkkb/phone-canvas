@@ -57,6 +57,48 @@
     0 1px 2px rgba(0, 0, 0, 0.05),
     0 10px 30px rgba(0, 0, 0, 0.08);
 }
+/* toolbar compaction (board-layout): nhóm phụ ẩn vào ⋯ khi board-wrap hẹp */
+.toolbar-optional {
+  display: contents;
+}
+
+.toolbar-more {
+  display: none;
+  position: relative;
+}
+
+.toolbar.is-compact .toolbar-optional,
+.toolbar.is-compact .toolbar-sep {
+  display: none;
+}
+
+.toolbar.is-compact .toolbar-more {
+  display: block;
+}
+
+.toolbar-more summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.toolbar-more summary::-webkit-details-marker {
+  display: none;
+}
+
+.toolbar-more-body {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 11;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
 
 .segmented {
   display: flex;
@@ -180,8 +222,9 @@
   background: var(--chrome-bg);
 }
 
-/* narrow viewport: the inspector becomes an overlay with its own close */
-@media (max-width: 900px) {
+/* board-layout: inspector thành overlay khi board hẹp — 1100px thay vì 900px,
+   vì 384px panel + chrome trình duyệt đã chèn canvas từ ~1170px */
+@media (max-width: 1100px) {
   .app > .panel {
     position: fixed;
     top: 0;

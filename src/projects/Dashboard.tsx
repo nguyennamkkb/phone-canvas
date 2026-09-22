@@ -3,6 +3,8 @@ import type { ThemeMode } from '../tokens/tokens'
 import type { Project } from './projects'
 import { countOf, coverOf } from './projects'
 import { SCREEN_BY_ID } from '../screens'
+import { clearAllLocalState } from './storage'
+import { InlineConfirm } from '../canvas/InlineConfirm'
 
 export type DashboardProps = {
   projects: Project[]
@@ -52,6 +54,7 @@ function Cover({ project }: { project: Project }) {
 export function Dashboard({ projects, onOpen, onCreate, onDelete, uiTheme, onUiTheme }: DashboardProps) {
   const [query, setQuery] = useState('')
   const [draft, setDraft] = useState('')
+  const [confirmReset, setConfirmReset] = useState(false)
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -81,6 +84,27 @@ export function Dashboard({ projects, onOpen, onCreate, onDelete, uiTheme, onUiT
           <p className="dash-sub">Mỗi dự án là một bảng các màn hình. Chọn để mở board.</p>
         </div>
         <div className="dash-actions">
+          {confirmReset ? (
+            <InlineConfirm
+              message="Xoá bố cục board + nháp token trong trình duyệt?"
+              confirmLabel="Đặt lại"
+              onConfirm={() => {
+                const cleared = clearAllLocalState()
+                console.info(`[phone-canvas] cleared ${cleared.length} local keys`)
+                window.location.reload()
+              }}
+              onCancel={() => setConfirmReset(false)}
+            />
+          ) : (
+            <button
+              type="button"
+              className="ghost dash-reset"
+              onClick={() => setConfirmReset(true)}
+              title="Xoá bố cục board, nháp token và dự án tự tạo đang lưu trong trình duyệt. File trên đĩa giữ nguyên."
+            >
+              Đặt lại
+            </button>
+          )}
           <div className="segmented" title="Chế độ màu của dashboard">
             <button
               type="button"

@@ -204,9 +204,7 @@ src/
 │  └─ PhoneNode.tsx       one screen = one node (rectangle + iframe)
 ├─ frame/devices.ts       width + safe areas (the only device data that matters)
 ├─ project/               one folder per project, each holds its screens
-│  ├─ onboarding/*.html   splash + onb-* (8 màn)
-│  ├─ mood-core/*.html    home, checkin, journal… (7 màn)
-│  └─ freud/*.html        freud-score, freud-home, mood-stats (3 màn)
+│  └─ moodtracker/        tokens.css + *.html (see docs/moodtracker-plan.md)
 ├─ screens/
 │  ├─ tokens.css          spacing, colour, type — the styling vocabulary
 │  ├─ icons.css           glyph → SF Symbol → file
@@ -232,8 +230,11 @@ src/
 ## Adding a screen
 
 1. Write `project/<project>/my-screen.html` — see `docs/screen-authoring.md`.
-2. Register it in `src/screens/manifest.ts` (`file` is relative to repo root) and `src/screens/index.ts`.
+2. Register it in `src/screens/manifest.ts` (`file` is relative to repo root), then run
+   `npm run screens:sync` to regenerate `src/screens/generated.ts`.
 3. Add its id to the project's `screenIds` in `src/projects/builtin.ts`.
+
+Or let `npm run new-screen` do all three.
 
 The authoring contract is what you hand an LLM. It is the difference between
 HTML that maps cleanly to SwiftUI and HTML that does not.
