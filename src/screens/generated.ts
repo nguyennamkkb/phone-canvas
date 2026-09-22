@@ -4,9 +4,11 @@
  * Single source of truth is src/screens/manifest.ts; run `npm run screens:sync`
  * (or `npm run new-screen`) after editing it. index.ts only re-exports this.
  */
+import journal from '../../project/moodtracker/journal.html?raw'
 import home from '../../project/moodtracker/home.html?raw'
 
 const RAW: Record<string, string> = {
+  'journal': journal,
   'home': home,
 }
 

@@ -38,6 +38,8 @@ export type BoardProps = {
   onModeChange: (mode: CanvasMode) => void
   onFrameStyleChange: (style: FrameStyle) => void
   onAddScreen: (screenId?: string) => void
+  /** flow-core 2.3: double-click dây nối để đặt nhãn component nguồn */
+  onEdgeLabel: (edgeId: string) => void
   onBack: () => void
   onTogglePanel: () => void
   /** screen id đang focus 100% (3.3) — null khi ở tổng quan */
@@ -46,6 +48,8 @@ export type BoardProps = {
   onExitFocus: () => void
   /** màn vừa xóa còn hoàn tác được (5.2) — null khi hết hạn */
   undoTitle: string | null
+  /** flow-core: hậu tố khác nhau cho xóa node vs xóa edge */
+  undoSuffix?: string
   onUndo: () => void
   projectId: string
   /** màn của project hiện tại — dropdown mặc định chỉ liệt kê chừng này (5.3) */
@@ -66,12 +70,14 @@ export function Board({
   onSelectNode,
   onModeChange,
   onFrameStyleChange,
+  onEdgeLabel,
   onAddScreen,
   onBack,
   onTogglePanel,
   focusedNodeId,
   onFocusNode,
   onExitFocus,
+  undoSuffix,
   undoTitle,
   onUndo,
   projectId,
@@ -258,7 +264,7 @@ export function Board({
         onConnect={onConnect}
         nodesDraggable={mode === 'move'}
         nodesConnectable={mode === 'move'}
-        elementsSelectable={false}
+        elementsSelectable
         selectionOnDrag={false}
         panOnDrag
         fitView
@@ -272,6 +278,9 @@ export function Board({
           if (focusedNodeId && node.id !== focusedNodeId) onFocusNode(node.id)
         }}
         onPaneClick={() => onSelectNode(null)}
+        // click dây nối xả chọn node để Delete ưu tiên edge (flow-core 2.2)
+        onEdgeClick={() => onSelectNode(null)}
+        onEdgeDoubleClick={(_, edge) => onEdgeLabel(edge.id)}
       >
         <Background variant={BackgroundVariant.Dots} gap={24} size={1.5} color="#d4d4d8" />
         <Controls showInteractive={false} />
@@ -495,7 +504,7 @@ export function Board({
       )}
       {undoTitle && (
         <div className={`undo-bar${focusedNodeId || mode === 'inspect' ? ' has-hint' : ''}`} role="status">
-          Đã xóa “{undoTitle}” — file HTML giữ nguyên.
+          Đã xóa “{undoTitle}”{undoSuffix ?? ' — file HTML giữ nguyên.'}
           <button type="button" className="undo-btn" onClick={onUndo}>
             Hoàn tác
           </button>

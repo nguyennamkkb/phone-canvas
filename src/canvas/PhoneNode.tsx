@@ -1,5 +1,6 @@
 import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import type { Node, NodeProps } from '@xyflow/react'
+import { Handle, Position } from '@xyflow/react'
 import { getDevice } from '../frame/devices'
 import { buildSrcDoc } from '../extractor/buildSrcDoc'
 import { SCREEN_BY_ID } from '../screens'
@@ -170,6 +171,9 @@ function PhoneNodeInner({ id, data }: NodeProps) {
           padding: bezel,
         }}
       >
+        {/* núm nối flow: kéo từ núm phải sang màn khác; Board đã có onConnect (3.x) */}
+        <Handle type="target" position={Position.Left} aria-label="Nối tới màn này" />
+        <Handle type="source" position={Position.Right} aria-label="Nối sang màn khác" />
         <div
           className="phone-screen"
           style={{

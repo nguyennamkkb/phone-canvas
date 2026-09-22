@@ -390,11 +390,23 @@
   transform: scale(0.9);
 }
 
-.phone {
-  background: #1c1c1e;
-  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.18);
-  transition: box-shadow 120ms ease;
-}
+ .phone {
+   position: relative;
+   background: #1c1c1e;
+   box-shadow: 0 12px 34px rgba(0, 0, 0, 0.18);
+   transition: box-shadow 120ms ease;
+ }
+
+ /* núm nối flow trên mép khung: kéo để nối màn, Board.onConnect đã xử lý */
+ .phone .react-flow__handle {
+   width: 12px;
+   height: 12px;
+   background: #fff;
+   border: 2px solid #007aff;
+ }
+ .phone .react-flow__handle:hover {
+   background: #007aff;
+ }
 
 .phone.is-selected {
   box-shadow:

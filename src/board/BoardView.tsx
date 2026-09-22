@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ReactFlowProvider, addEdge, useEdgesState, useNodesState } from '@xyflow/react'
 import type { Connection, Edge } from '@xyflow/react'
+import { canConnect, edgeLabel, pruneEdges, withLabel } from './flow'
 import { Board } from '../canvas/Board'
 import { BoardContext } from '../canvas/BoardContext'
 import type { CanvasMode, FrameStyle } from '../canvas/BoardContext'
@@ -81,7 +82,7 @@ function openingNodes(project: Project): { nodes: BoardNode[]; edges: Edge[]; re
     counters[project.id] = max
     // board cũ có token node: lọc im lặng, giữ nguyên vị trí phone (2.2)
     const phones = (saved.nodes as LegacyBoardNode[]).filter(isPhoneNode)
-    if (phones.length > 0) return { nodes: phones, edges: saved.edges, removed: saved.removed }
+    if (phones.length > 0) return { nodes: phones, edges: pruneEdges(phones, saved.edges), removed: saved.removed }
   }
   return { nodes: freshNodes(project), edges: [] as Edge[], removed: [] }
 }
@@ -142,7 +143,12 @@ function BoardViewInner({
   const [focusedNodeId, setFocusedNodeId] = useState<string | null>(null)
   // xóa inline 2 bước (5.2): hỏi tại chỗ → xóa → hoàn tác nhanh trong 6s
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
-  const [undone, setUndone] = useState<{ node: PhoneFlowNode; screenId: string } | null>(null)
+  // hoàn tác xóa: node mang theo edge bị cắt cùng, edge lẻ đứng một mình
+  const [undone, setUndone] = useState<
+    | { kind: 'node'; node: PhoneFlowNode; screenId: string; edges: Edge[] }
+    | { kind: 'edge'; edge: Edge }
+    | null
+  >(null)
   const undoTimer = useRef<number | undefined>(undefined)
   const { select } = useInspector()
 
@@ -155,7 +161,18 @@ function BoardViewInner({
     }
   }, [project])
   const [nodes, setNodes, onNodesChange] = useNodesState<BoardNode>(opening.nodes)
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(opening.edges)
+  const [edges, setEdges, onEdgesChangeBase] = useEdgesState<Edge>(opening.edges)
+  // edge đang chọn (click dây nối) — ReactFlow báo qua select change
+  const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null)
+  const onEdgesChange = useCallback(
+    (changes: Parameters<typeof onEdgesChangeBase>[0]) => {
+      onEdgesChangeBase(changes)
+      for (const c of changes) {
+        if (c.type === 'select') setSelectedEdgeId(c.selected ? c.id : null)
+      }
+    },
+    [onEdgesChangeBase],
+  )
   // màn đã bị gỡ khỏi board: giữ lại để lần mở sau không tự thêm về
   const [removed, setRemoved] = useState<string[]>(opening.removed)
 
@@ -184,6 +201,7 @@ function BoardViewInner({
         position: { ...target.position },
       }
       const screenId = target.data.screenId
+      const cutEdges = edges.filter((e) => e.source === id || e.target === id)
       setNodes((ns) => ns.filter((n) => n.id !== id))
       setEdges((es) => es.filter((e) => e.source !== id && e.target !== id))
       setSelectedNodeId((sel) => (sel === id ? null : sel))
@@ -197,10 +215,23 @@ function BoardViewInner({
       }
       // hoàn-tác-nhanh: giữ snapshot 6s, hết hạn thì thôi
       window.clearTimeout(undoTimer.current)
-      setUndone({ node: snapshot, screenId })
+      setUndone({ kind: 'node', node: snapshot, screenId, edges: cutEdges })
       undoTimer.current = window.setTimeout(() => setUndone(null), 6000)
     },
     [nodes, project.id, onUntrackScreen, setNodes, setEdges, select],
+  )
+
+  const onDeleteEdge = useCallback(
+    (id: string) => {
+      const target = edges.find((e) => e.id === id)
+      if (!target) return
+      setEdges((es) => es.filter((e) => e.id !== id))
+      setSelectedEdgeId((sel) => (sel === id ? null : sel))
+      window.clearTimeout(undoTimer.current)
+      setUndone({ kind: 'edge', edge: { ...target } })
+      undoTimer.current = window.setTimeout(() => setUndone(null), 6000)
+    },
+    [edges, setEdges],
   )
 
   const onUndoDelete = useCallback(() => {
@@ -208,11 +239,20 @@ function BoardViewInner({
     if (!last) return
     window.clearTimeout(undoTimer.current)
     setUndone(null)
+    if (last.kind === 'edge') {
+      setEdges((es) => (es.some((e) => e.id === last.edge.id) ? es : [...es, last.edge]))
+      setSelectedEdgeId(last.edge.id)
+      return
+    }
     onTrackScreen(project.id, last.screenId)
     setRemoved((r) => r.filter((s) => s !== last.screenId))
     setNodes((ns) => (ns.some((n) => n.id === last.node.id) ? ns : [...ns, last.node]))
+    setEdges((es) => {
+      const ids = new Set(es.map((e) => e.id))
+      return [...es, ...last.edges.filter((e) => !ids.has(e.id))]
+    })
     setSelectedNodeId(last.node.id)
-  }, [undone, project.id, onTrackScreen, setNodes])
+  }, [undone, project.id, onTrackScreen, setNodes, setEdges])
 
   useEffect(() => () => window.clearTimeout(undoTimer.current), [])
 
@@ -220,14 +260,21 @@ function BoardViewInner({
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement | null
       if (t && (t.tagName === 'INPUT' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return
-      if ((e.key === 'Delete' || e.key === 'Backspace') && selectedNodeId) {
+      if (e.key !== 'Delete' && e.key !== 'Backspace') return
+      // click dây nối đã xả chọn node (Board.onEdgeClick) nên ưu tiên edge
+      if (selectedEdgeId) {
+        e.preventDefault()
+        onDeleteEdge(selectedEdgeId)
+        return
+      }
+      if (selectedNodeId) {
         e.preventDefault()
         onRequestDelete(selectedNodeId)
       }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [selectedNodeId, onRequestDelete])
+  }, [selectedNodeId, selectedEdgeId, onRequestDelete, onDeleteEdge])
 
   // focus đi đôi với select để inspector bám theo màn đang duyệt (3.3)
   const onFocusNode = useCallback((id: string) => {
@@ -266,9 +313,23 @@ function BoardViewInner({
     [mode, frameStyle, selectedNodeId, panelVisible, confirmDeleteId, onRequestDelete, onConfirmDelete, onCancelDelete, tokenTheme, onBoardThemeChange, focusedNodeId, onFocusNode],
   )
 
+  // flow-core 1.1: chặn tự vòng và trùng cặp trước khi addEdge
   const onConnect = useCallback(
-    (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
+    (connection: Connection) =>
+      setEdges((eds) => (canConnect(eds, connection) ? addEdge(connection, eds) : eds)),
     [setEdges],
+  )
+
+  // flow-core 2.3: double-click dây nối để đặt/sửa nhãn component nguồn
+  const onEdgeLabel = useCallback(
+    (id: string) => {
+      const target = edges.find((e) => e.id === id)
+      if (!target) return
+      const next = window.prompt('Nút nào dẫn sang màn này? (để trống để xóa nhãn)', edgeLabel(target) ?? '')
+      if (next === null) return
+      setEdges((es) => es.map((e) => (e.id === id ? withLabel(e, next) : e)))
+    },
+    [edges, setEdges],
   )
 
   const onPatchNode = useCallback(
@@ -288,7 +349,8 @@ function BoardViewInner({
         let sid = screenId
         if (!sid) {
           const onBoard = (s: string) => ns.some((n) => n.data.screenId === s)
-          sid = pool.find((s) => !onBoard(s)) ?? pool[ns.length % pool.length]
+          // flow-core 3.1: hết màn thì thôi — không nhân bản lén
+          sid = pool.find((s) => !onBoard(s))
           if (!sid) return ns
         }
         if (!SCREEN_BY_ID.has(sid)) return ns
@@ -317,6 +379,32 @@ function BoardViewInner({
     })
   }, [project.id])
 
+  // flow-core 1.2: edge đời cũ có data.flow mà thiếu label vẫn hiện nhãn
+  const viewEdges = useMemo(
+    () =>
+      edges.map((e) => {
+        const name = edgeLabel(e)
+        return name && e.label !== name ? { ...e, label: name } : e
+      }),
+    [edges],
+  )
+
+  const screenTitleOf = useCallback(
+    (nodeId: string) => {
+      const n = nodes.find((x) => x.id === nodeId)
+      return n ? (SCREEN_BY_ID.get(n.data.screenId)?.title ?? n.data.screenId) : nodeId
+    },
+    [nodes],
+  )
+
+  const undoTitle =
+    !undone
+      ? null
+      : undone.kind === 'edge'
+        ? `liên kết ${screenTitleOf(undone.edge.source)} → ${screenTitleOf(undone.edge.target)}`
+        : (SCREEN_BY_ID.get(undone.screenId)?.title ?? undone.screenId)
+  const undoSuffix = undone?.kind === 'edge' ? ' — các màn giữ nguyên.' : ' — file HTML giữ nguyên.'
+
   return (
     <BoardContext.Provider value={settings}>
       {/* remount flow per project so fitView/minimap never bleed across boards */}
@@ -340,12 +428,13 @@ function BoardViewInner({
       <Board
         settings={settings}
         nodes={nodes}
-        edges={edges}
+        edges={viewEdges}
         projectTitle={project.title}
         screenCount={nodes.length}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        onEdgeLabel={onEdgeLabel}
         onSelectNode={setSelectedNodeId}
         onModeChange={setMode}
         onFrameStyleChange={setFrameStyle}
@@ -355,7 +444,8 @@ function BoardViewInner({
         focusedNodeId={focusedNodeId}
         onFocusNode={onFocusNode}
         onExitFocus={onExitFocus}
-        undoTitle={undone ? (SCREEN_BY_ID.get(undone.screenId)?.title ?? undone.screenId) : null}
+        undoTitle={undoTitle}
+        undoSuffix={undoSuffix}
         onUndo={onUndoDelete}
         projectId={project.id}
         projectScreenIds={projectScreenIds}

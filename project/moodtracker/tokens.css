@@ -436,6 +436,7 @@
 .mt-tile.is-card {
   background: var(--card);
   color: var(--label);
+  border: 1px solid var(--hairline);
 }
 
 /* tile điểm: nền đậm đủ để mực trắng đạt 4.5:1. Con của nó thừa hưởng màu này
@@ -619,7 +620,9 @@
   padding: 0 var(--s2);
   border-radius: var(--r-full);
   background: var(--glass);
-  border: 1px solid var(--glass-line);
+  border: 1px solid var(--hairline);
+  /* một shadow duy nhất: tabbar là phần tử floating duy nhất trên màn */
+  box-shadow: 0 8px 24px rgba(43, 29, 22, 0.12);
 }
 
 .mt-tab {
@@ -1135,6 +1138,7 @@
   display: flex;
   flex-direction: column;
   flex: 0 0 auto;
+  border: 1px solid var(--hairline);
   border-radius: var(--r-lg);
   background: var(--card);
   /* clips the first and last row to the container's corners */
