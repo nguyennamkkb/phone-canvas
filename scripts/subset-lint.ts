@@ -22,6 +22,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { SCREEN_FILES } from '../src/screens/manifest.ts'
+import { COMPONENT_FILES } from '../src/components/manifest.ts'
 import { BUILTIN_PROJECTS } from '../src/projects/builtin.ts'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -75,21 +76,27 @@ async function main() {
     errors += 1
   }
 
-  for (const screen of SCREEN_FILES) {
-    const html = await readFile(path.join(ROOT, screen.file), 'utf8')
-    const pid = ownerOf.get(screen.id)
-    const known = (pid && perProject.get(pid)) || names
+  // screens and components share the subset: both render inside a screen, so a
+  // banned layout or an un-symbolled glyph in a component is the same defect.
+  const targets = [
+    ...SCREEN_FILES.map((s) => ({ file: s.file, project: ownerOf.get(s.id) })),
+    ...COMPONENT_FILES.map((c) => ({ file: c.file, project: c.project })),
+  ]
+
+  for (const target of targets) {
+    const html = await readFile(path.join(ROOT, target.file), 'utf8')
+    const known = (target.project && perProject.get(target.project)) || names
 
     // 1. banned layout declarations (skip HTML comments so docs in comments don't fail)
     const stripped = html.replace(/<!--[\s\S]*?-->/g, (c) => '\n'.repeat(c.split('\n').length - 1))
     for (const { re, what } of BANNED) {
       const m = re.exec(stripped)
-      if (m) err(screen.file, lineOf(stripped, m.index), what)
+      if (m) err(target.file, lineOf(stripped, m.index), what)
     }
 
     // 2. inline <svg> — nameless art
     for (const m of html.matchAll(/<svg[\s>]/gi)) {
-      err(screen.file, lineOf(html, m.index), 'inline <svg> — không có tên cho Image("…"); dùng <span class="icon" data-symbol="…"> hoặc <img class="art">')
+      err(target.file, lineOf(html, m.index), 'inline <svg> — không có tên cho Image("…"); dùng <span class="icon" data-symbol="…"> hoặc <img class="art">')
     }
 
     // 3. .icon glyph without data-symbol — only the exact `icon` class token
@@ -100,7 +107,7 @@ async function main() {
       const classes = cm[1].split(/\s+/)
       if (!classes.includes('icon')) continue
       if (!/data-symbol\s*=\s*"/i.test(m[0])) {
-        err(screen.file, lineOf(html, m.index), '.icon thiếu data-symbol — spec không nói được tên SF Symbol')
+        err(target.file, lineOf(html, m.index), '.icon thiếu data-symbol — spec không nói được tên SF Symbol')
       }
     }
 
@@ -112,7 +119,7 @@ async function main() {
       const name = vm[1]
       if (!isTokenVar(name) || seen.has(name)) continue
       seen.add(name)
-      if (!known.has(name)) err(screen.file, lineOf(html, vm.index), `${name} chưa định nghĩa (resolves to guaranteed-invalid)`)
+      if (!known.has(name)) err(target.file, lineOf(html, vm.index), `${name} chưa định nghĩa (resolves to guaranteed-invalid)`)
     }
   }
 

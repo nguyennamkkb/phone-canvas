@@ -8,12 +8,18 @@ import { useBoardSettings } from './BoardContext'
 import { TokenColorRow } from './token-table/TokenColorRow'
 import { TokenSizeCell } from './token-table/TokenSizeCell'
 import { TokenDraftActions } from './token-table/TokenDraftActions'
+import { ComponentDock } from '../components/ComponentDock'
+
+export type DockTab = 'tokens' | 'components'
 
 export type TokenDockProps = {
   projectId: string
   title: string
   collapsed: boolean
   onToggle: () => void
+  /** design-system dock: which table is showing (component-system 4.3) */
+  tab: DockTab
+  onTabChange: (tab: DockTab) => void
 }
 
 const PROJECT_ACCENT: Record<string, string> = {
@@ -30,10 +36,18 @@ const GROUPS: Array<{ id: TokenGroup; title: string }> = [
 ]
 
 /**
- * Token-dock trái (2.1) — cùng `token-table/` như TokenNode cũ, nhưng render
- * ngoài canvas nên không lọt vào fit-view/minimap và không bị kéo lạc.
+ * Dock trái (2.1) — "design system" của project: hai bảng Tokens và Components
+ * (component-system 4.3). Render ngoài canvas nên không lọt vào
+ * fit-view/minimap và không bị kéo lạc.
  */
-export function TokenDock({ projectId, title, collapsed, onToggle }: TokenDockProps) {
+export function TokenDock({
+  projectId,
+  title,
+  collapsed,
+  onToggle,
+  tab,
+  onTabChange,
+}: TokenDockProps) {
   const { tokenTheme } = useBoardSettings()
   const [draft, setDraft, clearDraft] = useTokenDraft(projectId)
   const [copiedVal, setCopiedVal] = useState<string | null>(null)
@@ -80,7 +94,7 @@ export function TokenDock({ projectId, title, collapsed, onToggle }: TokenDockPr
           ◈
         </button>
         <span className="token-dock-vertical" title={`${tokens.length} biến${nDraft > 0 ? ` · ${nDraft} nháp` : ''}`}>
-          Tokens
+          Design
         </span>
         {coachVisible && (
           <div className="token-dock-coach" role="status">
@@ -95,7 +109,7 @@ export function TokenDock({ projectId, title, collapsed, onToggle }: TokenDockPr
   }
 
   return (
-    <aside className="token-dock" aria-label={`Design tokens · ${title}`}>
+    <aside className="token-dock" aria-label={`Design system · ${title}`}>
       <div
         className="token-frame token-dock-frame"
         style={{ ['--frame-accent' as string]: PROJECT_ACCENT[projectId] ?? '#007aff' }}
@@ -106,90 +120,119 @@ export function TokenDock({ projectId, title, collapsed, onToggle }: TokenDockPr
           <span className="token-head-text">
             <span className="token-title">{title}</span>
             <span className="token-sub">
-              Design tokens · {tokens.length} biến{nDraft > 0 ? ` · ${nDraft} nháp` : ''}
+              {tab === 'tokens'
+                ? `Design tokens · ${tokens.length} biến${nDraft > 0 ? ` · ${nDraft} nháp` : ''}`
+                : 'Components · bảng component của dự án'}
             </span>
           </span>
           <button
             type="button"
             className="token-dock-collapse"
             onClick={onToggle}
-            title="Thu gọn bảng tokens"
-            aria-label="Thu gọn bảng tokens"
+            title="Thu gọn bảng design system"
+            aria-label="Thu gọn bảng design system"
           >
             «
           </button>
         </header>
 
-        <TokenDraftActions
-          projectId={projectId}
-          projectTitle={title}
-          draft={draft}
-          onClear={clearDraft}
-        />
+        <div className="dock-tabs" role="tablist" aria-label="Bảng design system">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={tab === 'tokens'}
+            className={tab === 'tokens' ? 'is-on' : ''}
+            onClick={() => onTabChange('tokens')}
+          >
+            Tokens
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={tab === 'components'}
+            className={tab === 'components' ? 'is-on' : ''}
+            onClick={() => onTabChange('components')}
+          >
+            Components
+          </button>
+        </div>
 
-        {undefinedVars.length > 0 && (
-          <details className="token-section is-warn" open>
-            <summary>
-              <span>Chưa định nghĩa</span>
-              <span className="token-count">{undefinedVars.length}</span>
-            </summary>
-            {undefinedVars.map((u) => (
-              <div className="token-row" key={u.name} title={`dùng ở: ${u.screens.join(', ')}`}>
-                <code className="token-name">{u.name}</code>
-                <span className="token-val">
-                  {u.count} chỗ · {u.screens.length} màn
-                </span>
-              </div>
-            ))}
-          </details>
+        {tab === 'components' ? (
+          <ComponentDock projectId={projectId} theme={tokenTheme} />
+        ) : (
+          <>
+            <TokenDraftActions
+              projectId={projectId}
+              projectTitle={title}
+              draft={draft}
+              onClear={clearDraft}
+            />
+
+            {undefinedVars.length > 0 && (
+              <details className="token-section is-warn" open>
+                <summary>
+                  <span>Chưa định nghĩa</span>
+                  <span className="token-count">{undefinedVars.length}</span>
+                </summary>
+                {undefinedVars.map((u) => (
+                  <div className="token-row" key={u.name} title={`dùng ở: ${u.screens.join(', ')}`}>
+                    <code className="token-name">{u.name}</code>
+                    <span className="token-val">
+                      {u.count} chỗ · {u.screens.length} màn
+                    </span>
+                  </div>
+                ))}
+              </details>
+            )}
+
+            {GROUPS.map((g) => {
+              const list = tokens.filter((t) => t.group === g.id)
+              if (list.length === 0) return null
+              return (
+                <details className="token-section" key={g.id} open={g.id === 'color'}>
+                  <summary>
+                    <span>{g.title}</span>
+                    <span className="token-count">{list.length}</span>
+                  </summary>
+                  {g.id === 'color' ? (
+                    <div className="token-colors">
+                      {list.map((t) => (
+                        <TokenColorRow
+                          key={t.name}
+                          token={t}
+                          draftLight={draft.values[t.name]?.light}
+                          draftDark={draft.values[t.name]?.dark}
+                          use={useByName.get(t.name) ?? { count: 0, screens: 0 }}
+                          theme={tokenTheme}
+                          onPick={(v) => setDraft(t.name, tokenTheme, v)}
+                          onRevert={() => {
+                            setDraft(t.name, 'light', '')
+                            setDraft(t.name, 'dark', '')
+                          }}
+                          copied={copiedVal === t.name}
+                          onCopy={(text) => copyVal(t.name, text)}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="token-grid">
+                      {list.map((t) => (
+                        <TokenSizeCell
+                          key={t.name}
+                          token={t}
+                          value={eff(t, 'light')}
+                          use={useByName.get(t.name) ?? { count: 0, screens: 0 }}
+                          onCommit={(v) => setDraft(t.name, 'light', v.trim())}
+                          onRevert={() => setDraft(t.name, 'light', '')}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </details>
+              )
+            })}
+          </>
         )}
-
-        {GROUPS.map((g) => {
-          const list = tokens.filter((t) => t.group === g.id)
-          if (list.length === 0) return null
-          return (
-            <details className="token-section" key={g.id} open={g.id === 'color'}>
-              <summary>
-                <span>{g.title}</span>
-                <span className="token-count">{list.length}</span>
-              </summary>
-              {g.id === 'color' ? (
-                <div className="token-colors">
-                  {list.map((t) => (
-                    <TokenColorRow
-                      key={t.name}
-                      token={t}
-                      draftLight={draft.values[t.name]?.light}
-                      draftDark={draft.values[t.name]?.dark}
-                      use={useByName.get(t.name) ?? { count: 0, screens: 0 }}
-                      theme={tokenTheme}
-                      onPick={(v) => setDraft(t.name, tokenTheme, v)}
-                      onRevert={() => {
-                        setDraft(t.name, 'light', '')
-                        setDraft(t.name, 'dark', '')
-                      }}
-                      copied={copiedVal === t.name}
-                      onCopy={(text) => copyVal(t.name, text)}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="token-grid">
-                  {list.map((t) => (
-                    <TokenSizeCell
-                      key={t.name}
-                      token={t}
-                      value={eff(t, 'light')}
-                      use={useByName.get(t.name) ?? { count: 0, screens: 0 }}
-                      onCommit={(v) => setDraft(t.name, 'light', v.trim())}
-                      onRevert={() => setDraft(t.name, 'light', '')}
-                    />
-                  ))}
-                </div>
-              )}
-            </details>
-          )
-        })}
       </div>
     </aside>
   )

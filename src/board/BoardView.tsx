@@ -9,6 +9,7 @@ import type { PhoneNodeData } from '../canvas/PhoneNode'
 import type { PhoneFlowNode } from '../canvas/PhoneNode'
 import type { BoardNode } from '../canvas/TokenNode'
 import { TokenDock } from '../canvas/TokenDock'
+import type { DockTab } from '../canvas/TokenDock'
 import { useTokenTheme, useUiTheme } from '../tokens/store'
 import type { ThemeMode } from '../tokens/tokens'
 import { DEFAULT_DEVICE_ID, getDevice } from '../frame/devices'
@@ -139,6 +140,8 @@ function BoardViewInner({
   const [, setUiTheme] = useUiTheme()
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null)
   const [dockCollapsed, setDockCollapsed] = useState<boolean>(() => loadDockCollapsed(project.id))
+  // design-system dock: Tokens | Components (component-system 4.3)
+  const [dockTab, setDockTab] = useState<DockTab>('tokens')
   // focus-mode (3.3): màn đang duyệt ở 100%, null khi ở tổng quan
   const [focusedNodeId, setFocusedNodeId] = useState<string | null>(null)
   // xóa inline 2 bước (5.2): hỏi tại chỗ → xóa → hoàn tác nhanh trong 6s
@@ -455,6 +458,8 @@ function BoardViewInner({
             title={project.title}
             collapsed={dockCollapsed}
             onToggle={onToggleDock}
+            tab={dockTab}
+            onTabChange={setDockTab}
           />
         }
         panel={

@@ -1157,3 +1157,13 @@
 .mt-group-row:first-child {
   border-top: 0;
 }
+
+/* journal rows: tall cells — dot + chevron ride the title line,
+   date + chip share one left-aligned meta line instead of splitting apart */
+.mt-entry {
+  align-items: flex-start;
+}
+
+.mt-entry .mood-dot {
+  margin-top: var(--s1);
+}

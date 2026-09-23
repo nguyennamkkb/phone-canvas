@@ -45,4 +45,33 @@ describe('composeScreenDoc', () => {
       'data-theme',
     )
   })
+
+  it('expands @component placeholders into the viewport', () => {
+    const html = composeScreenDoc({
+      html: '<div><!-- @component tab --></div>',
+      device,
+      stylesheets: [],
+      components: { tab: '<nav class="tab">Home</nav>' },
+    })
+    expect(html).toContain('<div class="viewport"><div><nav class="tab">Home</nav></div></div>')
+    expect(html).not.toContain('@component')
+  })
+
+  it('drops the OS chrome in bare mode (component preview)', () => {
+    const html = composeScreenDoc({ html: '<div></div>', device, stylesheets: [], bare: true })
+    expect(html).toContain('class="device is-bare"')
+    expect(html).not.toContain('<div class="statusbar"')
+    expect(html).not.toContain('<div class="home-indicator">')
+  })
+
+  it('produces an identical document for identical inputs (app/export parity)', () => {
+    const args = {
+      html: '<div><!-- @component tab --></div>',
+      device,
+      stylesheets: ['/* tokens */'],
+      components: { tab: '<nav class="tab">Home</nav>' },
+      theme: 'light' as const,
+    }
+    expect(composeScreenDoc(args)).toBe(composeScreenDoc({ ...args }))
+  })
 })

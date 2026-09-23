@@ -27,6 +27,7 @@ import { fileURLToPath } from 'node:url'
 
 import { DEVICES, getDevice } from '../src/frame/devices.ts'
 import { SCREEN_FILES } from '../src/screens/manifest.ts'
+import { COMPONENT_FILES } from '../src/components/manifest.ts'
 import { BUILTIN_PROJECTS } from '../src/projects/builtin.ts'
 import { composeScreenDoc } from '../src/extractor/compose.ts'
 import { parseArgs } from './export/cli.ts'
@@ -127,6 +128,15 @@ async function main(): Promise<void> {
           () => null,
         )
       : null
+    // component-system: the same files the board loads via `?raw`, read here
+    // off disk so an export expands `@component` exactly like the board does.
+    const components: Record<string, string> = {}
+    if (owner) {
+      for (const component of COMPONENT_FILES) {
+        if (component.project !== owner.id) continue
+        components[component.id] = await readFile(path.join(ROOT, component.file), 'utf8')
+      }
+    }
     const stylesheets = projectTokens ? [...sharedStyles, projectTokens] : sharedStyles
     for (const deviceId of devices) {
       const device = getDevice(deviceId)
@@ -141,6 +151,7 @@ async function main(): Promise<void> {
             bridgeJs: null,
             lightStatusBar: screen.lightStatusBar,
             theme: theme as 'light' | 'dark',
+            components,
           }),
         )
       }

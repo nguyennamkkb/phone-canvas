@@ -1,4 +1,5 @@
 import type { Device } from '../frame/devices'
+import { expandComponents } from '../components/expand.ts'
 
 /**
  * Compose a self-contained document for one phone screen.
@@ -34,6 +35,17 @@ export type ComposeOptions = {
   lightStatusBar?: boolean
   /** color mode — sets data-theme on <html> so project tokens.css can switch */
   theme?: 'light' | 'dark'
+  /**
+   * component-system: id → html for the project. Every `<!-- @component id -->`
+   * in `html` is replaced before the document is assembled.
+   */
+  components?: Record<string, string>
+  /**
+   * Drop the OS chrome (status bar + home indicator) and let `.device` hug its
+   * content. Used to preview a bare component in the catalog, never for a
+   * screen on the board or in an export.
+   */
+  bare?: boolean
 }
 
 /**
@@ -60,6 +72,9 @@ html, body { width: var(--device-w); min-height: var(--device-h); }
   width: var(--device-w); min-height: var(--device-h);
   background: var(--bg);
 }
+/* component preview: no chrome, hug the component's own height */
+.device.is-bare { min-height: 0; }
+body.is-bare { min-height: 0; }
 .viewport {
   flex: 1 1 auto; min-height: 0;
   display: flex; flex-direction: column;
@@ -122,8 +137,23 @@ function homeIndicatorHtml(device: Device): string {
 }
 
 export function composeScreenDoc(options: ComposeOptions): string {
-  const { html, device, stylesheets, bridgeJs = null, nodeId, token, lightStatusBar, theme } = options
+  const {
+    html,
+    device,
+    stylesheets,
+    bridgeJs = null,
+    nodeId,
+    token,
+    lightStatusBar,
+    theme,
+    components,
+    bare = false,
+  } = options
   const themeAttr = theme === 'dark' ? ' data-theme="dark"' : ''
+  // component-system: splice `@component` fragments in before assembly. A
+  // missing id / cycle is left as an inert comment here; lint and the board
+  // name it. Pure, so the app and the exporter expand identically.
+  const body = components ? expandComponents(html, components).html : html
 
   const styles = stylesheets.map((css) => `<style>${css}</style>`).join('\n')
 
@@ -152,10 +182,10 @@ ${styles}
 ${CHROME_CSS}
 </style>
 </head>
-<body>
-<div class="device"${deviceAttrs}>
-${statusBarHtml(device, lightStatusBar ?? false)}
-  <div class="viewport">${html}</div>${homeIndicatorHtml(device)}
+<body${bare ? ' class="is-bare"' : ''}>
+<div class="device${bare ? ' is-bare' : ''}"${deviceAttrs}>
+${bare ? '' : statusBarHtml(device, lightStatusBar ?? false)}
+  <div class="viewport">${body}</div>${bare ? '' : homeIndicatorHtml(device)}
 </div>${bridge}
 </body>
 </html>`
