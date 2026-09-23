@@ -55,6 +55,60 @@ then pay for.
 | `references/spec-to-swiftui.md` | What the panel reports and the SwiftUI it maps to. |
 | `recipes/*.md` | Screen archetypes: onboarding, list, dashboard. |
 
+## Project workflows
+
+These are the commands an agent runs to manage the project itself (screens,
+board state, verification) — separate from the screen-authoring loop above.
+
+### Screen lifecycle
+
+```bash
+npm run new-screen -- --project <id> --name <name> --title "..."
+npm run delete-screen -- --id <screen-id> [--force]
+npm run screens:sync          # regenerate generated.ts after manual manifest edits
+```
+
+- `new-screen` writes the HTML file, inserts the manifest entry, regenerates
+  `generated.ts`, and adds the id to `builtin.ts`. Round-trip with
+  `delete-screen` must leave the repo byte-identical.
+- `delete-screen` removes the file and unwires the screen. Without `--force`
+  it aborts if any saved board still references the id.
+- Both scripts refuse unknown ids; `--force` overrides board-references checks.
+
+### Board state: trash & export/import
+
+- **Trash** is per-project. Deleting a screen from the board moves it to the
+  trash dialog (🗑 badge). Restore puts it back at the old position with edges.
+  Emptying the trash and permanent delete (`delete-screen --force`) are the two
+  ways to remove it from disk.
+- **Export** (`Xuất` button) downloads `project-id-board.json`
+  (`{ v: 1, projectId, exportedAt, board }`).
+- **Import** (`Nhập` button) validates the file (version, projectId, schema).
+  Invalid → alert, current state untouched. Valid → write-through cache + reload.
+
+### Verification gate
+
+Run before claiming any board change works:
+
+```bash
+npm run gate        # lint + typecheck + lint:tokens + lint:subset + lint:components + vitest
+```
+
+Or step by step: `npm run typecheck && npm run lint && npm test`.
+
+The board also boots via `npm run dev` — open http://localhost:5273 and
+confirm no runtime errors in the console.
+
+### Verify with the browser
+
+Use the live board to confirm observable behavior:
+
+1. Open the project; confirm all registered screens render.
+2. Create via `new-screen`, delete to trash (confirm the 🗑 badge updates),
+   restore (confirm position + edges), then `delete-screen --force` (confirm
+   the file is gone and registry clean — grep the id).
+3. Export → import the downloaded file → confirm board + trash restored.
+
 ## Hard rules
 
 1. **One container per idea.** Reach for `.row`, `.col`, `.grow`, `.spacer`
