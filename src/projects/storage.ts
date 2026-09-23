@@ -21,6 +21,7 @@ import { BUILTIN_PROJECTS } from './projects'
  */
 
 const BOARD_PREFIX = 'pc.board.'
+const STATE_FILE_PREFIX = 'pc.statefile.'
 const CUSTOM_KEY = 'pc.projects.custom'
 const PANEL_KEY = 'pc.ui.panelVisible'
 const DOCK_PREFIX = 'pc.ui.dock.'
@@ -33,8 +34,19 @@ const DOCK_PREFIX = 'pc.ui.dock.'
  */
 const KEY_PREFIX = 'pc.'
 
+export type TrashEntry = {
+  /** unique per deletion, e.g. `home-1727000000000-a1b2` */
+  id: string
+  screenId: string
+  /** node snapshot at delete time — restore puts it back 1:1 */
+  node: BoardNode
+  /** edges cut by the deletion — restore re-attaches them */
+  edges: Edge[]
+  deletedAt: number
+}
+
 export type BoardSnapshot = {
-  v: 3
+  v: 4
   nodes: BoardNode[]
   edges: Edge[]
   /**
@@ -42,6 +54,22 @@ export type BoardSnapshot = {
    * on open would put back every screen the user deleted.
    */
   removed: string[]
+  /** per-project trash — newest entry last */
+  trash: TrashEntry[]
+}
+
+export function newTrashEntry(screenId: string, node: BoardNode, edges: Edge[]): TrashEntry {
+  return {
+    id: `${screenId}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    screenId,
+    node: {
+      ...node,
+      data: { ...node.data },
+      position: { ...node.position },
+    },
+    edges: edges.map((e) => ({ ...e })),
+    deletedAt: Date.now(),
+  }
 }
 
 function safeGet(key: string): string | null {
@@ -70,46 +98,152 @@ function safeDel(key: string): void {
 
 function validNodesEdges(
   parsed: { nodes?: unknown; edges?: unknown },
-): parsed is { nodes: BoardNode[]; edges: Edge[]; removed?: unknown } {
+): parsed is { nodes: BoardNode[]; edges: Edge[]; removed?: unknown; trash?: unknown } {
   if (!parsed || !Array.isArray(parsed.nodes) || !Array.isArray(parsed.edges)) return false
   // minimal shape check — a corrupt entry falls back to fresh layout
   return (parsed.nodes as unknown[]).every((n) => n !== null && typeof n === 'object' && typeof (n as { id?: unknown }).id === 'string' && 'data' in (n as object))
 }
 
+function validTrashEntry(e: unknown): e is TrashEntry {
+  if (!e || typeof e !== 'object') return false
+  const t = e as Record<string, unknown>
+  if (typeof t.id !== 'string' || typeof t.screenId !== 'string') return false
+  if (typeof t.deletedAt !== 'number') return false
+  if (!t.node || typeof t.node !== 'object') return false
+  const n = t.node as Record<string, unknown>
+  if (typeof n.id !== 'string' || !n.data || typeof n.data !== 'object') return false
+  if (!n.position || typeof n.position !== 'object') return false
+  if (!Array.isArray(t.edges)) return false
+  return true
+}
+
 export function loadBoard(projectId: string): BoardSnapshot | null {
+  const file = importedStateFile(projectId)
   const raw = safeGet(BOARD_PREFIX + projectId)
-  if (!raw) return null
+  if (!raw) return file ? file.board : null
   try {
-    const parsed = JSON.parse(raw) as { nodes?: unknown; edges?: unknown; removed?: unknown }
-    if (!validNodesEdges(parsed)) {
-      console.warn(`[phone-canvas] ignoring corrupt board snapshot for "${projectId}"`)
-      return null
+    const rawParsed = JSON.parse(raw) as {
+      nodes?: unknown
+      edges?: unknown
+      removed?: unknown
+      trash?: unknown
+      savedAt?: number
     }
+    const cacheSavedAt = rawParsed.savedAt ?? 0
+    if (!validNodesEdges(rawParsed)) {
+      console.warn(`[phone-canvas] ignoring corrupt board snapshot for "${projectId}"`)
+      return file ? file.board : null
+    }
+    if (file && file.exportedAt > cacheSavedAt) return file.board
+    const parsed = rawParsed
     // v1 (no v) and v2 share the nodes/edges shape and have no `removed` list;
-    // normalize on read rather than migrating
+    // v3 added `removed`, v4 added `trash` — normalize on read, no migration
     const removed = Array.isArray(parsed.removed)
       ? parsed.removed.filter((x: unknown): x is string => typeof x === 'string')
       : []
-    return { v: 3, nodes: parsed.nodes as BoardNode[], edges: parsed.edges as Edge[], removed }
+    let trash: TrashEntry[] = []
+    if (Array.isArray(parsed.trash)) {
+      const good = (parsed.trash as unknown[]).filter(validTrashEntry)
+      if (good.length !== (parsed.trash as unknown[]).length) {
+        console.warn(`[phone-canvas] dropping corrupt trash entries for "${projectId}"`)
+      }
+      trash = good
+    }
+    return { v: 4, nodes: parsed.nodes as BoardNode[], edges: parsed.edges as Edge[], removed, trash }
   } catch {
     console.warn(`[phone-canvas] ignoring unreadable board snapshot for "${projectId}"`)
-    return null
+    return file ? file.board : null
   }
 }
 
 export function saveBoard(
   projectId: string,
-  snapshot: { nodes: BoardNode[]; edges: Edge[]; removed: string[] },
+  snapshot: { nodes: BoardNode[]; edges: Edge[]; removed: string[]; trash?: TrashEntry[] },
 ): void {
   safeSet(
     BOARD_PREFIX + projectId,
     JSON.stringify({
-      v: 3,
+      v: 4,
       nodes: snapshot.nodes,
       edges: snapshot.edges,
       removed: snapshot.removed,
+      trash: snapshot.trash ?? [],
+      savedAt: Date.now(),
     }),
   )
+}
+
+/* ------------------------------------------------- project state file -- */
+
+export type ProjectStateFile = {
+  v: 1
+  projectId: string
+  exportedAt: number
+  board: BoardSnapshot
+}
+
+export function toStateFile(projectId: string, board: BoardSnapshot): ProjectStateFile {
+  return { v: 1, projectId, exportedAt: Date.now(), board }
+}
+
+/* imported file marker — survives clearBoard so a cleared cache still restores */
+function importedStateFile(projectId: string): ProjectStateFile | null {
+  const raw = safeGet(STATE_FILE_PREFIX + projectId)
+  if (!raw) return null
+  try {
+    return parseStateFile(raw, projectId)
+  } catch {
+    console.warn(`[phone-canvas] ignoring corrupt imported state file for "${projectId}"`)
+    return null
+  }
+}
+
+export function saveImportedStateFile(file: ProjectStateFile): void {
+  safeSet(STATE_FILE_PREFIX + file.projectId, JSON.stringify(file))
+}
+
+/** validate an imported board.json — throws on any problem, never partial */
+function validBoardSnapshot(b: unknown): b is BoardSnapshot {
+  if (!b || typeof b !== 'object') return false
+  const s = b as Record<string, unknown>
+  if (!Array.isArray(s.nodes) || !Array.isArray(s.edges)) return false
+  if (s.removed !== undefined && !Array.isArray(s.removed)) return false
+  if (s.trash !== undefined && !Array.isArray(s.trash)) return false
+  if (Array.isArray(s.trash) && !(s.trash as unknown[]).every(validTrashEntry)) return false
+  return true
+}
+
+export function parseStateFile(raw: string, expectedProjectId?: string): ProjectStateFile {
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(raw)
+  } catch {
+    throw new Error('File không phải JSON hợp lệ.')
+  }
+  if (!parsed || typeof parsed !== 'object') throw new Error('File trạng thái không đúng định dạng.')
+  const p = parsed as Record<string, unknown>
+  if (p.v !== 1) throw new Error(`Phiên bản state file không hỗ trợ (v=${String(p.v)}).`)
+  if (typeof p.projectId !== 'string' || !p.projectId) throw new Error('File thiếu projectId.')
+  if (expectedProjectId && p.projectId !== expectedProjectId) {
+    throw new Error(`File của project "${p.projectId}", không phải "${expectedProjectId}".`)
+  }
+  if (typeof p.exportedAt !== 'number') throw new Error('File thiếu exportedAt.')
+  if (!validBoardSnapshot(p.board)) throw new Error('Phần board trong file không hợp lệ.')
+  const b = p.board as BoardSnapshot
+  return {
+    v: 1,
+    projectId: p.projectId as string,
+    exportedAt: p.exportedAt as number,
+    board: {
+      v: 4,
+      nodes: b.nodes,
+      edges: b.edges,
+      removed: Array.isArray(b.removed)
+        ? (b.removed as unknown[]).filter((x): x is string => typeof x === 'string')
+        : [],
+      trash: Array.isArray(b.trash) ? (b.trash as TrashEntry[]).filter(validTrashEntry) : [],
+    },
+  }
 }
 
 export function clearBoard(projectId: string): void {

@@ -35,6 +35,7 @@ export type ScreenFile = {
 }
 
 export const SCREEN_FILES: ScreenFile[] = [
-  { id: 'journal', title: 'Journal', file: 'project/moodtracker/journal.html' },
+  { id: 'mood-calendar', title: 'Mood Calendar', file: 'project/moodtracker/mood-calendar.html' },
+{ id: 'journal', title: 'Journal', file: 'project/moodtracker/journal.html' },
 { id: 'home', title: 'Home · Today', file: 'project/moodtracker/home.html' },
 ]

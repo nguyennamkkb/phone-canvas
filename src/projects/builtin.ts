@@ -20,6 +20,6 @@ export const BUILTIN_PROJECTS: ProjectDef[] = [
     id: 'moodtracker',
     title: 'Moodtracker',
     description: 'Mood journal: home',
-    screenIds: ['home', 'journal'],
+    screenIds: ['home', 'journal', 'mood-calendar'],
   },
 ]

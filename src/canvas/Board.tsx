@@ -54,6 +54,12 @@ export type BoardProps = {
   projectId: string
   /** màn của project hiện tại — dropdown mặc định chỉ liệt kê chừng này (5.3) */
   projectScreenIds: string[]
+  /** thùng rác per-project — badge + dialog (screen-trash) */
+  trashCount: number
+  onOpenTrash: () => void
+  /** xuất/nhập state file (project-state-file) */
+  onExportState: () => void
+  onImportState: () => void
 }
 
 export function Board({
@@ -82,6 +88,10 @@ export function Board({
   onUndo,
   projectId,
   projectScreenIds,
+  trashCount,
+  onOpenTrash,
+  onExportState,
+  onImportState,
 }: BoardProps) {
   const { mode, frameStyle, panelVisible, tokenTheme, onTokenThemeChange } = settings
   const { fitView, setCenter, getNode } = useReactFlow()
@@ -462,6 +472,30 @@ export function Board({
         </button>
         <button type="button" className="tool tool-icon" onClick={handleFit} title="Vừa khung (F)">
           ⤢
+        </button>
+        <button
+          type="button"
+          className="tool tool-icon"
+          onClick={onOpenTrash}
+          title={trashCount > 0 ? `Thùng rác (${trashCount} màn)` : 'Thùng rác (trống)'}
+        >
+          🗑{trashCount > 0 && <span className="toolbar-count">{trashCount}</span>}
+        </button>
+        <button
+          type="button"
+          className="tool"
+          onClick={onExportState}
+          title="Xuất trạng thái board ra file board.json"
+        >
+          Xuất
+        </button>
+        <button
+          type="button"
+          className="tool"
+          onClick={onImportState}
+          title="Nhập trạng thái từ file board.json"
+        >
+          Nhập
         </button>
 
         <span className="toolbar-sep" />

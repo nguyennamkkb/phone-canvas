@@ -1,0 +1,177 @@
+<div class="screen">
+  <div class="body mt-body">
+    <div class="row" style="justify-content: space-between">
+      <span class="mt-h1">Calendar</span>
+      <button class="mt-round is-fill" aria-label="Month options">
+        <span class="icon icon-sm" data-symbol="ellipsis"></span>
+      </button>
+    </div>
+
+    <!-- Month switcher. Two filled circles flank the label, the way iOS flips a
+         range; the count under it is the month's log rate. -->
+    <div class="row" style="justify-content: space-between">
+      <button class="mt-round is-fill" aria-label="Previous month">
+        <span class="icon icon-sm" data-symbol="chevron.left"></span>
+      </button>
+      <div class="col" style="align-items: center; gap: 0">
+        <span class="mt-section-title">January 2025</span>
+        <span class="mt-card-sub">30 of 31 days logged</span>
+      </div>
+      <button class="mt-round is-fill" aria-label="Next month">
+        <span class="icon icon-sm" data-symbol="chevron.right"></span>
+      </button>
+    </div>
+
+    <!-- The month grid: seven equal columns built from rows, one cell per day.
+         A day with a mood is a solid mood colour; a day with no log stays the
+         grouping tint, so absence is legible without a legend. -->
+    <div class="mt-card is-stack" style="padding: var(--s4); gap: var(--s3)">
+      <div class="cal-row">
+        <span class="cal-head">Mon</span>
+        <span class="cal-head">Tue</span>
+        <span class="cal-head">Wed</span>
+        <span class="cal-head">Thu</span>
+        <span class="cal-head">Fri</span>
+        <span class="cal-head">Sat</span>
+        <span class="cal-head">Sun</span>
+      </div>
+
+      <div class="col" style="gap: var(--s1)">
+        <div class="cal-row">
+          <span class="cal-cell is-quiet">30</span>
+          <span class="cal-cell is-quiet">31</span>
+          <span class="cal-cell mt-cal-4">1</span>
+          <span class="cal-cell mt-cal-3">2</span>
+          <span class="cal-cell mt-cal-2">3</span>
+          <span class="cal-cell mt-cal-4">4</span>
+          <span class="cal-cell mt-cal-3">5</span>
+        </div>
+        <div class="cal-row">
+          <span class="cal-cell mt-cal-3">6</span>
+          <span class="cal-cell mt-cal-4">7</span>
+          <span class="cal-cell mt-cal-5">8</span>
+          <span class="cal-cell mt-cal-4">9</span>
+          <span class="cal-cell mt-cal-3">10</span>
+          <span class="cal-cell">11</span>
+          <span class="cal-cell mt-cal-2">12</span>
+        </div>
+        <div class="cal-row">
+          <span class="cal-cell mt-cal-4">13</span>
+          <span class="cal-cell mt-cal-4">14</span>
+          <span class="cal-cell mt-cal-3">15</span>
+          <span class="cal-cell mt-cal-5">16</span>
+          <span class="cal-cell mt-cal-4">17</span>
+          <span class="cal-cell mt-cal-3">18</span>
+          <span class="cal-cell mt-cal-5">19</span>
+        </div>
+        <div class="cal-row">
+          <span class="cal-cell mt-cal-3">20</span>
+          <span class="cal-cell mt-cal-4">21</span>
+          <span class="cal-cell mt-cal-4 is-today">
+            <span>22</span>
+            <i class="cal-today"></i>
+          </span>
+          <span class="cal-cell mt-cal-4">23</span>
+          <span class="cal-cell mt-cal-5">24</span>
+          <span class="cal-cell mt-cal-1">25</span>
+          <span class="cal-cell mt-cal-4">26</span>
+        </div>
+        <div class="cal-row">
+          <span class="cal-cell mt-cal-4">27</span>
+          <span class="cal-cell mt-cal-3">28</span>
+          <span class="cal-cell mt-cal-5">29</span>
+          <span class="cal-cell mt-cal-4">30</span>
+          <span class="cal-cell mt-cal-3">31</span>
+          <span class="cal-cell is-quiet">1</span>
+          <span class="cal-cell is-quiet">2</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stress: one bar per week of the month. The bar is the level and the
+         colour is the band (calm → high), so the chart says how much, not just
+         whether. Two readings sit above it, reusing the stat type. -->
+    <div class="col" style="gap: var(--s3)">
+      <div class="mt-section">
+        <span class="mt-section-title">Stress</span>
+        <span class="mt-legend">
+          <i class="mt-legend-dot"></i>
+          Calm
+          <i class="mt-legend-dot is-neg"></i>
+          High
+        </span>
+      </div>
+
+      <div class="mt-card is-stack" style="padding: var(--s4); gap: var(--s4)">
+        <div class="row" style="justify-content: space-between">
+          <div class="col" style="gap: 0">
+            <span class="mt-stat-value">43</span>
+            <span class="mt-stat-cap">Average · Calm</span>
+          </div>
+          <div class="col" style="gap: 0; align-items: flex-end">
+            <span class="mt-stat-value">63</span>
+            <span class="mt-stat-cap">Peak · Week 4</span>
+          </div>
+        </div>
+
+        <div class="mt-chart is-compact">
+          <div class="mt-chart-col">
+            <i class="mt-chart-bar" style="height: 55%; background: var(--sage)"></i>
+            <span class="mt-label">W1</span>
+          </div>
+          <div class="mt-chart-col">
+            <i class="mt-chart-bar" style="height: 70%; background: var(--ember)"></i>
+            <span class="mt-label">W2</span>
+          </div>
+          <div class="mt-chart-col">
+            <i class="mt-chart-bar" style="height: 40%; background: var(--sage)"></i>
+            <span class="mt-label">W3</span>
+          </div>
+          <div class="mt-chart-col">
+            <i class="mt-chart-bar" style="height: 80%; background: var(--ember)"></i>
+            <span class="mt-label">W4</span>
+          </div>
+          <div class="mt-chart-col">
+            <i class="mt-chart-bar" style="height: 36%; background: var(--sage)"></i>
+            <span class="mt-label">W5</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Month insight: the one thing the app worked out, not the user. Lilac is
+         the app's "inferred" colour, so this card is tinted and nothing else on
+         the screen is. -->
+    <div class="col" style="gap: var(--s3)">
+      <span class="mt-section-title">Month insight</span>
+      <div class="band is-lilac">
+        <div class="row" style="gap: var(--s2)">
+          <span class="icon icon-sm" data-symbol="sparkles"></span>
+          <span class="mt-card-title">Your best week was Jan 13–19</span>
+        </div>
+        <span class="mt-card-sub">Five of seven days were Good or Great, and stress stayed low all week.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-tabdock">
+    <nav class="mt-tabbar" role="tablist" aria-label="Sections">
+      <button class="mt-tab" role="tab" aria-selected="false">
+        <span class="icon icon-sm" data-symbol="house"></span>
+        Today
+      </button>
+      <button class="mt-tab" role="tab" aria-selected="false">
+        <span class="icon icon-sm" data-symbol="bubble.left"></span>
+        Journal
+      </button>
+      <button class="mt-tab is-active" role="tab" aria-selected="true">
+        <span class="icon icon-sm" data-symbol="chart.bar"></span>
+        Insights
+      </button>
+      <button class="mt-tab" role="tab" aria-selected="false">
+        <span class="icon icon-sm" data-symbol="person"></span>
+        Profile
+      </button>
+    </nav>
+  </div>
+</div>

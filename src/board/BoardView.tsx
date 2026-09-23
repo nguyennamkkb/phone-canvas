@@ -18,8 +18,19 @@ import { SpecPanel } from '../inspect/SpecPanel'
 import { SCREEN_BY_ID, SCREENS } from '../screens'
 import type { Project } from '../projects/projects'
 import { resolveScreens } from '../projects/projects'
-import { loadBoard, loadDockCollapsed, saveBoard, saveDockCollapsed } from '../projects/storage'
+import {
+  loadBoard,
+  loadDockCollapsed,
+  newTrashEntry,
+  parseStateFile,
+  saveBoard,
+  saveDockCollapsed,
+  saveImportedStateFile,
+  toStateFile,
+} from '../projects/storage'
+import type { TrashEntry } from '../projects/storage'
 import { missingScreenIds } from './reconcile'
+import { TrashDialog } from './TrashDialog'
 import { ErrorBoundary } from '../shell/ErrorBoundary'
 
 const COLUMN_GAP = 120
@@ -72,7 +83,12 @@ function freshNodes(project: Project): BoardNode[] {
   return out
 }
 
-function openingNodes(project: Project): { nodes: BoardNode[]; edges: Edge[]; removed: string[] } {
+function openingNodes(project: Project): {
+  nodes: BoardNode[]
+  edges: Edge[]
+  removed: string[]
+  trash: TrashEntry[]
+} {
   const saved = loadBoard(project.id)
   if (saved && saved.nodes.length > 0) {
     let max = 0
@@ -83,9 +99,19 @@ function openingNodes(project: Project): { nodes: BoardNode[]; edges: Edge[]; re
     counters[project.id] = max
     // board cũ có token node: lọc im lặng, giữ nguyên vị trí phone (2.2)
     const phones = (saved.nodes as LegacyBoardNode[]).filter(isPhoneNode)
-    if (phones.length > 0) return { nodes: phones, edges: pruneEdges(phones, saved.edges), removed: saved.removed }
+    if (phones.length > 0) {
+      // trash còn giữ màn nào thì reconcile không thêm lại nó
+      const trashed = new Set(saved.trash.map((t) => t.screenId))
+      const kept = saved.removed.filter((id) => !trashed.has(id))
+      return {
+        nodes: phones,
+        edges: pruneEdges(phones, saved.edges),
+        removed: saved.removed,
+        trash: saved.trash.filter((t) => !kept.includes(t.screenId) || true),
+      }
+    }
   }
-  return { nodes: freshNodes(project), edges: [] as Edge[], removed: [] }
+  return { nodes: freshNodes(project), edges: [] as Edge[], removed: [], trash: [] }
 }
 
 /**
@@ -146,6 +172,8 @@ function BoardViewInner({
   const [focusedNodeId, setFocusedNodeId] = useState<string | null>(null)
   // xóa inline 2 bước (5.2): hỏi tại chỗ → xóa → hoàn tác nhanh trong 6s
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
+  const [trashOpen, setTrashOpen] = useState(false)
+  const importInputRef = useRef<HTMLInputElement>(null)
   // hoàn tác xóa: node mang theo edge bị cắt cùng, edge lẻ đứng một mình
   const [undone, setUndone] = useState<
     | { kind: 'node'; node: PhoneFlowNode; screenId: string; edges: Edge[] }
@@ -157,10 +185,12 @@ function BoardViewInner({
 
   const opening = useMemo(() => {
     const saved = openingNodes(project)
+    const trashedIds = saved.trash.map((t) => t.screenId)
     return {
-      nodes: reconciledNodes(project, saved.nodes, saved.removed),
+      nodes: reconciledNodes(project, saved.nodes, [...saved.removed, ...trashedIds]),
       edges: saved.edges,
       removed: saved.removed,
+      trash: saved.trash,
     }
   }, [project])
   const [nodes, setNodes, onNodesChange] = useNodesState<BoardNode>(opening.nodes)
@@ -178,10 +208,40 @@ function BoardViewInner({
   )
   // màn đã bị gỡ khỏi board: giữ lại để lần mở sau không tự thêm về
   const [removed, setRemoved] = useState<string[]>(opening.removed)
+  // thùng rác per-project: snapshot node + edges bị cắt, newest cuối
+  const [trash, setTrash] = useState<TrashEntry[]>(opening.trash)
 
   useEffect(() => {
-    saveBoard(project.id, { nodes, edges, removed })
-  }, [project.id, nodes, edges, removed])
+    saveBoard(project.id, { nodes, edges, removed, trash })
+  }, [project.id, nodes, edges, removed, trash])
+
+  // xuất/nhập trạng thái — browser không ghi được vào repo nên đi qua file
+  const handleExportState = useCallback(() => {
+    const stateFile = toStateFile(project.id, { v: 4, nodes, edges, removed, trash })
+    const url = URL.createObjectURL(
+      new Blob([JSON.stringify(stateFile, null, 2)], { type: 'application/json' }),
+    )
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `${project.id}-board.json`
+    a.click()
+    URL.revokeObjectURL(url)
+  }, [project.id, nodes, edges, removed, trash])
+
+  const handleImportState = useCallback(
+    async (file: File) => {
+      try {
+        const stateFile = parseStateFile(await file.text(), project.id)
+        saveImportedStateFile(stateFile)
+        // write-through: cache bằng đúng nội dung file, rồi reload để board đọc lại
+        saveBoard(project.id, stateFile.board)
+        window.location.reload()
+      } catch (e) {
+        alert(e instanceof Error ? e.message : String(e))
+      }
+    },
+    [project.id],
+  )
 
   const onRequestDelete = useCallback((id: string) => {
     setConfirmDeleteId(id)
@@ -216,6 +276,8 @@ function BoardViewInner({
         onUntrackScreen(project.id, screenId)
         setRemoved((r) => (r.includes(screenId) ? r : [...r, screenId]))
       }
+      // vào thùng rác thay vì biến mất — nhớ vị trí + edges để restore 1:1
+      setTrash((t) => [...t, newTrashEntry(screenId, snapshot, cutEdges)])
       // hoàn-tác-nhanh: giữ snapshot 6s, hết hạn thì thôi
       window.clearTimeout(undoTimer.current)
       setUndone({ kind: 'node', node: snapshot, screenId, edges: cutEdges })
@@ -236,6 +298,33 @@ function BoardViewInner({
     },
     [edges, setEdges],
   )
+
+  const onRestoreTrash = useCallback(
+    (entryId: string) => {
+      const entry = trash.find((t) => t.id === entryId)
+      if (!entry) return
+      onTrackScreen(project.id, entry.screenId)
+      setRemoved((r) => r.filter((s) => s !== entry.screenId))
+      setTrash((t) => t.filter((x) => x.id !== entryId))
+      setNodes((ns) => (ns.some((n) => n.id === entry.node.id) ? ns : [...ns, entry.node]))
+      setEdges((es) => {
+        const ids = new Set(es.map((e) => e.id))
+        return [...es, ...entry.edges.filter((e) => !ids.has(e.id))]
+      })
+      setSelectedNodeId(entry.node.id)
+    },
+    [trash, project.id, onTrackScreen, setNodes, setEdges],
+  )
+
+  // gỡ entry khỏi thùng nhưng giữ `removed` — màn vẫn ở ngoài board
+  const onDropTrashEntry = useCallback((entryId: string) => {
+    setTrash((t) => t.filter((x) => x.id !== entryId))
+  }, [])
+
+  // dọn sạch thùng — file HTML thật do script delete-screen xóa (dialog hiện lệnh)
+  const onEmptyTrash = useCallback(() => {
+    setTrash([])
+  }, [])
 
   const onUndoDelete = useCallback(() => {
     const last = undone
@@ -450,6 +539,10 @@ function BoardViewInner({
         undoTitle={undoTitle}
         undoSuffix={undoSuffix}
         onUndo={onUndoDelete}
+        trashCount={trash.length}
+        onOpenTrash={() => setTrashOpen(true)}
+        onExportState={handleExportState}
+        onImportState={() => importInputRef.current?.click()}
         projectId={project.id}
         projectScreenIds={projectScreenIds}
         dock={
@@ -479,6 +572,29 @@ function BoardViewInner({
         }
         />
         </ErrorBoundary>
+        {trashOpen && (
+          <TrashDialog
+            trash={trash}
+            onRestore={(id) => {
+              onRestoreTrash(id)
+              setTrashOpen(false)
+            }}
+            onDrop={onDropTrashEntry}
+            onEmpty={onEmptyTrash}
+            onClose={() => setTrashOpen(false)}
+          />
+        )}
+        <input
+          ref={importInputRef}
+          type="file"
+          accept="application/json,.json"
+          style={{ display: 'none' }}
+          onChange={(e) => {
+            const f = e.target.files?.[0]
+            if (f) void handleImportState(f)
+            e.target.value = ''
+          }}
+        />
       </ReactFlowProvider>
     </BoardContext.Provider>
   )

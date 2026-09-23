@@ -149,11 +149,13 @@ async function main() {
   const statusProp = dark ? ', lightStatusBar: true' : ''
   const manifestEntry = `  { id: '${name}', title: '${title.replace(/'/g, "\\'")}', file: '${file}'${statusProp} },\n`
   const body = manifestSrc.slice(bodyStart, close)
+  // strip only the leading newline after `[`; keep the body's own indents
+  const bodyRest = body.slice(body.startsWith('\n') ? 1 : 0)
   const manifestNext =
     manifestSrc.slice(0, bodyStart) +
     '\n' +
     manifestEntry +
-    body.trimStart() +
+    bodyRest +
     ']' +
     manifestSrc.slice(close + 1)
   await writeFile(path.join(ROOT, 'src/screens/manifest.ts'), manifestNext)

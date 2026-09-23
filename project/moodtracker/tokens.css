@@ -350,6 +350,14 @@
   cursor: pointer;
 }
 
+/* iOS toolbar button: a filled circle, not a ringed one. The reference draws a
+   hairline around the glyph; iOS makes the control a surface (a fill) instead of
+   a second border colour, so the glyph is the only thing with an outline. */
+.mt-round.is-fill {
+  border: 0;
+  background: var(--fill);
+}
+
 /* chấm báo nằm trên vành, lệch về 1 giờ — left/top + margin âm, không transform */
 .mt-round-dot {
   position: absolute;
@@ -717,6 +725,12 @@
   height: 148px;
 }
 
+/* a month chart has fewer, wider columns than the week strip; it also sits in a
+   card that already carries two readings, so it runs shorter */
+.mt-chart.is-compact {
+  height: 124px;
+}
+
 .mt-chart-col {
   display: flex;
   flex-direction: column;
@@ -730,8 +744,10 @@
   height: 100%;
 }
 
+/* the bar is a share of its column, so a month chart with five columns gets
+   five readable bars rather than five hairlines in a wide card */
 .mt-chart-bar {
-  width: 12px;
+  width: 60%;
   border-radius: var(--r-full);
   background: var(--sage);
 }
@@ -881,6 +897,24 @@
 .mt-cal-5 {
   background: var(--mood-5);
   color: var(--ink);
+}
+
+/* iOS marks today with a dot under the date, not a coloured ring: a ring is a
+   second border colour on a cell that is already a colour. The dot inherits the
+   cell's text colour, so it stays legible on light and dark fills alike. */
+.cal-cell.is-today {
+  border: 0;
+  flex-direction: column;
+  gap: 0;
+}
+
+.cal-today {
+  display: block;
+  flex: 0 0 auto;
+  width: 4px;
+  height: 4px;
+  border-radius: var(--r-full);
+  background: currentColor;
 }
 
 /* ------------------------------------------------------------ journal row -- */

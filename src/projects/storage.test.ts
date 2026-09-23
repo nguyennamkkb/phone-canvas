@@ -1,5 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { loadBoard, loadCustomProjects, saveBoard, clearAllLocalState } from './storage'
+import {
+  loadBoard,
+  loadCustomProjects,
+  saveBoard,
+  clearAllLocalState,
+  newTrashEntry,
+  parseStateFile,
+  toStateFile,
+} from './storage'
 
 /** storage.ts guards every access with try/catch, so a minimal stub suffices */
 function installLocalStorage(): void {
@@ -36,9 +44,9 @@ afterEach(() => {
 describe('loadBoard', () => {
   it('loads v1 and v2 snapshots, defaulting the removed list', () => {
     seed('pc.board.p1', JSON.stringify({ nodes: [], edges: [] }))
-    expect(loadBoard('p1')).toEqual({ v: 3, nodes: [], edges: [], removed: [] })
+    expect(loadBoard('p1')).toEqual({ v: 4, nodes: [], edges: [], removed: [], trash: [] })
     seed('pc.board.p2', JSON.stringify({ v: 2, nodes: [], edges: [] }))
-    expect(loadBoard('p2')).toEqual({ v: 3, nodes: [], edges: [], removed: [] })
+    expect(loadBoard('p2')).toEqual({ v: 4, nodes: [], edges: [], removed: [], trash: [] })
   })
 
   it('round-trips the removed list and drops junk in it', () => {
@@ -59,9 +67,42 @@ describe('loadBoard', () => {
     expect(warn).toHaveBeenCalled()
   })
 
-  it('writes v3 and the write survives a reload', () => {
+  it('writes v4 and the write survives a reload', () => {
     saveBoard('p9', { nodes: [], edges: [], removed: [] })
-    expect(loadBoard('p9')).toEqual({ v: 3, nodes: [], edges: [], removed: [] })
+    expect(loadBoard('p9')).toEqual({ v: 4, nodes: [], edges: [], removed: [], trash: [] })
+  })
+
+  it('round-trips trash entries, keeping position/device/edges/deletedAt', () => {
+    const node = {
+      id: 'p-n1',
+      type: 'phone',
+      position: { x: 120, y: 30 },
+      data: { screenId: 'home', deviceId: 'iphone-15' },
+    } as never
+    const edges = [{ id: 'e1', source: 'p-n1', target: 'p-n2' }] as never
+    const entry = newTrashEntry('home', node, edges)
+    saveBoard('pt', { nodes: [], edges: [], removed: ['home'], trash: [entry] })
+    const loaded = loadBoard('pt')
+    expect(loaded?.trash).toHaveLength(1)
+    expect(loaded?.trash[0]).toMatchObject({
+      screenId: 'home',
+      deletedAt: entry.deletedAt,
+    })
+    expect(loaded?.trash[0].node.position).toEqual({ x: 120, y: 30 })
+    expect(loaded?.trash[0].node.data).toMatchObject({ screenId: 'home', deviceId: 'iphone-15' })
+    expect(loaded?.trash[0].edges).toHaveLength(1)
+  })
+
+  it('drops corrupt trash entries but keeps the board', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    seed(
+      'pc.board.px',
+      JSON.stringify({ v: 4, nodes: [], edges: [], removed: [], trash: [{ junk: true }, 7] }),
+    )
+    const loaded = loadBoard('px')
+    expect(loaded?.trash).toEqual([])
+    expect(loaded?.removed).toEqual([])
+    expect(warn).toHaveBeenCalled()
   })
 })
 
@@ -96,5 +137,59 @@ describe('clearAllLocalState', () => {
 
   it('is a no-op on an empty store', () => {
     expect(clearAllLocalState()).toEqual([])
+  })
+})
+
+describe('parseStateFile', () => {
+  it('round-trips a state file', () => {
+    saveBoard('ps', { nodes: [], edges: [], removed: ['home'], trash: [] })
+    const board = loadBoard('ps')
+    expect(board).not.toBeNull()
+    const raw = JSON.stringify(toStateFile('ps', board!))
+    const parsed = parseStateFile(raw, 'ps')
+    expect(parsed.projectId).toBe('ps')
+    expect(parsed.board.removed).toEqual(['home'])
+  })
+
+  it('rejects garbage, wrong version, and foreign project without throwing raw', () => {
+    expect(() => parseStateFile('not-json{{{')).toThrow()
+    expect(() => parseStateFile(JSON.stringify({ v: 9 }))).toThrow()
+    const raw = JSON.stringify(toStateFile('a', { v: 4, nodes: [], edges: [], removed: [], trash: [] }))
+    expect(() => parseStateFile(raw, 'b')).toThrow()
+  })
+})
+
+describe('imported state file beats the cache when newer (project-state-file)', () => {
+  function fileFor(projectId: string, exportedAt: number, removed: string[]): void {
+    const state = JSON.stringify({
+      v: 1,
+      projectId,
+      exportedAt,
+      board: { v: 4, nodes: [], edges: [], removed, trash: [] },
+    })
+    localStorage.setItem(`pc.statefile.${projectId}`, state)
+  }
+
+  it('loads from the file when no cache exists (cleared cache restores)', () => {
+    fileFor('ps', 2000, ['home'])
+    expect(loadBoard('ps')?.removed).toEqual(['home'])
+  })
+
+  it('file newer than cache wins', () => {
+    saveBoard('ps', { nodes: [], edges: [], removed: ['journal'], trash: [] })
+    fileFor('ps', 9e15, ['home'])
+    expect(loadBoard('ps')?.removed).toEqual(['home'])
+  })
+
+  it('cache saved after the import wins (write-through)', () => {
+    fileFor('ps', 1, ['home'])
+    saveBoard('ps', { nodes: [], edges: [], removed: ['journal'], trash: [] })
+    expect(loadBoard('ps')?.removed).toEqual(['journal'])
+  })
+
+  it('no file keeps today behaviour', () => {
+    saveBoard('ps', { nodes: [], edges: [], removed: ['journal'], trash: [] })
+    expect(loadBoard('ps')?.removed).toEqual(['journal'])
+    expect(loadBoard('empty')).toBeNull()
   })
 })

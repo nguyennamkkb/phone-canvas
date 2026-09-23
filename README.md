@@ -236,6 +236,14 @@ src/
 
 Or let `npm run new-screen` do all three.
 
+To remove a screen (its HTML file plus all registry wiring) — handy for trash:
+
+```bash
+npm run delete-screen -- --id <screen-id>
+```
+
+It refuses if any saved board still references the id; pass `--force` to ignore that.
+
 The authoring contract is what you hand an LLM. It is the difference between
 HTML that maps cleanly to SwiftUI and HTML that does not.
 
