@@ -264,45 +264,6 @@ export function Board({
     <div className="app" data-theme={tokenTheme}>
       {dock}
       <div className="board-wrap" ref={wrapRef}>
-      <div className="board">
-      <ReactFlow<BoardNode>
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        nodesDraggable={mode === 'move'}
-        nodesConnectable={mode === 'move'}
-        elementsSelectable
-        selectionOnDrag={false}
-        panOnDrag
-        fitView
-        fitViewOptions={{ padding: 0.12, includeHiddenNodes: false }}
-        minZoom={0.1}
-        maxZoom={2.5}
-        proOptions={{ hideAttribution: false }}
-        onNodeClick={(_, node) => {
-          onSelectNode(node.id)
-          // đang focus mà click sang màn khác thì bám theo (3.3)
-          if (focusedNodeId && node.id !== focusedNodeId) onFocusNode(node.id)
-        }}
-        onPaneClick={() => onSelectNode(null)}
-        // click dây nối xả chọn node để Delete ưu tiên edge (flow-core 2.2)
-        onEdgeClick={() => onSelectNode(null)}
-        onEdgeDoubleClick={(_, edge) => onEdgeLabel(edge.id)}
-      >
-        <Background variant={BackgroundVariant.Dots} gap={24} size={1.5} color="#d4d4d8" />
-        <Controls showInteractive={false} />
-        <MiniMap
-          pannable
-          zoomable
-          nodeColor={() => '#007aff'}
-          maskColor="rgba(244,244,245,0.75)"
-          style={{ width: 140, height: 96 }}
-        />
-      </ReactFlow>
-
       <div className={toolbarCompact ? 'toolbar is-compact' : 'toolbar'}>
         <div className="toolbar-group">
           <button type="button" className="tool tool-back" onClick={onBack} title="Về Dashboard">
@@ -510,6 +471,45 @@ export function Board({
         </button>
       </div>
 
+      <div className="board">
+      <ReactFlow<BoardNode>
+        nodes={nodes}
+        edges={edges}
+        nodeTypes={nodeTypes}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        nodesDraggable={mode === 'move'}
+        nodesConnectable={mode === 'move'}
+        elementsSelectable
+        selectionOnDrag={false}
+        panOnDrag
+        fitView
+        fitViewOptions={{ padding: 0.12, includeHiddenNodes: false }}
+        minZoom={0.1}
+        maxZoom={2.5}
+        proOptions={{ hideAttribution: false }}
+        onNodeClick={(_, node) => {
+          onSelectNode(node.id)
+          // đang focus mà click sang màn khác thì bám theo (3.3)
+          if (focusedNodeId && node.id !== focusedNodeId) onFocusNode(node.id)
+        }}
+        onPaneClick={() => onSelectNode(null)}
+        // click dây nối xả chọn node để Delete ưu tiên edge (flow-core 2.2)
+        onEdgeClick={() => onSelectNode(null)}
+        onEdgeDoubleClick={(_, edge) => onEdgeLabel(edge.id)}
+      >
+        <Background variant={BackgroundVariant.Dots} gap={24} size={1.5} color="#d4d4d8" />
+        <Controls showInteractive={false} />
+        <MiniMap
+          pannable
+          zoomable
+          nodeColor={() => '#007aff'}
+          maskColor="rgba(244,244,245,0.75)"
+          style={{ width: 140, height: 96 }}
+        />
+      </ReactFlow>
+
       {screenCount === 0 && (
         <div className="board-empty board-empty-overlay">
           <div className="board-empty-title">Bảng đang trống</div>
@@ -524,7 +524,6 @@ export function Board({
           </p>
         </div>
       )}
-      </div>
       {focusedNodeId ? (
         <div className="hint-bar" role="status">
           Focus 100% · <b>←/→</b> chuyển màn · <b>Esc</b> về tổng quan
@@ -544,6 +543,7 @@ export function Board({
           </button>
         </div>
       )}
+      </div>
       </div>
       {panel}
   </div>
