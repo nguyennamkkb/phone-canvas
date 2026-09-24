@@ -1,0 +1,80 @@
+<!-- C24 — Progress / Analytics. 30-day range, weight trend bars, averages, logged-days, activity summary; Progress tab active. -->
+<div class="screen">
+  <header class="navbar">
+    <span class="nav-title">Progress</span>
+    <button class="icon-btn" aria-label="Share progress">
+      <span class="icon icon-sm" data-symbol="square.and.arrow.up"></span>
+    </button>
+  </header>
+  <div class="body" style="padding: var(--s4) var(--s5); gap: var(--s4)">
+    <div class="segmented-light" role="tablist" aria-label="Range">
+      <span class="seg">7 days</span>
+      <span class="seg is-on" role="tab" aria-selected="true">30 days</span>
+      <span class="seg">90 days</span>
+    </div>
+
+    <div class="paper-card" style="gap: var(--s2)">
+      <div class="row" style="justify-content: space-between">
+        <span class="t-headline">Weight</span>
+        <span class="t-subhead t-secondary">72.4 kg · goal 68 kg</span>
+      </div>
+      <div class="week-track" aria-label="Weight trend, last 7 weeks">
+        <div class="week-col"><span class="week-bar" style="height: 88px; background: var(--sage)"></span><span class="t-footnote t-secondary">W1</span></div>
+        <div class="week-col"><span class="week-bar" style="height: 80px; background: var(--sage)"></span><span class="t-footnote t-secondary">W2</span></div>
+        <div class="week-col"><span class="week-bar" style="height: 84px; background: var(--sage)"></span><span class="t-footnote t-secondary">W3</span></div>
+        <div class="week-col"><span class="week-bar" style="height: 72px; background: var(--sage)"></span><span class="t-footnote t-secondary">W4</span></div>
+        <div class="week-col"><span class="week-bar" style="height: 64px; background: var(--accent)"></span><span class="t-footnote">W5</span></div>
+      </div>
+      <span class="t-subhead t-secondary">−1.8 kg in 30 days · on pace for goal by Nov 12</span>
+    </div>
+
+    <div class="row" style="gap: var(--s3)">
+      <div class="stat-tile grow">
+        <span class="t-caption t-secondary">AVG KCAL</span>
+        <span class="t-title2">1,820</span>
+      </div>
+      <div class="stat-tile grow">
+        <span class="t-caption t-secondary">AVG PROTEIN</span>
+        <span class="t-title2">104 g</span>
+      </div>
+      <div class="stat-tile grow">
+        <span class="t-caption t-secondary">LOGGED</span>
+        <span class="t-title2">24/30</span>
+      </div>
+    </div>
+
+    <div class="paper-card" style="gap: var(--s2)">
+      <span class="t-headline">Activity summary</span>
+      <div class="row" style="justify-content: space-between">
+        <span class="t-subhead">18 workouts · 4,120 kcal burned</span>
+      </div>
+      <div class="minibars" aria-label="Workouts per week">
+        <span class="minibar" style="height: 22px; background: var(--sage)"></span>
+        <span class="minibar" style="height: 34px; background: var(--sage)"></span>
+        <span class="minibar" style="height: 28px; background: var(--sage)"></span>
+        <span class="minibar" style="height: 44px; background: var(--accent)"></span>
+      </div>
+      <span class="t-footnote t-secondary">90-day trends unlock with Premium.</span>
+    </div>
+
+    <div class="spacer"></div>
+    <nav class="tabbar" aria-label="Primary">
+      <button class="tab" aria-selected="false">
+        <span class="icon icon-sm" data-symbol="book"></span>
+        Diary
+      </button>
+      <button class="tab" aria-selected="false">
+        <span class="icon icon-sm" data-symbol="list.bullet"></span>
+        Plans
+      </button>
+      <button class="tab is-active" aria-selected="true">
+        <span class="icon icon-sm" data-symbol="chart.bar"></span>
+        Progress
+      </button>
+      <button class="tab" aria-selected="false">
+        <span class="icon icon-sm" data-symbol="person"></span>
+        Profile
+      </button>
+    </nav>
+  </div>
+</div>

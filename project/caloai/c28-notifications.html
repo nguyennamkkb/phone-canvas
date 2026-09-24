@@ -1,0 +1,58 @@
+<!-- C28 — Notifications. Grouped reminder switches with times: meals, water, fasting, weekly recap; system-denied banner. -->
+<div class="screen">
+  <header class="navbar">
+    <button class="icon-btn" aria-label="Back">
+      <span class="icon icon-sm" data-symbol="chevron.left"></span>
+    </button>
+    <span class="nav-title">Reminders</span>
+  </header>
+  <div class="body" style="padding: var(--s4) var(--s5); gap: var(--s4)">
+    <div class="paper-card" style="gap: var(--s2)">
+      <div class="row" style="justify-content: space-between">
+        <div class="col grow" style="gap: var(--s1)">
+          <span class="t-headline">Log your meals</span>
+          <span class="t-subhead t-secondary">Daily · 8:00 AM, 1:00 PM, 7:30 PM</span>
+        </div>
+        <button class="toggle" role="switch" aria-checked="true" aria-label="Meal reminders">
+          <span class="toggle-knob"></span>
+        </button>
+      </div>
+      <div class="row" style="justify-content: space-between">
+        <div class="col grow" style="gap: var(--s1)">
+          <span class="t-headline">Drink water</span>
+          <span class="t-subhead t-secondary">Every 2 h · 9 AM – 9 PM</span>
+        </div>
+        <button class="toggle" role="switch" aria-checked="true" aria-label="Water reminders">
+          <span class="toggle-knob"></span>
+        </button>
+      </div>
+      <div class="row" style="justify-content: space-between">
+        <div class="col grow" style="gap: var(--s1)">
+          <span class="t-headline">Fasting windows</span>
+          <span class="t-subhead t-secondary">Start + 1 h before eating window</span>
+        </div>
+        <button class="toggle is-off" role="switch" aria-checked="false" aria-label="Fasting reminders">
+          <span class="toggle-knob"></span>
+        </button>
+      </div>
+      <div class="row" style="justify-content: space-between">
+        <div class="col grow" style="gap: var(--s1)">
+          <span class="t-headline">Weekly recap</span>
+          <span class="t-subhead t-secondary">Sundays · 6:00 PM · progress + streaks</span>
+        </div>
+        <button class="toggle" role="switch" aria-checked="true" aria-label="Weekly recap">
+          <span class="toggle-knob"></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="paper-card" style="gap: var(--s2)">
+      <span class="t-headline">System permission</span>
+      <span class="t-subhead t-secondary">Notifications are allowed. If you turn them off in iOS Settings, reminders pause here too — reopen this screen after re-allowing.</span>
+      <div class="row"><span class="chip">Allowed</span></div>
+    </div>
+
+    <div class="spacer"></div>
+    <button class="btn btn-primary btn-block">Done</button>
+  </div>
+</div>

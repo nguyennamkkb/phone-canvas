@@ -1,0 +1,80 @@
+<!-- c15-review · S15 AI Analysis / Review — Review state in full.
+     Totals: 180 + 110 + 40 = 330 kcal · P 38 g · C 21 g · F 12 g.
+     Other states as comments: Analyzing / LowConfidence / NoFood / NoNetwork /
+     ServerError — each keeps entered data with retry, never a dead end. -->
+<div class="screen">
+  <!-- BRANCH Analyzing: photo card + "Analyzing your meal…" + cancel; result
+       streams in item by item, never a blank spinner screen. -->
+  <header class="navbar">
+    <span class="nav-back"><span class="icon icon-sm" data-symbol="chevron.left"></span>Retake</span>
+    <span class="nav-title">Meal scan</span>
+    <button class="icon-btn" aria-label="Confirm"><span class="icon icon-sm" data-symbol="checkmark"></span></button>
+  </header>
+  <div class="body" style="gap: var(--s3)">
+    <div style="padding: 0 var(--s4)">
+      <div class="paper-card">
+        <div class="row">
+          <span class="chip-icon bg-white"><span class="icon icon-sm" data-symbol="photo"></span></span>
+          <div class="col grow" style="gap: 2px">
+            <span class="t-headline">Grilled chicken bowl</span>
+            <span class="t-footnote t-secondary">lunch-bowl.jpg · Today 12:42 PM</span>
+          </div>
+          <span class="chip">AI estimate</span>
+        </div>
+      </div>
+    </div>
+    <div class="col" style="gap: var(--s3); padding: 0 var(--s4)">
+      <div class="list-row">
+        <div class="col grow" style="gap: 2px">
+          <span class="t-headline">Grilled chicken breast</span>
+          <span class="t-footnote t-secondary">150 g · high confidence</span>
+        </div>
+        <span class="t-subhead">180 kcal</span>
+        <span class="icon icon-sm" data-symbol="pencil"></span>
+      </div>
+      <div class="list-row">
+        <div class="col grow" style="gap: 2px">
+          <span class="t-headline">Quinoa, cooked</span>
+          <span class="t-footnote t-secondary">1/2 cup · 90 g</span>
+        </div>
+        <span class="t-subhead">110 kcal</span>
+        <span class="icon icon-sm" data-symbol="pencil"></span>
+      </div>
+      <div class="list-row">
+        <div class="col grow" style="gap: 2px">
+          <span class="t-headline">Olive oil drizzle</span>
+          <span class="t-footnote t-secondary">1 tsp · partly hidden</span>
+        </div>
+        <span class="chip">Low confidence</span>
+        <span class="t-subhead">40 kcal</span>
+        <span class="icon icon-sm" data-symbol="pencil"></span>
+      </div>
+      <!-- BRANCH NoFoodDetected: this list becomes an EmptyState card —
+           "No food found in this photo." + [Retake] [Pick another]. -->
+      <!-- BRANCH NoNetwork/ServerError: RecoveryBanner card here with the
+           draft kept intact + [Retry analysis]; UserCancelled returns to S13. -->
+    </div>
+    <div style="padding: 0 var(--s4)">
+      <div class="paper-card">
+        <div class="row">
+          <span class="t-headline grow">Total</span>
+          <span class="t-title2">330 kcal</span>
+        </div>
+        <div class="row" style="gap: var(--s4)">
+          <span class="t-subhead">P 38 g</span>
+          <span class="t-subhead">C 21 g</span>
+          <span class="t-subhead">F 12 g</span>
+        </div>
+        <span class="t-footnote t-secondary">Some portions are AI estimates — tap any item to adjust before logging.</span>
+      </div>
+    </div>
+    <div class="spacer"></div>
+  </div>
+  <div class="bottom-cta">
+    <div class="cta-bar">
+      <button class="btn grow">Edit items</button>
+      <button class="btn grow"><span class="icon icon-sm" data-symbol="plus"></span>Add item</button>
+    </div>
+    <button class="btn btn-primary btn-block" style="background: #16A34A">Log meal · 330 kcal</button>
+  </div>
+</div>

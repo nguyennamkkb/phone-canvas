@@ -1,0 +1,60 @@
+<!-- c10-forecast · S10 Plan Forecast — current-to-target chart + milestones.
+     Bars are real elements with real heights (sanctioned .chart pattern), and
+     the caption below repeats every value as text for accessibility. -->
+<div class="screen">
+  <header class="navbar">
+    <span class="nav-back"><span class="icon icon-sm" data-symbol="chevron.left"></span>Back</span>
+    <span class="t-footnote t-secondary">Forecast</span>
+  </header>
+  <div class="body" style="gap: var(--s4)">
+    <div class="col" style="gap: var(--s1); padding: 0 var(--s4)">
+      <span class="t-title1">72 kg → 65 kg</span>
+      <span class="t-subhead t-secondary">If you hold a steady pace.</span>
+    </div>
+    <div style="padding: 0 var(--s4)">
+      <div class="paper-card">
+        <span class="t-headline">Projected weight · kg</span>
+        <div class="chart" aria-hidden="true">
+          <div class="chart-col"><div class="bar" style="height: 176px"></div></div>
+          <div class="chart-col"><div class="bar" style="height: 166px"></div></div>
+          <div class="chart-col"><div class="bar" style="height: 156px"></div></div>
+          <div class="chart-col"><div class="bar" style="height: 146px"></div></div>
+          <div class="chart-col"><div class="bar" style="height: 136px"></div></div>
+          <div class="chart-col"><div class="bar" style="height: 126px"></div></div>
+          <div class="chart-col"><div class="bar" style="height: 116px"></div></div>
+          <div class="chart-col"><div class="bar is-peak" style="height: 106px"></div></div>
+        </div>
+        <div class="chart-labels" aria-hidden="true">
+          <span class="chart-label">Sep</span><span class="chart-label">Oct</span><span class="chart-label">Oct</span><span class="chart-label">Nov</span><span class="chart-label">Nov</span><span class="chart-label">Dec</span><span class="chart-label">Dec</span><span class="chart-label is-on">Goal</span>
+        </div>
+        <span class="t-caption t-secondary">Text summary: 72.0, 71.0, 70.0, 69.0, 68.0, 67.0, 66.0, 65.0 kg across Sep 24 to Dec 31.</span>
+      </div>
+    </div>
+    <div class="col" style="gap: var(--s3); padding: 0 var(--s4)">
+      <div class="list-row">
+        <span class="chip-icon bg-violet-tint"><span class="icon icon-sm" data-symbol="star"></span></span>
+        <div class="col grow" style="gap: 2px">
+          <span class="t-headline">68 kg · Nov 19</span>
+          <span class="t-footnote t-secondary">Halfway there — on track.</span>
+        </div>
+      </div>
+      <div class="list-row">
+        <span class="chip-icon bg-white"><span class="icon icon-sm" data-symbol="checkmark"></span></span>
+        <div class="col grow" style="gap: 2px">
+          <span class="t-headline">65 kg · Dec 31</span>
+          <span class="t-footnote t-secondary">Goal day. AI estimate.</span>
+        </div>
+      </div>
+    </div>
+    <div style="padding: 0 var(--s4)">
+      <div class="paper-card">
+        <span class="t-headline">Assumptions</span>
+        <span class="t-subhead t-secondary">85% logging adherence · activity stays Light · water 2.0 L a day. Change the target anytime — the forecast follows.</span>
+      </div>
+    </div>
+    <div class="spacer"></div>
+  </div>
+  <div class="bottom-cta">
+    <button class="btn btn-primary btn-block" style="background: #16A34A">Continue</button>
+  </div>
+</div>

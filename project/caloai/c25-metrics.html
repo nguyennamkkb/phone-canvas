@@ -1,0 +1,58 @@
+<!-- C25 — Body Metrics. Weight chart + metric cards (body fat, waist, muscle) + add-entry; outlier flagged. -->
+<div class="screen">
+  <header class="navbar">
+    <button class="icon-btn" aria-label="Back">
+      <span class="icon icon-sm" data-symbol="chevron.left"></span>
+    </button>
+    <span class="nav-title">Body metrics</span>
+    <button class="icon-btn" aria-label="Change units">
+      <span class="icon icon-sm" data-symbol="ruler"></span>
+    </button>
+  </header>
+  <div class="body" style="padding: var(--s4) var(--s5); gap: var(--s4)">
+    <div class="paper-card" style="gap: var(--s2)">
+      <div class="row" style="justify-content: space-between">
+        <span class="t-headline">Weight · kg</span>
+        <span class="t-subhead t-secondary">72.4 kg today</span>
+      </div>
+      <div class="week-track" aria-label="Weight, last 7 weigh-ins">
+        <div class="week-col"><span class="week-bar" style="height: 96px; background: var(--sage)"></span><span class="t-footnote t-secondary">18</span></div>
+        <div class="week-col"><span class="week-bar" style="height: 90px; background: var(--sage)"></span><span class="t-footnote t-secondary">19</span></div>
+        <div class="week-col"><span class="week-bar" style="height: 92px; background: var(--sage)"></span><span class="t-footnote t-secondary">20</span></div>
+        <div class="week-col"><span class="week-bar" style="height: 60px; background: var(--danger)"></span><span class="t-footnote t-secondary">21</span></div>
+        <div class="week-col"><span class="week-bar" style="height: 86px; background: var(--sage)"></span><span class="t-footnote t-secondary">22</span></div>
+        <div class="week-col"><span class="week-bar" style="height: 82px; background: var(--sage)"></span><span class="t-footnote t-secondary">23</span></div>
+        <div class="week-col"><span class="week-bar" style="height: 78px; background: var(--accent)"></span><span class="t-footnote">24</span></div>
+      </div>
+      <span class="t-footnote t-secondary">Sep 21 looks like an outlier (travel scale) — tap to exclude.</span>
+    </div>
+
+    <div class="row" style="gap: var(--s3)">
+      <div class="stat-tile grow">
+        <span class="t-caption t-secondary">BODY FAT</span>
+        <span class="t-title2">21.4 %</span>
+        <span class="t-footnote t-secondary">HealthKit · 2 d ago</span>
+      </div>
+      <div class="stat-tile grow">
+        <span class="t-caption t-secondary">WAIST</span>
+        <span class="t-title2">82 cm</span>
+        <span class="t-footnote t-secondary">Manual · Sep 20</span>
+      </div>
+    </div>
+    <div class="row" style="gap: var(--s3)">
+      <div class="stat-tile grow">
+        <span class="t-caption t-secondary">MUSCLE</span>
+        <span class="t-title2">54.1 kg</span>
+        <span class="t-footnote t-secondary">HealthKit · 2 d ago</span>
+      </div>
+      <div class="stat-tile grow">
+        <span class="t-caption t-secondary">BMI</span>
+        <span class="t-title2">23.6</span>
+        <span class="t-footnote t-secondary">Healthy range</span>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+    <button class="btn btn-primary btn-block">Log weight · 72.4 kg</button>
+  </div>
+</div>

@@ -1,0 +1,43 @@
+<!-- c01-splash · S01 Splash / Launch — transient brand surface, no marketing -->
+<!-- Cold launch resolves session + migrations + entitlement cache here.
+     Warm launch skips straight to the diary. A deep link waits for the route
+     before leaving this surface; an interrupted previous launch resumes its
+     draft instead of starting over. -->
+<div class="screen">
+  <div class="body" style="align-items: center; justify-content: center; gap: var(--s4)">
+    <span class="avatar" style="width: 84px; height: 84px; background: #16A34A; color: #FFFFFF; font-size: 40px">
+      <span class="icon icon-lg" data-symbol="leaf.fill"></span>
+    </span>
+    <div class="col" style="align-items: center; gap: var(--s1)">
+      <span class="t-title1">Calo AI</span>
+      <span class="t-subhead t-secondary">AI food calorie counter</span>
+    </div>
+    <span class="t-footnote t-secondary">Restoring your diary…</span>
+    <div style="padding: 0 var(--s6); width: 100%">
+      <div class="paper-card" style="gap: var(--s2)">
+        <div class="row">
+          <span class="icon icon-sm" data-symbol="checkmark"></span>
+          <span class="t-subhead grow">Signed in as Maya</span>
+        </div>
+        <div class="row">
+          <span class="icon icon-sm" data-symbol="checkmark"></span>
+          <span class="t-subhead grow">Plan synced · 1,820 kcal</span>
+        </div>
+        <div class="row">
+          <span class="icon icon-sm" data-symbol="arrow.triangle.2.circlepath"></span>
+          <span class="t-subhead grow">Loading today…</span>
+        </div>
+      </div>
+    </div>
+    <!-- The dots show only when startup passes the perceptual threshold. -->
+    <div class="dots" aria-hidden="true">
+      <span class="dot is-active"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+    <div class="col" style="align-items: center; gap: 2px">
+      <span class="t-caption t-secondary">Version 2.4 · Made for iOS 26</span>
+      <span class="t-caption t-secondary">Warm off-white · Fresh green · SF</span>
+    </div>
+  </div>
+</div>

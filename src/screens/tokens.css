@@ -6,9 +6,16 @@
  * out of the supported subset and will not map cleanly to SwiftUI.
  *
  * Allowed:   flex layout, padding, gap, width/height, background, border,
- *            border-radius, box-shadow, opacity, typography, overflow:auto.
+ *            border-radius, box-shadow, opacity, typography, overflow:auto,
+ *            backdrop-filter (glass utilities ONLY — see § iOS 26 system).
  * Banned:    grid, float, transform, position:absolute (except as a full-bleed
- *            layer inside a relative parent), clip-path, filters, JS layout.
+ *            layer inside a relative parent), clip-path, filter(), JS layout.
+ *
+ * Why backdrop-filter is allowed only there: it runs in the compositing
+ * stage, after layout — getBoundingClientRect / bridge sizes are bit-identical
+ * with it on or off (proven in scripts/export/export.test.ts, "glass …").
+ * So glass may float chrome (navbar, tabbar, sheets) but MUST never place
+ * content: no glass-as-positioning, no glass on measured content.
  * ========================================================================== */
 
 *,
@@ -28,11 +35,11 @@
   --s8: 32px;
   --s10: 40px;
 
-  /* ---- radii ---- */
+  /* ---- radii (iOS 26: larger continuous read; sm/md/full untouched) ---- */
   --r-sm: 8px;
   --r-md: 12px;
-  --r-lg: 16px;
-  --r-xl: 24px;
+  --r-lg: 20px;
+  --r-xl: 28px;
   --r-full: 999px;
 
   /* ---- colors (iOS system) ---- */
@@ -1543,6 +1550,97 @@ figure {
   border-radius: var(--r-full);
   background: var(--sage);
   color: #ffffff;
+}
+
+/* ============================================================================
+ * iOS 26 system: Liquid Glass + floating chrome
+ *
+ * `.glass` / `.glass-strong` are the ONLY places backdrop-filter may appear
+ * (see contract header). Frosted chrome floats above content; content cards
+ * stay paper (white + hairline, no blur) so measurement and export never see
+ * through anything. Surfaces keep system colors — no warm base change.
+ *
+ * No `corner-shape` property is used: the modern continuous read comes from
+ * the larger --r-xl alone, which the extractor still reads as a plain radius.
+ * ========================================================================== */
+
+/* frosted utility: translucent white + hairline + one soft shadow */
+.glass {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(60, 60, 67, 0.12);
+  backdrop-filter: blur(24px) saturate(1.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  /* one soft shadow only: lifts the chrome without changing layout */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* legible variant for controls floating over busy content */
+.glass-strong {
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(60, 60, 67, 0.12);
+  backdrop-filter: blur(24px) saturate(1.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* a floating navbar: in-flow pill with side margins, never absolute, so it
+   cannot cover content or disturb measurement. Usage:
+   <header class="navbar-float"><span class="nav-title">…</span>…</header> */
+.navbar-float {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  flex: 0 0 auto;
+  min-height: 52px;
+  margin: var(--s3) var(--s4) 0;
+  padding: var(--s2) var(--s4);
+  border: 1px solid rgba(60, 60, 67, 0.12);
+  border-radius: var(--r-full);
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(24px) saturate(1.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* a floating pill tabbar: the .dock pattern detached from the bottom edge.
+   Reuses .tab-item children. Usage:
+   <nav class="tabbar-float"><span class="tab-item is-on">…</span>…</nav> */
+.tabbar-float {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  flex: 0 0 auto;
+  height: 68px;
+  margin: 0 var(--s4) var(--s4);
+  padding: 0 var(--s4);
+  border: 1px solid rgba(60, 60, 67, 0.12);
+  border-radius: var(--r-full);
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(24px) saturate(1.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* a frosted sheet panel: same geometry as .sheet-panel, floats over a scrim.
+   Pair with the existing .grabber handle. Usage:
+   <div class="scrim"></div><div class="sheet-float">…</div> */
+.sheet-float {
+  /* positioned so it paints above .scrim, like .sheet-panel does */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  flex: 0 0 auto;
+  padding: var(--s2) var(--s5) var(--s4);
+  border: 1px solid rgba(60, 60, 67, 0.12);
+  border-radius: 28px 28px 0 0;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(24px) saturate(1.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.1);
 }
 
 /* the big reading: a score inside a ring */

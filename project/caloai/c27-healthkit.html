@@ -1,0 +1,65 @@
+<!-- C27 — HealthKit Integration. Per-data-type status rows: read/write split, partial state, sync freshness. -->
+<div class="screen">
+  <header class="navbar">
+    <button class="icon-btn" aria-label="Back">
+      <span class="icon icon-sm" data-symbol="chevron.left"></span>
+    </button>
+    <span class="nav-title">HealthKit</span>
+  </header>
+  <div class="body" style="padding: var(--s4) var(--s5); gap: var(--s4)">
+    <div class="paper-card" style="gap: var(--s2)">
+      <div class="row" style="justify-content: space-between">
+        <span class="t-headline">Apple Health</span>
+        <span class="chip">Partial</span>
+      </div>
+      <span class="t-subhead t-secondary">CaloAI reads workouts + weight, writes logged meals. Last sync 10 min ago.</span>
+    </div>
+
+    <div class="col" style="gap: var(--s2)">
+      <span class="t-section">Data types</span>
+      <div class="row-card">
+        <div class="col grow" style="gap: var(--s1)">
+          <span class="t-headline">Active energy</span>
+          <span class="t-subhead t-secondary">Read · allowed · synced 10 min ago</span>
+        </div>
+        <span class="chip">On</span>
+      </div>
+      <div class="row-card">
+        <div class="col grow" style="gap: var(--s1)">
+          <span class="t-headline">Workouts</span>
+          <span class="t-subhead t-secondary">Read · allowed · 3 this week</span>
+        </div>
+        <span class="chip">On</span>
+      </div>
+      <div class="row-card">
+        <div class="col grow" style="gap: var(--s1)">
+          <span class="t-headline">Weight + body fat</span>
+          <span class="t-subhead t-secondary">Read · allowed · 2 days ago</span>
+        </div>
+        <span class="chip">On</span>
+      </div>
+      <div class="row-card">
+        <div class="col grow" style="gap: var(--s1)">
+          <span class="t-headline">Dietary energy + macros</span>
+          <span class="t-subhead t-secondary">Write · not determined — enable to back up logs</span>
+        </div>
+        <span class="chip">Off</span>
+      </div>
+      <div class="row-card">
+        <div class="col grow" style="gap: var(--s1)">
+          <span class="t-headline">Water</span>
+          <span class="t-subhead t-secondary">Write · denied in Settings — open Settings to allow</span>
+        </div>
+        <span class="chip">Denied</span>
+      </div>
+    </div>
+
+    <div class="row" style="gap: var(--s3)">
+      <button class="btn grow">Open Settings</button>
+      <button class="btn btn-primary grow">Retry sync</button>
+    </div>
+
+    <div class="spacer"></div>
+    <span class="t-footnote t-secondary">Declining is fine — manual logging keeps working fully.</span>
+  </div>
+</div>

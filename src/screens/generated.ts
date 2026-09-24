@@ -24,6 +24,36 @@ import s01Splash from '../../project/drivetiles/s01-splash.html?raw'
 import moodCalendar from '../../project/moodtracker/mood-calendar.html?raw'
 import journal from '../../project/moodtracker/journal.html?raw'
 import home from '../../project/moodtracker/home.html?raw'
+import c01Splash from '../../project/caloai/c01-splash.html?raw'
+import c02Welcome from '../../project/caloai/c02-welcome.html?raw'
+import c03Goal from '../../project/caloai/c03-goal.html?raw'
+import c04Motivation from '../../project/caloai/c04-motivation.html?raw'
+import c05Profile from '../../project/caloai/c05-profile.html?raw'
+import c06TargetWeight from '../../project/caloai/c06-target-weight.html?raw'
+import c07Activity from '../../project/caloai/c07-activity.html?raw'
+import c08Diet from '../../project/caloai/c08-diet.html?raw'
+import c09YourTarget from '../../project/caloai/c09-your-target.html?raw'
+import c10Forecast from '../../project/caloai/c10-forecast.html?raw'
+import c11Paywall from '../../project/caloai/c11-paywall.html?raw'
+import c12Diary from '../../project/caloai/c12-diary.html?raw'
+import c13AddHub from '../../project/caloai/c13-add-hub.html?raw'
+import c14Camera from '../../project/caloai/c14-camera.html?raw'
+import c15Review from '../../project/caloai/c15-review.html?raw'
+import c16MealDetail from '../../project/caloai/c16-meal-detail.html?raw'
+import c17Barcode from '../../project/caloai/c17-barcode.html?raw'
+import c18Search from '../../project/caloai/c18-search.html?raw'
+import c19Builder from '../../project/caloai/c19-builder.html?raw'
+import c20Plans from '../../project/caloai/c20-plans.html?raw'
+import c21Recipe from '../../project/caloai/c21-recipe.html?raw'
+import c22ActivityBurn from '../../project/caloai/c22-activity-burn.html?raw'
+import c23Water from '../../project/caloai/c23-water.html?raw'
+import c24Progress from '../../project/caloai/c24-progress.html?raw'
+import c25Metrics from '../../project/caloai/c25-metrics.html?raw'
+import c26Fasting from '../../project/caloai/c26-fasting.html?raw'
+import c27Healthkit from '../../project/caloai/c27-healthkit.html?raw'
+import c28Notifications from '../../project/caloai/c28-notifications.html?raw'
+import c29Profile from '../../project/caloai/c29-profile.html?raw'
+import c30Premium from '../../project/caloai/c30-premium.html?raw'
 
 const RAW: Record<string, string> = {
   's16-settings': s16Settings,
@@ -45,6 +75,36 @@ const RAW: Record<string, string> = {
   'mood-calendar': moodCalendar,
   'journal': journal,
   'home': home,
+  'c01-splash': c01Splash,
+  'c02-welcome': c02Welcome,
+  'c03-goal': c03Goal,
+  'c04-motivation': c04Motivation,
+  'c05-profile': c05Profile,
+  'c06-target-weight': c06TargetWeight,
+  'c07-activity': c07Activity,
+  'c08-diet': c08Diet,
+  'c09-your-target': c09YourTarget,
+  'c10-forecast': c10Forecast,
+  'c11-paywall': c11Paywall,
+  'c12-diary': c12Diary,
+  'c13-add-hub': c13AddHub,
+  'c14-camera': c14Camera,
+  'c15-review': c15Review,
+  'c16-meal-detail': c16MealDetail,
+  'c17-barcode': c17Barcode,
+  'c18-search': c18Search,
+  'c19-builder': c19Builder,
+  'c20-plans': c20Plans,
+  'c21-recipe': c21Recipe,
+  'c22-activity-burn': c22ActivityBurn,
+  'c23-water': c23Water,
+  'c24-progress': c24Progress,
+  'c25-metrics': c25Metrics,
+  'c26-fasting': c26Fasting,
+  'c27-healthkit': c27Healthkit,
+  'c28-notifications': c28Notifications,
+  'c29-profile': c29Profile,
+  'c30-premium': c30Premium,
 }
 
 export function rawFor(id: string): string | undefined {

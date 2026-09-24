@@ -1,0 +1,47 @@
+<!-- C17 — Barcode Scanner. Viewfinder + recent hint + scanned result card (Greek yogurt), rescan + search fallback. -->
+<div class="screen">
+  <header class="navbar">
+    <button class="icon-btn" aria-label="Close scanner">
+      <span class="icon icon-sm" data-symbol="xmark"></span>
+    </button>
+    <span class="nav-title">Scan barcode</span>
+    <button class="icon-btn" aria-label="Enter barcode manually">
+      <span class="icon icon-sm" data-symbol="textformat"></span>
+    </button>
+  </header>
+  <div class="body" style="padding: var(--s4) var(--s5); gap: var(--s4)">
+    <div class="paper-card" style="align-items: center; gap: var(--s2); padding: var(--s6) var(--s4)">
+      <span class="icon" data-symbol="crop" style="font-size: 64px"></span>
+      <span class="t-subhead t-secondary">Point at the barcode on the pack</span>
+      <span class="t-footnote t-secondary">Last scan: Chobani Greek Yogurt · found in 1 s</span>
+    </div>
+
+    <div class="paper-card" style="gap: var(--s3)">
+      <div class="row" style="justify-content: space-between">
+        <div class="col" style="gap: var(--s1)">
+          <span class="t-headline">Chobani Greek Yogurt, Plain</span>
+          <span class="t-subhead t-secondary">170 g container · 100 kcal</span>
+        </div>
+        <span class="chip">Barcode</span>
+      </div>
+      <div class="row" style="justify-content: space-between">
+        <span class="t-subhead">Protein 17 g</span>
+        <span class="t-subhead">Carbs 6 g</span>
+        <span class="t-subhead">Fat 0 g</span>
+      </div>
+      <div class="row" style="gap: var(--s2)">
+        <span class="chip">1 container</span>
+        <span class="chip">100 g</span>
+        <span class="chip">½ container</span>
+      </div>
+    </div>
+
+    <div class="row" style="gap: var(--s3)">
+      <button class="btn grow">Rescan</button>
+      <button class="btn grow">Search instead</button>
+    </div>
+
+    <div class="spacer"></div>
+    <button class="btn btn-primary btn-block">Log · 100 kcal</button>
+  </div>
+</div>

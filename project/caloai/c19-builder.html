@@ -1,0 +1,80 @@
+<!-- C19 — Custom Food / Meal Builder. "Power breakfast bowl" draft: ingredients, servings yield, live total + per-serving macros. -->
+<div class="screen">
+  <header class="navbar">
+    <button class="icon-btn" aria-label="Back">
+      <span class="icon icon-sm" data-symbol="chevron.left"></span>
+    </button>
+    <span class="nav-title">New custom meal</span>
+    <button class="icon-btn" aria-label="Save custom meal">
+      <span class="icon icon-sm" data-symbol="checkmark"></span>
+    </button>
+  </header>
+  <div class="body" style="padding: var(--s4) var(--s5); gap: var(--s4)">
+    <div class="paper-card" style="gap: var(--s2)">
+      <span class="t-headline">Power breakfast bowl</span>
+      <span class="t-subhead t-secondary">Makes 2 servings · 412 kcal per serving</span>
+    </div>
+
+    <div class="col" style="gap: var(--s2)">
+      <span class="t-section">Ingredients · 4</span>
+      <div class="row-card">
+        <div class="col grow" style="gap: var(--s1)">
+          <span class="t-headline">Rolled oats</span>
+          <span class="t-subhead t-secondary">80 g · 304 kcal</span>
+        </div>
+        <button class="icon-btn" aria-label="Remove oats">
+          <span class="icon icon-sm" data-symbol="text.aligncenter"></span>
+        </button>
+      </div>
+      <div class="row-card">
+        <div class="col grow" style="gap: var(--s1)">
+          <span class="t-headline">Banana</span>
+          <span class="t-subhead t-secondary">1 medium · 105 kcal</span>
+        </div>
+        <button class="icon-btn" aria-label="Remove banana">
+          <span class="icon icon-sm" data-symbol="text.aligncenter"></span>
+        </button>
+      </div>
+      <div class="row-card">
+        <div class="col grow" style="gap: var(--s1)">
+          <span class="t-headline">Greek yogurt</span>
+          <span class="t-subhead t-secondary">100 g · 59 kcal</span>
+        </div>
+        <button class="icon-btn" aria-label="Remove yogurt">
+          <span class="icon icon-sm" data-symbol="text.aligncenter"></span>
+        </button>
+      </div>
+      <div class="row-card">
+        <div class="col grow" style="gap: var(--s1)">
+          <span class="t-headline">Honey</span>
+          <span class="t-subhead t-secondary">1 tbsp · 64 kcal</span>
+        </div>
+        <button class="icon-btn" aria-label="Remove honey">
+          <span class="icon icon-sm" data-symbol="text.aligncenter"></span>
+        </button>
+      </div>
+      <button class="btn btn-block" style="border: 1px dashed var(--separator)">
+        <span class="icon icon-sm" data-symbol="plus"></span>
+        Add ingredient
+      </button>
+    </div>
+
+    <div class="paper-card" style="gap: var(--s2)">
+      <div class="row" style="justify-content: space-between">
+        <span class="t-headline">Total · 824 kcal</span>
+        <span class="t-subhead t-secondary">Per serving · 412 kcal</span>
+      </div>
+      <div class="row" style="justify-content: space-between">
+        <span class="t-subhead">Protein 32 g</span>
+        <span class="t-subhead">Carbs 128 g</span>
+        <span class="t-subhead">Fat 14 g</span>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+    <div class="row" style="gap: var(--s3)">
+      <button class="btn grow">Save only</button>
+      <button class="btn btn-primary grow">Save + log</button>
+    </div>
+  </div>
+</div>

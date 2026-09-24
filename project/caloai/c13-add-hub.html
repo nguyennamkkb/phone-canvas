@@ -1,0 +1,66 @@
+<!-- c13-add-hub · S13 Add Meal Hub — sheet over the diary: pick an input method.
+     iPhone sheet here; iPad renders the same content as a popover/split panel. -->
+<div class="screen">
+  <div class="body-fixed">
+    <div class="scrim"></div>
+    <div class="spacer"></div>
+    <div class="sheet-panel">
+      <div class="row" style="justify-content: center"><span class="grabber"></span></div>
+      <div class="sheet-head">
+        <span class="nav-title">Add meal</span>
+        <button class="close-btn" aria-label="Close"><span class="icon icon-sm" data-symbol="xmark"></span></button>
+      </div>
+      <div class="col" style="gap: var(--s3)">
+        <div class="row" style="gap: var(--s3)">
+          <div class="paper-card grow" style="align-items: center">
+            <span class="chip-icon bg-white"><span class="icon" data-symbol="bolt.fill"></span></span>
+            <span class="t-headline">AI Photo</span>
+            <span class="chip is-active" style="background: #16A34A">Fastest</span>
+          </div>
+          <div class="paper-card grow" style="align-items: center">
+            <span class="chip-icon bg-white"><span class="icon" data-symbol="square.grid.2x2"></span></span>
+            <span class="t-headline">Barcode</span>
+            <span class="t-footnote t-secondary">Packaged food</span>
+          </div>
+        </div>
+        <button class="action-row">
+          <span class="icon icon-sm" data-symbol="magnifyingglass"></span>
+          <span class="grow">Search 2M+ foods</span>
+          <span class="icon icon-sm" data-symbol="chevron.right"></span>
+        </button>
+        <button class="action-row">
+          <span class="icon icon-sm" data-symbol="doc.text"></span>
+          <span class="grow">Enter manually</span>
+          <span class="icon icon-sm" data-symbol="chevron.right"></span>
+        </button>
+      </div>
+      <div class="col" style="gap: var(--s2)">
+        <span class="t-headline">Recent</span>
+        <div class="list-row">
+          <div class="col grow" style="gap: 2px">
+            <span class="t-headline">Chicken salad bowl</span>
+            <span class="t-footnote t-secondary">Yesterday · lunch</span>
+          </div>
+          <span class="t-subhead">363 kcal</span>
+        </div>
+        <div class="list-row">
+          <div class="col grow" style="gap: 2px">
+            <span class="t-headline">Oatmeal + blueberries</span>
+            <span class="t-footnote t-secondary">Today · breakfast</span>
+          </div>
+          <span class="t-subhead">310 kcal</span>
+        </div>
+      </div>
+      <div class="col" style="gap: var(--s2)">
+        <span class="t-headline">Favorites</span>
+        <div class="list-row">
+          <div class="col grow" style="gap: 2px">
+            <span class="t-headline">Greek yogurt + honey</span>
+            <span class="t-footnote t-secondary">Saved meal</span>
+          </div>
+          <span class="t-subhead">240 kcal</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
