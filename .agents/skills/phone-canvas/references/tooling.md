@@ -9,8 +9,14 @@ npm run typecheck  # tsc --noEmit — run it before claiming anything works
 npm run lint       # gate: typecheck + lint:tokens + lint:subset + lint:components
 npm test           # vitest run
 npm run gate       # lint + test — the full integrity gate
-npm run new-screen -- --project <id> --name <name> --title "..."   # create a screen + wire manifest/builtin/generated
-npm run delete-screen -- --id <screen-id> [--force]                # trash or permanently remove a screen
+npm run screen -- add --project <id> --name <n> --title "..."      # lifecycle: add (+ auto-gate)
+npm run screen -- rename --id <old> --to <new>                   # lifecycle: rename (+ auto-gate)
+npm run screen -- remove --id <screen-id> [--force]              # lifecycle: remove (+ auto-gate)
+npm run screen -- list [--project <id>]                          # ids + titles + owners (read-only)
+npm run screen -- gate                                           # screens:sync + tsc + lint
+npm run new-screen -- --project <id> --name <name> --title "..."   # alias: same as screen -- add
+npm run rename-screen -- --id <old> --to <new>                   # alias: same as screen -- rename
+npm run delete-screen -- --id <screen-id> [--force]                # alias: same as screen -- remove
 npm run screens:sync                 # regenerate src/screens/generated.ts from the manifest
 npm run export     # every screen → exports/<id>@2x.png
 npm run export -- --screen lesson-details --scale 3
@@ -25,8 +31,20 @@ references the id it aborts — pass `--force` to override. The permanent delete
 is a script; the browser never writes into the repo (export/import use the
 download / file-picker flow instead).
 
-`npm run new-screen` does the same wiring in reverse. Both are symmetric —
-a round-trip must leave the repo byte-identical.
+`npm run rename-screen -- --id <old> --to <new>` moves the id across file +
+whole manifest entry line (extra props ride along) + builtin + on-disk
+board.json files (nodes, removed, trash) with rollback on write failure.
+Browser localStorage boards prune reader-side on open (BoardView
+pruneZombieNodes) — no CLI rescan exists, by design.
+
+`npm run new-screen` does the same wiring in reverse. Add → remove stays
+symmetric — a round-trip must leave the repo byte-identical.
+
+`npm run screen -- <add|rename|remove|list|gate>` is the one entry for all of
+the above: add/rename/remove delegate to the same scripts, print files
+changed + boards/trash touched, then auto-run the gate (screens:sync + tsc +
+lint). The `new-screen` / `delete-screen` / `rename-screen` aliases stay so
+old habits keep working.
 
 ## The board
 
@@ -89,7 +107,9 @@ src/canvas/nodeId.ts        node identity (a counter, never derived from a scree
 scripts/icons.ts            icon generator + the SF Symbol → file map
 scripts/export.ts           screens → PNG via Chrome over CDP, zero deps
 scripts/new-screen.ts       create a screen + wire everything
+scripts/rename-screen.ts    rename a screen id + rewire everything (rollback on failure)
 scripts/delete-screen.ts    permanently remove a screen + unwire everything
+scripts/screen.ts           unified entry: add|rename|remove|list|gate (+ auto-gate)
 scripts/gen-registry.ts     regenerate generated.ts from the manifest
 public/icons/               monochrome glyphs
 public/images/              full-colour art
@@ -100,8 +120,11 @@ public/images/              full-colour art
 **Quick way (recommended):**
 
 ```bash
-npm run new-screen -- --project <id> --name <name> --title "..."
+npm run screen -- add --project <id> --name <name> --title "..."
 ```
+
+(prefer the unified entry — it auto-runs the gate after. `npm run new-screen`
+is the same script without the gate.)
 
 This writes `project/<project>/<name>.html`, inserts the entry into
 `src/screens/manifest.ts`, regenerates `src/screens/generated.ts`, and adds the

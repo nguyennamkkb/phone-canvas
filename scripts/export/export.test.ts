@@ -73,4 +73,58 @@ describe('export smoke (needs Chrome)', () => {
       await site.close()
     }
   }, 60_000)
+
+  it('renders one screen at iPad width to exactly 820px (scale 1)', async () => {
+    let chrome: string
+    try {
+      chrome = findChrome()
+    } catch {
+      console.warn('skip: no Chrome on this machine')
+      return
+    }
+    expect(chrome.length).toBeGreaterThan(0)
+
+    const { SCREEN_FILES } = await import('../../src/screens/manifest.ts')
+    const screen = SCREEN_FILES[0]
+    if (!screen) {
+      console.warn('skip: no screens registered yet')
+      return
+    }
+    const { launch, shutdown } = await import('./cdp.ts')
+    const { startSite } = await import('./site.ts')
+    const { renderPng } = await import('./render.ts')
+    const { composeScreenDoc } = await import('../../src/extractor/compose.ts')
+    const { getDevice } = await import('../../src/frame/devices.ts')
+    const { readFile } = await import('node:fs/promises')
+    const path = await import('node:path')
+
+    const root = path.resolve(__dirname, '..', '..')
+    const device = getDevice('ipad-11')
+    expect(device.width).toBe(820)
+    const shared = await Promise.all(
+      ['tokens.css', 'icons.css', 'icon-set.css'].map((n) =>
+        readFile(path.join(root, 'src/screens', n), 'utf8'),
+      ),
+    )
+    const html = await readFile(path.join(root, screen.file), 'utf8')
+    const docs = new Map([
+      ['smoke--ipad-11--light', composeScreenDoc({ html, device, stylesheets: shared, bridgeJs: null })],
+    ])
+    const site = await startSite(docs, path.join(root, 'public'))
+    const browser = await launch()
+    try {
+      const png = await renderPng(
+        browser.cdp,
+        `${site.origin}/screen/smoke--ipad-11--light`,
+        device.width,
+        device.height,
+        1,
+      )
+      expect(png.readUInt32BE(16)).toBe(820)
+      expect(png.readUInt32BE(20)).toBeGreaterThanOrEqual(device.height)
+    } finally {
+      await shutdown(browser)
+      await site.close()
+    }
+  }, 60_000)
 })

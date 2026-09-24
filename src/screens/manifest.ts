@@ -32,6 +32,15 @@ export type ScreenFile = {
    * header, or a sheet's scrim. Without this the OS chrome stays black-on-dark.
    */
   lightStatusBar?: boolean
+  /**
+   * Default canvas device for this screen (an id in src/frame/devices.ts,
+   * e.g. 'ipad-11'). Fresh boards open the node at this width via
+   * deviceForScreen; per-node changes in NodePicker still win afterwards.
+   * Optional on purpose: absent means the phone default, so every existing
+   * entry stays valid and lifecycle scripts must carry this field through
+   * whole-entry moves (rename) rather than rebuilding entries without it.
+   */
+  deviceId?: string
 }
 
 export const SCREEN_FILES: ScreenFile[] = [

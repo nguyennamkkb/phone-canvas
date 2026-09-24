@@ -56,6 +56,28 @@ export const DEVICES: Device[] = [
     safeBottom: 0,
     island: 'none',
   },
+  {
+    id: 'ipad-11',
+    name: 'iPad 11″ · 820×1180',
+    width: 820,
+    height: 1180,
+    bezel: 16,
+    radius: 18,
+    safeTop: 24,
+    safeBottom: 20,
+    island: 'none',
+  },
+  {
+    id: 'ipad-mini',
+    name: 'iPad mini · 744×1133',
+    width: 744,
+    height: 1133,
+    bezel: 16,
+    radius: 18,
+    safeTop: 24,
+    safeBottom: 20,
+    island: 'none',
+  },
 ]
 
 export const DEFAULT_DEVICE_ID = 'reference'

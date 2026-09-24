@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { composeScreenDoc } from './compose'
-import { DEVICES } from '../frame/devices'
+import { DEVICES, getDevice } from '../frame/devices'
 
 const device = DEVICES[0]
 
@@ -73,5 +73,14 @@ describe('composeScreenDoc', () => {
       theme: 'light' as const,
     }
     expect(composeScreenDoc(args)).toBe(composeScreenDoc({ ...args }))
+  })
+
+  it('composes the iPad shell at tablet width with the viewport meta intact', () => {
+    const ipad = getDevice('ipad-11')
+    expect(ipad.width).toBe(820)
+    const html = composeScreenDoc({ html: '<div class="screen"></div>', device: ipad, stylesheets: [] })
+    expect(html).toContain('--device-w: 820px')
+    expect(html).toContain('<meta name="viewport" content="width=device-width, initial-scale=1">')
+    expect(html).toContain('<div class="statusbar"')
   })
 })

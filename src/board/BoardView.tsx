@@ -12,7 +12,8 @@ import { TokenDock } from '../canvas/TokenDock'
 import type { DockTab } from '../canvas/TokenDock'
 import { useTokenTheme, useUiTheme } from '../tokens/store'
 import type { ThemeMode } from '../tokens/tokens'
-import { DEFAULT_DEVICE_ID, getDevice } from '../frame/devices'
+import { DEFAULT_DEVICE_ID } from '../frame/devices'
+import { nextSlotX } from './placement'
 import { useInspector } from '../inspect/InspectorContext'
 import { SpecPanel } from '../inspect/SpecPanel'
 import { SCREEN_BY_ID, SCREENS } from '../screens'
@@ -43,8 +44,10 @@ export function nextNodeId(projectId: string): string {
   return `${projectId}-n${counters[projectId]}`
 }
 
-function nodeWidth(deviceId: string): number {
-  return getDevice(deviceId).width + getDevice(deviceId).bezel * 2
+/** default canvas device for a screen: manifest deviceId wins (iPad screens
+ *  open at their own width), otherwise the phone default as before */
+function deviceForScreen(screenId: string): string {
+  return SCREEN_BY_ID.get(screenId)?.deviceId ?? DEFAULT_DEVICE_ID
 }
 
 function makeNode(projectId: string, screenId: string, x: number): PhoneFlowNode | null {
@@ -54,7 +57,7 @@ function makeNode(projectId: string, screenId: string, x: number): PhoneFlowNode
     id: nextNodeId(projectId),
     type: 'phone',
     position: { x, y: 0 },
-    data: { screenId: screen.id, deviceId: DEFAULT_DEVICE_ID },
+    data: { screenId: screen.id, deviceId: deviceForScreen(screenId) },
   }
 }
 
@@ -64,21 +67,34 @@ type LegacyBoardNode = PhoneFlowNode | { id: string; type: string; position: { x
 function isPhoneNode(n: LegacyBoardNode): n is PhoneFlowNode {
   return (
     n.type === 'phone' &&
-    typeof (n.data as PhoneNodeData).screenId === 'string' &&
-    SCREEN_BY_ID.has((n.data as PhoneNodeData).screenId)
+    typeof (n.data as PhoneNodeData).screenId === 'string'
   )
+}
+
+/**
+ * Zombie prune (lifecycle 002-A): a node/trash entry whose screenId left the
+ * manifest (delete-screen --force, or a rename mid-flight) must not open —
+ * it would render "Screen not found" and reconcile would never re-add it.
+ * Pure + exported for tests: BoardView only calls this with SCREEN_BY_ID.
+ */
+export function pruneZombieNodes<N extends BoardNode | TrashEntry>(
+  items: readonly N[],
+  known: Pick<typeof SCREEN_BY_ID, 'has'>,
+): N[] {
+  return items.filter((it) => {
+    const sid = 'screenId' in it ? (it as TrashEntry).screenId : (it as BoardNode).data.screenId
+    return typeof sid === 'string' && known.has(sid)
+  })
 }
 
 function freshNodes(project: Project): BoardNode[] {
   counters[project.id] = 0
-  let x = 0
   const out: BoardNode[] = []
   for (const sid of resolveScreens(project)) {
-    const node = makeNode(project.id, sid, x)
-    if (node) {
-      out.push(node)
-      x += nodeWidth(DEFAULT_DEVICE_ID) + COLUMN_GAP
-    }
+    // nextSlotX measures the placed nodes' own widths — an iPad node never
+    // gets covered by the phone-width cursor that used to follow it
+    const node = makeNode(project.id, sid, nextSlotX(out, COLUMN_GAP))
+    if (node) out.push(node)
   }
   return out
 }
@@ -97,17 +113,35 @@ function openingNodes(project: Project): {
       if (m) max = Math.max(max, Number(m[1]))
     }
     counters[project.id] = max
-    // board cũ có token node: lọc im lặng, giữ nguyên vị trí phone (2.2)
-    const phones = (saved.nodes as LegacyBoardNode[]).filter(isPhoneNode)
-    if (phones.length > 0) {
+    // board cũ có token node: lọc im lặng, giữ nguyên vị trí phone (2.2);
+    // zombie prune (002-A): node/trash trỏ screenId đã mất khỏi manifest
+    // (delete --force / rename) thì drop ở reader — browser localStorage
+    // CLI không quét được nên đây là tuyến dọn duy nhất cho cache đó.
+    const phones = pruneZombieNodes(
+      (saved.nodes as LegacyBoardNode[]).filter(isPhoneNode),
+      SCREEN_BY_ID,
+    )
+    const trash = pruneZombieNodes(saved.trash, SCREEN_BY_ID)
+    // Ghi nhận id đã mất để reconcile không thêm lại thứ không còn tồn tại.
+    const lost = new Set<string>()
+    for (const n of saved.nodes as LegacyBoardNode[]) {
+      if (n.type !== 'phone') continue
+      const sid = (n.data as PhoneNodeData).screenId
+      if (typeof sid === 'string' && !SCREEN_BY_ID.has(sid)) lost.add(sid)
+    }
+    for (const t of saved.trash) if (!SCREEN_BY_ID.has(t.screenId)) lost.add(t.screenId)
+    if (phones.length > 0 || lost.size > 0) {
+      // toàn board là zombie (xóa hẳn màn duy nhất): trả board rỗng +
+      // removed ghi nhận id đã mất — reconcile phía dưới sẽ đặt lại các
+      // màn hiện tại của project, không phục sinh thứ đã mất.
       // trash còn giữ màn nào thì reconcile không thêm lại nó
-      const trashed = new Set(saved.trash.map((t) => t.screenId))
-      const kept = saved.removed.filter((id) => !trashed.has(id))
+      const trashed = new Set(trash.map((t) => t.screenId))
+      const removed = [...new Set([...saved.removed, ...lost])].filter((id) => !trashed.has(id))
       return {
         nodes: phones,
         edges: pruneEdges(phones, saved.edges),
-        removed: saved.removed,
-        trash: saved.trash.filter((t) => !kept.includes(t.screenId) || true),
+        removed,
+        trash,
       }
     }
   }
@@ -133,11 +167,9 @@ function reconciledNodes(
   )
   if (missing.length === 0) return nodes
   const out = [...nodes]
-  let right = out.reduce((max, n) => Math.max(max, n.position.x), 0)
   for (const screenId of missing) {
-    const node = makeNode(project.id, screenId, right === 0 ? 0 : right + nodeWidth(DEFAULT_DEVICE_ID) + COLUMN_GAP)
+    const node = makeNode(project.id, screenId, nextSlotX(out, COLUMN_GAP))
     if (!node) continue
-    right = node.position.x
     out.push(node)
   }
   return out
@@ -447,12 +479,11 @@ function BoardViewInner({
         }
         if (!SCREEN_BY_ID.has(sid)) return ns
         onTrackScreen(project.id, sid)
-        const right = ns.reduce((max, n) => Math.max(max, n.position.x), 0)
         const node: PhoneFlowNode = {
           id,
           type: 'phone',
-          position: { x: ns.length === 0 ? 0 : right + nodeWidth(DEFAULT_DEVICE_ID) + COLUMN_GAP, y: 0 },
-          data: { screenId: sid, deviceId: DEFAULT_DEVICE_ID },
+          position: { x: nextSlotX(ns, COLUMN_GAP), y: 0 },
+          data: { screenId: sid, deviceId: deviceForScreen(sid) },
         }
         return [...ns, node]
       })

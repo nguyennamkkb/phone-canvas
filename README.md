@@ -106,6 +106,14 @@ decoration.
    `lineSpacing` math) lives in `src/spec/infer.ts` on the parent side, where it
    is type-checked and editable without touching the iframe.
 
+5. **Screens are fluid across widths.** Write every screen with token classes
+   (`col`, `row`, `paper-card`, `var(--s*)`) and no hardcoded px tied to one
+   device width — the same file renders at 390pt and 820pt, only spacing out.
+   A layout that differs fundamentally by form factor (e.g. iPad list+detail)
+   is a separate screen (`new-screen -- --device ipad-11` scaffolds one, and
+   the manifest `deviceId` opens fresh boards at its width) — never `if-device`
+   branches inside one HTML file.
+
 ---
 
 ## CSS → SwiftUI reference
@@ -234,7 +242,17 @@ src/
    `npm run screens:sync` to regenerate `src/screens/generated.ts`.
 3. Add its id to the project's `screenIds` in `src/projects/builtin.ts`.
 
-Or let `npm run new-screen` do all three.
+Or let `npm run new-screen` do all three (or `npm run screen -- add ...` —
+same thing plus the auto-gate: screens:sync + tsc + lint).
+
+To rename a screen id (file + manifest + builtin + on-disk boards, one shot):
+
+```bash
+npm run rename-screen -- --id <old> --to <new>
+```
+
+It refuses unknown/duplicate ids without writing; browser boards prune on
+open (reader-side) — there is nothing to rescan from the CLI.
 
 To remove a screen (its HTML file plus all registry wiring) — handy for trash:
 
@@ -243,6 +261,12 @@ npm run delete-screen -- --id <screen-id>
 ```
 
 It refuses if any saved board still references the id; pass `--force` to ignore that.
+
+One entry for the whole lifecycle (`add | rename | remove | list | gate`):
+
+```bash
+npm run screen -- --help
+```
 
 The authoring contract is what you hand an LLM. It is the difference between
 HTML that maps cleanly to SwiftUI and HTML that does not.

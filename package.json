@@ -13,6 +13,8 @@
     "lint:subset": "node --disable-warning=ExperimentalWarning scripts/subset-lint.ts",
     "lint:components": "node --disable-warning=ExperimentalWarning scripts/components-lint.ts",
     "new-screen": "node --disable-warning=ExperimentalWarning scripts/new-screen.ts",
+    "rename-screen": "node --disable-warning=ExperimentalWarning scripts/rename-screen.ts",
+    "screen": "node --disable-warning=ExperimentalWarning scripts/screen.ts",
     "test": "vitest run",
     "lint": "npm run typecheck && npm run lint:tokens && npm run lint:subset && npm run lint:components",
     "screens:sync": "node --disable-warning=ExperimentalWarning scripts/gen-registry.ts",

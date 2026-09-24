@@ -60,10 +60,21 @@ then pay for.
 These are the commands an agent runs to manage the project itself (screens,
 board state, verification) — separate from the screen-authoring loop above.
 
-### Screen lifecycle
+### Screen lifecycle (one entry)
+
+```bash
+npm run screen -- add --project <id> --name <name> --title "..." [--device <id>]
+npm run screen -- rename --id <old> --to <new>
+npm run screen -- remove --id <screen-id> [--force]
+npm run screen -- list [--project <id>]
+npm run screen -- gate                # screens:sync + tsc + lint, auto-runs after add/rename/remove
+```
+
+Old habits keep working — thin aliases over the same scripts:
 
 ```bash
 npm run new-screen -- --project <id> --name <name> --title "..."
+npm run rename-screen -- --id <old> --to <new>
 npm run delete-screen -- --id <screen-id> [--force]
 npm run screens:sync          # regenerate generated.ts after manual manifest edits
 ```
@@ -71,9 +82,19 @@ npm run screens:sync          # regenerate generated.ts after manual manifest ed
 - `new-screen` writes the HTML file, inserts the manifest entry, regenerates
   `generated.ts`, and adds the id to `builtin.ts`. Round-trip with
   `delete-screen` must leave the repo byte-identical.
+- `rename-screen` moves the id across file + whole manifest entry line
+  (extra props ride along) + builtin ids + on-disk board.json files
+  (nodes, removed, trash) with rollback on write failure. Browser
+  localStorage boards prune reader-side on open — no CLI rescan.
 - `delete-screen` removes the file and unwires the screen. Without `--force`
   it aborts if any saved board still references the id.
-- Both scripts refuse unknown ids; `--force` overrides board-references checks.
+- All three refuse bad input without writing; `--force` overrides board-references checks.
+- Every command prints files changed + boards/trash touched; via `screen --`
+  the gate (screens:sync + tsc + lint) runs automatically after.
+- iPad: `new-screen -- --device ipad-11` scaffolds a 2-column template and
+  records `deviceId` in the manifest so fresh boards open it at 820pt.
+  Write screens fluid (token classes, no px per width); a fundamentally
+  different tablet layout is a separate screen, never `if-device` in one file.
 
 ### Board state: trash & export/import
 
