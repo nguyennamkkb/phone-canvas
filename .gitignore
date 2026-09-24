@@ -10,3 +10,5 @@ exports
 .opencode/
 .pi/
 .qwen/
+# SLP multi-agent runtime (pane ids, task registry, peer memory — workspace-local)
+herdr-context/
