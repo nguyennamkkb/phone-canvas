@@ -1,0 +1,145 @@
+<!-- S16 — Settings & Diagnostics (Settings tab). Grouped settings per
+     the spec sections, then the diagnostics panel. No raw personal data. -->
+<div class="screen">
+  <div class="body" style="padding: var(--s4) var(--s5); gap: var(--s4)">
+    <span class="nav-title">Settings</span>
+
+    <span class="dt-chip-status is-ready">
+      <span class="dt-chip-dot"></span>
+      CarPlay Ready
+    </span>
+
+    <div class="col" style="gap: var(--s2)">
+      <span class="dt-group-label">CarPlay</span>
+      <div class="dt-group">
+        <div class="dt-group-row">
+          <span class="dt-group-title grow">CarPlay status</span>
+          <div class="row" style="gap: var(--s1)">
+            <span class="dt-group-value">Ready</span>
+            <!-- @component dt-chev -->
+          </div>
+        </div>
+        <div class="dt-group-row">
+          <span class="dt-group-title grow">Setup guide</span>
+          <!-- @component dt-chev -->
+        </div>
+        <div class="dt-group-row">
+          <span class="dt-group-title grow">Permissions</span>
+          <div class="row" style="gap: var(--s1)">
+            <span class="dt-group-value">2 of 3</span>
+            <!-- @component dt-chev -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col" style="gap: var(--s2)">
+      <span class="dt-group-label">Widget behavior</span>
+      <div class="dt-group">
+        <div class="dt-group-row">
+          <span class="dt-group-title grow">Location mode</span>
+          <div class="row" style="gap: var(--s1)">
+            <span class="dt-group-value">While Using</span>
+            <!-- @component dt-chev -->
+          </div>
+        </div>
+        <div class="dt-group-row">
+          <span class="dt-group-title grow">Live Activity</span>
+          <button class="dt-toggle is-on" role="switch" aria-checked="true" aria-label="Live Activity">
+            <span class="dt-toggle-knob"></span>
+          </button>
+        </div>
+        <div class="dt-group-row">
+          <span class="dt-group-title grow">Refresh &amp; data</span>
+          <div class="row" style="gap: var(--s1)">
+            <span class="dt-group-value">Every 15 min</span>
+            <!-- @component dt-chev -->
+          </div>
+        </div>
+        <div class="dt-group-row">
+          <span class="dt-group-title grow">Sound</span>
+          <button class="dt-toggle" role="switch" aria-checked="false" aria-label="Sound">
+            <span class="dt-toggle-knob"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col" style="gap: var(--s2)">
+      <span class="dt-group-label">General</span>
+      <div class="dt-group">
+        <div class="dt-group-row">
+          <span class="dt-group-title grow">Appearance</span>
+          <div class="row" style="gap: var(--s1)">
+            <span class="dt-group-value">Midnight</span>
+            <!-- @component dt-chev -->
+          </div>
+        </div>
+        <div class="dt-group-row">
+          <span class="dt-group-title grow">Premium</span>
+          <div class="row" style="gap: var(--s1)">
+            <span class="dt-badge is-premium">Free</span>
+            <!-- @component dt-chev -->
+          </div>
+        </div>
+        <div class="dt-group-row">
+          <span class="dt-group-title grow">Privacy</span>
+          <!-- @component dt-chev -->
+        </div>
+        <div class="dt-group-row">
+          <span class="dt-group-title grow">Export diagnostics</span>
+          <!-- @component dt-chev -->
+        </div>
+      </div>
+    </div>
+
+    <div class="col" style="gap: var(--s2)">
+      <span class="dt-group-label">Diagnostics</span>
+      <div class="dt-inspector">
+        <div class="dt-prop-row">
+          <span class="dt-prop-label">Widget extension</span>
+          <span class="dt-prop-value">Installed</span>
+        </div>
+        <div class="dt-prop-row">
+          <span class="dt-prop-label">Timeline updated</span>
+          <span class="dt-prop-value">8:04 AM</span>
+        </div>
+        <div class="dt-prop-row">
+          <span class="dt-prop-label">Location</span>
+          <span class="dt-prop-value">Allowed</span>
+        </div>
+        <div class="dt-prop-row">
+          <span class="dt-prop-label">Network</span>
+          <span class="dt-prop-value">Online</span>
+        </div>
+        <div class="dt-prop-row">
+          <span class="dt-prop-label">Last data fetch</span>
+          <span class="dt-prop-value">8:04 AM</span>
+        </div>
+        <div class="dt-prop-row">
+          <span class="dt-prop-label">Last error</span>
+          <span class="dt-prop-value">None</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="tabbar" aria-label="Primary">
+    <button class="tab" aria-selected="false">
+      <span class="icon icon-sm" data-symbol="house"></span>
+      Home
+    </button>
+    <button class="tab" aria-selected="false">
+      <span class="icon icon-sm" data-symbol="plus"></span>
+      Create
+    </button>
+    <button class="tab" aria-selected="false">
+      <span class="icon icon-sm" data-symbol="folder"></span>
+      Widgets
+    </button>
+    <button class="tab is-active" aria-selected="true">
+      <span class="icon icon-sm" data-symbol="gear"></span>
+      Settings
+    </button>
+  </nav>
+</div>

@@ -43,4 +43,16 @@ export const COMPONENT_FILES: ComponentFile[] = [
     project: 'moodtracker',
     file: 'project/moodtracker/components/mt-tracker-row.html',
   },
+  {
+    id: 'dt-back',
+    title: 'DriveTiles back chevron',
+    project: 'drivetiles',
+    file: 'project/drivetiles/components/dt-back.html',
+  },
+  {
+    id: 'dt-chev',
+    title: 'DriveTiles disclosure chevron',
+    project: 'drivetiles',
+    file: 'project/drivetiles/components/dt-chev.html',
+  },
 ]

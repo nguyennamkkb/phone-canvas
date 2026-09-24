@@ -1,0 +1,52 @@
+<!-- S13 — Preview & Device Matrix (modal destination). Device tabs,
+     black-context CarPlay stage with removed-background simulation and
+     enlarged type, readiness checklist, Save / Back to editor. -->
+<div class="screen">
+  <header class="navbar">
+    <button class="icon-btn" aria-label="Back to editor">
+      <!-- @component dt-back -->
+    </button>
+    <span class="nav-title">Preview</span>
+    <button class="dt-mini-btn">Done</button>
+  </header>
+  <div class="body" style="padding: var(--s2) var(--s5) var(--s4); gap: var(--s4)">
+    <div class="dt-seg" aria-label="Device">
+      <button class="dt-seg-item">iPhone</button>
+      <button class="dt-seg-item is-active">CarPlay</button>
+      <button class="dt-seg-item">StandBy</button>
+      <button class="dt-seg-item">Lock Screen</button>
+    </div>
+
+    <div class="dt-dark-stage">
+      <div class="dt-widget-frame">
+        <span class="dt-widget-time">9:41</span>
+        <span class="dt-widget-sub">28° Hanoi</span>
+      </div>
+      <div class="col" style="gap: var(--s2); align-items: center">
+        <span class="dt-check-line">
+          <span class="icon icon-sm" data-symbol="checkmark"></span>
+          Background removed
+        </span>
+        <span class="dt-check-line">
+          <span class="icon icon-sm" data-symbol="checkmark"></span>
+          Large text
+        </span>
+        <span class="dt-check-line">
+          <span class="icon icon-sm" data-symbol="checkmark"></span>
+          2 data points
+        </span>
+      </div>
+    </div>
+
+    <div class="dt-card">
+      <span class="dt-card-title">Daylight &amp; dark</span>
+      <span class="dt-card-sub">Same tile, both cabins. If it reads on a washed-out noon screen, it reads anywhere.</span>
+    </div>
+
+    <div class="spacer"></div>
+    <div class="col" style="gap: var(--s2)">
+      <button class="dt-cta is-primary">Save Widget</button>
+      <button class="dt-cta is-quiet">Back to editor</button>
+    </div>
+  </div>
+</div>

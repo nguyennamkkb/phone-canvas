@@ -7,10 +7,14 @@
  */
 import chev from '../../project/moodtracker/components/chev.html?raw'
 import mtTrackerRow from '../../project/moodtracker/components/mt-tracker-row.html?raw'
+import dtBack from '../../project/drivetiles/components/dt-back.html?raw'
+import dtChev from '../../project/drivetiles/components/dt-chev.html?raw'
 
 const RAW: Record<string, string> = {
   'chev': chev,
   'mt-tracker-row': mtTrackerRow,
+  'dt-back': dtBack,
+  'dt-chev': dtChev,
 }
 
 export function rawFor(id: string): string | undefined {

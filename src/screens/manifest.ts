@@ -35,6 +35,22 @@ export type ScreenFile = {
 }
 
 export const SCREEN_FILES: ScreenFile[] = [
+  { id: 's16-settings', title: 'S16 · Settings', file: 'project/drivetiles/s16-settings.html' },
+  { id: 's15-setup', title: 'S15 · Setup Guide', file: 'project/drivetiles/s15-setup.html' },
+  { id: 's14-my-widgets', title: 'S14 · My Widgets', file: 'project/drivetiles/s14-my-widgets.html' },
+  { id: 's13-preview', title: 'S13 · Preview', file: 'project/drivetiles/s13-preview.html' },
+  { id: 's12-layout', title: 'S12 · Layout', file: 'project/drivetiles/s12-layout.html' },
+  { id: 's11-appearance', title: 'S11 · Appearance', file: 'project/drivetiles/s11-appearance.html' },
+  { id: 's10-content', title: 'S10 · Content', file: 'project/drivetiles/s10-content.html' },
+  { id: 's09-editor', title: 'S09 · Editor', file: 'project/drivetiles/s09-editor.html' },
+  { id: 's08-template-detail', title: 'S08 · Template Detail', file: 'project/drivetiles/s08-template-detail.html' },
+  { id: 's07-gallery', title: 'S07 · Gallery', file: 'project/drivetiles/s07-gallery.html' },
+  { id: 's06-home', title: 'S06 · Home', file: 'project/drivetiles/s06-home.html' },
+  { id: 's05-permissions', title: 'S05 · Permissions', file: 'project/drivetiles/s05-permissions.html' },
+  { id: 's04-compat', title: 'S04 · Compatibility', file: 'project/drivetiles/s04-compat.html' },
+  { id: 's03-capabilities', title: 'S03 · Capabilities', file: 'project/drivetiles/s03-capabilities.html' },
+  { id: 's02-welcome', title: 'S02 · Welcome', file: 'project/drivetiles/s02-welcome.html' },
+  { id: 's01-splash', title: 'S01 · Splash', file: 'project/drivetiles/s01-splash.html', lightStatusBar: true },
   { id: 'mood-calendar', title: 'Mood Calendar', file: 'project/moodtracker/mood-calendar.html' },
 { id: 'journal', title: 'Journal', file: 'project/moodtracker/journal.html' },
 { id: 'home', title: 'Home · Today', file: 'project/moodtracker/home.html' },

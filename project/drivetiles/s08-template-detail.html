@@ -1,0 +1,85 @@
+<!-- S08 — Template Detail (modal destination). Large preview, name +
+     description, supported data, update behavior, factual “CarPlay ready”
+     badge. Customize / Use template; Favorite / Share preview. -->
+<div class="screen">
+  <header class="navbar">
+    <button class="icon-btn" aria-label="Back">
+      <!-- @component dt-back -->
+    </button>
+    <span class="nav-title">Template</span>
+    <button class="icon-btn" aria-label="Share preview">
+      <span class="icon icon-sm" data-symbol="square.and.arrow.up"></span>
+    </button>
+  </header>
+  <div class="body" style="padding: var(--s2) var(--s5) var(--s4); gap: var(--s4)">
+    <div class="dt-widget-frame">
+      <span class="dt-widget-time">9:41</span>
+      <span class="dt-widget-sub">Tue · 28° Hanoi</span>
+    </div>
+
+    <div class="col" style="gap: var(--s1)">
+      <div class="row" style="justify-content: space-between">
+        <span class="dt-section-title">Morning Clock</span>
+        <span class="dt-badge is-ready">
+          <span class="icon icon-xs" data-symbol="checkmark"></span>
+          CarPlay ready
+        </span>
+      </div>
+      <span class="dt-onb-copy" style="text-align: left">A calm clock with a date line and one weather fact. Nothing more.</span>
+    </div>
+
+    <div class="col" style="gap: var(--s3)">
+      <span class="dt-section-title">Supported data</span>
+      <div class="dt-card" style="padding: 0; overflow: hidden">
+        <div class="dt-perm-row">
+          <span class="dt-perm-icon">
+            <span class="icon" data-symbol="clock"></span>
+          </span>
+          <div class="col grow" style="gap: 0">
+            <span class="dt-perm-title">Time &amp; date</span>
+            <span class="dt-perm-why">Device clock. Always available.</span>
+          </div>
+        </div>
+        <div class="dt-perm-row">
+          <span class="dt-perm-icon">
+            <span class="icon" data-symbol="cloud.sun"></span>
+          </span>
+          <div class="col grow" style="gap: 0">
+            <span class="dt-perm-title">Weather</span>
+            <span class="dt-perm-why">Current temperature + condition icon.</span>
+          </div>
+        </div>
+        <div class="dt-perm-row">
+          <span class="dt-perm-icon">
+            <span class="icon" data-symbol="location"></span>
+          </span>
+          <div class="col grow" style="gap: 0">
+            <span class="dt-perm-title">Location name</span>
+            <span class="dt-perm-why">City label. Falls back to “Here”.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dt-card">
+      <span class="dt-card-title">Update behavior</span>
+      <span class="dt-card-sub">Refreshes every 15 minutes. Offline, the tile keeps the last known data with a subtle timestamp.</span>
+    </div>
+
+    <div class="spacer"></div>
+    <div class="col" style="gap: var(--s2)">
+      <button class="dt-cta is-primary">Customize</button>
+      <button class="dt-cta is-secondary">Use template</button>
+      <div class="row" style="justify-content: center">
+        <button class="dt-mini-btn is-quiet">
+          <span class="icon icon-sm" data-symbol="heart"></span>
+          Favorite
+        </button>
+        <button class="dt-mini-btn is-quiet">
+          <span class="icon icon-sm" data-symbol="square.and.arrow.up"></span>
+          Share preview
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

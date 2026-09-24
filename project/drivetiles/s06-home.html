@@ -1,0 +1,97 @@
+<!-- S06 — Home / dashboard. Greeting + setup chip, current-widget hero
+     (Edit / Preview / Use as default), + New Widget, recent templates,
+     drive utility. Home tab active. -->
+<div class="screen">
+  <div class="body" style="padding: var(--s4) var(--s5); gap: var(--s4)">
+    <div class="row" style="justify-content: space-between">
+      <span class="nav-title">Good evening</span>
+      <button class="icon-btn" aria-label="Settings">
+        <span class="icon" data-symbol="gear"></span>
+      </button>
+    </div>
+
+    <span class="dt-chip-status is-ready">
+      <span class="dt-chip-dot"></span>
+      CarPlay Ready
+    </span>
+
+    <div class="dt-hero-widget">
+      <div class="dt-widget-frame">
+        <span class="dt-widget-time">9:41</span>
+        <span class="dt-widget-sub">Tue · Hanoi</span>
+      </div>
+      <div class="dt-hero-actions">
+        <button class="dt-hero-action is-primary">Edit</button>
+        <button class="dt-hero-action">Preview</button>
+      </div>
+      <button class="dt-hero-quiet">Use as default</button>
+    </div>
+
+    <button class="dt-new-btn">
+      <span class="icon icon-sm" data-symbol="plus"></span>
+      New Widget
+    </button>
+
+    <div class="col" style="gap: var(--s3)">
+      <div class="dt-section">
+        <span class="dt-section-title">Recent</span>
+        <span class="dt-section-more">See all</span>
+      </div>
+      <div class="row" style="align-items: stretch">
+        <div class="dt-widget-frame is-light is-mini grow">
+          <span class="dt-widget-time">9:41</span>
+          <span class="dt-widget-sub">Clock</span>
+        </div>
+        <div class="dt-widget-frame is-light is-mini grow">
+          <span class="dt-widget-time">28°</span>
+          <span class="dt-widget-sub">Weather</span>
+        </div>
+        <div class="dt-widget-frame is-light is-mini grow">
+          <span class="dt-widget-time">12 days</span>
+          <span class="dt-widget-sub">Countdown</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="dt-card" style="padding: 0; overflow: hidden">
+      <div class="dt-perm-row">
+        <span class="dt-perm-icon">
+          <span class="icon" data-symbol="car"></span>
+        </span>
+        <div class="col grow" style="gap: 0">
+          <span class="dt-perm-title">Last drive</span>
+          <span class="dt-perm-why">24 min · 18 km · Tue 8:12 PM</span>
+        </div>
+      </div>
+      <div class="dt-perm-row">
+        <span class="dt-perm-icon">
+          <span class="icon" data-symbol="bell"></span>
+        </span>
+        <div class="col grow" style="gap: 0">
+          <span class="dt-perm-title">Live Activity</span>
+          <span class="dt-perm-why">Trip progress on the Lock Screen.</span>
+        </div>
+        <span class="dt-perm-state">Active</span>
+      </div>
+    </div>
+  </div>
+
+  <nav class="tabbar" aria-label="Primary">
+    <button class="tab is-active" aria-selected="true">
+      <span class="icon icon-sm" data-symbol="house"></span>
+      Home
+    </button>
+    <button class="tab" aria-selected="false">
+      <span class="icon icon-sm" data-symbol="plus"></span>
+      Create
+    </button>
+    <button class="tab" aria-selected="false">
+      <span class="icon icon-sm" data-symbol="folder"></span>
+      Widgets
+    </button>
+    <button class="tab" aria-selected="false">
+      <span class="icon icon-sm" data-symbol="gear"></span>
+      Settings
+    </button>
+  </nav>
+</div>

@@ -8,6 +8,7 @@ const cssOf = (rel: string): string => readFileSync(join(here, rel), 'utf8')
 
 vi.mock('../screens/tokens.css?raw', () => ({ default: cssOf('../screens/tokens.css') }))
 vi.mock('../../project/moodtracker/tokens.css?raw', () => ({ default: cssOf('../../project/moodtracker/tokens.css') }))
+vi.mock('../../project/drivetiles/tokens.css?raw', () => ({ default: cssOf('../../project/drivetiles/tokens.css') }))
 
 const { tokenNameForColor, tokensOf } = await import('./tokens')
 
@@ -28,9 +29,9 @@ describe('tokensOf', () => {
 
 describe('tokenNameForColor', () => {
   it('resolves a computed color to the first matching token in each mode', () => {
-    // several project tokens share values by design (--label-2 aliases --clay),
-    // so the contract is first-match in token order, per mode
-    expect(tokenNameForColor('moodtracker', 'rgb(138, 117, 106)', 'light')).toBe('--label-2')
+    // several project tokens share values by design (palette aliases of the
+    // semantic layer), so the contract is first-match in token order, per mode
+    expect(tokenNameForColor('moodtracker', 'rgb(121, 102, 93)', 'light')).toBe('--label-2')
     expect(tokenNameForColor('moodtracker', 'rgb(181, 163, 151)', 'dark')).toBe('--label-2')
   })
 

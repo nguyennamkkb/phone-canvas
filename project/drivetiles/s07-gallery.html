@@ -1,0 +1,92 @@
+<!-- S07 — Widget Gallery (Create tab). Search, category chips, filter,
+     2-column template cards with preview + name + badges. -->
+<div class="screen">
+  <div class="body" style="padding: var(--s4) var(--s5); gap: var(--s4)">
+    <span class="nav-title">Create</span>
+
+    <div class="dt-search">
+      <span class="icon icon-sm" data-symbol="magnifyingglass"></span>
+      Search templates
+    </div>
+
+    <div class="col" style="gap: var(--s2)">
+      <div class="dt-chip-row">
+        <span class="chip is-active">All</span>
+        <span class="chip">Clock</span>
+        <span class="chip">Weather</span>
+        <span class="chip">Trip</span>
+      </div>
+      <div class="dt-chip-row">
+        <span class="chip">Photo</span>
+        <span class="chip">Quote</span>
+        <span class="chip">Utility</span>
+        <span class="chip">Minimal</span>
+      </div>
+    </div>
+
+    <div class="dt-seg" aria-label="Filter">
+      <button class="dt-seg-item is-active">Free</button>
+      <button class="dt-seg-item">Premium</button>
+      <button class="dt-seg-item">Dynamic</button>
+      <button class="dt-seg-item">Minimal</button>
+    </div>
+
+    <div class="col" style="gap: var(--card-gap)">
+      <div class="dt-grid-2">
+        <div class="dt-tpl-card">
+          <div class="dt-widget-frame is-light is-mini">
+            <span class="dt-widget-time">9:41</span>
+            <span class="dt-widget-sub">Tue 28 May</span>
+          </div>
+          <span class="dt-tpl-name">Morning Clock</span>
+          <span class="dt-tpl-meta"><span class="dt-badge is-data">Time</span></span>
+        </div>
+        <div class="dt-tpl-card">
+          <div class="dt-widget-frame is-light is-mini">
+            <span class="dt-widget-time">28°</span>
+            <span class="dt-widget-sub">Sunny · Hanoi</span>
+          </div>
+          <span class="dt-tpl-name">Sky Now</span>
+          <span class="dt-tpl-meta"><span class="dt-badge is-data">Live data</span></span>
+        </div>
+      </div>
+      <div class="dt-grid-2">
+        <div class="dt-tpl-card">
+          <div class="dt-widget-frame is-mini">
+            <span class="dt-widget-time">“Go.”</span>
+            <span class="dt-widget-sub">Photo · Quote</span>
+          </div>
+          <span class="dt-tpl-name">Memory Lane</span>
+          <span class="dt-tpl-meta"><span class="dt-badge is-data">Photo</span><span class="dt-badge is-premium">Pro</span></span>
+        </div>
+        <div class="dt-tpl-card">
+          <div class="dt-widget-frame is-light is-mini">
+            <span class="dt-widget-time">12 days</span>
+            <span class="dt-widget-sub">Road trip</span>
+          </div>
+          <span class="dt-tpl-name">Countdown</span>
+          <span class="dt-tpl-meta"><span class="dt-badge is-data">Date</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="tabbar" aria-label="Primary">
+    <button class="tab" aria-selected="false">
+      <span class="icon icon-sm" data-symbol="house"></span>
+      Home
+    </button>
+    <button class="tab is-active" aria-selected="true">
+      <span class="icon icon-sm" data-symbol="plus"></span>
+      Create
+    </button>
+    <button class="tab" aria-selected="false">
+      <span class="icon icon-sm" data-symbol="folder"></span>
+      Widgets
+    </button>
+    <button class="tab" aria-selected="false">
+      <span class="icon icon-sm" data-symbol="gear"></span>
+      Settings
+    </button>
+  </nav>
+</div>

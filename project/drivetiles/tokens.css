@@ -1,0 +1,1084 @@
+/* ============================================================================
+ * drivetiles/tokens.css — design system của project DriveTiles.
+ *
+ * Nạp SAU src/screens/tokens.css nên cùng specificity thì file này thắng.
+ * Bật dark bằng data-theme="dark" trên <html> (xem compose.ts).
+ *
+ * Nguồn: docs/carplay-widget-mobile-ios-spec/08-design-tokens.json.
+ *   - Light: dịch trực tiếp primitive + semantic.
+ *   - Dark : JSON KHÔNG có dark palette — giá trị dark ở đây được SUY LUẬN
+ *            theo role-flip (ground→ink, text→light inks, accent giữ xanh
+ *            sáng hơn). Đây là deviation có chủ đích, khai trong báo cáo.
+ *
+ * Ba khối, theo thứ tự: màu light → màu dark → thang không đổi theo mode.
+ * Một màu thiếu bản dark là bug, không phải mặc định.
+ * ========================================================================== */
+
+:root {
+  /* ---- surfaces & text (light) ---- */
+  --bg: #f7f8fa; /* semantic.background.app ← paper */
+  --bg-elevated: #ffffff; /* semantic.background.elevated ← surface */
+  --bg-grouped: #eef1f5; /* primitive.surfaceMuted */
+  --bg-ink: #0b0d10; /* primitive.ink — nền tối (splash, CarPlay preview) */
+  --bg-carplay: #000000; /* primitive.carPlayBlack */
+  --label: #111317; /* semantic.text.primary ← textPrimary */
+  --label-2: #616873; /* semantic.text.secondary ← textSecondary */
+  --label-3: #8e959f; /* semantic.text.tertiary ← textTertiary */
+  --on-dark: #f7f7f7; /* semantic.text.onDark ← carPlayWhite */
+  --separator: #d9dee5; /* primitive.border */
+  --fill: rgba(17, 19, 23, 0.06); /* nhóm fill theo textPrimary — suy luận */
+  --accent: #2f6bff; /* semantic.action.primary ← accent */
+  --accent-soft: #e8eeff; /* semantic.action.primarySoft ← accentSoft */
+  --success: #1a8f5a; /* semantic.feedback.success */
+  --warning: #b66a00; /* semantic.feedback.warning */
+  --danger: #c43d3d; /* semantic.feedback.danger */
+
+  /* ---- palette (raw material — markup nên semantic trước) ---- */
+  --ink: #0b0d10;
+  --paper: #f7f8fa;
+  --surface: #ffffff;
+  --surface-muted: #eef1f5;
+  --border: #d9dee5;
+  --carplay-white: #f7f7f7;
+}
+
+:root[data-theme='dark'] {
+  /* ground & text role-flip — SUY LUẬN, không lấy từ JSON */
+  --bg: #0b0d10;
+  --bg-elevated: #16191e;
+  --bg-grouped: #1c2026;
+  --bg-ink: #0b0d10;
+  --bg-carplay: #000000;
+  --label: #f2f4f7;
+  --label-2: #a6adb8;
+  --label-3: #6e7681;
+  --on-dark: #f7f7f7;
+  --separator: #2a2f37;
+  --fill: rgba(242, 244, 247, 0.08);
+  --accent: #5b8cff;
+  --accent-soft: rgba(91, 140, 255, 0.18);
+  --success: #3dbb84;
+  --warning: #e09020;
+  --danger: #e46a6a;
+
+  --ink: #f2f4f7;
+  --paper: #0b0d10;
+  --surface: #16191e;
+  --surface-muted: #1c2026;
+  --border: #2a2f37;
+  --carplay-white: #f7f7f7;
+}
+
+/* ---- thang không đổi theo mode ---- */
+:root {
+  /* mực trắng trên khối màu đặc — không flip: nền màu giữ nguyên cả 2 mode */
+  --on-colour: #ffffff;
+  --on-accent: #ffffff;
+
+  /* spacing — JSON primitive.spacing (lưới 4) */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 20px;
+  --s6: 24px;
+  --s7: 28px;
+  --s8: 32px;
+  --s10: 40px;
+  --s12: 48px;
+  --s16: 64px;
+
+  /* radius — JSON primitive.radius */
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 22px;
+  --r-xl: 28px;
+  --r-full: 999px;
+
+  /* stroke — JSON primitive.stroke */
+  --hair: 1px;
+  --stroke: 1.5px;
+  --stroke-focus: 2px;
+
+  /* opacity — JSON primitive.opacity */
+  --op-disabled: 0.45;
+  --op-secondary: 0.72;
+  --op-overlay: 0.84;
+
+  /* type — JSON typography (size / leading / tracking) */
+  --font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
+    'Helvetica Neue', system-ui, sans-serif;
+  --t-display: 40px;
+  --t-large: 34px;
+  --t-title1: 30px;
+  --t-title2: 24px;
+  --t-title3: 20px;
+  --t-headline: 18px;
+  --t-body: 16px;
+  --t-callout: 15px;
+  --t-subhead: 15px;
+  --t-footnote: 13px;
+  --t-caption: 12px;
+  --t-carplay-lg: 30px;
+  --t-carplay-sm: 18px;
+
+  --lh-display: 44px;
+  --lh-title1: 36px;
+  --lh-title2: 30px;
+  --lh-headline: 23px;
+  --lh-body: 22px;
+  --lh-callout: 20px;
+  --lh-footnote: 18px;
+  --lh-caption: 15px;
+  --lh-carplay-lg: 34px;
+  --lh-carplay-sm: 22px;
+
+  --track-display: -1.2px;
+  --track-title1: -0.7px;
+  --track-title2: -0.4px;
+  --track-headline: -0.2px;
+  --track-carplay: -0.6px;
+
+  /* component metrics — JSON component.* */
+  --screen-x: 20px;
+  --card-pad: 16px;
+  --ctrl-h: 48px;
+  --ctrl-h-sm: 40px;
+  --tap: 44px;
+  --section-gap: 28px;
+  --card-gap: 12px;
+  --tabbar-h: 82px;
+
+  /* hình học cố định của vocabulary (đèn báo, công tắc…) — không phải theme */
+  --dot-h: 8px;
+  --toggle-h: 28px;
+  --toggle-knob: 24px;
+  --check-size: 24px;
+  --swatch: 32px;
+  --art-h: 360px;
+
+  /* shadow — một tầng cho card, một tầng cho dock nổi */
+  --shadow-1: 0 1px 2px rgba(11, 13, 16, 0.06);
+  --shadow-dock: 0 8px 24px rgba(11, 13, 16, 0.12);
+}
+
+/* ============================================================================
+ * Component vocabulary — DriveTiles (dt-*).
+ * Chỉ những thứ chưa có trong src/screens/tokens.css mới khai ở đây.
+ * Tái dùng: .screen .body .body-fixed .row .col .grow .spacer .inset
+ *           .navbar .nav-title .icon-btn .tabbar .tab .list .list-row
+ *           .card .btn .btn-primary .chip .bottom-cta .icon .art .t-*
+ * Mọi giá trị đi qua var() — không literal ngoài khối token ở trên.
+ * ========================================================================== */
+
+/* ------------------------------------------------------------- grounds -- */
+
+.dt-splash {
+  background: var(--bg-ink);
+}
+
+.dt-splash-body {
+  align-items: center;
+  justify-content: center;
+  gap: var(--s4);
+  padding: var(--s10) var(--s6);
+}
+
+.dt-splash-name {
+  font-size: var(--t-title1);
+  font-weight: 700;
+  line-height: var(--lh-title1);
+  letter-spacing: var(--track-title1);
+  color: var(--on-dark);
+}
+
+.dt-splash-tag {
+  font-size: var(--t-callout);
+  line-height: var(--lh-callout);
+  color: var(--label-3);
+  text-align: center;
+}
+
+/* ------------------------------------------------------------ onboarding -- */
+
+/* .art-block mặc định 384 + đệm dưới 40; onboarding DriveTiles sát chữ hơn */
+.dt-hero-art {
+  height: var(--art-h);
+  margin-bottom: var(--s6);
+}
+
+.dt-onb-title {
+  font-size: var(--t-display);
+  font-weight: 700;
+  line-height: var(--lh-display);
+  letter-spacing: var(--track-display);
+  color: var(--label);
+  text-align: center;
+}
+
+.dt-onb-copy {
+  font-size: var(--t-callout);
+  line-height: var(--lh-callout);
+  color: var(--label-2);
+  text-align: center;
+}
+
+/* ------------------------------------------------------------ tab button -- */
+
+/* .tab toàn cục thiếu button reset — DriveTiles dùng <button class="tab"> */
+.tab {
+  border: 0;
+  background: transparent;
+  font-family: var(--font);
+  cursor: pointer;
+}
+
+/* ------------------------------------------------------------------ cta -- */
+
+/* JSON controlHeight 48, radius card 16 — khác .btn (50/r-lg) nên có class riêng */
+.dt-cta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  width: 100%;
+  height: var(--ctrl-h);
+  padding: 0 var(--s5);
+  border: 0;
+  border-radius: var(--r-md);
+  font-family: var(--font);
+  font-size: var(--t-callout);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dt-cta.is-primary {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.dt-cta.is-secondary {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.dt-cta.is-fill {
+  background: var(--fill);
+  color: var(--label);
+}
+
+/* chữ trần — secondary của onboarding, không có khối màu */
+.dt-cta.is-quiet {
+  background: transparent;
+  color: var(--label-2);
+}
+
+/* ------------------------------------------------------------ status chip -- */
+
+.dt-chip-status {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s2);
+  align-self: flex-start;
+  height: var(--ctrl-h-sm);
+  padding: 0 var(--s3);
+  border-radius: var(--r-full);
+  background: var(--fill);
+  font-size: var(--t-footnote);
+  font-weight: 600;
+  color: var(--label-2);
+}
+
+.dt-chip-dot {
+  display: block;
+  flex: 0 0 auto;
+  width: var(--dot-h);
+  height: var(--dot-h);
+  border-radius: var(--r-full);
+  background: currentColor;
+}
+
+.dt-chip-status.is-ready .dt-chip-dot {
+  background: var(--success);
+}
+
+.dt-chip-status.is-warn .dt-chip-dot {
+  background: var(--warning);
+}
+
+.dt-chip-status.is-limited .dt-chip-dot {
+  background: var(--label-3);
+}
+
+/* --------------------------------------------------------- widget frame -- */
+
+/* khung systemSmall: vuông, nền tối CarPlay hoặc nền sáng iPhone */
+.dt-widget-frame {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+  flex: 0 0 auto;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  padding: var(--s4);
+  border-radius: var(--r-lg);
+  background: var(--bg-carplay);
+  color: var(--on-dark);
+  text-align: center;
+}
+
+.dt-widget-frame.is-light {
+  background: var(--bg-elevated);
+  color: var(--label);
+  border: var(--hair) solid var(--separator);
+}
+
+/* khung co giãn trong hàng (ví dụ Recent) — thắng flex:0 của khung gốc */
+.dt-widget-frame.grow {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.dt-widget-time {
+  font-size: var(--t-carplay-lg);
+  font-weight: 700;
+  line-height: var(--lh-carplay-lg);
+  letter-spacing: var(--track-carplay);
+}
+
+.dt-widget-sub {
+  font-size: var(--t-carplay-sm);
+  font-weight: 600;
+  line-height: var(--lh-carplay-sm);
+  letter-spacing: var(--track-headline);
+  color: var(--label-3);
+}
+
+/* ô xem trước thu nhỏ (hàng Recent) — chữ theo thang thường, không CarPlay */
+.dt-widget-frame.is-mini .dt-widget-time {
+  font-size: var(--t-headline);
+  line-height: var(--lh-headline);
+  letter-spacing: var(--track-headline);
+}
+
+.dt-widget-frame.is-mini .dt-widget-sub {
+  font-size: var(--t-caption);
+  line-height: var(--lh-caption);
+}
+
+.dt-widget-frame:not(.is-light) .dt-widget-sub {
+  color: var(--label-3);
+}
+
+/* ------------------------------------------------------------ section -- */
+
+.dt-section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+}
+
+.dt-section-title {
+  font-size: var(--t-headline);
+  font-weight: 700;
+  line-height: var(--lh-headline);
+  letter-spacing: var(--track-headline);
+  color: var(--label);
+}
+
+.dt-section-more {
+  font-size: var(--t-footnote);
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* ---------------------------------------------------------------- card -- */
+
+.dt-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--card-gap);
+  padding: var(--card-pad);
+  border-radius: var(--r-xl);
+  background: var(--bg-elevated);
+}
+
+.dt-card.is-row {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+}
+
+.dt-card-title {
+  font-size: var(--t-callout);
+  font-weight: 700;
+  line-height: var(--lh-callout);
+  color: var(--label);
+}
+
+.dt-card-sub {
+  font-size: var(--t-footnote);
+  line-height: var(--lh-footnote);
+  color: var(--label-2);
+}
+
+/* ------------------------------------------------------------ mini button -- */
+
+/* CTA nhỏ trong hàng (ví dụ bật quyền bị từ chối) — không thay .dt-cta */
+.dt-mini-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+  flex: 0 0 auto;
+  height: var(--ctrl-h-sm);
+  padding: 0 var(--s4);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.dt-mini-btn.is-quiet {
+  background: transparent;
+  color: var(--label-2);
+}
+
+/* nút nhỏ giãn đều trong hàng actions — thắng flex:0 của nút gốc */
+.dt-mini-btn.grow {
+  flex: 1 1 0;
+}
+
+/* ---------------------------------------------------------------- search -- */
+
+.dt-search {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s2);
+  height: var(--ctrl-h);
+  padding: 0 var(--s4);
+  border-radius: var(--r-md);
+  background: var(--fill);
+  color: var(--label-3);
+  font-size: var(--t-callout);
+}
+
+/* ------------------------------------------------------- segmented control -- */
+
+.dt-seg {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s1);
+  padding: var(--s1);
+  border-radius: var(--r-md);
+  background: var(--fill);
+}
+
+.dt-seg-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+  flex: 1 1 0;
+  min-width: 0;
+  height: var(--ctrl-h-sm);
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--label-2);
+  font-size: var(--t-footnote);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dt-seg-item.is-active {
+  background: var(--bg-elevated);
+  color: var(--label);
+  box-shadow: var(--shadow-1);
+}
+
+/* --------------------------------------------------------------- checklist -- */
+
+.dt-check-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+}
+
+.dt-check {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--check-size);
+  height: var(--check-size);
+  border: var(--stroke) solid var(--separator);
+  border-radius: var(--r-full);
+  color: transparent;
+}
+
+.dt-check.is-done {
+  border-color: var(--success);
+  background: var(--success);
+  color: var(--on-colour);
+}
+
+.dt-check.is-warn {
+  border-color: var(--warning);
+  background: var(--warning);
+  color: var(--on-colour);
+  font-size: var(--t-footnote);
+  font-weight: 700;
+}
+
+.dt-check-num {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--check-size);
+  height: var(--check-size);
+  border-radius: var(--r-full);
+  background: var(--fill);
+  color: var(--label-2);
+  font-size: var(--t-footnote);
+  font-weight: 700;
+}
+
+.dt-check-label {
+  font-size: var(--t-callout);
+  line-height: var(--lh-callout);
+  color: var(--label);
+}
+
+.dt-check-label.is-done {
+  color: var(--label-2);
+}
+
+/* ----------------------------------------------------------- permission row -- */
+
+.dt-perm-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--s3);
+  padding: var(--s4);
+  border-top: var(--hair) solid var(--separator);
+}
+
+.dt-perm-row:first-child {
+  border-top: 0;
+}
+
+.dt-perm-icon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--tap);
+  height: var(--tap);
+  border-radius: var(--r-md);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.dt-perm-title {
+  font-size: var(--t-callout);
+  font-weight: 600;
+  line-height: var(--lh-callout);
+  color: var(--label);
+}
+
+.dt-perm-why {
+  font-size: var(--t-footnote);
+  line-height: var(--lh-footnote);
+  color: var(--label-2);
+}
+
+.dt-perm-state {
+  font-size: var(--t-footnote);
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.dt-perm-state.is-off {
+  color: var(--label-3);
+}
+
+/* ---------------------------------------------------------- template card -- */
+
+.dt-tpl-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  flex: 1 1 0;
+  min-width: 0;
+  padding: var(--s3);
+  border-radius: var(--r-lg);
+  background: var(--bg-elevated);
+}
+
+.dt-tpl-name {
+  font-size: var(--t-callout);
+  font-weight: 600;
+  color: var(--label);
+}
+
+.dt-tpl-meta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s1);
+  font-size: var(--t-caption);
+  font-weight: 600;
+  line-height: var(--lh-caption);
+  color: var(--label-2);
+}
+
+/* 2 cột: một hàng, hai đứa con chia đều — không dùng grid */
+.dt-grid-2 {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: var(--card-gap);
+}
+
+.dt-grid-2 > .grow {
+  flex: 1 1 0;
+}
+
+/* ---------------------------------------------------------------- badge -- */
+
+.dt-badge {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s1);
+  height: var(--lh-caption);
+  padding: 0 var(--s2);
+  border-radius: var(--r-full);
+  background: var(--fill);
+  color: var(--label-2);
+  font-size: var(--t-caption);
+  font-weight: 700;
+  line-height: var(--lh-caption);
+}
+
+.dt-badge.is-data {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.dt-badge.is-ready {
+  background: var(--fill);
+  color: var(--success);
+}
+
+.dt-badge.is-premium {
+  background: var(--fill);
+  color: var(--warning);
+}
+
+/* ---------------------------------------------------------------- toggle -- */
+
+/* công tắc: track là positioning context duy nhất, knob đặt bằng left/top */
+.dt-toggle {
+  position: relative;
+  display: block;
+  flex: 0 0 auto;
+  width: var(--ctrl-h);
+  height: var(--toggle-h);
+  border: 0;
+  padding: 0;
+  border-radius: var(--r-full);
+  background: var(--fill);
+  cursor: pointer;
+}
+
+.dt-toggle.is-on {
+  background: var(--success);
+}
+
+.dt-toggle-knob {
+  position: absolute;
+  left: var(--s1);
+  top: var(--s1);
+  width: var(--toggle-knob);
+  height: var(--toggle-knob);
+  border-radius: var(--r-full);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-1);
+}
+
+.dt-toggle.is-on .dt-toggle-knob {
+  left: calc(var(--ctrl-h) - var(--toggle-knob) - var(--s1));
+}
+
+/* ---------------------------------------------------------------- toolbar -- */
+
+.dt-toolbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s1);
+  padding: var(--s1);
+  border-radius: var(--r-md);
+  background: var(--fill);
+}
+
+.dt-tool {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+  flex: 1 1 0;
+  min-width: 0;
+  height: var(--tap);
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--label-2);
+  font-size: var(--t-caption);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dt-tool.is-active {
+  background: var(--bg-elevated);
+  color: var(--accent);
+  box-shadow: var(--shadow-1);
+}
+
+/* ---------------------------------------------------------------- editor -- */
+
+/* vùng canvas nền tối mô phỏng CarPlay, chứa widget frame bên trong */
+.dt-canvas {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s4);
+  padding: var(--s6) var(--s5);
+  border-radius: var(--r-xl);
+  background: var(--bg-ink);
+}
+
+.dt-canvas-label {
+  font-size: var(--t-caption);
+  font-weight: 700;
+  letter-spacing: var(--track-headline);
+  color: var(--label-3);
+}
+
+.dt-canvas .dt-widget-frame {
+  width: 78%;
+}
+
+/* đường safe-area đứt nét quanh khung canvas — guide cho editor */
+.dt-safe-frame {
+  outline: var(--stroke-focus) dashed var(--accent);
+  outline-offset: var(--s2);
+}
+
+/* inspector / khối thiết lập trong editor */
+.dt-inspector {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  padding: var(--card-pad);
+  border-radius: var(--r-xl);
+  background: var(--bg-elevated);
+}
+
+.dt-inspector-title {
+  font-size: var(--t-footnote);
+  font-weight: 700;
+  color: var(--label-2);
+}
+
+.dt-prop-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+}
+
+.dt-prop-label {
+  font-size: var(--t-callout);
+  color: var(--label);
+}
+
+.dt-prop-value {
+  font-size: var(--t-footnote);
+  font-weight: 600;
+  color: var(--label-2);
+}
+
+/* ---------------------------------------------------------------- swatches -- */
+
+.dt-swatches {
+  display: flex;
+  flex-direction: row;
+  gap: var(--s2);
+}
+
+.dt-swatch {
+  display: block;
+  flex: 0 0 auto;
+  width: var(--swatch);
+  height: var(--swatch);
+  border-radius: var(--r-full);
+  border: 0;
+  padding: 0;
+  background: var(--swatch-color, var(--accent));
+  cursor: pointer;
+}
+
+/* vòng chọn là mực, không phải màu swatch — 3:1 mới đạt selected state */
+.dt-swatch.is-on {
+  box-shadow: 0 0 0 var(--stroke-focus) var(--label);
+}
+
+/* ---------------------------------------------------------------- slider -- */
+
+.dt-slider {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: var(--toggle-h);
+}
+
+.dt-slider-track {
+  width: 100%;
+  height: var(--dot-h);
+  border-radius: var(--r-full);
+  background: var(--fill);
+}
+
+.dt-slider-fill {
+  position: absolute;
+  left: 0;
+  top: calc((var(--toggle-h) - var(--dot-h)) / 2);
+  width: 62%;
+  height: var(--dot-h);
+  border-radius: var(--r-full);
+  background: var(--accent);
+}
+
+.dt-slider-knob {
+  position: absolute;
+  left: calc(62% - (var(--toggle-knob) / 2));
+  top: calc((var(--toggle-h) - var(--toggle-knob)) / 2);
+  width: var(--toggle-knob);
+  height: var(--toggle-knob);
+  border: calc(var(--stroke-focus) * 1.5) solid var(--bg-elevated);
+  border-radius: var(--r-full);
+  background: var(--accent);
+  box-shadow: var(--shadow-1);
+}
+
+/* ---------------------------------------------------------------- group list -- */
+
+/* một container mỗi group, hàng chia bằng hairline — cấu trúc settings */
+.dt-group {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  border-radius: var(--r-lg);
+  background: var(--bg-elevated);
+  overflow: hidden;
+}
+
+.dt-group-label {
+  font-size: var(--t-footnote);
+  font-weight: 700;
+  color: var(--label-2);
+  padding: 0 var(--s1) var(--s1);
+}
+
+.dt-group-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  min-height: var(--tap);
+  padding: var(--s3) var(--s4);
+  border-top: var(--hair) solid var(--separator);
+}
+
+.dt-group-row:first-child {
+  border-top: 0;
+}
+
+.dt-group-title {
+  font-size: var(--t-callout);
+  color: var(--label);
+}
+
+.dt-group-value {
+  font-size: var(--t-callout);
+  color: var(--label-2);
+}
+
+/* ---------------------------------------------------------------- home hero -- */
+
+/* hero widget hiện tại: nền CarPlay tối — đúng thứ user sẽ thấy trên xe */
+.dt-hero-widget {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  padding: var(--s6);
+  border-radius: var(--r-xl);
+  background: var(--bg-ink);
+}
+
+.dt-hero-widget .dt-widget-frame {
+  background: transparent;
+  padding: var(--s2) 0;
+  aspect-ratio: 16 / 10;
+}
+
+.dt-hero-actions {
+  display: flex;
+  flex-direction: row;
+  gap: var(--s2);
+}
+
+.dt-hero-action {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+  flex: 1 1 0;
+  min-width: 0;
+  height: var(--ctrl-h-sm);
+  border: 0;
+  border-radius: var(--r-md);
+  background: var(--fill);
+  color: var(--on-dark);
+  font-size: var(--t-footnote);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dt-hero-action.is-primary {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+/* thao tác yên lặng trên nền tối — mực sáng mờ, không khối màu */
+.dt-hero-quiet {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--on-dark);
+  opacity: var(--op-secondary);
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* nhanh tạo mới — CTA lớn nhất màn home */
+.dt-new-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  width: 100%;
+  height: var(--ctrl-h);
+  border: 0;
+  border-radius: var(--r-md);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: var(--t-callout);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ---------------------------------------------------------------- preview -- */
+
+/* nền mô phỏng CarPlay trong preview & splash-adjacent surfaces */
+.dt-dark-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s4);
+  padding: var(--s6);
+  border-radius: var(--r-xl);
+  background: var(--bg-carplay);
+}
+
+.dt-dark-stage .dt-widget-frame {
+  width: 82%;
+}
+
+.dt-check-line {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s2);
+  font-size: var(--t-footnote);
+  font-weight: 600;
+  color: var(--label-2);
+}
+
+.dt-check-line .icon {
+  color: var(--success);
+}
+
+/* ---------------------------------------------------------------- setup -- */
+
+.dt-setup-step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  padding: var(--s3) 0;
+}
+
+.dt-setup-help {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  padding: var(--card-pad);
+  border-radius: var(--r-lg);
+  background: var(--accent-soft);
+}
+
+/* ---------------------------------------------------------------- gallery -- */
+
+.dt-chip-row {
+  display: flex;
+  flex-direction: row;
+  gap: var(--s2);
+  overflow-x: hidden;
+}

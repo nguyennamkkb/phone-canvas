@@ -1,0 +1,69 @@
+<!-- S09 — Widget Editor canvas. Top bar Back / name / Save, dark
+     CarPlay canvas with safe-area guide, 5-tool toolbar, inspector for
+     the selected layer. Rich phone editor, minimal CarPlay output. -->
+<div class="screen">
+  <header class="navbar">
+    <button class="icon-btn" aria-label="Back">
+      <!-- @component dt-back -->
+    </button>
+    <span class="nav-title">My Widget</span>
+    <button class="dt-mini-btn">Save</button>
+  </header>
+  <div class="body" style="padding: var(--s2) var(--s5) var(--s4); gap: var(--s4)">
+    <div class="dt-canvas">
+      <span class="dt-canvas-label">CARPLAY PREVIEW</span>
+      <div class="dt-widget-frame dt-safe-frame">
+        <span class="dt-widget-time">9:41</span>
+        <span class="dt-widget-sub">Tue · 28°</span>
+      </div>
+    </div>
+
+    <div class="dt-toolbar" role="toolbar" aria-label="Editor tools">
+      <button class="dt-tool is-active">
+        <span class="icon icon-sm" data-symbol="square.on.square"></span>
+        Content
+      </button>
+      <button class="dt-tool">
+        <span class="icon icon-sm" data-symbol="textformat"></span>
+        Type
+      </button>
+      <button class="dt-tool">
+        <span class="icon icon-sm" data-symbol="paintbrush"></span>
+        Style
+      </button>
+      <button class="dt-tool">
+        <span class="icon icon-sm" data-symbol="text.aligncenter"></span>
+        Layout
+      </button>
+      <button class="dt-tool">
+        <span class="icon icon-sm" data-symbol="eye"></span>
+        Preview
+      </button>
+    </div>
+
+    <div class="dt-inspector">
+      <span class="dt-inspector-title">Selected: Time</span>
+      <div class="dt-prop-row">
+        <span class="dt-prop-label">Format</span>
+        <div class="row" style="gap: var(--s1)">
+          <span class="dt-prop-value">Large</span>
+          <!-- @component dt-chev -->
+        </div>
+      </div>
+      <div class="dt-prop-row">
+        <span class="dt-prop-label">Refresh</span>
+        <div class="row" style="gap: var(--s1)">
+          <span class="dt-prop-value">Every 15 min</span>
+          <!-- @component dt-chev -->
+        </div>
+      </div>
+      <div class="dt-prop-row">
+        <span class="dt-prop-label">Fallback</span>
+        <div class="row" style="gap: var(--s1)">
+          <span class="dt-prop-value">Last known</span>
+          <!-- @component dt-chev -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -5,11 +5,43 @@
  * run `npm run screens:sync` (or `npm run new-screen`)
  * after editing it. index.ts only re-exports this.
  */
+import s16Settings from '../../project/drivetiles/s16-settings.html?raw'
+import s15Setup from '../../project/drivetiles/s15-setup.html?raw'
+import s14MyWidgets from '../../project/drivetiles/s14-my-widgets.html?raw'
+import s13Preview from '../../project/drivetiles/s13-preview.html?raw'
+import s12Layout from '../../project/drivetiles/s12-layout.html?raw'
+import s11Appearance from '../../project/drivetiles/s11-appearance.html?raw'
+import s10Content from '../../project/drivetiles/s10-content.html?raw'
+import s09Editor from '../../project/drivetiles/s09-editor.html?raw'
+import s08TemplateDetail from '../../project/drivetiles/s08-template-detail.html?raw'
+import s07Gallery from '../../project/drivetiles/s07-gallery.html?raw'
+import s06Home from '../../project/drivetiles/s06-home.html?raw'
+import s05Permissions from '../../project/drivetiles/s05-permissions.html?raw'
+import s04Compat from '../../project/drivetiles/s04-compat.html?raw'
+import s03Capabilities from '../../project/drivetiles/s03-capabilities.html?raw'
+import s02Welcome from '../../project/drivetiles/s02-welcome.html?raw'
+import s01Splash from '../../project/drivetiles/s01-splash.html?raw'
 import moodCalendar from '../../project/moodtracker/mood-calendar.html?raw'
 import journal from '../../project/moodtracker/journal.html?raw'
 import home from '../../project/moodtracker/home.html?raw'
 
 const RAW: Record<string, string> = {
+  's16-settings': s16Settings,
+  's15-setup': s15Setup,
+  's14-my-widgets': s14MyWidgets,
+  's13-preview': s13Preview,
+  's12-layout': s12Layout,
+  's11-appearance': s11Appearance,
+  's10-content': s10Content,
+  's09-editor': s09Editor,
+  's08-template-detail': s08TemplateDetail,
+  's07-gallery': s07Gallery,
+  's06-home': s06Home,
+  's05-permissions': s05Permissions,
+  's04-compat': s04Compat,
+  's03-capabilities': s03Capabilities,
+  's02-welcome': s02Welcome,
+  's01-splash': s01Splash,
   'mood-calendar': moodCalendar,
   'journal': journal,
   'home': home,

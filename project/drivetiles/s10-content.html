@@ -1,0 +1,121 @@
+<!-- S10 — Content Editor. Nine data blocks with on/off; the Weather
+     block is open to show source, format, refresh, and fallback. -->
+<div class="screen">
+  <header class="navbar">
+    <button class="icon-btn" aria-label="Back">
+      <!-- @component dt-back -->
+    </button>
+    <span class="nav-title">Content</span>
+    <button class="dt-mini-btn">Done</button>
+  </header>
+  <div class="body" style="padding: var(--s2) var(--s5) var(--s4); gap: var(--s4)">
+    <span class="dt-onb-copy" style="text-align: left">Choose what the tile shows. Fewer blocks read faster at a glance.</span>
+
+    <div class="dt-group">
+      <div class="dt-group-row">
+        <span class="dt-perm-icon">
+          <span class="icon" data-symbol="clock"></span>
+        </span>
+        <span class="dt-group-title grow">Time</span>
+        <button class="dt-toggle is-on" role="switch" aria-checked="true" aria-label="Time">
+          <span class="dt-toggle-knob"></span>
+        </button>
+      </div>
+      <div class="dt-group-row">
+        <span class="dt-perm-icon">
+          <span class="icon" data-symbol="calendar"></span>
+        </span>
+        <span class="dt-group-title grow">Date</span>
+        <button class="dt-toggle is-on" role="switch" aria-checked="true" aria-label="Date">
+          <span class="dt-toggle-knob"></span>
+        </button>
+      </div>
+      <div class="dt-group-row">
+        <span class="dt-perm-icon">
+          <span class="icon" data-symbol="cloud.sun"></span>
+        </span>
+        <span class="dt-group-title grow">Weather</span>
+        <button class="dt-toggle is-on" role="switch" aria-checked="true" aria-label="Weather">
+          <span class="dt-toggle-knob"></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="dt-inspector">
+      <span class="dt-inspector-title">Weather block</span>
+      <div class="dt-prop-row">
+        <span class="dt-prop-label">Source</span>
+        <span class="dt-prop-value">Device weather</span>
+      </div>
+      <div class="dt-prop-row">
+        <span class="dt-prop-label">Format</span>
+        <span class="dt-prop-value">Temp + condition icon</span>
+      </div>
+      <div class="dt-prop-row">
+        <span class="dt-prop-label">Refresh</span>
+        <span class="dt-prop-value">Every 15 min</span>
+      </div>
+      <div class="dt-prop-row">
+        <span class="dt-prop-label">Fallback</span>
+        <span class="dt-prop-value">Last known</span>
+      </div>
+    </div>
+
+    <div class="dt-group">
+      <div class="dt-group-row">
+        <span class="dt-perm-icon">
+          <span class="icon" data-symbol="text.quote"></span>
+        </span>
+        <span class="dt-group-title grow">Quote</span>
+        <button class="dt-toggle" role="switch" aria-checked="false" aria-label="Quote">
+          <span class="dt-toggle-knob"></span>
+        </button>
+      </div>
+      <div class="dt-group-row">
+        <span class="dt-perm-icon">
+          <span class="icon" data-symbol="photo"></span>
+        </span>
+        <span class="dt-group-title grow">Photo</span>
+        <button class="dt-toggle is-on" role="switch" aria-checked="true" aria-label="Photo">
+          <span class="dt-toggle-knob"></span>
+        </button>
+      </div>
+      <div class="dt-group-row">
+        <span class="dt-perm-icon">
+          <span class="icon" data-symbol="hourglass"></span>
+        </span>
+        <span class="dt-group-title grow">Countdown</span>
+        <button class="dt-toggle" role="switch" aria-checked="false" aria-label="Countdown">
+          <span class="dt-toggle-knob"></span>
+        </button>
+      </div>
+      <div class="dt-group-row">
+        <span class="dt-perm-icon">
+          <span class="icon" data-symbol="car"></span>
+        </span>
+        <span class="dt-group-title grow">Trip duration</span>
+        <button class="dt-toggle is-on" role="switch" aria-checked="true" aria-label="Trip duration">
+          <span class="dt-toggle-knob"></span>
+        </button>
+      </div>
+      <div class="dt-group-row">
+        <span class="dt-perm-icon">
+          <span class="icon" data-symbol="ruler"></span>
+        </span>
+        <span class="dt-group-title grow">Distance</span>
+        <button class="dt-toggle" role="switch" aria-checked="false" aria-label="Distance">
+          <span class="dt-toggle-knob"></span>
+        </button>
+      </div>
+      <div class="dt-group-row">
+        <span class="dt-perm-icon">
+          <span class="icon" data-symbol="location"></span>
+        </span>
+        <span class="dt-group-title grow">Location</span>
+        <button class="dt-toggle is-on" role="switch" aria-checked="true" aria-label="Location">
+          <span class="dt-toggle-knob"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

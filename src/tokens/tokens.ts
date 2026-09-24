@@ -1,5 +1,6 @@
 import globalCss from '../screens/tokens.css?raw'
 import moodtrackerCss from '../../project/moodtracker/tokens.css?raw'
+import drivetilesCss from '../../project/drivetiles/tokens.css?raw'
 
 /**
  * Design tokens as data — parsed from the same css files the iframes load,
@@ -27,6 +28,7 @@ type Rgba = [number, number, number, number]
 
 const PROJECT_CSS: Record<string, string> = {
   moodtracker: moodtrackerCss,
+  drivetiles: drivetilesCss,
 }
 
 function stripComments(css: string): string {

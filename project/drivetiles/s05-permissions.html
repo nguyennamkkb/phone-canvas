@@ -1,0 +1,49 @@
+<!-- S05 — Permission & data setup. Only what the tiles need; states are
+     honest, denied rows carry their own CTA, and Skip keeps the first
+     frame wall-free (spec rule). -->
+<div class="screen">
+  <header class="navbar">
+    <span class="nav-title">Permissions</span>
+    <button class="dt-mini-btn is-quiet">Skip</button>
+  </header>
+  <div class="body" style="padding: var(--s2) var(--s5) var(--s4); gap: var(--s4)">
+    <span class="dt-onb-copy" style="text-align: left">DriveTiles asks only for what your tiles need. Nothing leaves your phone.</span>
+    <div class="dt-card" style="padding: 0; overflow: hidden">
+      <div class="dt-perm-row">
+        <span class="dt-perm-icon">
+          <span class="icon" data-symbol="location"></span>
+        </span>
+        <div class="col grow" style="gap: 0">
+          <span class="dt-perm-title">Location</span>
+          <span class="dt-perm-why">Powers weather, trip ETA, and location tiles.</span>
+          <span class="dt-perm-state">Allowed</span>
+        </div>
+      </div>
+      <div class="dt-perm-row">
+        <span class="dt-perm-icon">
+          <span class="icon" data-symbol="photo"></span>
+        </span>
+        <div class="col grow" style="gap: 0">
+          <span class="dt-perm-title">Photos</span>
+          <span class="dt-perm-why">Shows your memories on photo tiles.</span>
+          <span class="dt-perm-state">Allowed</span>
+        </div>
+      </div>
+      <div class="dt-perm-row">
+        <span class="dt-perm-icon">
+          <span class="icon" data-symbol="bell"></span>
+        </span>
+        <div class="col grow" style="gap: 0">
+          <span class="dt-perm-title">Notifications</span>
+          <span class="dt-perm-why">Live Activity and reminder pings while you drive.</span>
+          <div class="row" style="justify-content: space-between">
+            <span class="dt-perm-state is-off">Off</span>
+            <button class="dt-mini-btn">Turn on</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <button class="dt-cta is-primary">Continue</button>
+  </div>
+</div>

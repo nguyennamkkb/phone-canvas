@@ -1,0 +1,99 @@
+<!-- S12 — Layout Editor. Alignment, metric placement, spacing, text
+     scale, safe-area preview, and auto-validation guidance (guidance,
+     not a score — spec). -->
+<div class="screen">
+  <header class="navbar">
+    <button class="icon-btn" aria-label="Back">
+      <!-- @component dt-back -->
+    </button>
+    <span class="nav-title">Layout</span>
+    <button class="dt-mini-btn">Done</button>
+  </header>
+  <div class="body" style="padding: var(--s2) var(--s5) var(--s4); gap: var(--s4)">
+    <div class="dt-canvas">
+      <span class="dt-canvas-label">SAFE-AREA PREVIEW</span>
+      <div class="dt-widget-frame dt-safe-frame">
+        <span class="dt-widget-time">9:41</span>
+        <span class="dt-widget-sub">Tue · 28°</span>
+      </div>
+    </div>
+
+    <div class="col" style="gap: var(--s3)">
+      <span class="dt-section-title">Alignment</span>
+      <div class="dt-seg" aria-label="Alignment">
+        <button class="dt-seg-item" aria-label="Align left">
+          <span class="icon icon-sm" data-symbol="text.alignleft"></span>
+        </button>
+        <button class="dt-seg-item is-active" aria-label="Align center">
+          <span class="icon icon-sm" data-symbol="text.aligncenter"></span>
+        </button>
+        <button class="dt-seg-item" aria-label="Align right">
+          <span class="icon icon-sm" data-symbol="text.alignright"></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="dt-group">
+      <div class="dt-group-row">
+        <span class="dt-group-title grow">Primary metric</span>
+        <div class="row" style="gap: var(--s1)">
+          <span class="dt-group-value">Top</span>
+          <!-- @component dt-chev -->
+        </div>
+      </div>
+      <div class="dt-group-row">
+        <span class="dt-group-title grow">Secondary metric</span>
+        <div class="row" style="gap: var(--s1)">
+          <span class="dt-group-value">Bottom</span>
+          <!-- @component dt-chev -->
+        </div>
+      </div>
+    </div>
+
+    <div class="col" style="gap: var(--s3)">
+      <span class="dt-section-title">Spacing</span>
+      <div class="dt-slider" role="slider" aria-label="Spacing" aria-valuenow="12">
+        <div class="dt-slider-track"></div>
+        <div class="dt-slider-fill"></div>
+        <div class="dt-slider-knob"></div>
+      </div>
+    </div>
+
+    <div class="col" style="gap: var(--s3)">
+      <span class="dt-section-title">Text scale</span>
+      <div class="dt-slider" role="slider" aria-label="Text scale" aria-valuenow="30">
+        <div class="dt-slider-track"></div>
+        <div class="dt-slider-fill"></div>
+        <div class="dt-slider-knob"></div>
+      </div>
+    </div>
+
+    <div class="col" style="gap: var(--s3)">
+      <span class="dt-section-title">Auto validation</span>
+      <div class="dt-card" style="gap: var(--s3)">
+        <div class="dt-check-row">
+          <span class="dt-check is-done">
+            <span class="icon icon-sm" data-symbol="checkmark"></span>
+          </span>
+          <span class="dt-check-label is-done">Primary text 30pt — glance size passes</span>
+        </div>
+        <div class="dt-check-row">
+          <span class="dt-check is-done">
+            <span class="icon icon-sm" data-symbol="checkmark"></span>
+          </span>
+          <span class="dt-check-label is-done">3 content blocks — within the limit</span>
+        </div>
+        <div class="dt-check-row">
+          <span class="dt-check is-done">
+            <span class="icon icon-sm" data-symbol="checkmark"></span>
+          </span>
+          <span class="dt-check-label is-done">Contrast 12.4:1 — passes after background removal</span>
+        </div>
+        <div class="dt-check-row">
+          <span class="dt-check is-warn">!</span>
+          <span class="dt-check-label">Photo fills the frame — keep it behind the facts</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,98 @@
+<!-- S11 — Appearance Editor. Six theme presets, visual controls, and
+     the CarPlay contrast rule. Midnight is the active preset. -->
+<div class="screen">
+  <header class="navbar">
+    <button class="icon-btn" aria-label="Back">
+      <!-- @component dt-back -->
+    </button>
+    <span class="nav-title">Appearance</span>
+    <button class="dt-mini-btn">Done</button>
+  </header>
+  <div class="body" style="padding: var(--s2) var(--s5) var(--s4); gap: var(--s4)">
+    <div class="col" style="gap: var(--s3)">
+      <span class="dt-section-title">Theme presets</span>
+      <div class="dt-group">
+        <div class="dt-group-row">
+          <span class="dt-group-title grow">Midnight</span>
+          <span class="icon" data-symbol="checkmark" style="color: var(--success)"></span>
+        </div>
+        <div class="dt-group-row">
+          <span class="dt-group-title grow">Graphite</span>
+        </div>
+        <div class="dt-group-row">
+          <span class="dt-group-title grow">Minimal</span>
+        </div>
+        <div class="dt-group-row">
+          <span class="dt-group-title grow">Warm</span>
+        </div>
+        <div class="dt-group-row">
+          <span class="dt-group-title grow">Electric</span>
+        </div>
+        <div class="dt-group-row">
+          <span class="dt-group-title grow">Paper</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col" style="gap: var(--s3)">
+      <span class="dt-section-title">Controls</span>
+      <div class="dt-group">
+        <div class="dt-group-row">
+          <span class="dt-group-title grow">Accent</span>
+          <div class="row" style="gap: var(--s1)">
+            <span class="dt-group-value">Blue</span>
+            <!-- @component dt-chev -->
+          </div>
+        </div>
+        <div class="dt-group-row">
+          <span class="dt-group-title grow">Text emphasis</span>
+          <div class="row" style="gap: var(--s1)">
+            <span class="dt-group-value">Strong</span>
+            <!-- @component dt-chev -->
+          </div>
+        </div>
+        <div class="dt-group-row">
+          <span class="dt-group-title grow">Font</span>
+          <div class="row" style="gap: var(--s1)">
+            <span class="dt-group-value">Rounded</span>
+            <!-- @component dt-chev -->
+          </div>
+        </div>
+        <div class="dt-group-row">
+          <span class="dt-group-title grow">Icon treatment</span>
+          <div class="row" style="gap: var(--s1)">
+            <span class="dt-group-value">Filled</span>
+            <!-- @component dt-chev -->
+          </div>
+        </div>
+        <div class="dt-group-row">
+          <span class="dt-group-title grow">Image crop</span>
+          <div class="row" style="gap: var(--s1)">
+            <span class="dt-group-value">Fill</span>
+            <!-- @component dt-chev -->
+          </div>
+        </div>
+        <div class="dt-group-row">
+          <span class="dt-group-title grow">Contrast mode</span>
+          <button class="dt-toggle is-on" role="switch" aria-checked="true" aria-label="Contrast mode">
+            <span class="dt-toggle-knob"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col" style="gap: var(--s3)">
+      <span class="dt-section-title">Corner radius</span>
+      <div class="dt-slider" role="slider" aria-label="Corner radius" aria-valuenow="16">
+        <div class="dt-slider-track"></div>
+        <div class="dt-slider-fill"></div>
+        <div class="dt-slider-knob"></div>
+      </div>
+    </div>
+
+    <div class="dt-card">
+      <span class="dt-card-title">CarPlay rule</span>
+      <span class="dt-card-sub">Never rely on subtle contrast or tiny decorative text — the tile must survive background removal.</span>
+    </div>
+  </div>
+</div>

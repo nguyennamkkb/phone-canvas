@@ -1,0 +1,89 @@
+<!-- S14 — My Widgets (Widgets tab). Filter, saved-widget rows with
+     preview + name + edited time + default/favorite, and the item
+     actions on the selected row. -->
+<div class="screen">
+  <div class="body" style="padding: var(--s4) var(--s5); gap: var(--s4)">
+    <div class="row" style="justify-content: space-between">
+      <span class="nav-title">My Widgets</span>
+      <button class="icon-btn" aria-label="Add widget">
+        <span class="icon" data-symbol="plus"></span>
+      </button>
+    </div>
+
+    <div class="dt-seg" aria-label="Filter">
+      <button class="dt-seg-item is-active">All</button>
+      <button class="dt-seg-item">Favorites</button>
+      <button class="dt-seg-item">Recent</button>
+      <button class="dt-seg-item">Templates</button>
+    </div>
+
+    <div class="col" style="gap: var(--card-gap)">
+      <div class="dt-card">
+        <div class="row">
+          <div class="dt-widget-frame is-light is-mini" style="width: var(--s16); flex: 0 0 auto">
+            <span class="dt-widget-time">9:41</span>
+          </div>
+          <div class="col grow" style="gap: 0">
+            <div class="row" style="gap: var(--s1)">
+              <span class="dt-card-title">Morning Clock</span>
+              <span class="dt-badge is-ready">Default</span>
+            </div>
+            <span class="dt-card-sub">Edited today · 8:04 AM</span>
+          </div>
+          <span class="icon" data-symbol="star" style="color: var(--warning)"></span>
+        </div>
+        <div class="row">
+          <button class="dt-mini-btn grow">Edit</button>
+          <button class="dt-mini-btn grow">Preview</button>
+          <button class="dt-mini-btn grow">Share</button>
+        </div>
+      </div>
+
+      <div class="dt-card is-row">
+        <div class="dt-widget-frame is-light is-mini" style="width: var(--s16); flex: 0 0 auto">
+          <span class="dt-widget-time">28°</span>
+        </div>
+        <div class="col grow" style="gap: 0">
+          <span class="dt-card-title">Sky Now</span>
+          <span class="dt-card-sub">Edited yesterday · 6:12 PM</span>
+        </div>
+        <span class="icon" data-symbol="star" style="color: var(--label-3)"></span>
+        <!-- @component dt-chev -->
+      </div>
+
+      <div class="dt-card is-row">
+        <div class="dt-widget-frame is-mini" style="width: var(--s16); flex: 0 0 auto">
+          <span class="dt-widget-time">12d</span>
+        </div>
+        <div class="col grow" style="gap: 0">
+          <div class="row" style="gap: var(--s1)">
+            <span class="dt-card-title">Road Countdown</span>
+            <span class="dt-badge is-premium">Pro</span>
+          </div>
+          <span class="dt-card-sub">Edited Mon · 9:30 AM</span>
+        </div>
+        <span class="icon" data-symbol="star" style="color: var(--label-3)"></span>
+        <!-- @component dt-chev -->
+      </div>
+    </div>
+  </div>
+
+  <nav class="tabbar" aria-label="Primary">
+    <button class="tab" aria-selected="false">
+      <span class="icon icon-sm" data-symbol="house"></span>
+      Home
+    </button>
+    <button class="tab" aria-selected="false">
+      <span class="icon icon-sm" data-symbol="plus"></span>
+      Create
+    </button>
+    <button class="tab is-active" aria-selected="true">
+      <span class="icon icon-sm" data-symbol="folder"></span>
+      Widgets
+    </button>
+    <button class="tab" aria-selected="false">
+      <span class="icon icon-sm" data-symbol="gear"></span>
+      Settings
+    </button>
+  </nav>
+</div>
