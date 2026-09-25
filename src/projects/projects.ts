@@ -1,18 +1,19 @@
-import { SCREEN_BY_ID } from '../screens'
-import { BUILTIN_PROJECTS } from './builtin'
-import type { ProjectDef } from './builtin'
+import { PROJECTS, SCREEN_BY_ID } from './registry'
+import type { ProjectDef } from './types'
 
 /**
  * A project is a named board: a list of screen ids rendered as phone nodes.
  *
- * Screens stay single-source in `src/screens/manifest.ts`; a project only
- * references ids. Board layout (positions, devices, edges) is per-project
- * runtime state persisted in localStorage (see ./storage.ts), never here.
+ * Projects and their screens come from the project folders (see
+ * `./registry.ts` and `docs/screen-authoring.md`); this module only adds the
+ * resolving helpers the app uses on top of that registry. Board layout
+ * (positions, devices, edges) is per-project runtime state persisted in
+ * localStorage (see ./storage.ts), never here.
  */
 
 export type Project = ProjectDef
 
-export { BUILTIN_PROJECTS }
+export const BUILTIN_PROJECTS = PROJECTS
 
 /** drop unknown ids so a renamed screen never breaks a whole project */
 export function resolveScreens(project: Project): string[] {

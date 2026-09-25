@@ -145,7 +145,11 @@ export function Dashboard({ projects, onOpen, onCreate, onDelete, uiTheme, onUiT
       </header>
 
       {filtered.length === 0 && (
-        <p className="empty">Không tìm thấy dự án nào cho “{query}”.</p>
+        <p className="empty">
+          {projects.length === 0
+            ? 'Chưa có dự án nào — tạo dự án mới ở ô trên.'
+            : `Không tìm thấy dự án nào cho “${query}”.`}
+        </p>
       )}
 
       <div className="dash-grid">

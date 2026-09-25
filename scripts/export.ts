@@ -3,7 +3,7 @@
  * Export every screen to PNG, at any device size and scale.
  *
  *   npm run export
- *   npm run export -- --screen journal-list --scale 3
+ *   npm run export -- --screen my-screen --scale 3
  *   npm run export -- --device iphone-se --out /tmp/shots
  *
  * Zero dependencies. A phone screen is real HTML, so something has to lay it
@@ -26,10 +26,8 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { DEVICES, getDevice } from '../src/frame/devices.ts'
-import { SCREEN_FILES } from '../src/screens/manifest.ts'
-import { COMPONENT_FILES } from '../src/components/manifest.ts'
-import { BUILTIN_PROJECTS } from '../src/projects/builtin.ts'
 import { composeScreenDoc } from '../src/extractor/compose.ts'
+import { scanProjects } from './scan-projects.ts'
 import { exportFileName, parseArgs } from './export/cli.ts'
 import { launch, shutdown } from './export/cdp.ts'
 import { startSite } from './export/site.ts'
@@ -39,18 +37,6 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const SCREENS_DIR = path.join(ROOT, 'src/screens')
 const PUBLIC_DIR = path.join(ROOT, 'public')
 const STYLESHEETS = ['tokens.css', 'icons.css', 'icon-set.css']
-
-/**
- * Screen identity comes from `src/screens/manifest.ts`, never from the
- * directory listing. Scanning for `*.html` gives a second, drifting source of
- * ids: a file that exists but is not registered would export under a name the
- * board has never heard of, and a rename would silently change an id.
- */
-const SCREEN_BY_ID = new Map(SCREEN_FILES.map((screen) => [screen.id, screen]))
-
-async function listScreens(): Promise<string[]> {
-  return SCREEN_FILES.map((screen) => screen.id)
-}
 
 function fail(message: string): never {
   console.error(`export: ${message}`)
@@ -65,13 +51,21 @@ function display(target: string): string {
 
 async function main(): Promise<void> {
   const options = parseArgs(process.argv.slice(2))
-  const allScreens = await listScreens()
+
+  // One registry for the whole run: the same discovery the board reads, so a
+  // file added under project/ is exported without a codegen or manifest edit.
+  const { registry, errors } = await scanProjects()
+  if (errors.length > 0) {
+    fail(`project registry:\n  ${errors.map((e) => `${e.file}: ${e.message}`).join('\n  ')}`)
+  }
+  const screenById = new Map(registry.screens.map((screen) => [screen.id, screen]))
+  const allScreens = registry.screens.map((screen) => screen.id)
 
   if (options.screens.length === 0 && options.devices.length === 0) {
     console.log('screens:')
-    for (const screen of SCREEN_FILES) console.log(`  ${screen.id.padEnd(20)} ${screen.title}`)
+    for (const screen of registry.screens) console.log(`  ${screen.id.padEnd(20)} ${screen.title}`)
     console.log('projects:')
-    for (const project of BUILTIN_PROJECTS)
+    for (const project of registry.projects)
       console.log(`  ${project.id.padEnd(20)} ${project.title} (${project.screenIds.length} screens)`)
     console.log('devices:')
     for (const device of DEVICES) console.log(`  ${device.id.padEnd(20)} ${device.name}`)
@@ -82,7 +76,7 @@ async function main(): Promise<void> {
   if (options.projects.length > 0) {
     const fromProjects: string[] = []
     for (const pid of options.projects) {
-      const project = BUILTIN_PROJECTS.find((p) => p.id === pid)
+      const project = registry.projects.find((p) => p.id === pid)
       if (!project) fail(`unknown project "${pid}". Try --list`)
       fromProjects.push(...project.screenIds)
     }
@@ -116,26 +110,16 @@ async function main(): Promise<void> {
   // compose everything up front so the site can serve it by URL
   const documents = new Map<string, string>()
   for (const screenId of screens) {
-    const screen = SCREEN_BY_ID.get(screenId)
+    const screen = screenById.get(screenId)
     if (!screen) fail(`unknown screen "${screenId}". Try --list`)
-    // screen.file is relative to the repo root (project/<id>/<name>.html);
-    // shared stylesheets still come from src/screens/, then the owning
-    // project's tokens.css — the same order the board uses.
-    const html = await readFile(path.join(ROOT, screen.file), 'utf8')
-    const owner = BUILTIN_PROJECTS.find((p) => p.screenIds.includes(screenId))
-    const projectTokens = owner
-      ? await readFile(path.join(ROOT, 'project', owner.id, 'tokens.css'), 'utf8').catch(
-          () => null,
-        )
-      : null
-    // component-system: the same files the board loads via `?raw`, read here
-    // off disk so an export expands `@component` exactly like the board does.
+    // shared stylesheets come from src/screens/, then the owning project's
+    // tokens.css — the same order the board uses.
+    const html = screen.html
+    const projectTokens = registry.tokens[screen.projectId] ?? null
     const components: Record<string, string> = {}
-    if (owner) {
-      for (const component of COMPONENT_FILES) {
-        if (component.project !== owner.id) continue
-        components[component.id] = await readFile(path.join(ROOT, component.file), 'utf8')
-      }
+    for (const component of registry.components) {
+      if (component.project !== screen.projectId) continue
+      components[component.id] = component.html
     }
     const stylesheets = projectTokens ? [...sharedStyles, projectTokens] : sharedStyles
     for (const deviceId of devices) {

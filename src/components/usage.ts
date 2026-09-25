@@ -1,5 +1,5 @@
 import { SCREEN_BY_ID } from '../screens'
-import { BUILTIN_PROJECTS } from '../projects/builtin'
+import { BUILTIN_PROJECTS } from '../projects/projects'
 import { componentsOf } from './index'
 
 /**

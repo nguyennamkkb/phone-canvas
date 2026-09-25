@@ -7,10 +7,10 @@
  *   npm run screen -- --help
  *
  * Thin dispatcher over the three lifecycle scripts — add (new-screen),
- * rename (rename-screen), remove (delete-screen) — plus list (manifest
- * + owning project, no writes) and gate (screens:sync + tsc + lint,
- * the auto-verify remove/rename/add run). npm aliases new-screen /
- * delete-screen / rename-screen stay as the stable habit path.
+ * rename (rename-screen), remove (delete-screen) — plus list (project
+ * folders, no writes) and gate (tsc + lint, the auto-verify
+ * remove/rename/add run). npm aliases new-screen / delete-screen /
+ * rename-screen stay as the stable habit path.
  */
 
 import { execFile } from 'node:child_process'
@@ -41,8 +41,8 @@ function usage() {
       '  add     scaffold a screen (same as npm run new-screen)',
       '  rename  rename a screen id (same as npm run rename-screen)',
       '  remove  delete a screen (same as npm run delete-screen)',
-      '  list    ids + titles + owners from the manifest (read-only)',
-      '  gate    screens:sync + tsc --noEmit + lint (auto-runs after add/rename/remove)',
+      '  list    ids + titles + owners from the project folders (read-only)',
+      '  gate    tsc --noEmit + lint (auto-runs after add/rename/remove)',
     ].join('\n'),
   )
 }
@@ -70,16 +70,18 @@ async function pass(cmd, args) {
 }
 
 async function list(filterProject) {
-  const { SCREEN_FILES } = await import('../src/screens/manifest.ts')
-  const { BUILTIN_PROJECTS } = await import('../src/projects/builtin.ts')
-  const ownerOf = (id) =>
-    (BUILTIN_PROJECTS.find((p) => p.screenIds.includes(id)) ?? {}).id ?? '(custom)'
-  const rows = SCREEN_FILES.filter((s) => !filterProject || ownerOf(s.id) === filterProject)
-  if (filterProject && !BUILTIN_PROJECTS.some((p) => p.id === filterProject)) {
-    const ids = BUILTIN_PROJECTS.map((p) => p.id).join(' | ')
+  const { scanProjects } = await import('./scan-projects.ts')
+  const { registry, errors } = await scanProjects()
+  if (errors.length > 0) {
+    for (const error of errors) console.error(`error  ${error.file}  ${error.message}`)
+    process.exit(1)
+  }
+  if (filterProject && !registry.projects.some((p) => p.id === filterProject)) {
+    const ids = registry.projects.map((p) => p.id).join(' | ') || '(chưa có dự án nào)'
     fail(`unknown --project "${filterProject}" — valid: ${ids}`)
   }
-  for (const s of rows) console.log(`${s.id}\t${s.title}\t${ownerOf(s.id)}\t${s.file}`)
+  const rows = registry.screens.filter((s) => !filterProject || s.projectId === filterProject)
+  for (const s of rows) console.log(`${s.id}\t${s.title}\t${s.projectId}\t${s.file}`)
   console.log(`(${rows.length} screen${rows.length === 1 ? '' : 's'})`)
 }
 
@@ -99,9 +101,6 @@ async function gate() {
   }
   // node scripts keep the --disable-warning flag where node understands it;
   // tsc resolves the repo-local bin on PATH (no hardcoded node_modules path).
-  await runOne('screens:sync', () =>
-    run(process.execPath, ['--disable-warning=ExperimentalWarning', 'scripts/gen-registry.ts'], { cwd: ROOT }),
-  )
   await runOne('tsc --noEmit', () => run('npx', ['--yes', 'tsc', '--noEmit'], { cwd: ROOT }))
   await runOne('lint', () => run('npm', ['run', 'lint', '--silent'], { cwd: ROOT }))
   process.stdout.write('gate: all green\n')

@@ -1,9 +1,9 @@
 import tokensCss from '../screens/tokens.css?raw'
 import iconsCss from '../screens/icons.css?raw'
 import iconSetCss from '../screens/icon-set.css?raw'
-import moodtrackerTokens from '../../project/moodtracker/tokens.css?raw'
-import drivetilesTokens from '../../project/drivetiles/tokens.css?raw'
+
 import { componentMap } from '../components'
+import { tokensCssFor } from '../projects/registry'
 
 /**
  * Browser-side asset assembly, shared by the board iframes and the component
@@ -15,15 +15,9 @@ import { componentMap } from '../components'
  * over everything.
  */
 
-/** project override stylesheets, keyed by project id */
-const PROJECT_CSS: Record<string, string> = {
-  moodtracker: moodtrackerTokens,
-  drivetiles: drivetilesTokens,
-}
-
 export function stylesheetsFor(projectId?: string, extraCss?: string | null): string[] {
   const out = [tokensCss, iconsCss, iconSetCss]
-  const projectCss = projectId ? PROJECT_CSS[projectId] : null
+  const projectCss = projectId ? tokensCssFor(projectId) : null
   if (projectCss) out.push(projectCss)
   if (extraCss) out.push(extraCss)
   return out

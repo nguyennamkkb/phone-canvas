@@ -4,7 +4,7 @@ import { composeScreenDoc } from '../extractor/compose'
 import { componentsFor, stylesheetsFor } from '../extractor/assets'
 import { DEFAULT_DEVICE_ID, DEVICES, getDevice, isKnownDevice } from '../frame/devices'
 import { SCREEN_BY_ID } from '../screens'
-import { BUILTIN_PROJECTS } from '../projects/builtin'
+import { BUILTIN_PROJECTS } from '../projects/projects'
 import { useInspector } from '../inspect/InspectorContext'
 import { ElementTree } from '../inspect/element-tree/ElementTree'
 import { SpecDetail } from '../inspect/spec-detail/SpecDetail'
@@ -176,8 +176,8 @@ export function ComponentDock({ projectId, theme }: ComponentDockProps) {
       <div className="component-empty">
         <p>Dự án này chưa có component nào.</p>
         <p className="component-hint">
-          Thêm <code>project/{projectId}/components/&lt;tên&gt;.html</code> và một entry trong{' '}
-          <code>src/components/manifest.ts</code>, rồi chạy <code>npm run components:sync</code>.
+          Thêm <code>project/{projectId}/components/&lt;tên&gt;.html</code> là xong — component id
+          chính là tên file; board thấy ngay khi reload, không cần đăng ký.
         </p>
       </div>
     )

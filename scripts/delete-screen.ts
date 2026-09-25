@@ -1,37 +1,33 @@
 #!/usr/bin/env node
 // @ts-nocheck — small zero-dep cli, checked by running it, not by tsc
 /**
- * Permanently delete a screen (screen-trash 4.1) — the inverse of new-screen:
+ * Remove a screen — one file, inside its project folder:
  *
- *   npm run delete-screen -- --id mood-calendar [--force]
+ *   npm run delete-screen -- --id <screen-id> [--force]
  *
- * Removes:
- *   1. `project/<owner>/<name>.html` from disk
- *   2. the entry in `src/screens/manifest.ts`
- *   3. the id in the owning project's `screenIds` (builtin.ts)
- *   4. regenerates `src/screens/generated.ts` via screens:sync
- *
- * Refuses unknown ids WITHOUT writing. Refuses when the screen still has
- * nodes on a saved board unless `--force` is given — a board referencing a
- * deleted file renders nothing, so the check reads every state file under
- * project/<id>/board.json when present and refuses without --force.
+ * Deletes `project/<owner>/screens/<id>.html`. There is no manifest entry to
+ * edit and no codegen to run. Refuses when any on-disk `project/<id>/board.json`
+ * still references the screen — pass `--force` to delete anyway. Browser
+ * localStorage boards prune on open (reader-side).
  */
 
-import { readFile, readdir, unlink, writeFile } from 'node:fs/promises'
+import { readFile, readdir, unlink } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+
+import { scanProjects } from './scan-projects.ts'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
 function usage() {
   console.log(
     [
-      'Permanently delete a phone screen and its registry wiring.',
+      'Delete a screen (its HTML file only).',
       '',
       '  npm run delete-screen -- --id <screen-id> [--force]',
       '',
-      '  --id     screen id from src/screens/manifest.ts',
-      '  --force  also delete while saved boards still reference the id',
+      '  --id     screen id (filename stem under project/<id>/screens/)',
+      '  --force  delete even when an on-disk board.json still references it',
     ].join('\n'),
   )
 }
@@ -64,6 +60,23 @@ function fail(msg) {
   process.exit(1)
 }
 
+/** how a parsed board/state file references a screen id */
+function boardRefs(parsed, id) {
+  const refs = []
+  const board = parsed && typeof parsed === 'object' && parsed.board ? parsed.board : parsed
+  if (!board || typeof board !== 'object') return refs
+  if (Array.isArray(board.nodes)) {
+    for (const n of board.nodes) if (n?.data?.screenId === id) refs.push('node')
+  }
+  if (Array.isArray(board.removed) && board.removed.includes(id)) refs.push('removed')
+  if (Array.isArray(board.trash)) {
+    for (const t of board.trash) {
+      if (t?.screenId === id || t?.node?.data?.screenId === id) refs.push('trash')
+    }
+  }
+  return refs
+}
+
 async function main() {
   let o
   try {
@@ -77,91 +90,50 @@ async function main() {
     fail('missing --id')
   }
 
-  const [manifestSrc, builtinSrc] = await Promise.all([
-    readFile(path.join(ROOT, 'src/screens/manifest.ts'), 'utf8'),
-    readFile(path.join(ROOT, 'src/projects/builtin.ts'), 'utf8'),
-  ])
+  const { registry, errors } = await scanProjects()
+  if (errors.length > 0) {
+    fail(`project registry có lỗi — sửa trước:\n  ${errors.map((e) => `${e.file}: ${e.message}`).join('\n  ')}`)
+  }
+  const screen = registry.screens.find((s) => s.id === id)
+  if (!screen) fail(`unknown --id "${id}" — không có screen nào tên này`)
 
-  // locate the manifest entry — the file path is the identity on disk
-  const entryMatch = manifestSrc
-    .split('\n')
-    .find((line) => line.includes(`id: '${id}'`) || line.includes(`id: "${id}"`))
-  if (!entryMatch) fail(`unknown --id "${id}" — not in src/screens/manifest.ts`)
-  const fileMatch = /file:\s*['"]([^'"]+)['"]/.exec(entryMatch)
-  if (!fileMatch) fail(`entry "${id}" has no file path in manifest.ts`)
-  const file = fileMatch[1]
-
-  // board references: board.json state files, plus localStorage is runtime-only
-  // (the browser cache dies with clearBoard; the file is the durable record)
-  const refs = []
+  // board.json files are per project folder; a custom board may reference a
+  // screen from any project, so scan them all.
+  const references = []
   try {
-    const projectDir = path.join(ROOT, 'project')
-    for (const pid of await readdir(projectDir)) {
-      const boardJson = path.join(projectDir, pid, 'board.json')
+    for (const pid of await readdir(path.join(ROOT, 'project'))) {
+      const p = path.join(ROOT, 'project', pid, 'board.json')
+      let raw
       try {
-        const raw = await readFile(boardJson, 'utf8')
-        if (raw.includes(`"${id}"`)) refs.push(`project/${pid}/board.json`)
+        raw = await readFile(p, 'utf8')
       } catch {
-        /* no state file — fine */
+        continue
       }
+      let parsed
+      try {
+        parsed = JSON.parse(raw)
+      } catch {
+        references.push(`project/${pid}/board.json (unreadable JSON — kiểm tra tay)`)
+        continue
+      }
+      const refs = boardRefs(parsed, id)
+      if (refs.length > 0) references.push(`project/${pid}/board.json (${refs.join(', ')})`)
     }
   } catch {
     /* no project dir — fine */
   }
-  if (!builtinSrc.includes(`'${id}'`) && !builtinSrc.includes(`"${id}"`)) {
-    // id only in manifest (custom project screen) — still deletable
-  }
-  if (refs.length > 0 && !force) {
+
+  if (references.length > 0 && !force) {
     fail(
-      `"${id}" is still referenced by ${refs.join(', ')} — restore or drop it there first, or pass --force`,
+      `${id} còn được board tham chiếu:\n  ${references.join('\n  ')}\n  dùng --force nếu chắc muốn xoá`,
     )
   }
 
-  const marker = 'export const SCREEN_FILES: ScreenFile[] = ['
-  const bodyStart = manifestSrc.indexOf(marker)
-  if (bodyStart < 0) fail('cannot find SCREEN_FILES in manifest.ts')
-  const bodyStart2 = bodyStart + marker.length
-  const close = manifestSrc.indexOf(']', bodyStart2)
-  if (close < 0) fail('cannot find SCREEN_FILES closing in manifest.ts')
-  const kept = manifestSrc
-    .slice(bodyStart2, close)
-    .split('\n')
-    .filter((line) => line.trim() && !line.includes(`id: '${id}'`) && !line.includes(`id: "${id}"`))
-  const manifestNext =
-    manifestSrc.slice(0, bodyStart2) + '\n' + kept.join('\n') + '\n]' + manifestSrc.slice(close + 1)
-  const builtinNext = builtinSrc.replace(new RegExp(`,?\\s*['"]${id}['"]\\s*,?`), '')
-  if (builtinNext === builtinSrc) {
-    console.log(`note: "${id}" was not in builtin.ts (custom project screen?)`)
-  }
-
-  // delete order: file first is wrong here — registry first would leave a
-  // file pointing at nothing on failure. Unlink the file first so a later
-  // wiring failure leaves an (obvious) orphan file, never a registry
-  // pointing at a missing file (which throws at startup).
-  const absFile = path.join(ROOT, file)
-  try {
-    await unlink(absFile)
-  } catch (e) {
-    if (e.code !== 'ENOENT') throw e
-    console.log(`note: ${file} already gone from disk`)
-  }
-
-  await writeFile(path.join(ROOT, 'src/screens/manifest.ts'), manifestNext)
-  if (builtinNext !== builtinSrc) {
-    await writeFile(path.join(ROOT, 'src/projects/builtin.ts'), builtinNext)
-  }
-
-  const { execFile } = await import('node:child_process')
-  const { promisify } = await import('node:util')
-  await promisify(execFile)(
-    process.execPath,
-    ['--disable-warning=ExperimentalWarning', 'scripts/gen-registry.ts'],
-    { cwd: ROOT },
-  )
-
-  console.log(`deleted ${file}`)
-  console.log('unwired: manifest + generated.ts + builtin.ts')
-  console.log('next: npm run lint && npm run build')
+  await unlink(path.join(ROOT, screen.file))
+  console.log(`removed ${screen.file}`)
+  console.log(`project: ${screen.projectId} (không cần sửa registry nào)`)
+  if (references.length > 0) console.log(`note: bỏ qua tham chiếu trong ${references.join(', ')} (--force)`)
+  console.log('note: browser localStorage boards prune on open (reader-side)')
 }
 
 main().catch((e) => fail(e instanceof Error ? e.message : String(e)))

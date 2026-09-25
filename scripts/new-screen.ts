@@ -1,21 +1,24 @@
 #!/usr/bin/env node
 // @ts-nocheck — small zero-dep cli, checked by running it, not by tsc
 /**
- * Scaffold a new screen (4.1–4.2):
+ * Scaffold a new screen:
  *
- *   npm run new-screen -- --project moodtracker --name my-screen --title "My Screen"
+ *   npm run new-screen -- --project <project-id> --name my-screen --title "My Screen"
  *
- * Writes `project/<id>/<name>.html` from a contract-valid template, then wires:
- *   1. `src/screens/manifest.ts` — SCREEN_FILES entry
- *   2. `src/screens/generated.ts` — regenerated `?raw` registry (via screens:sync)
- *   3. `src/projects/builtin.ts` — append id to the owning project's screenIds
+ * Writes `project/<project>/screens/<name>.html` from a contract-valid
+ * template. The registry is the folder itself — there is nothing else to wire:
+ * the board sees the file on the next reload and `npm run export` reads it
+ * immediately.
  *
- * Refuses bad input (unknown project, bad slug, duplicate id) WITHOUT writing.
+ * Refuses bad input (unknown project, bad slug, duplicate id, existing file)
+ * WITHOUT writing.
  */
 
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+
+import { scanProjects } from './scan-projects.ts'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -28,12 +31,12 @@ function usage() {
       '',
       '  npm run new-screen -- --project <id> --name <slug> --title "Title" [--dark] [--device ipad-11]',
       '',
-      '  --project  builtin project id (moodtracker)',
+      '  --project  project folder id (see npm run project -- list)',
       '  --name     kebab-case screen id, unique across all screens',
       '  --title    board/panel title',
       '  --dark     mark lightStatusBar (dark hero under the status bar)',
       '  --device   device preset id (see src/frame/devices.ts); ipad-* screens',
-      '             get a 2-column template + a manifest deviceId so new boards',
+      '             get a 2-column template + a header deviceId so new boards',
       '             open them at the right width. Default: reference phone.',
     ].join('\n'),
   )
@@ -60,6 +63,14 @@ function args(argv) {
     throw new Error(`unknown argument: ${a}`)
   }
   return out
+}
+
+/** optional metadata header — the only place a screen declares its own title */
+function header(title, dark, deviceId) {
+  const meta = { title }
+  if (dark) meta.lightStatusBar = true
+  if (deviceId) meta.deviceId = deviceId
+  return `<!-- pc ${JSON.stringify(meta)} -->\n`
 }
 
 function template(title, themeClass, deviceId) {
@@ -123,9 +134,9 @@ function template(title, themeClass, deviceId) {
 `
 }
 
-/** project theme class: moodtracker screens opt into the warm theme */
-function themeClass(projectId) {
-  return projectId === 'moodtracker' ? ' app-mood' : ''
+/** per-project theme class hook — no project opts into one today */
+function themeClass(_projectId) {
+  return ''
 }
 
 function fail(msg) {
@@ -150,34 +161,30 @@ async function main() {
   }
   // --device is validated BEFORE any write (refuse-without-writing): ids come
   // from src/frame/devices.ts so the CLI can never invent a device the board,
-  // NodePicker and export do not know. Absent = reference phone (no manifest
-  // field, old entries untouched).
+  // NodePicker and export do not know. Absent = reference phone.
   let deviceId = null
   if (device) {
     const devicesSrc = await readFile(path.join(ROOT, 'src/frame/devices.ts'), 'utf8')
-    const known = new Set(
-      [...devicesSrc.matchAll(/id: '([a-z0-9-]+)'/g)].map((m) => m[1]),
-    )
+    const known = new Set([...devicesSrc.matchAll(/id: '([a-z0-9-]+)'/g)].map((m) => m[1]))
     if (!known.has(device)) {
       fail(`unknown --device "${device}" — valid: ${[...known].join(' | ')}`)
     }
     if (device !== 'reference') deviceId = device
   }
 
-  const [manifestSrc, builtinSrc] = await Promise.all([
-    readFile(path.join(ROOT, 'src/screens/manifest.ts'), 'utf8'),
-    readFile(path.join(ROOT, 'src/projects/builtin.ts'), 'utf8'),
-  ])
-
-  if (!builtinSrc.includes(`id: '${project}'`)) {
-    const ids = [...builtinSrc.matchAll(/id: '([a-z-]+)'/g)].map((m) => m[1]).join(' | ')
-    fail(`unknown --project "${project}" — valid: ${ids}`)
+  const { registry, errors } = await scanProjects()
+  if (errors.length > 0) {
+    fail(`project registry có lỗi — sửa trước:\n  ${errors.map((e) => `${e.file}: ${e.message}`).join('\n  ')}`)
   }
-  if (manifestSrc.includes(`id: '${name}'`) || manifestSrc.includes(`id: "${name}"`)) {
-    fail(`id "${name}" already exists in src/screens/manifest.ts`)
+  if (!registry.projects.some((p) => p.id === project)) {
+    const ids = registry.projects.map((p) => p.id).join(' | ') || '(chưa có dự án nào)'
+    fail(`unknown --project "${project}" — valid: ${ids}\n  tạo dự án mới: npm run project -- add <id>`)
+  }
+  if (registry.screens.some((s) => s.id === name)) {
+    fail(`id "${name}" đã tồn tại (screen id unique toàn cục)`)
   }
 
-  const file = `project/${project}/${name}.html`
+  const file = `project/${project}/screens/${name}.html`
   const absFile = path.join(ROOT, file)
   try {
     await readFile(absFile, 'utf8')
@@ -186,59 +193,11 @@ async function main() {
     if (e.code !== 'ENOENT') throw e
   }
 
-  // 0. write the HTML first so a later wiring failure leaves a visible file,
-  //    never a registry pointing at nothing
   await mkdir(path.dirname(absFile), { recursive: true })
-  await writeFile(absFile, template(title, themeClass(project), deviceId))
-
-  // 1. manifest entry — insert into SCREEN_FILES, empty list included
-  const marker = 'export const SCREEN_FILES: ScreenFile[] = ['
-  const open = manifestSrc.indexOf(marker)
-  if (open < 0) fail('cannot find SCREEN_FILES in manifest.ts')
-  const bodyStart = open + marker.length
-  const close = manifestSrc.indexOf(']', bodyStart)
-  if (close < 0) fail('cannot find SCREEN_FILES closing in manifest.ts')
-  const statusProp = dark ? ', lightStatusBar: true' : ''
-  // deviceId is sticky: fresh boards open this screen at its own width via
-  // deviceForScreen (BoardView). Omitted for the default so old entries and
-  // rename/delete flows that carry whole entry lines keep working untouched.
-  const deviceProp = deviceId ? `, deviceId: '${deviceId}'` : ''
-  const manifestEntry = `  { id: '${name}', title: '${title.replace(/'/g, "\\'")}', file: '${file}'${statusProp}${deviceProp} },\n`
-  const body = manifestSrc.slice(bodyStart, close)
-  // strip only the leading newline after `[`; keep the body's own indents
-  const bodyRest = body.slice(body.startsWith('\n') ? 1 : 0)
-  const manifestNext =
-    manifestSrc.slice(0, bodyStart) +
-    '\n' +
-    manifestEntry +
-    bodyRest +
-    ']' +
-    manifestSrc.slice(close + 1)
-  await writeFile(path.join(ROOT, 'src/screens/manifest.ts'), manifestNext)
-
-  // 2. regenerate the ?raw registry from the manifest (single source of truth).
-  // index.ts only re-exports generated.ts — never hand-edit the generated file.
-  const { execFile } = await import('node:child_process')
-  const { promisify } = await import('node:util')
-  await promisify(execFile)(
-    process.execPath,
-    ['--disable-warning=ExperimentalWarning', 'scripts/gen-registry.ts'],
-    { cwd: ROOT },
-  )
-
-  // 3. append to owning project's screenIds
-  const screenIdsAnchor = new RegExp(`(id: '${project}'[\\s\\S]*?screenIds: \\[[\\s\\S]*?)(\\])`)
-  const m = screenIdsAnchor.exec(builtinSrc)
-  if (!m) fail(`cannot find screenIds for project "${project}" in builtin.ts`)
-  const listText = m[1]
-  const needsComma = /'[^']*'\s*$/.test(listText) && !/,\s*$/.test(listText)
-  // an empty list takes no separator: `[]` → `['a']`, not `[ 'a']`
-  const sep = /\[\s*$/.test(listText) ? '' : needsComma ? ', ' : ' '
-  const builtinNext = builtinSrc.replace(screenIdsAnchor, `${m[1]}${sep}'${name}'$2`)
-  await writeFile(path.join(ROOT, 'src/projects/builtin.ts'), builtinNext)
+  await writeFile(absFile, header(title, dark, deviceId) + template(title, themeClass(project), deviceId))
 
   console.log(`created ${file}`)
-  console.log(`wired: manifest + generated.ts + builtin.ts [${project}]`)
+  console.log(`board: màn xuất hiện ngay khi reload (không cần đăng ký)`)
   console.log('next: npm run lint && npm run build')
 }
 

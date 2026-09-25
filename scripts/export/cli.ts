@@ -50,8 +50,8 @@ Export phone screens to PNG.
 
 Examples
   npm run export
-  npm run export -- --screen journal-list --scale 3
-  npm run export -- --screen home --device ipad-11   # home-ipad-11@2x.png
+  npm run export -- --screen my-screen --scale 3
+  npm run export -- --screen my-screen --device ipad-11   # my-screen-ipad-11@2x.png
   npm run export -- --device all --out docs/shots
 `.trim()
 

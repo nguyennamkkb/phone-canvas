@@ -1,6 +1,5 @@
 import globalCss from '../screens/tokens.css?raw'
-import moodtrackerCss from '../../project/moodtracker/tokens.css?raw'
-import drivetilesCss from '../../project/drivetiles/tokens.css?raw'
+import { tokensCssFor } from '../projects/registry'
 
 /**
  * Design tokens as data — parsed from the same css files the iframes load,
@@ -25,11 +24,6 @@ export type Token = {
 }
 
 type Rgba = [number, number, number, number]
-
-const PROJECT_CSS: Record<string, string> = {
-  moodtracker: moodtrackerCss,
-  drivetiles: drivetilesCss,
-}
 
 function stripComments(css: string): string {
   return css.replace(/\/\*[\s\S]*?\*\//g, '')
@@ -69,7 +63,7 @@ function groupOf(name: string, lightValue: string): TokenGroup {
 /** merged token list for a project: project names first, then global-only */
 export function tokensOf(projectId: string): Token[] {
   const global = splitModes(globalCss)
-  const project = splitModes(PROJECT_CSS[projectId] ?? '')
+  const project = splitModes(tokensCssFor(projectId) ?? '')
   const globalLight = new Map(global.light)
   const globalDark = new Map(global.dark)
   const projectLight = new Map(project.light)
@@ -92,7 +86,7 @@ export function tokensOf(projectId: string): Token[] {
  *  Unknown ids (custom boards) resolve to []. Spec/lookup still uses the
  *  merged tokensOf(); this is purely what the board table displays. */
 export function projectTokensOf(projectId: string): Token[] {
-  const project = splitModes(PROJECT_CSS[projectId] ?? '')
+  const project = splitModes(tokensCssFor(projectId) ?? '')
   const light = new Map(project.light)
   const dark = new Map(project.dark)
   return [...light.keys()].map((name) => {

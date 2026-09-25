@@ -6,19 +6,20 @@
  *   npm run lint:components
  *
  * Rules:
- *   missing id   error — `<!-- @component x -->` with no component "x"
+ *   missing id   error — `<!-- @component x -->` with no component "x" in the
+ *                        owning project (components never cross projects)
  *   cycle        error — component A includes B includes A (would not expand)
  *   unused       warn  — a component no screen and no other component references
  *
- * Messages name file:line + the fix. Only errors fail the gate.
+ * Discovery comes from scripts/scan-projects.ts, so component ids are scoped
+ * to their project exactly like the board scopes them. Messages name file:line
+ * + the fix. Only errors fail the gate.
  */
 
-import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { SCREEN_FILES } from '../src/screens/manifest.ts'
-import { COMPONENT_FILES } from '../src/components/manifest.ts'
+import { scanProjects } from './scan-projects.ts'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const PLACEHOLDER = /<!--\s*@component\s+([a-zA-Z0-9_-]+)\s*-->/g
@@ -35,7 +36,7 @@ function refsIn(src) {
   return out
 }
 
-/** every cycle reachable in the component graph, as id chains */
+/** every cycle reachable in one project's component graph, as id chains */
 function findCycles(graph) {
   const cycles = []
   const state = new Map() // 0 unvisited, 1 in-stack, 2 done
@@ -69,9 +70,11 @@ function findCycles(graph) {
 }
 
 async function main() {
-  const registry = new Map(COMPONENT_FILES.map((c) => [c.id, c]))
-  let errors = 0
+  const { registry, errors: registryErrors } = await scanProjects()
+  let errors = registryErrors.length
   let warnings = 0
+  for (const error of registryErrors) console.error(`error  ${error.file}  ${error.message}`)
+
   const err = (file, line, msg) => {
     console.error(`error  ${file}:${line}  ${msg}`)
     errors += 1
@@ -81,48 +84,64 @@ async function main() {
     warnings += 1
   }
 
-  const componentSrc = new Map()
-  for (const c of COMPONENT_FILES) componentSrc.set(c.id, await readFile(path.join(ROOT, c.file), 'utf8'))
+  const componentIdsOf = (projectId) =>
+    new Set(registry.components.filter((c) => c.project === projectId).map((c) => c.id))
 
-  // 1. every reference must resolve
-  for (const screen of SCREEN_FILES) {
-    const html = await readFile(path.join(ROOT, screen.file), 'utf8')
-    for (const ref of refsIn(html)) {
-      if (!registry.has(ref.id)) {
-        err(screen.file, lineOf(html, ref.index), `@component "${ref.id}" không có trong registry (xem src/components/manifest.ts)`)
+  // 1. every reference must resolve inside its own project
+  for (const screen of registry.screens) {
+    const ids = componentIdsOf(screen.projectId)
+    for (const ref of refsIn(screen.html)) {
+      if (!ids.has(ref.id)) {
+        err(
+          screen.file,
+          lineOf(screen.html, ref.index),
+          `@component "${ref.id}" không có trong project/${screen.projectId}/components/`,
+        )
       }
     }
   }
-  for (const c of COMPONENT_FILES) {
-    const html = componentSrc.get(c.id)
-    for (const ref of refsIn(html)) {
-      if (!registry.has(ref.id)) {
-        err(c.file, lineOf(html, ref.index), `@component "${ref.id}" không có trong registry (xem src/components/manifest.ts)`)
+  for (const component of registry.components) {
+    const ids = componentIdsOf(component.project)
+    for (const ref of refsIn(component.html)) {
+      if (!ids.has(ref.id)) {
+        err(
+          component.file,
+          lineOf(component.html, ref.index),
+          `@component "${ref.id}" không có trong project/${component.project}/components/`,
+        )
       }
     }
   }
 
-  // 2. no cycles in the component graph
-  const graph = new Map()
-  for (const c of COMPONENT_FILES) {
-    graph.set(c.id, refsIn(componentSrc.get(c.id)).map((r) => r.id))
-  }
-  for (const cycle of findCycles(graph)) {
-    const file = registry.get(cycle[0])?.file ?? '(component)'
-    err(file, 1, `vòng component: ${cycle.join(' → ')} — sẽ không expand được`)
+  // 2. no cycles in each project's component graph
+  const projects = new Set([...registry.screens.map((s) => s.projectId), ...registry.components.map((c) => c.project)])
+  for (const projectId of projects) {
+    const graph = new Map()
+    for (const component of registry.components) {
+      if (component.project !== projectId) continue
+      graph.set(component.id, refsIn(component.html).map((r) => r.id))
+    }
+    for (const cycle of findCycles(graph)) {
+      const file = registry.components.find((c) => c.project === projectId && c.id === cycle[0])?.file ?? `project/${projectId}/`
+      err(file, 1, `vòng component: ${cycle.join(' → ')} — sẽ không expand được`)
+    }
   }
 
-  // 3. unused components (warning)
-  const referenced = new Set()
-  for (const screen of SCREEN_FILES) {
-    for (const ref of refsIn(await readFile(path.join(ROOT, screen.file), 'utf8'))) referenced.add(ref.id)
+  // 3. unused components (warning), per project
+  const referenced = new Map()
+  const note = (projectId, id) => {
+    let set = referenced.get(projectId)
+    if (!set) {
+      set = new Set()
+      referenced.set(projectId, set)
+    }
+    set.add(id)
   }
-  for (const c of COMPONENT_FILES) {
-    for (const ref of refsIn(componentSrc.get(c.id))) referenced.add(ref.id)
-  }
-  for (const c of COMPONENT_FILES) {
-    if (!referenced.has(c.id)) {
-      warn(c.file, 1, `component "${c.id}" chưa được màn/component nào dùng`)
+  for (const screen of registry.screens) for (const ref of refsIn(screen.html)) note(screen.projectId, ref.id)
+  for (const component of registry.components) for (const ref of refsIn(component.html)) note(component.project, ref.id)
+  for (const component of registry.components) {
+    if (!referenced.get(component.project)?.has(component.id)) {
+      warn(component.file, 1, `component "${component.id}" chưa được màn/component nào dùng`)
     }
   }
 

@@ -55,7 +55,7 @@ element — to an LLM.
 
 ```bash
 npm run export                                       # every screen, @2x → exports/
-npm run export -- --screen journal-list --scale 3
+npm run export -- --screen my-screen --scale 3
 npm run export -- --device all --out docs/shots
 npm run export -- --list
 ```
@@ -70,8 +70,9 @@ board is drawn by the React layer and is deliberately excluded — it is
 decoration, and it would be a lie in a handoff. The measurement bridge is left
 out too, so an export carries no `data-pc-*` attributes and no hover overlay.
 
-Height follows content, exactly as on the board: `journal-list` exports at
-390×992 on the reference device, and re-wraps to 375×959 on an iPhone SE.
+Height follows content, exactly as on the board: a screen that needs 992pt
+exports at 390×992 on the reference device, and re-wraps to 375×959 on an
+iPhone SE.
 
 Both the app and the script call `src/extractor/compose.ts`, so an export cannot
 drift from what the board shows.
@@ -111,7 +112,7 @@ decoration.
    device width — the same file renders at 390pt and 820pt, only spacing out.
    A layout that differs fundamentally by form factor (e.g. iPad list+detail)
    is a separate screen (`new-screen -- --device ipad-11` scaffolds one, and
-   the manifest `deviceId` opens fresh boards at its width) — never `if-device`
+   its header `deviceId` opens fresh boards at that width) — never `if-device`
    branches inside one HTML file.
 
 ---
@@ -175,16 +176,23 @@ the fetch, so a glyph renders the same on the board, in an export, and on a
 static host with no headers to configure.
 
 **Art is a picture.** A logo or illustration keeps its own colours as an `<img>`,
-named for the asset catalog:
+named for the asset catalog. Project art lives in the project folder and is
+referenced by an absolute URL; `public/images/` stays for art shared across
+projects:
 
 ```html
-<img class="art" src="/images/notebook.svg" width="88" height="88" alt="Notebook" />
+<img class="art" src="/project/my-app/assets/hero.svg" width="88" height="88" alt="Hero" />
+<img class="art" src="/images/logo.svg" width="40" height="40" alt="Logo" />
 ```
 
 ```
-public/icons/    → .icon[data-symbol]  → Image(systemName:)   (inlined)
-public/images/   → img.art[alt]        → Image("Name")
+public/icons/          → .icon[data-symbol] → Image(systemName:)   (inlined)
+project/<id>/assets/   → img.art[alt]       → Image("Name")        (own project)
+public/images/         → img.art[alt]       → Image("Name")        (shared)
 ```
+
+A screen may only reference its own project's assets; the lint flags a
+cross-project URL or a missing file.
 
 Drop a real icon set in (Lucide, Tabler, Phosphor — all MIT/ISC) by copying the
 SVGs into `public/icons/` and adding one line per glyph to `SYMBOLS` in
@@ -198,12 +206,21 @@ Inline `<svg>` still renders, but it is **nameless** — the spec can only say
 ## Layout
 
 ```
+project/                    one folder per project — the registry itself
+└─ <project>/
+   ├─ project.json          optional: title · description · cover
+   ├─ tokens.css            optional: project override layer
+   ├─ screens/*.html        id = filename · unique across projects
+   ├─ components/*.html     id = filename · scoped to the project
+   └─ assets/**             served at /project/<id>/assets/…
+
 scripts/
+├─ scan-projects.ts       Node reader for the same convention (export · lint · CLI)
 └─ export.ts              screens → PNG, via Chrome over CDP, zero deps
 
 public/
 ├─ icons/                 monochrome glyphs → .icon → Image(systemName:)
-└─ images/                full-colour art   → .art  → Image("Name")
+└─ images/                shared full-colour art → .art → Image("Name")
 
 src/
 ├─ canvas/
@@ -211,15 +228,14 @@ src/
 │  ├─ BoardContext.ts     mode · frame style · active node
 │  └─ PhoneNode.tsx       one screen = one node (rectangle + iframe)
 ├─ frame/devices.ts       width + safe areas (the only device data that matters)
-├─ project/               one folder per project, each holds its screens
-│  └─ moodtracker/        tokens.css + *.html (see docs/moodtracker-plan.md)
 ├─ screens/
 │  ├─ tokens.css          spacing, colour, type — the styling vocabulary
 │  ├─ icons.css           glyph → SF Symbol → file
-│  ├─ index.ts            screen registry (the app; the exporter reads the manifest)
-│  └─ manifest.ts         id · title · file (file is relative to repo root)
+│  └─ index.ts            app-facing screen registry (reads the project folders)
 ├─ projects/
-│  ├─ builtin.ts          project definitions (Node-safe, used by exporter)
+│  ├─ types.ts            registry types (pure, shared app + Node)
+│  ├─ derive.ts           the whole folder convention, one pure function
+│  ├─ registry.ts         browser reader: import.meta.glob → derive
 │  ├─ projects.ts         resolve/cover/count helpers (app)
 │  ├─ storage.ts          per-project boards + custom projects (localStorage)
 │  └─ Dashboard.tsx       project picker: grid, search, + Dự án
@@ -237,18 +253,26 @@ src/
 
 ## Adding a screen
 
-1. Write `project/<project>/my-screen.html` — see `docs/screen-authoring.md`.
-2. Register it in `src/screens/manifest.ts` (`file` is relative to repo root), then run
-   `npm run screens:sync` to regenerate `src/screens/generated.ts`.
-3. Add its id to the project's `screenIds` in `src/projects/builtin.ts`.
+The folder **is** the registry — there is nothing to wire and no codegen:
 
-Or let `npm run new-screen` do all three (or `npm run screen -- add ...` —
-same thing plus the auto-gate: screens:sync + tsc + lint).
+```bash
+npm run project -- add my-app                                        # once per project
+npm run screen -- add --project my-app --name my-screen --title "My Screen"
+```
+
+That writes `project/my-app/screens/my-screen.html` (or just write the file
+yourself — the board sees any `*.html` dropped in `screens/`). `npm run screen
+-- add` also runs the gate: tsc + lint.
+
+A screen id is its filename stem (globally unique); optional metadata goes on
+the first line: `<!-- pc {"title":"Home","lightStatusBar":true} -->`. Tokens are
+`project/<id>/tokens.css`, components `project/<id>/components/*.html`, assets
+`project/<id>/assets/*` — all discovered from the same folder.
 
 Tablet screens and the device model are documented in `docs/devices.md`
 (`new-screen -- --device ipad-11` scaffolds a 2-column screen).
 
-To rename a screen id (file + manifest + builtin + on-disk boards, one shot):
+To rename a screen id (file + on-disk boards, one shot):
 
 ```bash
 npm run rename-screen -- --id <old> --to <new>
@@ -257,7 +281,7 @@ npm run rename-screen -- --id <old> --to <new>
 It refuses unknown/duplicate ids without writing; browser boards prune on
 open (reader-side) — there is nothing to rescan from the CLI.
 
-To remove a screen (its HTML file plus all registry wiring) — handy for trash:
+To remove a screen (its HTML file; nothing else to clean up):
 
 ```bash
 npm run delete-screen -- --id <screen-id>

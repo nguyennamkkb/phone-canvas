@@ -15,17 +15,16 @@
  *   root-bg        background-image outside the `.screen` root, or shorthand
  *                  url()/gradient on the root (compose only replays longhand)
  *
- * Messages name file:line + the fix. Warnings (hardcoded colors) stay in
- * lint:tokens — this gate only fails on structural violations.
+ * Discovery comes from scripts/scan-projects.ts. Messages name file:line + the
+ * fix. Warnings (hardcoded colors, asset URLs) stay in lint:tokens — this gate
+ * only fails on structural violations.
  */
 
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { SCREEN_FILES } from '../src/screens/manifest.ts'
-import { COMPONENT_FILES } from '../src/components/manifest.ts'
-import { BUILTIN_PROJECTS } from '../src/projects/builtin.ts'
+import { scanProjects } from './scan-projects.ts'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -46,48 +45,46 @@ function lineOf(src, index) {
   return src.slice(0, index).split('\n').length
 }
 
-async function definedVars() {
-  const global = await readFile(path.join(ROOT, 'src/screens/tokens.css'), 'utf8')
-  const names = new Set()
-  for (const m of global.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(DEF_RE)) names.add(`--${m[1]}`)
-  const perProject = new Map()
-  for (const p of BUILTIN_PROJECTS) {
-    const set = new Set(names)
-    try {
-      const css = await readFile(path.join(ROOT, 'project', p.id, 'tokens.css'), 'utf8')
-      for (const m of css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(DEF_RE)) set.add(`--${m[1]}`)
-    } catch { /* no project file */ }
-    perProject.set(p.id, set)
-  }
-  return { names, perProject }
-}
-
 function isTokenVar(name) {
   if (IGNORED.has(name)) return false
   return !IGNORED_PREFIX.some((p) => name.startsWith(p))
 }
 
 async function main() {
-  const { names, perProject } = await definedVars()
-  const ownerOf = new Map()
-  for (const p of BUILTIN_PROJECTS) for (const sid of p.screenIds) ownerOf.set(sid, p.id)
-
+  const { registry, errors: registryErrors } = await scanProjects()
   let errors = 0
   const err = (file, line, msg) => {
     console.error(`error  ${file}:${line}  ${msg}`)
     errors += 1
   }
+  for (const error of registryErrors) {
+    console.error(`error  ${error.file}  ${error.message}`)
+    errors += 1
+  }
+
+  const global = await readFile(path.join(ROOT, 'src/screens/tokens.css'), 'utf8')
+  const names = new Set()
+  for (const m of global.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(DEF_RE)) names.add(`--${m[1]}`)
+  const perProject = new Map()
+  for (const project of registry.projects) {
+    const set = new Set(names)
+    const css = registry.tokens[project.id]
+    if (css) {
+      for (const m of css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(DEF_RE)) set.add(`--${m[1]}`)
+    }
+    perProject.set(project.id, set)
+  }
 
   // screens and components share the subset: both render inside a screen, so a
   // banned layout or an un-symbolled glyph in a component is the same defect.
   const targets = [
-    ...SCREEN_FILES.map((s) => ({ file: s.file, project: ownerOf.get(s.id) })),
-    ...COMPONENT_FILES.map((c) => ({ file: c.file, project: c.project })),
+    ...registry.screens.map((s) => ({ file: s.file, project: s.projectId, html: s.html, kind: 'screen' })),
+    ...registry.components.map((c) => ({ file: c.file, project: c.project, html: c.html, kind: 'component' })),
   ]
 
   for (const target of targets) {
-    const html = await readFile(path.join(ROOT, target.file), 'utf8')
-    const known = (target.project && perProject.get(target.project)) || names
+    const html = target.html
+    const known = perProject.get(target.project) ?? names
 
     // 1. banned layout declarations (skip HTML comments so docs in comments don't fail)
     const stripped = html.replace(/<!--[\s\S]*?-->/g, (c) => '\n'.repeat(c.split('\n').length - 1))
@@ -128,9 +125,8 @@ async function main() {
     //    background-image lives ONLY on the `.screen` root, written longhand,
     //    because compose replays exactly those two longhands onto `.device`.
     //    Plain `background:` colors/gradients elsewhere (e.g. thumbnails) pass.
-    const isComponent = COMPONENT_FILES.some((c) => c.file === target.file)
     const rootMatch = /<[^>]*class="[^"]*\bscreen\b[^"]*"[^>]*>/i.exec(html)
-    if (isComponent) {
+    if (target.kind === 'component') {
       for (const m of html.matchAll(/background-image\s*:/gi)) {
         err(target.file, lineOf(html, m.index), 'background-image trong component — nền ảnh chỉ được đặt trên .screen root của màn hình')
       }
