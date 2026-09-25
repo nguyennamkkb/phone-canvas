@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" fill="none">
+  <!--
+    Trip capability: a dashed route across the tile, from a soft origin
+    dot to an accent destination pin.
+  -->
+  <path d="M48 220C90 220 92 168 132 168s40-52 84-52h36" stroke="#0B0D10" stroke-width="11" stroke-linecap="round" stroke-dasharray="4 20" />
+  <circle cx="48" cy="220" r="14" fill="#DCE6FF" />
+  <circle cx="48" cy="220" r="14" stroke="#2F6BFF" stroke-width="8" />
+  <path d="M252 76s-30 27-30 48a30 30 0 0 0 60 0c0-21-30-48-30-48Z" fill="#2F6BFF" />
+  <circle cx="252" cy="124" r="11" fill="#FFFFFF" />
+  <rect x="52" y="52" width="52" height="52" rx="15" fill="#DCE6FF" />
+  <path d="M64 84h28M64 84l-6 10h40l-6-10" stroke="#2F6BFF" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="71" cy="96" r="5" fill="#2F6BFF" />
+  <circle cx="91" cy="96" r="5" fill="#2F6BFF" />
+</svg>

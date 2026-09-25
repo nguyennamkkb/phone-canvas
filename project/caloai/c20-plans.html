@@ -7,14 +7,14 @@
     </button>
   </header>
   <div class="body" style="padding: var(--s4) var(--s5); gap: var(--s4)">
-    <div class="week-track" aria-label="This week">
-      <div class="week-col"><span class="t-footnote t-secondary">M</span></div>
-      <div class="week-col"><span class="t-footnote t-secondary">T</span></div>
-      <div class="week-col"><span class="t-footnote t-secondary">W</span></div>
-      <div class="week-col"><span class="t-footnote">T</span><span class="week-bar" style="height: 10px; background: var(--accent)"></span></div>
-      <div class="week-col"><span class="t-footnote t-secondary">F</span></div>
-      <div class="week-col"><span class="t-footnote t-secondary">S</span></div>
-      <div class="week-col"><span class="t-footnote t-secondary">S</span></div>
+    <div class="row" aria-label="This week">
+      <div class="col grow" style="align-items: center; gap: var(--s1)"><span class="t-footnote t-secondary">M</span></div>
+      <div class="col grow" style="align-items: center; gap: var(--s1)"><span class="t-footnote t-secondary">T</span></div>
+      <div class="col grow" style="align-items: center; gap: var(--s1)"><span class="t-footnote t-secondary">W</span></div>
+      <div class="col grow" style="align-items: center; gap: var(--s1)"><span class="t-footnote">T</span><span class="dot is-active"></span></div>
+      <div class="col grow" style="align-items: center; gap: var(--s1)"><span class="t-footnote t-secondary">F</span></div>
+      <div class="col grow" style="align-items: center; gap: var(--s1)"><span class="t-footnote t-secondary">S</span></div>
+      <div class="col grow" style="align-items: center; gap: var(--s1)"><span class="t-footnote t-secondary">S</span></div>
     </div>
 
     <div class="col" style="gap: var(--s2)">
@@ -39,7 +39,7 @@
         <div class="col grow" style="gap: var(--s1)">
           <span class="t-caption t-secondary">DINNER</span>
           <span class="t-headline">Chicken pasta primavera</span>
-          <span class="t-subhead t-secondary">620 kcal · P 41 g</span>
+          <span class="t-subhead t-secondary">620 kcal · P 34 g</span>
         </div>
         <span class="chip">Swap</span>
       </div>
@@ -55,27 +55,15 @@
 
     <div class="paper-card" style="gap: var(--s1)">
       <span class="t-headline">Remaining today</span>
-      <span class="t-subhead">510 kcal · 38 g protein left of 2,200 kcal goal</span>
+        <span class="t-subhead">130 kcal · 10 g protein left of 1,820 kcal goal</span>
     </div>
 
     <div class="spacer"></div>
-    <nav class="tabbar" aria-label="Primary">
-      <button class="tab" aria-selected="false">
-        <span class="icon icon-sm" data-symbol="book"></span>
-        Diary
-      </button>
-      <button class="tab is-active" aria-selected="true">
-        <span class="icon icon-sm" data-symbol="list.bullet"></span>
-        Plans
-      </button>
-      <button class="tab" aria-selected="false">
-        <span class="icon icon-sm" data-symbol="chart.bar"></span>
-        Progress
-      </button>
-      <button class="tab" aria-selected="false">
-        <span class="icon icon-sm" data-symbol="person"></span>
-        Profile
-      </button>
-    </nav>
   </div>
+  <nav class="tabbar-light" aria-label="Primary">
+    <span class="tab-item"><span class="icon icon-sm" data-symbol="book"></span>Diary</span>
+    <span class="tab-item is-on"><span class="icon icon-sm" data-symbol="list.bullet"></span>Plans</span>
+    <span class="tab-item"><span class="icon icon-sm" data-symbol="chart.bar"></span>Progress</span>
+    <span class="tab-item"><span class="icon icon-sm" data-symbol="person"></span>Profile</span>
+  </nav>
 </div>

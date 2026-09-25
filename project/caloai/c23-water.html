@@ -1,4 +1,4 @@
-<!-- C23 — Water Tracker. 1.5/2.5 L with quick-add presets, timeline, undo. -->
+<!-- C23 — Water Tracker. 1.2/2.0 L with quick-add presets, timeline, undo. Matches the diary: 500+250+250+200 ml, last log 1:10 PM. -->
 <div class="screen">
   <header class="navbar">
     <span class="nav-title">Water</span>
@@ -9,11 +9,11 @@
   <div class="body" style="padding: var(--s4) var(--s5); gap: var(--s4)">
     <div class="paper-card" style="align-items: center; gap: var(--s2)">
       <span class="t-caption t-secondary">TODAY</span>
-      <div class="t-display">1.5 / 2.5 L</div>
+      <span class="t-large">1.2 / 2.0 L</span>
       <div class="meter" aria-label="Water 60 percent of goal">
         <span class="meter-seg is-on"></span><span class="meter-seg is-on"></span><span class="meter-seg is-on"></span><span class="meter-seg is-on"></span><span class="meter-seg is-on"></span><span class="meter-seg is-on"></span><span class="meter-seg"></span><span class="meter-seg"></span><span class="meter-seg"></span><span class="meter-seg"></span>
       </div>
-      <span class="t-subhead t-secondary">1.0 L to go · goal reached ≈ 8 PM at this pace</span>
+      <span class="t-subhead t-secondary">0.8 L to go · goal reached ≈ 8 PM at this pace</span>
     </div>
 
     <div class="row" style="gap: var(--s2)">
@@ -23,36 +23,24 @@
     </div>
 
     <div class="col" style="gap: var(--s2)">
-      <span class="t-section">Today · 6 logs</span>
+      <span class="t-headline">Today · 4 logs</span>
       <div class="row-card"><span class="t-subhead grow">500 ml · bottle refill</span><span class="t-subhead t-secondary">7:40 AM</span></div>
       <div class="row-card"><span class="t-subhead grow">250 ml · glass</span><span class="t-subhead t-secondary">9:15 AM</span></div>
       <div class="row-card"><span class="t-subhead grow">250 ml · after coffee</span><span class="t-subhead t-secondary">11:05 AM</span></div>
-      <div class="row-card"><span class="t-subhead grow">500 ml · gym bottle</span><span class="t-subhead t-secondary">1:20 PM</span></div>
+      <div class="row-card"><span class="t-subhead grow">200 ml · gym sip</span><span class="t-subhead t-secondary">1:10 PM</span></div>
     </div>
 
     <div class="row" style="justify-content: space-between">
-      <span class="t-subhead t-secondary">Just added 250 ml · 2:45 PM</span>
+      <span class="t-subhead t-secondary">Just added 200 ml · 1:10 PM</span>
       <span class="chip">Undo</span>
     </div>
 
     <div class="spacer"></div>
-    <nav class="tabbar" aria-label="Primary">
-      <button class="tab is-active" aria-selected="true">
-        <span class="icon icon-sm" data-symbol="book"></span>
-        Diary
-      </button>
-      <button class="tab" aria-selected="false">
-        <span class="icon icon-sm" data-symbol="list.bullet"></span>
-        Plans
-      </button>
-      <button class="tab" aria-selected="false">
-        <span class="icon icon-sm" data-symbol="chart.bar"></span>
-        Progress
-      </button>
-      <button class="tab" aria-selected="false">
-        <span class="icon icon-sm" data-symbol="person"></span>
-        Profile
-      </button>
-    </nav>
   </div>
+  <nav class="tabbar-light" aria-label="Primary">
+    <span class="tab-item is-on"><span class="icon icon-sm" data-symbol="book"></span>Diary</span>
+    <span class="tab-item"><span class="icon icon-sm" data-symbol="list.bullet"></span>Plans</span>
+    <span class="tab-item"><span class="icon icon-sm" data-symbol="chart.bar"></span>Progress</span>
+    <span class="tab-item"><span class="icon icon-sm" data-symbol="person"></span>Profile</span>
+  </nav>
 </div>

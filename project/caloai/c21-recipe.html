@@ -22,25 +22,21 @@
     <div class="paper-card" style="gap: var(--s2)">
       <div class="row" style="justify-content: space-between">
         <span class="t-headline">Servings</span>
-        <div class="row" style="gap: var(--s2)">
-          <button class="icon-btn" aria-label="Fewer servings">
-            <span class="icon icon-sm" data-symbol="text.aligncenter"></span>
-          </button>
-          <span class="t-headline">2</span>
-          <button class="icon-btn" aria-label="More servings">
-            <span class="icon icon-sm" data-symbol="plus"></span>
-          </button>
+        <div class="segmented-light" role="group" aria-label="Servings" style="min-width: 168px">
+          <span class="seg" role="button" aria-label="Fewer servings">−</span>
+          <span class="seg is-on" aria-live="polite">2</span>
+          <span class="seg" role="button" aria-label="More servings">+</span>
         </div>
       </div>
       <div class="row" style="justify-content: space-between">
         <span class="t-subhead">Protein 41 g</span>
         <span class="t-subhead">Carbs 58 g</span>
-        <span class="t-subhead">Fat 22 g</span>
+        <span class="t-subhead">Fat 25 g</span>
       </div>
     </div>
 
     <div class="col" style="gap: var(--s2)">
-      <span class="t-section">Ingredients · 6</span>
+      <span class="t-headline">Ingredients · 6</span>
       <div class="row-card"><span class="t-subhead grow">Salmon fillet · 300 g</span></div>
       <div class="row-card"><span class="t-subhead grow">Whole-grain penne · 160 g</span></div>
       <div class="row-card"><span class="t-subhead grow">Light cream · 100 ml</span></div>
@@ -51,7 +47,7 @@
     </div>
 
     <div class="col" style="gap: var(--s2)">
-      <span class="t-section">Steps · 4</span>
+      <span class="t-headline">Steps · 4</span>
       <div class="row-card"><span class="t-subhead grow">1 · Boil penne 9 min, reserve a cup of water.</span></div>
       <div class="row-card"><span class="t-subhead grow">2 · Sear salmon 3 min per side, flake roughly.</span></div>
       <div class="row-card"><span class="t-subhead grow">3 · Soften garlic + spinach, stir in cream + lemon.</span></div>
@@ -59,6 +55,8 @@
     </div>
 
     <div class="spacer"></div>
-    <button class="btn btn-primary btn-block">Log this meal · 620 kcal</button>
+  </div>
+  <div class="bottom-cta">
+    <button class="btn btn-primary btn-block" style="background: var(--success)">Log this meal · 620 kcal</button>
   </div>
 </div>

@@ -1,34 +1,45 @@
-<!-- c14-camera · S14 AI Meal Camera — drawn in Ready state (framing guidance +
-     capture row). Full machine: Idle → PermissionNeeded → Ready → Capturing →
-     Uploading/Analyzing → Review → Confirmed; branches below as comments. -->
-<div class="screen">
-  <!-- BRANCH PermissionDenied: replace .hero with a PermissionExplainer card
-       (what/why + "Open Settings" btn + "Use search instead" recovery action).
+<!-- c14-camera · S14 AI Meal Camera — drawn in Ready state (dark full-bleed
+     viewfinder + oval guide + iOS capture row). Full machine: Idle →
+     PermissionNeeded → Ready → Capturing → Uploading/Analyzing → Review →
+     Confirmed; branches below as comments. -->
+<div class="screen" style="background: #000">
+  <!-- BRANCH PermissionDenied: replace the viewfinder with a PermissionExplainer
+       card (what/why + "Open Settings" btn + "Use search instead" recovery).
        Never block the S13 fallback paths. -->
-  <!-- BRANCH Capturing/Analyzing: dim .hero, swap guidance for "Hold still…"
-       + cancel control; keep Library/Torch reachable. -->
+  <!-- BRANCH Capturing/Analyzing: dim the viewfinder, swap guidance for
+       "Hold still…" + cancel control; keep Library/Torch reachable. -->
   <header class="navbar">
-    <button class="icon-btn" aria-label="Cancel"><span class="icon icon-sm" data-symbol="xmark"></span></button>
-    <span class="t-footnote t-secondary">AI Meal Camera</span>
-    <button class="icon-btn" aria-label="How it works"><span class="icon icon-sm" data-symbol="questionmark.circle"></span></button>
+    <button class="icon-btn" style="background: rgba(255,255,255,.15); color: var(--bg-elevated)" aria-label="Cancel"><span class="icon icon-sm" data-symbol="xmark"></span></button>
+    <span class="t-footnote" style="color: rgba(255,255,255,.85)">AI Meal Camera</span>
+    <button class="icon-btn" style="background: rgba(255,255,255,.15); color: var(--bg-elevated)" aria-label="How it works"><span class="icon icon-sm" data-symbol="questionmark.circle"></span></button>
   </header>
-  <div class="body-fixed" style="gap: var(--s3)">
-    <div class="hero" style="height: 380px">
-      <div class="col" style="align-items: center; gap: var(--s2)">
-        <span class="chip-icon bg-white"><span class="icon" data-symbol="square.grid.2x2"></span></span>
-        <span class="t-headline">Center the meal in the frame</span>
-        <span class="t-footnote t-secondary">Top-down, good light, one plate.</span>
+  <div class="body-fixed" style="gap: 0">
+    <!-- Viewfinder: a composite graphic (declared .above parent + coordinate
+         children, same pattern as .ring). Corners + oval are fixed camera
+         geometry, not form-factor layout. -->
+    <div class="col above grow" style="align-items: center; justify-content: center; gap: var(--s3); min-height: 0">
+      <div aria-hidden="true" style="position: absolute; left: var(--s5); top: var(--s4); width: 28px; height: 28px; border-left: 3px solid rgba(255,255,255,.9); border-top: 3px solid rgba(255,255,255,.9); border-top-left-radius: var(--r-md)"></div>
+      <div aria-hidden="true" style="position: absolute; right: var(--s5); top: var(--s4); width: 28px; height: 28px; border-right: 3px solid rgba(255,255,255,.9); border-top: 3px solid rgba(255,255,255,.9); border-top-right-radius: var(--r-md)"></div>
+      <div aria-hidden="true" style="position: absolute; left: var(--s5); bottom: var(--s4); width: 28px; height: 28px; border-left: 3px solid rgba(255,255,255,.9); border-bottom: 3px solid rgba(255,255,255,.9); border-bottom-left-radius: var(--r-md)"></div>
+      <div aria-hidden="true" style="position: absolute; right: var(--s5); bottom: var(--s4); width: 28px; height: 28px; border-right: 3px solid rgba(255,255,255,.9); border-bottom: 3px solid rgba(255,255,255,.9); border-bottom-right-radius: var(--r-md)"></div>
+      <div aria-hidden="true" style="width: 230px; height: 150px; border: 2px solid rgba(255,255,255,.55); border-radius: 50%"></div>
+      <div class="col" style="align-items: center; gap: var(--s1)">
+        <span class="t-headline" style="color: var(--bg-elevated)">Center the meal</span>
+        <span class="t-footnote" style="color: rgba(255,255,255,.7)">Top-down · good light · one plate</span>
       </div>
     </div>
-    <div class="row" style="justify-content: space-between; padding: 0 var(--s6)">
-      <button class="circle-btn" aria-label="Choose from Photos"><span class="icon icon-sm" data-symbol="square.on.square"></span></button>
-      <button class="circle-btn is-dashed" style="width: 68px; height: 68px" aria-label="Capture meal">
-        <span style="display: block; width: 52px; height: 52px; border-radius: 999px; background: #16A34A"></span>
+    <!-- iOS capture row: last-photo thumbnail · shutter · torch. Shutter keeps
+         the standard 68/52 Apple diameters (fixed control, not layout). -->
+    <div class="row" style="justify-content: space-between; align-items: center; padding: var(--s4) var(--s6)">
+      <span role="img" aria-label="Last photo: salmon lunch" style="display: block; width: 44px; height: 44px; border-radius: var(--r-md); background: linear-gradient(135deg, #F6A85C, #E2711D); color: var(--bg-elevated); text-align: center; line-height: 44px">
+        <span class="icon icon-sm" data-symbol="leaf.fill"></span>
+      </span>
+      <button class="circle-btn" style="width: 68px; height: 68px; border: 4px solid var(--bg-elevated)" aria-label="Capture meal">
+        <span style="display: block; width: 52px; height: 52px; border-radius: 999px; background: var(--bg-elevated)"></span>
       </button>
-      <button class="circle-btn" aria-label="Toggle torch"><span class="icon icon-sm" data-symbol="bolt.fill"></span></button>
+      <button class="circle-btn" style="border-color: rgba(255,255,255,.4); color: var(--bg-elevated)" aria-label="Toggle torch"><span class="icon icon-sm" data-symbol="bolt.fill"></span></button>
     </div>
-    <span class="t-footnote t-secondary" style="text-align: center">Flash is off · photo stays on this device until you log it.</span>
-    <div class="spacer"></div>
+    <span class="t-footnote" style="color: rgba(255,255,255,.7); text-align: center; padding: 0 var(--s4) var(--s4)">Flash is off · photo stays on this device until you log it.</span>
   </div>
 </div>
 <!-- STATE MAP (spec README §5): NotDetermined → system prompt once; denied/

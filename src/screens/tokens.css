@@ -333,10 +333,10 @@ figure {
   align-items: center;
   justify-content: center;
   gap: var(--s2);
-  height: 50px;
+  height: 58px;
   padding: 0 var(--s5);
   border: 0;
-  border-radius: var(--r-lg);
+  border-radius: 29px;
   background: var(--fill);
   color: var(--label);
   font-family: var(--font);

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" fill="none">
+  <!--
+    Time capability: a wall clock in ink with accent hands, the weather
+    riding along as a soft tile with sun-over-cloud.
+  -->
+  <circle cx="112" cy="160" r="70" stroke="#0B0D10" stroke-width="11" />
+  <path d="M112 160V114l32 19" stroke="#2F6BFF" stroke-width="11" stroke-linecap="round" />
+  <circle cx="112" cy="160" r="9" fill="#2F6BFF" />
+  <rect x="192" y="44" width="88" height="88" rx="24" fill="#2F6BFF" />
+  <circle cx="232" cy="88" r="16" stroke="#FFFFFF" stroke-width="8" />
+  <path d="M202 122h44a16 16 0 0 0 3-31.7A26 26 0 0 0 198 96a14 14 0 0 0 4 26Z" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" />
+  <circle cx="64" cy="248" r="7" fill="#DCE6FF" />
+  <circle cx="244" cy="248" r="7" fill="#DCE6FF" />
+</svg>

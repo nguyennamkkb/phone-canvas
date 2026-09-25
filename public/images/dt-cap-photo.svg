@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" fill="none">
+  <!--
+    Photo capability: a framed memory (sun over hills) with a quote
+    chip overlapping the corner — picture plus words.
+  -->
+  <rect x="48" y="64" width="180" height="160" rx="24" stroke="#0B0D10" stroke-width="11" />
+  <circle cx="102" cy="118" r="16" fill="#2F6BFF" />
+  <path d="M60 200l44-44 34 34 26-26 52 52" stroke="#0B0D10" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
+  <rect x="164" y="150" width="96" height="96" rx="24" fill="#2F6BFF" />
+  <path d="M196 216c-3-12 1-22 11-27M220 216c-3-12 1-22 11-27" stroke="#FFFFFF" stroke-width="9" stroke-linecap="round" />
+  <circle cx="66" cy="52" r="7" fill="#DCE6FF" />
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" fill="none">
+  <!--
+    Setup visual: iPhone on the left, head-unit on the right, one tile
+    travelling between them along an accent arrow.
+  -->
+  <rect x="36" y="56" width="96" height="188" rx="24" stroke="#0B0D10" stroke-width="11" />
+  <rect x="56" y="104" width="56" height="56" rx="14" fill="#2F6BFF" />
+  <path d="M84 132v-17l13 8" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" />
+  <rect x="168" y="96" width="100" height="108" rx="20" fill="#0B0D10" />
+  <rect x="184" y="112" width="68" height="46" rx="12" stroke="#FFFFFF" stroke-width="7" stroke-dasharray="10 10" stroke-linecap="round" />
+  <path d="M132 222c22 0 30-14 34-34" stroke="#2F6BFF" stroke-width="10" stroke-linecap="round" />
+  <path d="M152 178l14 10-16 8" stroke="#2F6BFF" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="218" cy="186" r="11" stroke="#FFFFFF" stroke-width="7" />
+  <path d="M218 186v-7l5 3.4" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" />
+  <circle cx="70" cy="228" r="5" fill="#8E959F" />
+</svg>

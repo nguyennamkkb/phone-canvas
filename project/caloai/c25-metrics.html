@@ -1,4 +1,4 @@
-<!-- C25 — Body Metrics. Weight chart + metric cards (body fat, waist, muscle) + add-entry; outlier flagged. -->
+<!-- C25 — Body Metrics. Weight chart + metric cards (body fat, waist, muscle, BMI) + add-entry; Sep-21 outlier flagged. -->
 <div class="screen">
   <header class="navbar">
     <button class="icon-btn" aria-label="Back">
@@ -15,44 +15,52 @@
         <span class="t-headline">Weight · kg</span>
         <span class="t-subhead t-secondary">72.4 kg today</span>
       </div>
-      <div class="week-track" aria-label="Weight, last 7 weigh-ins">
-        <div class="week-col"><span class="week-bar" style="height: 96px; background: var(--sage)"></span><span class="t-footnote t-secondary">18</span></div>
-        <div class="week-col"><span class="week-bar" style="height: 90px; background: var(--sage)"></span><span class="t-footnote t-secondary">19</span></div>
-        <div class="week-col"><span class="week-bar" style="height: 92px; background: var(--sage)"></span><span class="t-footnote t-secondary">20</span></div>
-        <div class="week-col"><span class="week-bar" style="height: 60px; background: var(--danger)"></span><span class="t-footnote t-secondary">21</span></div>
-        <div class="week-col"><span class="week-bar" style="height: 86px; background: var(--sage)"></span><span class="t-footnote t-secondary">22</span></div>
-        <div class="week-col"><span class="week-bar" style="height: 82px; background: var(--sage)"></span><span class="t-footnote t-secondary">23</span></div>
-        <div class="week-col"><span class="week-bar" style="height: 78px; background: var(--accent)"></span><span class="t-footnote">24</span></div>
+      <div class="chart" aria-label="Weight, last 7 weigh-ins">
+        <div class="chart-col"><div class="bar" style="height: 96px"></div></div>
+        <div class="chart-col"><div class="bar" style="height: 90px"></div></div>
+        <div class="chart-col"><div class="bar" style="height: 92px"></div></div>
+        <div class="chart-col"><div class="bar" style="height: 60px"></div></div>
+        <div class="chart-col"><div class="bar" style="height: 86px"></div></div>
+        <div class="chart-col"><div class="bar" style="height: 82px"></div></div>
+        <div class="chart-col"><div class="bar is-peak" style="height: 78px"></div></div>
       </div>
-      <span class="t-footnote t-secondary">Sep 21 looks like an outlier (travel scale) — tap to exclude.</span>
+      <div class="chart-labels" aria-hidden="true">
+        <span class="chart-label">18</span><span class="chart-label">19</span><span class="chart-label">20</span><span class="chart-label">21</span><span class="chart-label">22</span><span class="chart-label">23</span><span class="chart-label is-on">24</span>
+      </div>
+      <div class="row" style="justify-content: space-between">
+        <span class="t-footnote t-secondary grow">Sep 21 reads low (travel scale) — tap to exclude it.</span>
+        <span class="chip">Outlier</span>
+      </div>
     </div>
 
     <div class="row" style="gap: var(--s3)">
-      <div class="stat-tile grow">
+      <div class="stat-card grow" style="background: var(--bg-grouped); border-radius: var(--r-lg)">
         <span class="t-caption t-secondary">BODY FAT</span>
         <span class="t-title2">21.4 %</span>
         <span class="t-footnote t-secondary">HealthKit · 2 d ago</span>
       </div>
-      <div class="stat-tile grow">
+      <div class="stat-card grow" style="background: var(--bg-grouped); border-radius: var(--r-lg)">
         <span class="t-caption t-secondary">WAIST</span>
         <span class="t-title2">82 cm</span>
         <span class="t-footnote t-secondary">Manual · Sep 20</span>
       </div>
     </div>
     <div class="row" style="gap: var(--s3)">
-      <div class="stat-tile grow">
+      <div class="stat-card grow" style="background: var(--bg-grouped); border-radius: var(--r-lg)">
         <span class="t-caption t-secondary">MUSCLE</span>
         <span class="t-title2">54.1 kg</span>
         <span class="t-footnote t-secondary">HealthKit · 2 d ago</span>
       </div>
-      <div class="stat-tile grow">
+      <div class="stat-card grow" style="background: var(--bg-grouped); border-radius: var(--r-lg)">
         <span class="t-caption t-secondary">BMI</span>
-        <span class="t-title2">23.6</span>
-        <span class="t-footnote t-secondary">Healthy range</span>
+        <span class="t-title2">26.6</span>
+        <span class="t-footnote t-secondary">Down from 27.1</span>
       </div>
     </div>
 
     <div class="spacer"></div>
-    <button class="btn btn-primary btn-block">Log weight · 72.4 kg</button>
+  </div>
+  <div class="bottom-cta">
+    <button class="btn btn-primary btn-block" style="background: var(--success)">Log weight · 72.4 kg</button>
   </div>
 </div>
