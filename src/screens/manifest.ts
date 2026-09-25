@@ -44,6 +44,7 @@ export type ScreenFile = {
 }
 
 export const SCREEN_FILES: ScreenFile[] = [
+  { id: 'c31-showcase', title: 'S31 · Component & Token Showcase', file: 'project/caloai/c31-showcase.html' },
   { id: 'c12-diary-duo-inner', title: 'S12 · Diary / Home (Duo Inner)', file: 'project/caloai/c12-diary-duo-inner.html', deviceId: 'duo-inner' },
   { id: 'c12-diary-duo-cover', title: 'S12 · Diary / Home (Duo Cover)', file: 'project/caloai/c12-diary-duo-cover.html', deviceId: 'duo-cover' },
   { id: 'c12-diary-ipad', title: 'S12 · Diary / Home (iPad)', file: 'project/caloai/c12-diary-ipad.html', deviceId: 'ipad-11' },

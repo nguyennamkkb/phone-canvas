@@ -32,6 +32,6 @@ export const BUILTIN_PROJECTS: ProjectDef[] = [
     id: 'caloai',
     title: 'Calo AI',
     description: 'AI food calorie counter — 30 spec screens',
-    screenIds: ['c01-splash', 'c02-welcome', 'c03-goal', 'c04-motivation', 'c05-profile', 'c06-target-weight', 'c07-activity', 'c08-diet', 'c09-your-target', 'c10-forecast', 'c11-paywall', 'c12-diary', 'c13-add-hub', 'c14-camera', 'c15-review', 'c16-meal-detail', 'c17-barcode', 'c18-search', 'c19-builder', 'c20-plans', 'c21-recipe', 'c22-activity-burn', 'c23-water', 'c24-progress', 'c25-metrics', 'c26-fasting', 'c27-healthkit', 'c28-notifications', 'c29-profile', 'c30-premium', 'c12-diary-ipad', 'c12-diary-duo-cover', 'c12-diary-duo-inner'],
+    screenIds: ['c01-splash', 'c02-welcome', 'c03-goal', 'c04-motivation', 'c05-profile', 'c06-target-weight', 'c07-activity', 'c08-diet', 'c09-your-target', 'c10-forecast', 'c11-paywall', 'c12-diary', 'c13-add-hub', 'c14-camera', 'c15-review', 'c16-meal-detail', 'c17-barcode', 'c18-search', 'c19-builder', 'c20-plans', 'c21-recipe', 'c22-activity-burn', 'c23-water', 'c24-progress', 'c25-metrics', 'c26-fasting', 'c27-healthkit', 'c28-notifications', 'c29-profile', 'c30-premium', 'c12-diary-ipad', 'c12-diary-duo-cover', 'c12-diary-duo-inner', 'c31-showcase'],
   },
 ]
