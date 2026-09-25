@@ -1,7 +1,7 @@
 import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import type { Node, NodeProps } from '@xyflow/react'
 import { Handle, Position } from '@xyflow/react'
-import { getDevice } from '../frame/devices'
+import { getDevice, isKnownDevice } from '../frame/devices'
 import { buildSrcDoc } from '../extractor/buildSrcDoc'
 import { SCREEN_BY_ID } from '../screens'
 import { projectOfScreen } from '../projects/projects'
@@ -139,6 +139,14 @@ function PhoneNodeInner({ id, data }: NodeProps) {
         <span className="phone-label-size">
           {device.width} × {Math.round(contentH)}
         </span>
+        {!isKnownDevice(d.deviceId) && (
+          <span
+            className="phone-device-warn"
+            title={`Thiết bị “${d.deviceId}” không tồn tại — đang hiển thị ở Reference`}
+          >
+            ⚠ device lạ
+          </span>
+        )}
         {deleteConfirmId === id ? (
           <InlineConfirm
             message="Xóa màn này? File HTML giữ nguyên."

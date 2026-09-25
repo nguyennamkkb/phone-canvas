@@ -12,7 +12,7 @@ import { TokenDock } from '../canvas/TokenDock'
 import type { DockTab } from '../canvas/TokenDock'
 import { useTokenTheme, useUiTheme } from '../tokens/store'
 import type { ThemeMode } from '../tokens/tokens'
-import { DEFAULT_DEVICE_ID } from '../frame/devices'
+import { DEFAULT_DEVICE_ID, isKnownDevice } from '../frame/devices'
 import { nextSlotX } from './placement'
 import { useInspector } from '../inspect/InspectorContext'
 import { SpecPanel } from '../inspect/SpecPanel'
@@ -64,6 +64,7 @@ function makeNode(projectId: string, screenId: string, x: number): PhoneFlowNode
 /** legacy token-table node shape — board cũ có thể còn, lọc bỏ im lặng (2.2) */
 type LegacyBoardNode = PhoneFlowNode | { id: string; type: string; position: { x: number; y: number }; data: Record<string, unknown> }
 
+/** historical name — matches every screen node, phone or tablet (only checks type + screenId, never width) */
 function isPhoneNode(n: LegacyBoardNode): n is PhoneFlowNode {
   return (
     n.type === 'phone' &&
@@ -122,6 +123,15 @@ function openingNodes(project: Project): {
       SCREEN_BY_ID,
     )
     const trash = pruneZombieNodes(saved.trash, SCREEN_BY_ID)
+    // unknown deviceIds (hand-edited board.json / stale import): render falls
+    // back to reference silently, so warn once per id instead of hiding it
+    for (const id of new Set(
+      [...phones.map((n) => n.data.deviceId), ...trash.map((t) => t.node.data.deviceId)],
+    )) {
+      if (typeof id === 'string' && !isKnownDevice(id)) {
+        console.warn(`[phone-canvas] unknown device "${id}" — falling back to reference`)
+      }
+    }
     // Ghi nhận id đã mất để reconcile không thêm lại thứ không còn tồn tại.
     const lost = new Set<string>()
     for (const n of saved.nodes as LegacyBoardNode[]) {

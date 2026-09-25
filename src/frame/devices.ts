@@ -85,3 +85,12 @@ export const DEFAULT_DEVICE_ID = 'reference'
 export function getDevice(id: string): Device {
   return DEVICES.find((d) => d.id === id) ?? DEVICES[0]
 }
+
+/**
+ * Strict membership check. `getDevice` falls back to reference silently (hot
+ * paths depend on it), so callers that surface identity — board labels, load
+ * warnings — use this to say the fallback happened instead of hiding it.
+ */
+export function isKnownDevice(id: string): boolean {
+  return DEVICES.some((d) => d.id === id)
+}
