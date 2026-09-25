@@ -95,6 +95,13 @@ npm run screens:sync          # regenerate generated.ts after manual manifest ed
   records `deviceId` in the manifest so fresh boards open it at 820pt.
   Write screens fluid (token classes, no px per width); a fundamentally
   different tablet layout is a separate screen, never `if-device` in one file.
+- Devices (see `docs/devices.md`): `reference` 390 (default), `iphone-16-pro`
+  402, `iphone-se` 375, `ipad-11` 820, `ipad-mini` 744, `duo-cover` 466,
+  `duo-inner` 890 landscape. Each device declares a `form` (phone / tablet /
+  cover / inner) shown as a chip on the board label — phone is chipless.
+  A node follows its manifest `deviceId`, overridable per-node in the panel's
+  **Thiết bị** dropdown; export renders whatever `--device` it is given
+  (`--device` named explicitly keeps a `-<device>` filename suffix).
 
 ### Board state: trash & export/import
 
@@ -182,4 +189,5 @@ classes it uses.
 | score, stats, overview, anything with a chart | `recipes/dashboard.md` |
 | modal action menu, preview, short form, filter | `recipes/bottom-sheet.md` |
 | per-screen background color / image / dark stage | `recipes/screen-background.md` |
+| free-style catalogue of tokens + components | `recipes/showcase.md` |
 | new project palette, token edit, dark mode, handoff | `recipes/design-tokens.md` |
