@@ -13,6 +13,8 @@ thêm 1 object, không hardcode width ở logic.
 | `iphone-se` | iPhone SE | 375×667 | 14 | 20 | 20 | 0 | none |
 | `ipad-11` | iPad 11″ · 820×1180 | 820×1180 | 16 | 18 | 24 | 20 | none |
 | `ipad-mini` | iPad mini · 744×1133 | 744×1133 | 16 | 18 | 24 | 20 | none |
+| `duo-cover` | iPhone Duo · Cover 466×678 | 466×678 | 12 | 30 | 44 | 24 | none |
+| `duo-inner` | iPhone Duo · Inner 890×626 (landscape) | 890×626 | 14 | 20 | 24 | 20 | none |
 
 Ý nghĩa field: `width/height` là pt (1:1 CSS px trong iframe); `bezel/radius`
 vẽ khung ngoài (cosmetic, không đổi số đo); `safeTop/safeBottom` là vùng OS

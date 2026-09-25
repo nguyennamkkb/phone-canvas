@@ -333,6 +333,27 @@
   color: var(--chrome-faint);
 }
 
+/* form-factor chip (board-only) — non-phone nodes name their kind */
+.phone-form {
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 1px 7px;
+  white-space: nowrap;
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.phone-form.is-cover {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.phone-form.is-inner {
+  background: #d1fae5;
+  color: #065f46;
+}
+
 /* unknown deviceId fallback badge — node renders at Reference, say so */
 .phone-device-warn {
   font-size: 10px;

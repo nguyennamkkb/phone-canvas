@@ -1,7 +1,7 @@
 import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import type { Node, NodeProps } from '@xyflow/react'
 import { Handle, Position } from '@xyflow/react'
-import { getDevice, isKnownDevice } from '../frame/devices'
+import { formChip, formFactorOf, getDevice, isKnownDevice } from '../frame/devices'
 import { buildSrcDoc } from '../extractor/buildSrcDoc'
 import { SCREEN_BY_ID } from '../screens'
 import { projectOfScreen } from '../projects/projects'
@@ -47,6 +47,10 @@ function PhoneNodeInner({ id, data }: NodeProps) {
 
   const device = getDevice(d.deviceId)
   const screen = SCREEN_BY_ID.get(d.screenId)
+  // form-factor chip (board-only): manifest deviceId is primary, a per-node
+  // override in NodePicker re-resolves here automatically; phone is chipless
+  const form = formFactorOf(d.deviceId)
+  const formChipText = formChip(form)
 
   // The frame has no fixed height: it reports how tall its own content is and
   // the node grows to match. A long screen simply makes a long rectangle.
@@ -139,6 +143,14 @@ function PhoneNodeInner({ id, data }: NodeProps) {
         <span className="phone-label-size">
           {device.width} × {Math.round(contentH)}
         </span>
+        {formChipText && (
+          <span
+            className={`phone-form is-${form}`}
+            title={`Form-factor: ${device.name} — đổi ở dropdown Thiết bị trong panel`}
+          >
+            {formChipText}
+          </span>
+        )}
         {!isKnownDevice(d.deviceId) && (
           <span
             className="phone-device-warn"
