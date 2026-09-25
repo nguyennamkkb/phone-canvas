@@ -30,7 +30,7 @@ import { SCREEN_FILES } from '../src/screens/manifest.ts'
 import { COMPONENT_FILES } from '../src/components/manifest.ts'
 import { BUILTIN_PROJECTS } from '../src/projects/builtin.ts'
 import { composeScreenDoc } from '../src/extractor/compose.ts'
-import { parseArgs } from './export/cli.ts'
+import { exportFileName, parseArgs } from './export/cli.ts'
 import { launch, shutdown } from './export/cdp.ts'
 import { startSite } from './export/site.ts'
 import { renderPng } from './export/render.ts'
@@ -169,9 +169,14 @@ async function main(): Promise<void> {
           const url = `${site.origin}/screen/${screenId}--${deviceId}--${theme}`
           const png = await renderPng(browser.cdp, url, device.width, device.height, options.scale)
 
-          const devSuffix = devices.length > 1 ? `-${deviceId}` : ''
-          const themeSuffix = theme === 'dark' ? '-dark' : ''
-          const file = path.join(outDir, `${screenId}${devSuffix}${themeSuffix}@${options.scale}x.png`)
+          // an explicitly named device always keeps its suffix: without this
+          // a phone export and an ipad-11 export of one screen land on the
+          // same filename and the second silently overwrites the first
+          const multiDevice = devices.length > 1 || options.explicitDevices
+          const file = path.join(
+            outDir,
+            exportFileName(screenId, deviceId, theme, options.scale, multiDevice),
+          )
           await writeFile(file, png)
           written++
           // PNG IHDR: width at byte 16, height at byte 20, big-endian

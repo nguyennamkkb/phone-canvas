@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { findChrome } from './chrome.ts'
-import { parseArgs } from './cli.ts'
+import { exportFileName, parseArgs } from './cli.ts'
 
 describe('export cli', () => {
   it('parses screen/device/scale/out flags', () => {
@@ -14,6 +14,19 @@ describe('export cli', () => {
   it('rejects unknown flags and bad scales', () => {
     expect(() => parseArgs(['--nope'])).toThrow()
     expect(() => parseArgs(['--scale', '0'])).toThrow()
+  })
+
+  it('marks explicitly named devices so filenames keep their suffix', () => {
+    expect(parseArgs(['--screen', 'home']).explicitDevices).toBe(false)
+    expect(parseArgs(['--screen', 'home', '--device', 'ipad-11']).explicitDevices).toBe(true)
+    expect(parseArgs(['--device', 'all']).explicitDevices).toBe(true)
+  })
+
+  it('names files without a device suffix only for the implicit default', () => {
+    expect(exportFileName('home', 'reference', 'light', 2, false)).toBe('home@2x.png')
+    expect(exportFileName('home', 'ipad-11', 'light', 2, true)).toBe('home-ipad-11@2x.png')
+    expect(exportFileName('home', 'reference', 'light', 2, true)).toBe('home-reference@2x.png')
+    expect(exportFileName('home', 'ipad-11', 'dark', 3, true)).toBe('home-ipad-11-dark@3x.png')
   })
 })
 
