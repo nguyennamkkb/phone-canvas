@@ -18,9 +18,10 @@ export type TokenNodeData = {
 export type TokenFlowNode = Node<TokenNodeData, 'token'>
 
 /**
- * Mọi node trên board hiện tại đều là phone (2.1) — token-table đã rời
- * canvas thành dock trái. TokenFlowNode giữ lại cho migration: board cũ
- * trong localStorage vẫn có thể chứa nó, BoardView lọc bỏ im lặng.
+ * Mọi node trên board hiện tại đều là screen node (`type: 'phone'` — tên
+ * lịch sử, bao cả tablet) (2.1) — token-table đã rời canvas thành dock trái.
+ * TokenFlowNode giữ lại cho migration: board cũ trong localStorage vẫn có
+ * thể chứa nó, BoardView lọc bỏ im lặng.
  */
 export type BoardNode = PhoneFlowNode
 

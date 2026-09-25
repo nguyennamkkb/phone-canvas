@@ -128,8 +128,8 @@ export function Board({
     return () => ro.disconnect()
   }, [])
 
-  // fit-view frames phone screens only (1.2) — token-dock (2.1) nằm ngoài
-  // canvas nên mặc nhiên không lọt vào phép tính fit/minimap
+  // fit-view frames screen nodes only (phone + tablet) — token-dock (2.1)
+  // nằm ngoài canvas nên mặc nhiên không lọt vào phép tính fit/minimap
   const phoneNodes = nodes
   const phoneNodesKey = phoneNodes.map((n) => n.id).join(',')
 
@@ -155,7 +155,7 @@ export function Board({
   }, [sizes, fitView])
 
   // canvas chrome speaks Vietnamese (1.3) — Controls ships English titles,
-  // so relabel them in place; phone nodes are untouched
+  // so relabel them in place; screen nodes (phone + tablet) are untouched
   useEffect(() => {
     const labels: Array<[string, string]> = [
       ['zoomin', 'Phóng to'],

@@ -245,6 +245,9 @@ src/
 Or let `npm run new-screen` do all three (or `npm run screen -- add ...` —
 same thing plus the auto-gate: screens:sync + tsc + lint).
 
+Tablet screens and the device model are documented in `docs/devices.md`
+(`new-screen -- --device ipad-11` scaffolds a 2-column screen).
+
 To rename a screen id (file + manifest + builtin + on-disk boards, one shot):
 
 ```bash
