@@ -616,6 +616,21 @@
   gap: 6px;
 }
 
+/* preview width selector — which device the component measures at */
+.component-preview-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 4px;
+  font-size: 11px;
+  color: var(--chrome-muted);
+}
+
+.component-preview-bar select {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .component-item {
   border-radius: 10px;
   background: var(--chrome-surface, #fff);

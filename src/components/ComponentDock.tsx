@@ -2,7 +2,9 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import bridgeJs from '../extractor/bridge.js?raw'
 import { composeScreenDoc } from '../extractor/compose'
 import { componentsFor, stylesheetsFor } from '../extractor/assets'
-import { DEFAULT_DEVICE_ID, getDevice } from '../frame/devices'
+import { DEFAULT_DEVICE_ID, DEVICES, getDevice, isKnownDevice } from '../frame/devices'
+import { SCREEN_BY_ID } from '../screens'
+import { BUILTIN_PROJECTS } from '../projects/builtin'
 import { useInspector } from '../inspect/InspectorContext'
 import { ElementTree } from '../inspect/element-tree/ElementTree'
 import { SpecDetail } from '../inspect/spec-detail/SpecDetail'
@@ -39,16 +41,41 @@ function useFitScale(width: number) {
   return { ref, scale }
 }
 
+const PREVIEW_DEVICE_PREFIX = 'pc.ui.compdock.device.'
+
+/** project's first screen device (an iPad screen previews at iPad width) */
+function defaultPreviewDevice(projectId: string): string {
+  const project = BUILTIN_PROJECTS.find((p) => p.id === projectId)
+  for (const sid of project?.screenIds ?? []) {
+    const deviceId = SCREEN_BY_ID.get(sid)?.deviceId
+    if (deviceId) return deviceId
+  }
+  return DEFAULT_DEVICE_ID
+}
+
+function loadPreviewDevice(projectId: string): string {
+  try {
+    const raw = localStorage.getItem(PREVIEW_DEVICE_PREFIX + projectId)
+    if (raw && isKnownDevice(raw)) return raw
+  } catch {
+    /* private mode — fall through to the default */
+  }
+  const d = defaultPreviewDevice(projectId)
+  return isKnownDevice(d) ? d : DEFAULT_DEVICE_ID
+}
+
 function ComponentPreview({
   projectId,
   component,
   theme,
+  deviceId,
 }: {
   projectId: string
   component: ComponentDef
   theme: ThemeMode
+  deviceId: string
 }) {
-  const device = getDevice(DEFAULT_DEVICE_ID)
+  const device = getDevice(deviceId)
   const [token] = useState(() => `c${Math.random().toString(36).slice(2, 10)}`)
   const frameId = `component:${projectId}:${component.id}`
   const frameRef = useRef<HTMLIFrameElement>(null)
@@ -73,7 +100,7 @@ function ComponentPreview({
         bare: true,
         theme,
       }),
-    [component.html, device, projectId, token, theme],
+    [component.html, device, projectId, token, theme, deviceId],
   )
 
   const specList = specs[frameId] ?? []
@@ -125,6 +152,24 @@ export function ComponentDock({ projectId, theme }: ComponentDockProps) {
   const usage = useMemo(() => componentUsage(projectId), [projectId])
   const useById = useMemo(() => new Map(usage.map((u) => [u.id, u])), [usage])
   const [openId, setOpenId] = useState<string | null>(null)
+  // preview width follows the consuming screens: a component used in an iPad
+  // screen measures at iPad width. Remembered per project, never written to
+  // board nodes.
+  const [previewDevice, setPreviewDevice] = useState<string>(() => loadPreviewDevice(projectId))
+
+  useEffect(() => {
+    setPreviewDevice(loadPreviewDevice(projectId))
+  }, [projectId])
+
+  const pickPreviewDevice = (id: string) => {
+    if (!isKnownDevice(id)) return
+    setPreviewDevice(id)
+    try {
+      localStorage.setItem(PREVIEW_DEVICE_PREFIX + projectId, id)
+    } catch {
+      /* private mode — preview just becomes session-only */
+    }
+  }
 
   if (components.length === 0) {
     return (
@@ -140,6 +185,20 @@ export function ComponentDock({ projectId, theme }: ComponentDockProps) {
 
   return (
     <div className="component-catalog">
+      <div className="component-preview-bar">
+        <span className="field-key">Preview</span>
+        <select
+          value={previewDevice}
+          onChange={(e) => pickPreviewDevice(e.target.value)}
+          title="Chiều rộng preview component"
+        >
+          {DEVICES.map((d) => (
+            <option key={d.id} value={d.id}>
+              {d.name}
+            </option>
+          ))}
+        </select>
+      </div>
       {components.map((c) => {
         const open = openId === c.id
         const u = useById.get(c.id)
@@ -155,7 +214,7 @@ export function ComponentDock({ projectId, theme }: ComponentDockProps) {
               <code className="component-id">{c.id}</code>
               <span className="component-use">{u && u.count > 0 ? `${u.count} chỗ` : 'chưa dùng'}</span>
             </button>
-            {open && <ComponentPreview projectId={projectId} component={c} theme={theme} />}
+            {open && <ComponentPreview projectId={projectId} component={c} theme={theme} deviceId={previewDevice} />}
           </div>
         )
       })}
