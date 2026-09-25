@@ -157,6 +157,12 @@ export function SpecDetail({ node, lookup }: { node: SpecNode; lookup: (raw: str
               : `${su.backgroundHex}  ${su.background}${tn(su.background)}`
           }
         />
+        {su.backgroundKind === 'image' && (
+          <Field label="nền-ảnh" value={`${su.backgroundImage}  →  Image("…")`} mono={false} />
+        )}
+        {su.backgroundKind === 'gradient' && (
+          <Field label="nền-ảnh" value={`${su.backgroundImage}  →  LinearGradient (tự viết)`} mono={false} />
+        )}
         <Field label="radius" value={su.radius ? `${px(su.radius)} pt` : ''} />
         <Field
           label="border"

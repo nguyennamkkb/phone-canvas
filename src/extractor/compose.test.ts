@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { composeScreenDoc } from './compose'
+import { composeScreenDoc, screenBgOf } from './compose'
 import { DEVICES, getDevice } from '../frame/devices'
 
 const device = DEVICES[0]
@@ -82,5 +82,69 @@ describe('composeScreenDoc', () => {
     expect(html).toContain('--device-w: 820px')
     expect(html).toContain('<meta name="viewport" content="width=device-width, initial-scale=1">')
     expect(html).toContain('<div class="statusbar"')
+  })
+})
+
+describe('screenBgOf (optional screen background)', () => {
+  it('returns empty for a plain screen root', () => {
+    expect(screenBgOf('<div class="screen"></div>')).toEqual({ style: '', isDark: false })
+    expect(screenBgOf('<div class="screen" style="--mood: var(--mood-4)">x</div>')).toEqual({
+      style: '',
+      isDark: false,
+    })
+  })
+
+  it('replays a token background-color onto the device', () => {
+    expect(screenBgOf('<div class="screen" style="background-color: var(--sage-soft)">x</div>')).toEqual(
+      { style: 'background-color: var(--sage-soft);', isDark: false },
+    )
+  })
+
+  it('replays an image with fixed cover geometry plus its fallback color', () => {
+    const bg = screenBgOf(
+      '<div class="screen" style="background-color: var(--bg); background-image: url(/images/moodtracker-pattern.svg); background-size: cover">x</div>',
+    )
+    expect(bg.style).toContain('background-color: var(--bg);')
+    expect(bg.style).toContain('background-image: url(/images/moodtracker-pattern.svg);')
+    expect(bg.style).toContain('background-size: cover;')
+    expect(bg.style).toContain('background-position: center;')
+    expect(bg.style).toContain('background-repeat: no-repeat;')
+    expect(bg.isDark).toBe(false)
+  })
+
+  it('flags a dark literal fallback so the home bar flips white', () => {
+    const bg = screenBgOf('<div class="screen" style="background-color: #000">x</div>')
+    expect(bg.isDark).toBe(true)
+    const html = composeScreenDoc({ html: '<div class="screen" style="background-color: #000"></div>', device, stylesheets: [] })
+    expect(html).toContain('class="device is-dark"')
+    expect(html).toContain('style="background-color: #000;"')
+    expect(html).toContain('.device.is-dark .home-indicator i')
+  })
+
+  it('ignores shorthand background (lint forces longhand for image designs)', () => {
+    expect(screenBgOf('<div class="screen" style="background: #000">x</div>')).toEqual({
+      style: '',
+      isDark: false,
+    })
+  })
+
+  it('unquotes url() so the device attribute stays quoteless', () => {
+    const bg = screenBgOf(
+      '<div class="screen" style=\'background-image: url("/images/a.svg")\'>x</div>',
+    )
+    expect(bg.style).toContain('url(/images/a.svg)')
+  })
+
+  it('rejects unsafe values rather than breaking the device tag', () => {
+    expect(screenBgOf('<div class="screen" style=\'background-color: x" onload="y\'>x</div>')).toEqual({
+      style: '',
+      isDark: false,
+    })
+  })
+
+  it('leaves the device tag untouched when there is no root background', () => {
+    const html = composeScreenDoc({ html: '<div class="screen"></div>', device, stylesheets: [] })
+    expect(html).toContain('<div class="device"')
+    expect(html).not.toContain('class="device is-dark"')
   })
 })

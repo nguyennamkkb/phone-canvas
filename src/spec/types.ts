@@ -134,6 +134,14 @@ export type SpecNode = {
     background: string
     backgroundHex: string
     backgroundAlpha: number
+    /**
+     * Optional screen background (recipe): the computed `background-image`.
+     * 'color' = flat fill (or none), 'image' = url(...) asset, 'gradient' =
+     * a CSS gradient the panel reports as text for a hand-written
+     * LinearGradient. Empty when the bridge predates the background keys.
+     */
+    backgroundImage: string
+    backgroundKind: 'color' | 'image' | 'gradient' | 'none'
     radius: number
     borderWidth: number
     borderColor: string

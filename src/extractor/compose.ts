@@ -103,6 +103,11 @@ body.is-bare { min-height: 0; }
   display: block; width: 139px; height: 5px; border-radius: 999px;
   background: var(--label); opacity: 0.85;
 }
+/* optional screen background (§ screenBgOf): a dark fallback color means the
+   home bar must read white, mirroring .statusbar.is-light for the text */
+.device.is-dark .home-indicator i {
+  background: #fff;
+}
 `
 
 function statusBarHtml(device: Device, light: boolean): string {
@@ -136,6 +141,122 @@ function homeIndicatorHtml(device: Device): string {
   return `\n  <div class="home-indicator"><i></i></div>`
 }
 
+/**
+ * Optional screen background (screen-background recipe).
+ *
+ * A screen may paint its own root (`<div class="screen" style="background-color:
+ * var(--x); background-image: url(/images/y.svg)">`), but the OS chrome strips
+ * (status bar + home indicator) sit OUTSIDE the screen on `.device`, which keeps
+ * `var(--bg)`. Without propagation the strips would show the old color — a seam.
+ *
+ * So: read the root's LONGHAND background declarations and replay them onto
+ * `.device`. Pure string work, so the board and the exporter agree byte for
+ * byte. Shorthand `background:` is deliberately NOT parsed (the lint forces
+ * longhand for image/gradient backgrounds); screens without a root background
+ * get back exactly what they always got.
+ */
+export type ScreenBg = {
+  /** inline CSS for `.device` ('' when the screen declares no root background) */
+  style: string
+  /** the fallback color is dark — the home indicator should flip white */
+  isDark: boolean
+}
+
+const ROOT_TAG_RE = /<[^>]*class="[^"]*\bscreen\b[^"]*"[^>]*>/i
+
+function styleOf(tag: string): string {
+  const m = /style\s*=\s*"([^"]*)"/i.exec(tag) ?? /style\s*=\s*'([^']*)'/i.exec(tag)
+  return m?.[1] ?? ''
+}
+
+/** split `a: b; c: d` without choking on `url(...;...)` or gradients */
+function declarations(style: string): Array<[string, string]> {
+  const out: Array<[string, string]> = []
+  let depth = 0
+  let cur = ''
+  const push = () => {
+    const i = cur.indexOf(':')
+    if (i > 0) out.push([cur.slice(0, i).trim().toLowerCase(), cur.slice(i + 1).trim()])
+    cur = ''
+  }
+  for (const ch of style) {
+    if (ch === '(') depth++
+    if (ch === ')') depth = Math.max(0, depth - 1)
+    if (ch === ';' && depth === 0) push()
+    else cur += ch
+  }
+  if (cur.trim()) push()
+  return out
+}
+
+/** values with quotes/brackets would break the device's style attribute */
+function safeCssValue(v: string): boolean {
+  return v !== '' && !/["'`<>{};]/.test(v) && v.length <= 300
+}
+
+/** `url("…")` / `url('…')` → `url(…)` so the device attribute stays quoteless */
+function unquoteUrl(v: string): string {
+  return v.replace(/url\(\s*(['"])([^'")]+)\1\s*\)/g, 'url($2)')
+}
+
+function luminanceOf(color: string): number | null {
+  const v = color.trim().toLowerCase()
+  let r = 0
+  let g = 0
+  let b = 0
+  const hex = /^#([0-9a-f]{3}|[0-9a-f]{6})$/.exec(v)
+  if (hex?.[1]) {
+    const h = hex[1].length === 3 ? hex[1].split('').map((c) => c + c).join('') : hex[1]
+    r = parseInt(h.slice(0, 2), 16)
+    g = parseInt(h.slice(2, 4), 16)
+    b = parseInt(h.slice(4, 6), 16)
+  } else {
+    const m = /^rgba?\(([^)]+)\)$/.exec(v)
+    if (!m?.[1]) return null
+    const parts = m[1].split(/[,\s/]+/).filter(Boolean).map(Number)
+    if (parts.length < 3 || parts.slice(0, 3).some((x) => !Number.isFinite(x))) return null
+    if (parts.length > 3 && (parts[3] ?? 1) < 0.5) return null
+    r = parts[0] as number
+    g = parts[1] as number
+    b = parts[2] as number
+  }
+  const lin = (c: number) => {
+    const s = c / 255
+    return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4)
+  }
+  return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b)
+}
+
+export function screenBgOf(html: string): ScreenBg {
+  const none: ScreenBg = { style: '', isDark: false }
+  const tag = ROOT_TAG_RE.exec(html)?.[0]
+  if (!tag) return none
+  let color = ''
+  let image = ''
+  for (const [prop, value] of declarations(styleOf(tag))) {
+    if (prop === 'background-color') color = value
+    else if (prop === 'background-image') image = unquoteUrl(value)
+  }
+  if (color !== '' && !safeCssValue(color)) return none
+  if (image !== '' && (image === 'none' || !safeCssValue(image))) {
+    if (image !== 'none') return none
+    image = ''
+  }
+  if (!color && !image) return none
+  const parts: string[] = []
+  if (color) parts.push(`background-color: ${color}`)
+  if (image) {
+    // fixed geometry per the recipe: the author must use cover/center/no-repeat
+    // on .screen too, so the strips read as a continuation of the same picture
+    parts.push(`background-image: ${image}`)
+    parts.push('background-size: cover')
+    parts.push('background-position: center')
+    parts.push('background-repeat: no-repeat')
+  }
+  const lum = color ? luminanceOf(color) : null
+  return { style: parts.join('; ') + ';', isDark: lum !== null && lum < 0.35 }
+}
+
 export function composeScreenDoc(options: ComposeOptions): string {
   const {
     html,
@@ -156,6 +277,11 @@ export function composeScreenDoc(options: ComposeOptions): string {
   const body = components ? expandComponents(html, components).html : html
 
   const styles = stylesheets.map((css) => `<style>${css}</style>`).join('\n')
+
+  // optional screen background: replay the root's longhand background onto
+  // .device so the statusbar/home strips continue the screen instead of
+  // showing the project's default --bg as a seam
+  const screenBg = screenBgOf(body)
 
   const deviceAttrs =
     nodeId && token ? ` data-node-id="${nodeId}" data-node-token="${token}"` : ''
@@ -183,7 +309,7 @@ ${CHROME_CSS}
 </style>
 </head>
 <body${bare ? ' class="is-bare"' : ''}>
-<div class="device${bare ? ' is-bare' : ''}"${deviceAttrs}>
+<div class="device${bare ? ' is-bare' : ''}${screenBg.isDark ? ' is-dark' : ''}"${screenBg.style ? ` style="${screenBg.style}"` : ''}${deviceAttrs}>
 ${bare ? '' : statusBarHtml(device, lightStatusBar ?? false)}
   <div class="viewport">${body}</div>${bare ? '' : homeIndicatorHtml(device)}
 </div>${bridge}

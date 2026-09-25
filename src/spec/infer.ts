@@ -88,6 +88,18 @@ function fileName(url: string): string {
 }
 
 /**
+ * Classify a computed `background-image` for the spec panel.
+ * Old captures without the background keys read as 'color' (flat fill).
+ */
+export function backgroundKindOf(value: string | number | undefined): 'color' | 'image' | 'gradient' | 'none' {
+  const v = s(value).trim().toLowerCase()
+  if (v === '' || v === 'none') return v === '' ? 'color' : 'none'
+  if (/^url\(/.test(v)) return 'image'
+  if (/gradient\(/.test(v)) return 'gradient'
+  return 'color'
+}
+
+/**
  * Turn an <img> or a masked glyph into the thing SwiftUI actually needs: a name.
  *
  * A design that ships a nameless picture is not finished — `Image(systemName:)`
@@ -311,6 +323,8 @@ export function buildSpec(nodes: RawNode[]): SpecNode[] {
     const color = s(css.color)
 
     const bg = s(css.backgroundColor)
+    const bgImage = s(css.backgroundImage)
+    const bgKind = backgroundKindOf(css.backgroundImage)
     const borderWidth = Math.max(n(css.borderTopWidth), n(css.borderBottomWidth))
     const borderColor = n(css.borderTopWidth) > 0 ? s(css.borderTopColor) : s(css.borderBottomColor)
     const shadow = s(css.boxShadow)
@@ -381,6 +395,8 @@ export function buildSpec(nodes: RawNode[]): SpecNode[] {
         background: bg,
         backgroundHex: toHex(bg),
         backgroundAlpha: alphaOf(bg),
+        backgroundImage: bgKind === 'color' || bgKind === 'none' ? '' : bgImage,
+        backgroundKind: bgKind,
         radius,
         borderWidth,
         borderColor,

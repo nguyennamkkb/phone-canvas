@@ -181,4 +181,5 @@ classes it uses.
 | browse, inbox, settings, search results | `recipes/list-screen.md` |
 | score, stats, overview, anything with a chart | `recipes/dashboard.md` |
 | modal action menu, preview, short form, filter | `recipes/bottom-sheet.md` |
+| per-screen background color / image / dark stage | `recipes/screen-background.md` |
 | new project palette, token edit, dark mode, handoff | `recipes/design-tokens.md` |

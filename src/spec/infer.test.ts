@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildSpec, toHex, weightName } from './infer'
+import { backgroundKindOf, buildSpec, toHex, weightName } from './infer'
 import type { RawNode } from './types'
 
 const baseCss = {
@@ -18,6 +18,9 @@ const baseCss = {
   color: 'rgb(0, 0, 0)',
   backgroundColor: 'rgba(0, 0, 0, 0)',
   backgroundImage: 'none',
+  backgroundSize: 'auto',
+  backgroundPosition: '0% 0%',
+  backgroundRepeat: 'repeat',
   borderTopColor: 'rgb(0, 0, 0)',
   borderBottomColor: 'rgb(0, 0, 0)',
   borderTopStyle: 'none',
@@ -157,5 +160,27 @@ describe('buildSpec roles', () => {
       raw({ id: 'e0', tag: 'p', childCount: 0, text: 'T', textLength: 1, ownText: 'T', css: { fontSize: 22, lineHeight: 28 } }),
     ])
     expect(s.typography?.lineSpacing).toBe(6)
+  })
+})
+
+describe('backgroundKindOf (optional screen background)', () => {
+  it('classifies computed background-image values', () => {
+    expect(backgroundKindOf('none')).toBe('none')
+    expect(backgroundKindOf(undefined)).toBe('color')
+    expect(backgroundKindOf('url("/images/a.svg")')).toBe('image')
+    expect(backgroundKindOf('linear-gradient(90deg, red, blue)')).toBe('gradient')
+  })
+
+  it('reports image and gradient backgrounds on the surface', () => {
+    const [img, grad, flat] = buildSpec([
+      raw({ id: 'e0', css: { backgroundImage: 'url("/images/a.svg")' } }),
+      raw({ id: 'e1', css: { backgroundImage: 'linear-gradient(150deg, rgb(185, 140, 240), rgb(139, 92, 246))' } }),
+      raw({ id: 'e2' }),
+    ])
+    expect(img.surface.backgroundKind).toBe('image')
+    expect(img.surface.backgroundImage).toBe('url("/images/a.svg")')
+    expect(grad.surface.backgroundKind).toBe('gradient')
+    expect(flat.surface.backgroundKind).toBe('none')
+    expect(flat.surface.backgroundImage).toBe('')
   })
 })

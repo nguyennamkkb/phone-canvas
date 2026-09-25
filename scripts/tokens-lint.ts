@@ -18,6 +18,7 @@
 import { readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { existsSync } from 'node:fs'
 
 import { SCREEN_FILES } from '../src/screens/manifest.ts'
 import { BUILTIN_PROJECTS } from '../src/projects/builtin.ts'
@@ -68,8 +69,38 @@ async function definedVars() {
 
 // Tier rule: a global color used by a screen warns unless the project file
 // redefines it (its own semantic alias). Warnings never fail; errors exit 1.
+
+/** longhand background declarations off the `.screen` root tag (or null) */
+function rootBackgroundOf(html) {
+  const tag = /<[^>]*class="[^"]*\bscreen\b[^"]*"[^>]*>/i.exec(html)
+  if (!tag) return null
+  const style = (/style\s*=\s*"([^"]*)"/i.exec(tag[0]) ?? /style\s*=\s*'([^']*)'/i.exec(tag[0]))?.[1]
+  if (!style) return null
+  const get = (prop) => {
+    const m = new RegExp(`${prop}\\s*:\\s*([^;]*)`, 'i').exec(style)
+    return m ? m[1].trim() : ''
+  }
+  const color = get('background-color')
+  const image = get('background-image')
+  if (!color && !image) return null
+  return {
+    index: tag.index,
+    color,
+    image,
+    size: get('background-size'),
+    position: get('background-position'),
+    repeat: get('background-repeat'),
+  }
+}
+
 async function main() {
   const { names, globalColors, projectNames } = await definedVars()
+  let imageSet = new Set()
+  try {
+    imageSet = new Set(await readdir(path.join(ROOT, 'public/images')))
+  } catch {
+    /* no images dir — every url() errors below */
+  }
   const projectOwnsColor = new Map()
   for (const p of BUILTIN_PROJECTS) {
     const own = new Set()
@@ -120,6 +151,56 @@ async function main() {
     if (hard.size > 0) {
       console.warn(`warn   ${screen.file}  màu cứng: ${[...hard].slice(0, 5).join(', ')}${hard.size > 5 ? '…' : ''}`)
       warns += 1
+    }
+
+    // optional screen background values (recipe screen-background): the root
+    // may carry longhand background-color/background-image; values must be a
+    // token (or #000 dark-stage), an existing /images/ asset, with a fallback
+    // color and fixed cover geometry. Screens without a root background skip.
+    const rootBg = rootBackgroundOf(html)
+    if (rootBg) {
+      const rootLine = lineOf(html, rootBg.index)
+      if (rootBg.color && !/^var\(--[a-z0-9-]+\)$|^#000000$|^#000$/i.test(rootBg.color)) {
+        console.error(`error  ${screen.file}:${rootLine}  nền .screen root phải là var(--token) hoặc #000 (đang: ${rootBg.color.slice(0, 40)})`)
+        errors += 1
+      }
+      if (rootBg.image && rootBg.image.toLowerCase() !== 'none') {
+        if (!rootBg.color) {
+          console.error(`error  ${screen.file}:${rootLine}  background-image trên root thiếu background-color fallback`)
+          errors += 1
+        }
+        for (const m of rootBg.image.matchAll(/url\(\s*(['"]?)([^'")]+)\1\s*\)/gi)) {
+          const u = m[2].trim()
+          if (!u.startsWith('/images/')) {
+            console.error(`error  ${screen.file}:${rootLine}  ảnh nền root phải là /images/<file có sẵn> (đang: ${u.slice(0, 60)})`)
+            errors += 1
+          } else if (!imageSet.has(u.slice('/images/'.length))) {
+            console.error(`error  ${screen.file}:${rootLine}  ${u} không tồn tại trong public/images/`)
+            errors += 1
+          }
+        }
+        // only url(/images/…) and bare gradients may appear — no remote/data URLs
+        // (strip innermost calls first so rgba() inside a gradient survives)
+        let bare = rootBg.image.replace(/url\([^)]*\)/gi, '')
+        let prev = ''
+        while (prev !== bare) {
+          prev = bare
+          bare = bare.replace(/[a-z-]+\([^()]*\)/gi, '')
+        }
+        bare = bare.replace(/[,;\s]/g, '')
+        if (bare !== '' || /https?:|data:/i.test(rootBg.image)) {
+          console.error(`error  ${screen.file}:${rootLine}  background-image trên root chỉ nhận url(/images/…) hoặc gradient — không URL ngoài/data-URI`)
+          errors += 1
+        }
+        if (rootBg.size && !/^cover$/i.test(rootBg.size)) {
+          console.error(`error  ${screen.file}:${rootLine}  ảnh nền root phải background-size: cover (để .device lan đúng)`)
+          errors += 1
+        }
+        if (rootBg.repeat && !/^no-repeat$/i.test(rootBg.repeat)) {
+          console.error(`error  ${screen.file}:${rootLine}  ảnh nền root phải background-repeat: no-repeat`)
+          errors += 1
+        }
+      }
     }
   }
 
