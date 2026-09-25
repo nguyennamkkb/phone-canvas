@@ -5,6 +5,9 @@
  * run `npm run screens:sync` (or `npm run new-screen`)
  * after editing it. index.ts only re-exports this.
  */
+import c12DiaryDuoInner from '../../project/caloai/c12-diary-duo-inner.html?raw'
+import c12DiaryDuoCover from '../../project/caloai/c12-diary-duo-cover.html?raw'
+import c12DiaryIpad from '../../project/caloai/c12-diary-ipad.html?raw'
 import s16Settings from '../../project/drivetiles/s16-settings.html?raw'
 import s15Setup from '../../project/drivetiles/s15-setup.html?raw'
 import s14MyWidgets from '../../project/drivetiles/s14-my-widgets.html?raw'
@@ -56,6 +59,9 @@ import c29Profile from '../../project/caloai/c29-profile.html?raw'
 import c30Premium from '../../project/caloai/c30-premium.html?raw'
 
 const RAW: Record<string, string> = {
+  'c12-diary-duo-inner': c12DiaryDuoInner,
+  'c12-diary-duo-cover': c12DiaryDuoCover,
+  'c12-diary-ipad': c12DiaryIpad,
   's16-settings': s16Settings,
   's15-setup': s15Setup,
   's14-my-widgets': s14MyWidgets,

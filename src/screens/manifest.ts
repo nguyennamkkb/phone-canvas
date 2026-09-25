@@ -44,6 +44,9 @@ export type ScreenFile = {
 }
 
 export const SCREEN_FILES: ScreenFile[] = [
+  { id: 'c12-diary-duo-inner', title: 'S12 · Diary / Home (Duo Inner)', file: 'project/caloai/c12-diary-duo-inner.html', deviceId: 'duo-inner' },
+  { id: 'c12-diary-duo-cover', title: 'S12 · Diary / Home (Duo Cover)', file: 'project/caloai/c12-diary-duo-cover.html', deviceId: 'duo-cover' },
+  { id: 'c12-diary-ipad', title: 'S12 · Diary / Home (iPad)', file: 'project/caloai/c12-diary-ipad.html', deviceId: 'ipad-11' },
   { id: 's16-settings', title: 'S16 · Settings', file: 'project/drivetiles/s16-settings.html' },
   { id: 's15-setup', title: 'S15 · Setup Guide', file: 'project/drivetiles/s15-setup.html' },
   { id: 's14-my-widgets', title: 'S14 · My Widgets', file: 'project/drivetiles/s14-my-widgets.html' },
