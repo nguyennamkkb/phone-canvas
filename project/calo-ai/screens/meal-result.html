@@ -1,0 +1,118 @@
+<!-- pc {"title":"Meal Result"} -->
+<div class="screen" style="background-color: var(--bg)">
+  <header class="navbar" style="padding: var(--s2) var(--s5)">
+    <button class="icon-btn" aria-label="Back">
+      <span class="icon icon-sm" data-symbol="chevron.left"></span>
+    </button>
+    <span class="t-headline">Meal result</span>
+    <button class="icon-btn" aria-label="Delete meal">
+      <span class="icon icon-sm" data-symbol="trash"></span>
+    </button>
+  </header>
+
+  <div class="body" style="padding: var(--s2) var(--s5) var(--s4); gap: var(--s4)">
+    <div class="col" style="gap: var(--s2)">
+      <img class="art" src="/project/calo-ai/assets/thumb-lunch.svg" width="358" height="200" alt="Chicken rice bowl" style="border-radius: var(--r-xl)" />
+      <div class="row" style="justify-content: space-between">
+        <div class="col" style="gap: 0">
+          <span class="t-title2">Chicken rice bowl</span>
+          <span class="t-footnote t-secondary">Today · 12:40 PM</span>
+        </div>
+        <span class="chip" style="background-color: var(--bg-elevated); border: 1px solid var(--separator)">Estimated</span>
+      </div>
+    </div>
+
+    <div class="paper-card" style="gap: var(--s2); align-items: center">
+      <span class="t-score">540</span>
+      <span class="t-label">KCAL</span>
+      <div class="row" style="gap: var(--s4)">
+        <div class="row" style="gap: var(--s1)">
+          <i class="swatch" style="background-color: var(--protein)"></i>
+          <span class="t-footnote">P · 38 g</span>
+        </div>
+        <div class="row" style="gap: var(--s1)">
+          <i class="swatch" style="background-color: var(--carbs)"></i>
+          <span class="t-footnote">C · 52 g</span>
+        </div>
+        <div class="row" style="gap: var(--s1)">
+          <i class="swatch" style="background-color: var(--fat)"></i>
+          <span class="t-footnote">F · 18 g</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col" style="gap: var(--s2)">
+      <span class="t-section">Foods</span>
+      <div class="col" style="gap: var(--s3)">
+        <div class="row-card" style="background-color: var(--bg-elevated); border: 1px solid var(--separator)">
+          <i class="swatch" style="background-color: var(--carbs)"></i>
+          <div class="col grow" style="gap: 0">
+            <span class="t-headline">Grilled chicken</span>
+            <span class="t-footnote t-secondary">150 g</span>
+          </div>
+          <div class="col" style="gap: var(--s1); align-items: flex-end">
+            <span class="t-headline">248</span>
+            <span class="chip" style="background-color: var(--bg-grouped)">Uncertain</span>
+          </div>
+          <span class="icon icon-sm" data-symbol="chevron.right"></span>
+        </div>
+        <div class="row-card" style="background-color: var(--bg-elevated); border: 1px solid var(--separator)">
+          <i class="swatch" style="background-color: var(--protein)"></i>
+          <div class="col grow" style="gap: 0">
+            <span class="t-headline">Jasmine rice</span>
+            <span class="t-footnote t-secondary">1 bowl</span>
+          </div>
+          <div class="col" style="gap: var(--s1); align-items: flex-end">
+            <span class="t-headline">205</span>
+          </div>
+          <span class="icon icon-sm" data-symbol="chevron.right"></span>
+        </div>
+        <div class="row-card" style="background-color: var(--bg-elevated); border: 1px solid var(--separator)">
+          <i class="swatch" style="background-color: var(--fat)"></i>
+          <div class="col grow" style="gap: 0">
+            <span class="t-headline">Morning greens</span>
+            <span class="t-footnote t-secondary">80 g</span>
+          </div>
+          <div class="col" style="gap: var(--s1); align-items: flex-end">
+            <span class="t-headline">87</span>
+          </div>
+          <span class="icon icon-sm" data-symbol="chevron.right"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col" style="gap: var(--s2)">
+      <span class="t-headline">Portion</span>
+      <div class="segmented-light">
+        <span class="seg">0.5×</span>
+        <span class="seg is-on">1×</span>
+        <span class="seg">1.5×</span>
+        <span class="seg">2×</span>
+      </div>
+    </div>
+
+    <div class="row" style="gap: var(--s3); padding: var(--s4); border: 1px solid var(--separator); border-radius: var(--r-lg); background-color: var(--bg-elevated)">
+      <span class="icon icon-sm" data-symbol="leaf.fill"></span>
+      <p class="t-subhead grow">Largest uncertainty: <strong>chicken portion</strong>. Adjust if your serving was larger.</p>
+    </div>
+
+    <div class="paper-card" style="gap: 0; padding-top: var(--s1); padding-bottom: var(--s1)">
+      <button class="action-row">
+        <span class="icon icon-sm" data-symbol="pencil"></span>
+        <span class="grow">Edit ingredients</span>
+        <span class="icon icon-xs" data-symbol="chevron.right" style="color: var(--label-3)"></span>
+      </button>
+      <button class="action-row">
+        <span class="icon icon-sm" data-symbol="bookmark"></span>
+        <span class="grow">Save to favorites</span>
+        <span class="icon icon-xs" data-symbol="chevron.right" style="color: var(--label-3)"></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="bottom-cta">
+    <button class="btn btn-block" style="height: 52px; background-color: var(--cta); color: var(--label)" aria-label="Log this meal">
+      <span>Log this meal</span>
+    </button>
+  </div>
+</div>

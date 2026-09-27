@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-label="Calorie progress">
+  <!-- track: full circle minus a 16u break centred at top (-90deg); butt caps => flush joints -->
+  <circle cx="128" cy="128" r="108" fill="none" stroke="#E5DFCF" stroke-width="14"
+    stroke-dasharray="662.58 16" transform="rotate(-85.76 128 128)"/>
+  <!-- consumed 67.03% of the available arc, starts flush at the break, butt caps -->
+  <circle cx="128" cy="128" r="108" fill="none" stroke="#C9F56A" stroke-width="14"
+    stroke-dasharray="444.13 234.45" transform="rotate(-85.76 128 128)"/>
+</svg>

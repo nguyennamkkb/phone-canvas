@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 560" width="640" height="560" role="img" aria-label="Meal bowl">
+  <rect width="640" height="560" rx="56" fill="#EEEAE0"/>
+  <ellipse cx="320" cy="470" rx="210" ry="28" fill="#151711" opacity="0.08"/>
+  <ellipse cx="320" cy="300" rx="230" ry="170" fill="#FFFFFF"/>
+  <ellipse cx="320" cy="300" rx="230" ry="170" fill="none" stroke="#151711" stroke-opacity="0.12" stroke-width="3"/>
+  <ellipse cx="320" cy="310" rx="185" ry="130" fill="#F7F4EE"/>
+  <!-- greens -->
+  <ellipse cx="240" cy="280" rx="70" ry="48" fill="#A8D94A"/>
+  <ellipse cx="380" cy="250" rx="62" ry="44" fill="#7C9448"/>
+  <ellipse cx="330" cy="340" rx="80" ry="50" fill="#C9F56A"/>
+  <!-- chicken -->
+  <ellipse cx="270" cy="340" rx="52" ry="36" fill="#F1B93D"/>
+  <ellipse cx="400" cy="330" rx="48" ry="34" fill="#F1B93D"/>
+  <!-- tomato -->
+  <circle cx="350" cy="270" r="26" fill="#D9504B"/>
+  <circle cx="300" cy="250" r="18" fill="#D9504B"/>
+  <!-- rice -->
+  <ellipse cx="320" cy="380" rx="90" ry="30" fill="#FFFFFF"/>
+  <ellipse cx="320" cy="380" rx="90" ry="30" fill="none" stroke="#151711" stroke-opacity="0.1" stroke-width="2"/>
+  <!-- chopsticks -->
+  <rect x="150" y="150" width="340" height="12" rx="6" fill="#151711" transform="rotate(-18 150 150)"/>
+  <rect x="170" y="180" width="340" height="12" rx="6" fill="#151711" opacity="0.75" transform="rotate(-18 170 180)"/>
+  <!-- spark -->
+  <circle cx="500" cy="140" r="30" fill="#C9F56A"/>
+  <circle cx="500" cy="140" r="30" fill="none" stroke="#151711" stroke-opacity="0.15" stroke-width="3"/>
+  <circle cx="130" cy="420" r="16" fill="#A883F5"/>
+  <circle cx="520" cy="420" r="12" fill="#5D8EF1"/>
+</svg>

@@ -1,7 +1,7 @@
 import type { Cdp } from './cdp.ts'
 import { sleep } from './chrome.ts'
 
-async function evaluate(cdp: Cdp, expression: string): Promise<unknown> {
+export async function evaluate(cdp: Cdp, expression: string): Promise<unknown> {
   const result = await cdp.send<{ result: { value?: unknown }; exceptionDetails?: unknown }>(
     'Runtime.evaluate',
     { expression, awaitPromise: true, returnByValue: true },

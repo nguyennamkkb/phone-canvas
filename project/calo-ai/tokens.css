@@ -1,0 +1,77 @@
+:root {
+  /* surfaces + text first (semantic), palette after */
+  --accent: #a8d94a;
+  --accent-soft: rgba(234, 249, 196, 1);
+  --bg: #f7f4ee;
+  --bg-elevated: #ffffff;
+  --bg-grouped: #eeeae0;
+  --cta: #c9f56a;
+  --fill: rgba(21, 23, 17, 0.06);
+  --hairline: rgba(21, 23, 17, 0.12);
+  --label: #151711;
+  --label-2: rgba(99, 104, 91, 1);
+  --label-3: rgba(146, 151, 138, 1);
+  --separator: rgba(21, 23, 17, 0.12);
+  --stage-fill: rgba(255, 255, 255, 0.14);
+  --stage-ink: #ffffff;
+  --stage-line: rgba(255, 255, 255, 0.35);
+  /* palette */
+  --card: #ffffff;
+  --carbs: #f1b93d;
+  --fat: #a883f5;
+  --lime: #c9f56a;
+  --protein: #5d8ef1;
+  --water: #48b8d9;
+}
+
+:root[data-theme='dark'] {
+  --accent: #c9f56a;
+  --accent-soft: rgba(201, 245, 106, 0.18);
+  --bg: #10120e;
+  --bg-elevated: #191c17;
+  --bg-grouped: #242820;
+  --cta: #b8e957;
+  --fill: rgba(250, 250, 244, 0.1);
+  --hairline: rgba(250, 250, 244, 0.14);
+  --label: #fafaf4;
+  --label-2: rgba(182, 185, 175, 1);
+  --label-3: rgba(133, 138, 126, 1);
+  --separator: rgba(250, 250, 244, 0.14);
+  --stage-fill: rgba(255, 255, 255, 0.14);
+  --stage-ink: #ffffff;
+  --stage-line: rgba(255, 255, 255, 0.35);
+  --card: #191c17;
+  --carbs: #f5c85e;
+  --fat: #b99cfa;
+  --lime: #c9f56a;
+  --protein: #78a4ff;
+  --water: #62cce8;
+}
+
+/* shared scales (project-owned, never read global) */
+:root {
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 20px;
+  --s6: 24px;
+  --s8: 32px;
+  --s10: 40px;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --r-full: 999px;
+  --r-crop: 40px;
+  --t-large: 34px;
+  --t-title1: 28px;
+  --t-title2: 22px;
+  --t-title3: 20px;
+  --t-headline: 17px;
+  --t-body: 17px;
+  --t-callout: 16px;
+  --t-subhead: 15px;
+  --t-footnote: 13px;
+  --t-caption: 12px;
+}

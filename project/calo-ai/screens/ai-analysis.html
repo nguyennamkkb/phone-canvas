@@ -1,0 +1,38 @@
+<!-- pc {"title":"AI Analysis"} -->
+<div class="screen" style="background-color: var(--bg)">
+  <header class="navbar" style="padding: var(--s2) var(--s5)">
+    <button class="icon-btn" aria-label="Cancel analysis">
+      <span class="icon icon-sm" data-symbol="xmark"></span>
+    </button>
+    <span class="t-headline">Analyzing meal</span>
+    <span class="t-headline" style="width: 32px"></span>
+  </header>
+
+  <div class="body" style="padding: var(--s2) var(--s5) var(--s4); gap: var(--s4)">
+    <img class="art" src="/project/calo-ai/assets/meal-bowl.svg" width="358" height="280" alt="Scanned meal" style="border-radius: var(--r-xl)" />
+
+    <div class="paper-card" style="gap: var(--s4)">
+      <div class="row" style="gap: var(--s3)">
+        <span class="icon icon-sm" style="color: var(--accent)" data-symbol="checkmark"></span>
+        <span class="t-subhead grow">Reading your plate</span>
+        <span class="t-caption t-secondary">Done</span>
+      </div>
+      <div class="row" style="gap: var(--s3)">
+        <i class="swatch" style="background-color: var(--cta)"></i>
+        <span class="t-headline grow">Estimating portions</span>
+        <span class="chip" style="background-color: var(--bg-grouped)">portion estimate</span>
+      </div>
+      <div class="row" style="gap: var(--s3)">
+        <i class="swatch" style="background-color: var(--bg-grouped)"></i>
+        <span class="t-subhead t-secondary grow">Balancing the macros</span>
+      </div>
+    </div>
+
+    <div class="row" style="gap: var(--s3); padding: var(--s4); border: 1px solid var(--separator); border-radius: var(--r-lg); background-color: var(--bg-elevated)">
+      <span class="icon icon-sm" data-symbol="info.circle"></span>
+      <p class="t-subhead grow">Not sure about <strong>1 item</strong> — adjust portions on the next step.</p>
+    </div>
+
+    <span class="t-caption t-secondary" style="text-align: center">Calories and macros are estimates, never lab values.</span>
+  </div>
+</div>

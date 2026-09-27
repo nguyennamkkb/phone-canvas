@@ -82,6 +82,26 @@ what it built.
 
 ---
 
+## Locate a component
+
+```bash
+npm run locate -- --screen my-screen --x 195 --y 640
+npm run locate -- --screen my-screen --x 195 --y 640 --pad 32 --scale 2 --device iphone-se --theme dark
+```
+
+Point (`--x/--y`) is in points from the device top-left — the same space the
+panel reports. Output is two files: `<screen>-locate-<x>x<y>@<scale>x.png`
+(the element's region with padding) and `<screen>-locate-<x>x<y>.json`
+(the element's spec in Copy-JSON shape, plus ancestors and the point).
+A point on the status bar or empty area reports `miss` and still shoots
+a square around the point.
+
+Same guarantees as export: the document is composed by
+`src/extractor/compose.ts`, captured by the real `bridge.js`, interpreted
+by `src/spec/infer.ts` — locate reuses all three instead of owning a rule.
+
+---
+
 ## The four invariants
 
 These are what make the numbers trustworthy. Break one and the spec becomes

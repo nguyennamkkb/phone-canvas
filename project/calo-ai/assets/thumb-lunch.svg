@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 112 112" width="112" height="112" role="img" aria-label="Lunch">
+  <rect width="112" height="112" rx="28" fill="#E3EAD0"/>
+  <ellipse cx="56" cy="60" rx="36" ry="27" fill="#FFFFFF"/>
+  <ellipse cx="48" cy="56" rx="16" ry="12" fill="#A8D94A"/>
+  <ellipse cx="66" cy="52" rx="14" ry="11" fill="#7C9448"/>
+  <ellipse cx="58" cy="66" rx="15" ry="10" fill="#F1B93D"/>
+  <circle cx="66" cy="62" r="6" fill="#D9504B"/>
+</svg>

@@ -1,0 +1,152 @@
+<!-- pc {"title":"Today Home"} -->
+<div class="screen" style="background-color: var(--bg)">
+  <header class="navbar" style="padding: var(--s2) var(--s5)">
+    <div class="col" style="gap: 0">
+      <span class="t-caption t-secondary">Thu, Sep 25</span>
+      <span class="t-title2">Good evening, Nam</span>
+    </div>
+    <div class="row" style="gap: var(--s2)">
+      <div class="avatar"><span>N</span></div>
+      <button class="icon-btn" aria-label="Settings">
+        <span class="icon icon-sm" data-symbol="gear"></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="body" style="padding: var(--s2) var(--s5) var(--s4); gap: var(--s5)">
+    <div class="paper-card">
+      <div class="row" style="gap: var(--s4)">
+        <div class="ring" style="--ring-size: 192px">
+          <img class="ring-arcs" src="/project/calo-ai/assets/calo-ring.svg" width="192" height="192" alt="Calorie progress" />
+          <div class="col" style="gap: 0; align-items: center">
+            <span class="t-display">610</span>
+            <span class="t-label">LEFT</span>
+          </div>
+        </div>
+        <div class="col grow" style="gap: var(--s1)">
+          <span class="t-caption t-secondary">Eaten today</span>
+          <span class="t-title1">1,240</span>
+          <span class="t-footnote t-secondary">of 1,850 kcal</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" style="gap: var(--s2)">
+      <span class="chip grow" style="background-color: var(--bg-elevated); border: 1px solid var(--separator)">
+        <i class="swatch" style="background-color: var(--protein)"></i><span>P · 111/135</span>
+      </span>
+      <span class="chip grow" style="background-color: var(--bg-elevated); border: 1px solid var(--separator)">
+        <i class="swatch" style="background-color: var(--carbs)"></i><span>C · 138/190</span>
+      </span>
+      <span class="chip grow" style="background-color: var(--bg-elevated); border: 1px solid var(--separator)">
+        <i class="swatch" style="background-color: var(--fat)"></i><span>F · 44/60</span>
+      </span>
+    </div>
+
+    <div class="col" style="gap: var(--s3)">
+      <div class="row" style="justify-content: space-between">
+        <span class="t-section">Today’s meals</span>
+        <span class="t-caption t-secondary">2 of 4 logged</span>
+      </div>
+      <div class="col" style="gap: var(--s3)">
+        <div class="row-card" style="background-color: var(--bg-elevated); border: 1px solid var(--separator)">
+          <img class="art" src="/project/calo-ai/assets/thumb-breakfast.svg" width="64" height="64" alt="Breakfast" style="border-radius: var(--r-md) var(--r-crop) var(--r-md) var(--r-md)" />
+          <div class="col grow" style="gap: 0">
+            <span class="t-headline">Breakfast</span>
+            <span class="t-footnote t-secondary">Oatmeal &amp; berries</span>
+          </div>
+          <div class="col" style="gap: 0; align-items: flex-end">
+            <span class="t-headline">320</span>
+            <span class="t-caption t-secondary">kcal</span>
+          </div>
+          <span class="icon icon-sm" data-symbol="chevron.right"></span>
+        </div>
+        <div class="row-card" style="background-color: var(--bg-elevated); border: 1px solid var(--separator)">
+          <img class="art" src="/project/calo-ai/assets/thumb-lunch.svg" width="64" height="64" alt="Lunch" style="border-radius: var(--r-md) var(--r-crop) var(--r-md) var(--r-md)" />
+          <div class="col grow" style="gap: 0">
+            <span class="t-headline">Lunch</span>
+            <span class="t-footnote t-secondary">Chicken rice bowl</span>
+          </div>
+          <div class="col" style="gap: 0; align-items: flex-end">
+            <span class="t-headline">540</span>
+            <span class="t-caption t-secondary">kcal</span>
+          </div>
+          <span class="icon icon-sm" data-symbol="chevron.right"></span>
+        </div>
+        <div class="row-card" style="background-color: var(--bg-elevated); border: 1px solid var(--separator)">
+          <button class="circle-btn is-dashed" aria-label="Log dinner">
+            <span class="icon icon-sm" data-symbol="plus"></span>
+          </button>
+          <div class="col grow" style="gap: 0">
+            <span class="t-headline">Dinner</span>
+            <span class="t-footnote t-secondary">Not logged yet</span>
+          </div>
+          <span class="chip" style="height: 44px; background-color: var(--bg-elevated); border: 1px solid var(--separator)">Add</span>
+        </div>
+        <div class="row-card" style="background-color: var(--bg-elevated); border: 1px solid var(--separator)">
+          <button class="circle-btn is-dashed" aria-label="Log snack">
+            <span class="icon icon-sm" data-symbol="plus"></span>
+          </button>
+          <div class="col grow" style="gap: 0">
+            <span class="t-headline">Snack</span>
+            <span class="t-footnote t-secondary">Not logged yet</span>
+          </div>
+          <span class="chip" style="height: 44px; background-color: var(--bg-elevated); border: 1px solid var(--separator)">Add</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="paper-card" style="gap: var(--s3)">
+      <div class="row" style="gap: var(--s3)">
+        <span class="icon-btn" style="background-color: var(--cta); color: var(--label)">
+          <span class="icon icon-sm" data-symbol="leaf.fill"></span>
+        </span>
+        <p class="t-subhead grow"><strong>Protein is 24 g short.</strong> A Greek yogurt + fruit snack would close most of the gap.</p>
+      </div>
+      <div class="row" style="gap: var(--s2)">
+        <span class="chip" style="height: 44px; background-color: var(--bg-elevated); border: 1px solid var(--separator)">Add snack</span>
+      </div>
+    </div>
+
+    <div class="col" style="gap: var(--s2)">
+      <span class="t-section">Quick add</span>
+      <div class="row" style="gap: var(--s2)">
+        <span class="chip" style="height: 44px; background-color: var(--bg-elevated); border: 1px solid var(--separator)">
+          <span class="icon icon-xs" data-symbol="drop.fill"></span><span>Water</span>
+        </span>
+        <span class="chip" style="height: 44px; background-color: var(--bg-elevated); border: 1px solid var(--separator)">
+          <span class="icon icon-xs" data-symbol="plus"></span><span>Weight</span>
+        </span>
+        <span class="chip" style="height: 44px; background-color: var(--bg-elevated); border: 1px solid var(--separator)">
+          <span class="icon icon-xs" data-symbol="magnifyingglass"></span><span>Search</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-cta">
+    <button class="btn btn-block" style="height: 52px; background-color: var(--cta); color: var(--label)" aria-label="Log meal">
+      <span class="icon icon-sm" data-symbol="plus"></span>
+      <span>Log meal</span>
+    </button>
+  </div>
+
+  <nav class="tabbar">
+    <div class="tab is-active" style="color: var(--label)">
+      <span class="icon icon-sm" data-symbol="house"></span>
+      <span>Today</span>
+    </div>
+    <div class="tab">
+      <span class="icon icon-sm" data-symbol="calendar"></span>
+      <span>Plan</span>
+    </div>
+    <div class="tab">
+      <span class="icon icon-sm" data-symbol="chart.bar"></span>
+      <span>Progress</span>
+    </div>
+    <div class="tab">
+      <span class="icon icon-sm" data-symbol="sparkles"></span>
+      <span>Coach</span>
+    </div>
+  </nav>
+</div>
