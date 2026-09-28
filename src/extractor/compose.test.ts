@@ -102,10 +102,10 @@ describe('screenBgOf (optional screen background)', () => {
 
   it('replays an image with fixed cover geometry plus its fallback color', () => {
     const bg = screenBgOf(
-      '<div class="screen" style="background-color: var(--bg); background-image: url(/images/moodtracker-pattern.svg); background-size: cover">x</div>',
+      '<div class="screen" style="background-color: var(--bg); background-image: url(/images/pattern.svg); background-size: cover">x</div>',
     )
     expect(bg.style).toContain('background-color: var(--bg);')
-    expect(bg.style).toContain('background-image: url(/images/moodtracker-pattern.svg);')
+    expect(bg.style).toContain('background-image: url(/images/pattern.svg);')
     expect(bg.style).toContain('background-size: cover;')
     expect(bg.style).toContain('background-position: center;')
     expect(bg.style).toContain('background-repeat: no-repeat;')

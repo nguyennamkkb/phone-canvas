@@ -169,8 +169,8 @@ describe('export smoke (needs Chrome)', () => {
     }
     expect(chrome.length).toBeGreaterThan(0)
 
-    const { SCREEN_FILES } = await import('../../src/screens/manifest.ts')
-    const screen = SCREEN_FILES[0]
+    const { scanProjects } = await import('../scan-projects.ts')
+    const screen = (await scanProjects()).registry.screens[0]
     if (!screen) {
       console.warn('skip: no screens registered yet')
       return
@@ -190,7 +190,7 @@ describe('export smoke (needs Chrome)', () => {
         readFile(path.join(root, 'src/screens', n), 'utf8'),
       ),
     )
-    const html = await readFile(path.join(root, screen.file), 'utf8')
+    const html = screen.html
     const docs = new Map([
       ['smoke--reference--light', composeScreenDoc({ html, device, stylesheets: shared, bridgeJs: null })],
     ])
@@ -225,8 +225,8 @@ describe('export smoke (needs Chrome)', () => {
     }
     expect(chrome.length).toBeGreaterThan(0)
 
-    const { SCREEN_FILES } = await import('../../src/screens/manifest.ts')
-    const screen = SCREEN_FILES[0]
+    const { scanProjects } = await import('../scan-projects.ts')
+    const screen = (await scanProjects()).registry.screens[0]
     if (!screen) {
       console.warn('skip: no screens registered yet')
       return
@@ -247,7 +247,7 @@ describe('export smoke (needs Chrome)', () => {
         readFile(path.join(root, 'src/screens', n), 'utf8'),
       ),
     )
-    const html = await readFile(path.join(root, screen.file), 'utf8')
+    const html = screen.html
     const docs = new Map([
       ['smoke--ipad-11--light', composeScreenDoc({ html, device, stylesheets: shared, bridgeJs: null })],
     ])

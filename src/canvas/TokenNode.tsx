@@ -25,10 +25,6 @@ export type TokenFlowNode = Node<TokenNodeData, 'token'>
  */
 export type BoardNode = PhoneFlowNode
 
-const PROJECT_ACCENT: Record<string, string> = {
-  moodtracker: '#7f9a5e',
-}
-
 const GROUPS: Array<{ id: TokenGroup; title: string }> = [
   { id: 'color', title: 'Màu · sáng / tối' },
   { id: 'spacing', title: 'Khoảng cách' },
@@ -66,7 +62,7 @@ function TokenNodeInner({ data }: NodeProps) {
     <div className="token-node">
       <div
         className="token-frame nodrag"
-        style={{ ['--frame-accent' as string]: PROJECT_ACCENT[d.projectId] ?? '#007aff' }}
+        style={{ ['--frame-accent' as string]: '#007aff' }}
       >
         <div className="token-accent" />
         <header className="token-head">

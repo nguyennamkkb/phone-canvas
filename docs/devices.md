@@ -34,10 +34,10 @@ chrome do shell inject; `island` quyết định có vẽ Dynamic Island hay kh�
 * Layout khác hẳn (vd list+detail) → **screen riêng**, không branch trong
   HTML (invariant #5). Scaffold:
   `npm run new-screen -- --project <id> --name <x> --title "..." --device ipad-11`
-  (template 2 cột fluid, `deviceId` ghi vào manifest, board mới tự mở đúng 820).
+  (template 2 cột fluid, `deviceId` ghi vào header của file screen, board mới tự mở đúng 820).
 * Chỉ giãn spacing → giữ 1 file fluid (token classes, tỉ lệ flex unitless).
-* Đổi device của node có sẵn: Panel → dropdown **Thiết bị** (thắng manifest,
-  persist vào board). Board đã lưu không tự đổi theo manifest.
+* Đổi device của node có sẵn: Panel → dropdown **Thiết bị** (thắng header,
+  persist vào board). Board đã lưu không tự đổi theo header.
 * Preview component: dropdown **Preview** trong tab Components (nhớ theo
   project, default theo màn đầu tiên của project).
 
@@ -50,11 +50,11 @@ npm run export -- --device all                     # mọi device, có suffix
 
 Truyền `--device` (kể cả một device duy nhất) luôn giữ suffix `-<device>`
 để bản phone và bản tablet không ghi đè nhau. Export render theo `--device`
-truyền vào, không theo `deviceId` trong manifest/board.
+truyền vào, không theo `deviceId` trong header/board.
 
 ## Giới hạn đã biết
 
-* Board snapshot giữ `deviceId` cũ của node — đổi manifest sau khi mở board
+* Board snapshot giữ `deviceId` cũ của node — đổi header sau khi mở board
   không tự đổi node cũ (đúng thiết kế “per-node thắng”).
 * Board lẫn node 390 + 820: fit tổng zoom ra xa, focus 100% ở màn hẹp phải
   pan ngang, minimap tablet áp đảo — overlap thì không (placement đo theo

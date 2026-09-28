@@ -119,7 +119,7 @@ describe('clearAllLocalState', () => {
   it('removes every pc.* key and leaves everything else alone', () => {
     seed('pc.board.p1', '{}')
     seed('pc.tokens.draft.p1', '{"values":{}}')
-    seed('pc.tokens.theme.moodtracker', 'dark')
+    seed('pc.tokens.theme.p1', 'dark')
     seed('pc.projects.custom', '[]')
     seed('pc.ui.panelVisible', '1')
     seed('someone.elses.key', 'keep me')
@@ -131,7 +131,7 @@ describe('clearAllLocalState', () => {
     expect(localStorage.getItem('pc.board.p1')).toBeNull()
     expect(localStorage.getItem('pc.tokens.draft.p1')).toBeNull()
     // a stale token draft is the one that masks an edited tokens.css file
-    expect(localStorage.getItem('pc.tokens.theme.moodtracker')).toBeNull()
+    expect(localStorage.getItem('pc.tokens.theme.p1')).toBeNull()
     expect(localStorage.getItem('someone.elses.key')).toBe('keep me')
   })
 

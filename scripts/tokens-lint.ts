@@ -8,20 +8,22 @@
  * Rules:
  *   error  var(--x) with no definition in the global or project tokens.css
  *          (the --sage-wash class of bug: resolves to guaranteed-invalid)
+ *   error  nền .screen root sai: thiếu fallback, ảnh ngoài dự án, hoặc asset
+ *          không tồn tại trong project/<id>/assets/
  *   warn   hardcoded hex/rgba colors in screen markup (prefer a token)
  *   warn   screen names a global-only color (tier rule: give the project
  *          its own semantic alias instead of borrowing the shared palette)
  *
+ * Discovery comes from scripts/scan-projects.ts — the same registry the board
+ * and the exporter read, so a lint can never see a different project tree.
  * Warnings never fail; errors exit 1.
  */
 
 import { readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { existsSync } from 'node:fs'
 
-import { SCREEN_FILES } from '../src/screens/manifest.ts'
-import { BUILTIN_PROJECTS } from '../src/projects/builtin.ts'
+import { scanProjects } from './scan-projects.ts'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -43,32 +45,9 @@ function lineOf(src, index) {
   return src.slice(0, index).split('\n').length
 }
 
-async function definedVars() {
-  const global = await readFile(path.join(ROOT, 'src/screens/tokens.css'), 'utf8')
-  const names = new Set()
-  const globalColors = new Set()
-  for (const m of global.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(DEF_RE)) {
-    names.add(`--${m[1]}`)
-    if (/^#[0-9a-f]{3,8}$/i.test(m[0].split(':')[1].trim()) || /^rgba?\(/i.test(m[0].split(':')[1].trim())) {
-      globalColors.add(`--${m[1]}`)
-    }
-  }
-  const projectNames = new Map()
-  for (const p of BUILTIN_PROJECTS) {
-    const set = new Set(names)
-    try {
-      const css = await readFile(path.join(ROOT, 'project', p.id, 'tokens.css'), 'utf8')
-      for (const m of css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(DEF_RE)) set.add(`--${m[1]}`)
-    } catch {
-      /* no project file — global only */
-    }
-    projectNames.set(p.id, set)
-  }
-  return { names, globalColors, projectNames }
+function isColorValue(value) {
+  return /^#[0-9a-f]{3,8}$/i.test(value) || /^rgba?\(/i.test(value)
 }
-
-// Tier rule: a global color used by a screen warns unless the project file
-// redefines it (its own semantic alias). Warnings never fail; errors exit 1.
 
 /** longhand background declarations off the `.screen` root tag (or null) */
 function rootBackgroundOf(html) {
@@ -94,38 +73,43 @@ function rootBackgroundOf(html) {
 }
 
 async function main() {
-  const { names, globalColors, projectNames } = await definedVars()
-  let imageSet = new Set()
-  try {
-    imageSet = new Set(await readdir(path.join(ROOT, 'public/images')))
-  } catch {
-    /* no images dir — every url() errors below */
-  }
-  const projectOwnsColor = new Map()
-  for (const p of BUILTIN_PROJECTS) {
-    const own = new Set()
-    try {
-      const css = await readFile(path.join(ROOT, 'project', p.id, 'tokens.css'), 'utf8')
-      for (const m of css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(DEF_RE)) {
-        const value = m[0].split(':')[1]
-        if (/^#[0-9a-f]{3,8}$/i.test(value.trim()) || /^rgba?\(/i.test(value.trim())) own.add(`--${m[1]}`)
-      }
-    } catch {
-      /* ignore */
-    }
-    projectOwnsColor.set(p.id, own)
-  }
-  const ownerOf = new Map()
-  for (const p of BUILTIN_PROJECTS) for (const sid of p.screenIds) ownerOf.set(sid, p.id)
-
-  let errors = 0
+  const { registry, errors: registryErrors } = await scanProjects()
+  let errors = registryErrors.length
   let warns = 0
+  for (const error of registryErrors) console.error(`error  ${error.file}  ${error.message}`)
 
-  for (const screen of SCREEN_FILES) {
-    const file = path.join(ROOT, screen.file)
-    const html = await readFile(file, 'utf8')
-    const pid = ownerOf.get(screen.id)
-    const known = (pid && projectNames.get(pid)) || names
+  // tokens defined globally, then per project (project wins / owns its aliases)
+  const global = await readFile(path.join(ROOT, 'src/screens/tokens.css'), 'utf8')
+  const names = new Set()
+  const globalColors = new Set()
+  for (const m of global.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(DEF_RE)) {
+    names.add(`--${m[1]}`)
+    if (isColorValue(m[0].split(':')[1].trim())) globalColors.add(`--${m[1]}`)
+  }
+
+  const projectNames = new Map()
+  const projectOwnsColor = new Map()
+  for (const project of registry.projects) {
+    const set = new Set(names)
+    const own = new Set()
+    const css = registry.tokens[project.id]
+    if (css) {
+      for (const m of css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(DEF_RE)) {
+        set.add(`--${m[1]}`)
+        if (isColorValue(m[0].split(':')[1].trim())) own.add(`--${m[1]}`)
+      }
+    }
+    projectNames.set(project.id, set)
+    projectOwnsColor.set(project.id, own)
+  }
+
+  const sharedImages = new Set(await readdir(path.join(ROOT, 'public/images')).catch(() => []))
+
+  for (const screen of registry.screens) {
+    const html = screen.html
+    const pid = screen.projectId
+    const known = projectNames.get(pid) ?? names
+    const projectAssets = new Set(registry.assets[pid] ?? [])
     const seen = new Set()
 
     VAR_RE.lastIndex = 0
@@ -137,7 +121,7 @@ async function main() {
       if (!known.has(name)) {
         console.error(`error  ${screen.file}:${lineOf(html, m.index)}  ${name} chưa định nghĩa`)
         errors += 1
-      } else if (pid && globalColors.has(name) && !projectOwnsColor.get(pid)?.has(name)) {
+      } else if (globalColors.has(name) && !projectOwnsColor.get(pid)?.has(name)) {
         console.warn(
           `warn   ${screen.file}:${lineOf(html, m.index)}  ${name} là màu global — nên alias trong project/${pid}/tokens.css`,
         )
@@ -154,14 +138,16 @@ async function main() {
     }
 
     // optional screen background values (recipe screen-background): the root
-    // may carry longhand background-color/background-image; values must be a
-    // token (or #000 dark-stage), an existing /images/ asset, with a fallback
-    // color and fixed cover geometry. Screens without a root background skip.
+    // may carry longhand background-color/background-image; the color must be a
+    // token (or #000 dark-stage), the image must be an existing asset of THIS
+    // project (or a shared public/images file), with fixed cover geometry.
     const rootBg = rootBackgroundOf(html)
     if (rootBg) {
       const rootLine = lineOf(html, rootBg.index)
       if (rootBg.color && !/^var\(--[a-z0-9-]+\)$|^#000000$|^#000$/i.test(rootBg.color)) {
-        console.error(`error  ${screen.file}:${rootLine}  nền .screen root phải là var(--token) hoặc #000 (đang: ${rootBg.color.slice(0, 40)})`)
+        console.error(
+          `error  ${screen.file}:${rootLine}  nền .screen root phải là var(--token) hoặc #000 (đang: ${rootBg.color.slice(0, 40)})`,
+        )
         errors += 1
       }
       if (rootBg.image && rootBg.image.toLowerCase() !== 'none') {
@@ -171,15 +157,25 @@ async function main() {
         }
         for (const m of rootBg.image.matchAll(/url\(\s*(['"]?)([^'")]+)\1\s*\)/gi)) {
           const u = m[2].trim()
-          if (!u.startsWith('/images/')) {
-            console.error(`error  ${screen.file}:${rootLine}  ảnh nền root phải là /images/<file có sẵn> (đang: ${u.slice(0, 60)})`)
-            errors += 1
-          } else if (!imageSet.has(u.slice('/images/'.length))) {
-            console.error(`error  ${screen.file}:${rootLine}  ${u} không tồn tại trong public/images/`)
+          if (u.startsWith('/images/')) {
+            if (!sharedImages.has(u.slice('/images/'.length))) {
+              console.error(`error  ${screen.file}:${rootLine}  ${u} không tồn tại trong public/images/`)
+              errors += 1
+            }
+          } else if (u.startsWith(`/project/${pid}/assets/`)) {
+            const rel = u.slice(`/project/${pid}/assets/`.length)
+            if (!projectAssets.has(rel)) {
+              console.error(`error  ${screen.file}:${rootLine}  ${u} không tồn tại trong project/${pid}/assets/`)
+              errors += 1
+            }
+          } else {
+            console.error(
+              `error  ${screen.file}:${rootLine}  ảnh nền root phải là /project/${pid}/assets/<file> (hoặc /images/<file> dùng chung) — đang: ${u.slice(0, 60)}`,
+            )
             errors += 1
           }
         }
-        // only url(/images/…) and bare gradients may appear — no remote/data URLs
+        // only url(…) and bare gradients may appear — no remote/data URLs
         // (strip innermost calls first so rgba() inside a gradient survives)
         let bare = rootBg.image.replace(/url\([^)]*\)/gi, '')
         let prev = ''
@@ -189,7 +185,9 @@ async function main() {
         }
         bare = bare.replace(/[,;\s]/g, '')
         if (bare !== '' || /https?:|data:/i.test(rootBg.image)) {
-          console.error(`error  ${screen.file}:${rootLine}  background-image trên root chỉ nhận url(/images/…) hoặc gradient — không URL ngoài/data-URI`)
+          console.error(
+            `error  ${screen.file}:${rootLine}  background-image trên root chỉ nhận url(/project/<id>/assets/…) hoặc gradient — không URL ngoài/data-URI`,
+          )
           errors += 1
         }
         if (rootBg.size && !/^cover$/i.test(rootBg.size)) {
@@ -200,24 +198,6 @@ async function main() {
           console.error(`error  ${screen.file}:${rootLine}  ảnh nền root phải background-repeat: no-repeat`)
           errors += 1
         }
-      }
-    }
-  }
-
-  // screens directory listing sanity: every project html registered?
-  const registered = new Set(SCREEN_FILES.map((s) => s.file))
-  for (const p of BUILTIN_PROJECTS) {
-    let files = []
-    try {
-      files = (await readdir(path.join(ROOT, 'project', p.id))).filter((f) => f.endsWith('.html'))
-    } catch {
-      /* ignore */
-    }
-    for (const f of files) {
-      const rel = `project/${p.id}/${f}`
-      if (!registered.has(rel)) {
-        console.warn(`warn   ${rel} chưa khai báo trong manifest — board không thấy`)
-        warns += 1
       }
     }
   }
