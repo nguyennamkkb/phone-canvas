@@ -21,16 +21,26 @@ Dải điều hướng cố định (`.navbar` / `.navbar-float` / `.tabbar` / `
 - **WHEN** một màn mở đầu bằng `<div class="row" style="justify-content: space-between">` chứa nút và tiêu đề, không có slot nào
 - **THEN** gate báo lỗi "vùng chưa khai báo" tại dòng đó, kèm mẫu HTML slot đúng để thay
 
+#### Scenario: Ô giữ chỗ tay
+
+- **WHEN** một dải ở mép trên của vùng nội dung dựng ô giữ chỗ (`<span style="width: 44px"></span>`) kèm ít nhất một control, và không khai slot nào
+- **THEN** gate báo lỗi `region-undeclared` tại dòng đó, kèm cách sửa: khai ruột bằng `data-slot="back|title|right"` để shell dựng dải và tự canh vị trí — tác giả không còn dựng dải nên ô giữ chỗ không còn chỗ dùng
+
+#### Scenario: Lớp vùng dùng chung tồn tại
+
+- **WHEN** `src/screens/tokens.css` được đọc
+- **THEN** có `.split`, `.pane`, `.pane-lead`, `.pane-trail`, `.rail`, `.rail-tools`, `.rail-tabs`, `.rail-item`, `.sidebar`, `.sidebar-head`, `.sidebar-item`, mỗi rule kèm HTML mẫu trong chú thích và **không** dùng `position: absolute`
+
 ### Requirement: Khung dọc chuẩn của màn phone
 
 Màn `form: phone` SHALL tuân thủ đúng thứ tự vùng: status bar *(shell)* → dải nav *(shell)* → thân cuộn → tab bar *(shell, tuỳ chọn)* → home indicator *(shell)*. Dải nav SHALL có tối đa 3 slot (dẫn · tiêu đề · hành động), tiêu đề SHALL là **một dòng**, màn push (có điều hướng quay lại) SHALL có slot back dùng symbol chuẩn chứ không dùng chữ "Back"/"Close", và số hành động cuối SHALL ≤ 3 — phần dư đưa vào menu "More". Nội dung SHALL dùng lề 16 pt và nhịp 4/8 pt.
 
-#### Scenario: Nav quá tải
+#### Scenario: Navbar quá tải
 
 - **WHEN** ruột nav có 4 `<button>` ở slot phải, hoặc tiêu đề dài 2 dòng, hoặc màn push thiếu slot back
 - **THEN** gate báo lỗi `file:line` cho từng vi phạm, kèm cách sửa cụ thể (bỏ về More / rút tiêu đề / thêm slot back)
 
-#### Scenario: Màn không có nav
+#### Scenario: Màn không có navbar
 
 - **WHEN** một màn không khai slot nav vì không điều hướng (splash, login, full-bleed ảnh)
 - **THEN** hợp lệ, không cảnh báo; shell không dựng band nav khi không có `data-slot`, không ép thêm vùng giả
@@ -44,7 +54,7 @@ Mọi phần tử tương tác SHALL render ra khung ≥ 44 × 44 pt, kể cả 
 - **WHEN** một lớp trong `tokens.css` là mục tiêu chạm và khai báo chiều cao/dài < 44 px
 - **THEN** `npm run lint:regions` báo lỗi "mục tiêu chạm dưới sàn" kèm kích thước đang khai báo
 
-#### Scenario: Chạm đo được sau khi dựng, kể cả trong band shell
+#### Scenario: Chạm đo được sau khi dựng
 
 - **WHEN** `npm run audit:regions` dựng một màn và tìm phần tử tương tác có khung < 44 × 44 pt, trong đó có phần tử nằm trong `.region-nav` / `.region-tabs`
 - **THEN** báo cáo liệt kê từng phần tử kèm selector, kích thước đo được và vùng chứa nó; phần tử nằm trong danh sách miễn trừ thì bỏ qua, ngoài danh sách thì gate đỏ
@@ -62,6 +72,11 @@ Mọi phần tử tương tác SHALL render ra khung ≥ 44 × 44 pt, kể cả 
 
 - **WHEN** một màn cố tình khai `.navbar` rồi chạy `npm run gate`
 - **THEN** gate dừng ở tầng tĩnh với lỗi có `file:line` và câu hướng sửa, exit code ≠ 0
+
+#### Scenario: Vi phạm hình học
+
+- **WHEN** mọi luật tĩnh xanh nhưng một control nằm trên dải chia của màn fold
+- **THEN** tầng đo báo lỗi với selector, rect đo được và tên vùng, exit code ≠ 0
 
 #### Scenario: Thân một trang tràn khung
 
@@ -86,6 +101,11 @@ Mọi phần tử tương tác SHALL render ra khung ≥ 44 × 44 pt, kể cả 
 
 - **WHEN** tìm mọi tham chiếu tới `docs/screen-authoring.md` và `src/screens/manifest.ts` trong repo
 - **THEN** không còn tham chiếu chết; hoặc đã sửa sang đường dẫn có thật, hoặc còn lại một dòng ghi chú redirect nói rõ file gốc đã dời đi đâu
+
+#### Scenario: Bề mặt mới
+
+- **WHEN** một bề mặt Watch, Widget hoặc form factor mới được đề xuất
+- **THEN** thiết kế phải đối chiếu được từng dòng với bảng tham chiếu trong tài liệu (vùng, margin, cỡ chữ ≥ 11 pt, touch ≥ 44 pt) trước khi dựng; nếu bổ sung form factor mới thì phải thêm hàng vào bản đồ vùng và có preset `Device.form` tương ứng
 
 #### Scenario: Tài liệu khớp hành vi
 
