@@ -36,9 +36,9 @@
 
 ## 5. Generator sinh màn hợp lệ
 
-- [ ] 5.1 Thêm `--kind root|push|modal|bare` cho `scripts/new-screen.ts`, sinh slot + thân đúng chuẩn và include chrome đúng loại; bỏ hẳn `<header class="navbar">` khỏi template phone và iPad. Verify: chạy `npm run new-screen` cho cả 4 kind vào một project, sau đó `npm run lint:regions` không lỗi nào.
-- [ ] 5.2 Thêm test compliance: sinh màn cho từng kind vào thư mục tạm, chạy lint trên output, dọn sạch sau khi chạy. Verify: vitest xanh và không còn file rác trong `project/` sau khi test kết thúc.
-- [ ] 5.3 Cập nhật phần scaffold trong `.agents/skills/phone-canvas/SKILL.md` và recipe liên quan để mô tả `--kind`. Verify: mọi lệnh `new-screen` được viết trong skill chạy đúng như viết.
+- [x] 5.1 Thêm `--kind root|push|modal|bare` cho `scripts/new-screen.ts`, sinh slot + thân đúng chuẩn và include chrome đúng loại; bỏ hẳn `<header class="navbar">` khỏi template phone và iPad. Verify: chạy `npm run new-screen` cho cả 4 kind vào một project, sau đó `npm run lint:regions` không lỗi nào.
+- [x] 5.2 Thêm test compliance: sinh màn cho từng kind vào thư mục tạm, chạy lint trên output, dọn sạch sau khi chạy. Verify: vitest xanh và không còn file rác trong `project/` sau khi test kết thúc.
+- [x] 5.3 Cập nhật phần scaffold trong `.agents/skills/phone-canvas/SKILL.md` và recipe liên quan để mô tả `--kind`. Verify: mọi lệnh `new-screen` được viết trong skill chạy đúng như viết.
 
 ## 6. Tích hợp
 

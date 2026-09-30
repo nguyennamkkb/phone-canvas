@@ -14,7 +14,7 @@ npm run screen -- rename --id <old> --to <new>                   # lifecycle: re
 npm run screen -- remove --id <screen-id> [--force]              # lifecycle: remove (+ auto-gate)
 npm run screen -- list [--project <id>]                          # ids + titles + owners (read-only)
 npm run screen -- gate                                           # tsc + lint
-npm run new-screen -- --project <id> --name <name> --title "..."   # alias: same as screen -- add
+npm run new-screen -- --project <id> --name <name> --title "..." [--kind push]   # alias: same as screen -- add
 npm run rename-screen -- --id <old> --to <new>                   # alias: same as screen -- rename
 npm run delete-screen -- --id <screen-id> [--force]                # alias: same as screen -- remove
 npm run export     # every screen → exports/<id>@2x.png

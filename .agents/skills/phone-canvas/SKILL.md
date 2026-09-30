@@ -74,7 +74,7 @@ npm run gate           # + audit:regions (measures regions in Chrome) + vitest
 Old habits keep working — thin aliases over the same scripts:
 
 ```bash
-npm run new-screen -- --project <id> --name <name> --title "..."
+npm run new-screen -- --project <id> --name <name> --title "..." [--kind push]
 npm run rename-screen -- --id <old> --to <new>
 npm run delete-screen -- --id <screen-id> [--force]
 npm run screen -- gate          # tsc --noEmit + npm run lint
@@ -84,6 +84,13 @@ npm run screen -- gate          # tsc --noEmit + npm run lint
   `<!-- pc {...} -->` header *is* the entry, so there is no manifest, no
   generated registry and no codegen to keep in step. Round-trip with
   `delete-screen` must leave the repo byte-identical.
+- `--kind` picks the chrome shape, and the screen is **born passing lint**:
+  `root` (tab bar, màn tự khai nav — cần `components/app-tabs.html`),
+  `push` (back + tiêu đề, mặc định), `modal` (Hủy + tiêu đề, cần
+  `components/app-nav.html`), `bare` (không band: splash, full-bleed). `kind`
+  là tiện ích của generator, **không** được ghi vào file — thứ trong file
+  (slot nào, include gì) mới là bằng chứng về dạng chrome của nó. Thiếu
+  component thì lệnh từ chối và **không ghi gì**, thay vì sinh ra màn đỏ.
 - `rename-screen` moves the file and rewrites the `<!-- pc -->` header, plus any
   on-disk `board.json` references (nodes, removed, trash) with rollback on write
   failure. Browser localStorage boards prune reader-side on open.

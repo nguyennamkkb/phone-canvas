@@ -432,8 +432,11 @@ Chụp trước khi đổi khung cao cố định (đối chiếu ở cuối cha
 | Số màn hình | **7** (5 `calo-ai` + 2 `foundation-kit`) |
 | `npm run export -- --screen home` | **780×2122** (toàn bộ nội dung, device `reference` 390×844) |
 
-Kỳ vọng sau v2: `home` export ra **780×1688** (khung máy) ở mặc định, còn
-`home@2x.png --full` vẫn 780×2122.
+Kỳ vọng sau v2: `home` export ra **780×1688** (khung máy) ở mặc định. Kỳ vọng
+`--full` "vẫn 780×2122" đã **không đúng**: đo lại được **780×2152**. Lý do: tab
+rời khỏi `.screen` để thành band `.region-tabs` cao cố định 68 pt, thay cho hàng
+tab do tác giả tự định cỡ, nên trang đầy đủ cao thêm ~30 pt. Con số 2122 ở bảng
+trên là mốc **trước** v2, giữ nguyên làm lịch sử.
 
 **Sau v2** — output thật của `npm run gate`:
 
@@ -455,7 +458,7 @@ Kỳ vọng sau v2: `home` export ra **780×1688** (khung máy) ở mặc địn
 ```
 
 `npm run export -- --screen home`: mặc định **780×1688** (khung máy), `--full`
-**780×2122** (toàn trang). Nav/tab của cả 7 màn do shell dựng; cả họ cũ
+**780×2152** (toàn trang). Nav/tab của cả 7 màn do shell dựng; cả họ cũ
 (`.navbar` / `.tabbar` / `.navbar-float` / `.tabbar-float` / `.dock`) lẫn tên
 hiện tại (`.region-nav` / `.region-tabs`) đều nằm trong `SHELL_BAND_CLASSES`, và
 biến thể kính chỉ còn một chỗ khai: `.region-nav.is-glass` /
