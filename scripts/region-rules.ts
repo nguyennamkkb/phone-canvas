@@ -15,6 +15,11 @@
  * The map of which region a given form factor owes is docs/screen-regions.md.
  */
 
+import { expandComponents } from '../src/components/expand.ts'
+// the slot-value syntax lives with the code that consumes it, so the rule and
+// `composeScreenDoc` can never disagree about `data-slot="back title"`
+import { slotNames } from '../src/extractor/compose.ts'
+
 /**
  * The regions a screen author still owns: arrangements (split/pane) and side
  * bars (rail/sidebar). The shell owns the OS bands AND the nav/tab bands — see
@@ -281,18 +286,42 @@ export function slotViolations(src: string): Violation[] {
   for (const { tag, index } of tagsOf(stripped)) {
     const m = slotRe.exec(tag)
     if (m) {
-      const value = (m[1] ?? m[2] ?? m[3] ?? '').trim()
-      if (!['back', 'title', 'right'].includes(value)) {
+      const raw = (m[1] ?? m[2] ?? m[3] ?? '').trim()
+      const names = slotNames(raw)
+      const bad = names.filter((n) => !['back', 'title', 'right'].includes(n))
+      if (names.length === 0) {
         out.push({
           line: lineOf(stripped, index),
           code: 'region-slot-unknown',
-          message: `data-slot="${value}" không hợp lệ — chỉ nhận \`back\` | \`title\` | \`right\``,
+          message: 'data-slot thiếu giá trị — chỉ nhận `back` | `title` | `right`, có thể ghi nhiều slot cách nhau bằng dấu cách',
+        })
+      } else if (bad.length > 0) {
+        out.push({
+          line: lineOf(stripped, index),
+          code: 'region-slot-unknown',
+          message: `data-slot="${raw}" không hợp lệ ở ${bad.map((b) => `\`${b}\``).join(', ')} — chỉ nhận \`back\` | \`title\` | \`right\``,
         })
       }
     }
     if (/\bdata-tab(?![-\w])/.test(tag)) {
+      const raw = (/\bdata-tab\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/.exec(tag) ?? []).slice(1).find(Boolean)
+      const slug = (raw ?? '').trim()
       const body = readUntilClose(stripped, index)?.body ?? ''
       const hasContent = body.replace(/<[^>]*>/g, '').trim().length > 0 || /\bdata-symbol\b|<img\b/.test(body)
+      if (slug.length === 0) {
+        out.push({
+          line: lineOf(stripped, index),
+          code: 'region-slot-unknown',
+          message:
+            'data-tab thiếu slug destination — `data-tab="home"`; slug là danh tính (chữ thường, gạch nối), không phải nhãn hiển thị',
+        })
+      } else if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+        out.push({
+          line: lineOf(stripped, index),
+          code: 'region-slot-unknown',
+          message: `data-tab="${slug}" không phải slug hợp lệ — dùng chữ thường và gạch nối, ví dụ \`data-tab="saved-meals"\``,
+        })
+      }
       if (!hasContent) {
         out.push({
           line: lineOf(stripped, index),
@@ -301,6 +330,168 @@ export function slotViolations(src: string): Violation[] {
         })
       }
     }
+  }
+  return out
+}
+
+/** the destination slugs a fragment declares, in document order */
+function tabSlugsOf(src: string): string[] {
+  const out: string[] = []
+  for (const { tag } of tagsOf(src)) {
+    if (!/\bdata-tab(?![-\w])/.test(tag)) continue
+    const raw = (/\bdata-tab\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/.exec(tag) ?? []).slice(1).find(Boolean)
+    const slug = (raw ?? '').trim()
+    if (slug.length > 0) out.push(slug)
+  }
+  return out
+}
+
+/**
+ * Requirement: the open destination is declared once, and it exists.
+ *
+ * `data-tab-active` is the only place a screen names which destination is
+ * open. Everything else — `is-active`, `aria-current`, the label and the
+ * "tab N trên M" position — is derived by the shell, so a screen that
+ * declares the wrong slug, or none, or two, is a bug the text can prove.
+ */
+export function activeTabViolations(input: {
+  html: string
+  components?: Record<string, string>
+}): Violation[] {
+  const stripped = withoutComments(input.html)
+  let slugs = tabSlugsOf(stripped)
+  if (slugs.length === 0 && input.components) {
+    // the destinations live in the project chrome, so read them through the
+    // same expansion compose uses — never a second interpretation of the file
+    slugs = tabSlugsOf(withoutComments(expandComponents(input.html, input.components).html))
+  }
+  const re = /\bdata-tab-active\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/gi
+  const actives = [...stripped.matchAll(re)]
+  const valueOf = (m: RegExpMatchArray) => (m[1] ?? m[2] ?? m[3] ?? '').trim()
+
+  if (slugs.length === 0) {
+    return actives.map((m) => ({
+      line: lineOf(stripped, m.index ?? 0),
+      code: 'region-tab-active-orphan',
+      message: 'data-tab-active thừa — màn này không có destination nào để trỏ tới',
+    }))
+  }
+  if (actives.length === 0) {
+    return [
+      {
+        line: lineOf(stripped, 0),
+        code: 'region-tab-active-missing',
+        message: `màn có ${slugs.length} destination nhưng thiếu data-tab-active — khai destination đang mở trên \`.screen\`, ví dụ data-tab-active="${slugs[0]}"`,
+      },
+    ]
+  }
+  if (actives.length > 1) {
+    return actives.slice(1).map((m) => ({
+      line: lineOf(stripped, m.index ?? 0),
+      code: 'region-tab-active-many',
+      message: `chỉ được khai một data-tab-active — màn này khai ${actives.length}`,
+    }))
+  }
+  const open = actives[0]!
+  const value = valueOf(open)
+  if (!slugs.includes(value)) {
+    return [
+      {
+        line: lineOf(stripped, open.index ?? 0),
+        code: 'region-tab-active-unknown',
+        message: `data-tab-active="${value}" không có trong bộ destination (${slugs.join(' · ')}) — sửa slug hoặc thêm destination vào bộ dùng chung`,
+      },
+    ]
+  }
+  return []
+}
+
+/**
+ * Requirement: one list of destinations, one source.
+ *
+ * A screen that declares `data-tab` AND includes a chrome component that also
+ * declares them has two lists. Compose resolves that deterministically (the
+ * screen wins), but two lists is a mistake either way, so the text names it.
+ */
+export function tabSourceViolations(input: {
+  html: string
+  components?: Record<string, string>
+}): Violation[] {
+  if (!input.components) return []
+  const stripped = withoutComments(input.html)
+  const own = tabSlugsOf(stripped)
+  if (own.length === 0) return []
+  const expanded = withoutComments(expandComponents(input.html, input.components).html)
+  const both = tabSlugsOf(expanded)
+  if (both.length <= own.length) return []
+  const first = tagsOf(stripped).find(({ tag }) => /\bdata-tab(?![-\w])/.test(tag))
+  return [
+    {
+      line: first ? lineOf(stripped, first.index) : lineOf(stripped, 0),
+      code: 'region-tab-source',
+      message: `danh sách destination có hai nguồn: màn tự khai ${own.length} tab và component còn khai thêm ${both.length - own.length} — chỉ được chọn một; bỏ tab khỏi màn hoặc bỏ include chrome`,
+    },
+  ]
+}
+
+/**
+ * Requirement: exactly one content band, and nothing else in the screen root.
+ *
+ * A phone screen owes one `.body` (scrolls) or `.body-fixed` (fits). Content
+ * sitting directly in `.screen` is what made the fixed-height frame squash a
+ * 58 pt button to 39 pt, so it is named as an undeclared region. Slot elements
+ * and overlays are not content: the shell lifts the first, and the second lead
+ * or trail a sheet on purpose.
+ */
+export function bodyBandViolations(html: string, form: string): Violation[] {
+  if (form !== 'phone') return []
+  const stripped = withoutComments(html)
+  const root = tagsOf(stripped).find(({ tag }) => {
+    const cls = classesOf(tag)
+    return cls.includes('screen')
+  })
+  if (!root) return []
+  const inner = readUntilClose(stripped, root.index)
+  if (!inner) return []
+  const rootLine = lineOf(stripped, root.index)
+  const line = (offset: number) => rootLine + lineOf(inner.body, offset) - 1
+
+  const children = directChildren(inner.body)
+  const isBand = (tag: string) => {
+    const cls = classesOf(tag)
+    return cls.includes('body') || cls.includes('body-fixed')
+  }
+  const bands = children.filter((c) => isBand(c.tag))
+  const out: Violation[] = []
+
+  if (bands.length === 0) {
+    out.push({
+      line: rootLine,
+      code: 'region-body-missing',
+      message:
+        'màn thiếu thân nội dung — khai đúng một thân trong `.screen`: `.body` khi nội dung dài hơn khung (cuộn), `.body-fixed` khi vừa khung',
+    })
+    return out
+  }
+  if (bands.length > 1) {
+    for (const extra of bands.slice(1)) {
+      out.push({
+        line: line(extra.offset),
+        code: 'region-body-many',
+        message: `màn có ${bands.length} thân — chỉ được một; gộp nội dung vào thân đầu hoặc bỏ thân thừa`,
+      })
+    }
+    return out
+  }
+  for (const child of children) {
+    if (isBand(child.tag)) continue
+    if (/\bdata-slot(?![-\w])|\bdata-tab(?![-\w])/.test(child.tag)) continue
+    if (OVERLAY_CLASS.test(classesOf(child.tag).join(' '))) continue
+    out.push({
+      line: line(child.offset),
+      code: 'region-body-escaped',
+      message: `\`<${tagName(child.tag)} class="${classesOf(child.tag).join(' ')}">\` nằm trực tiếp trong \`.screen\` — nội dung phải nằm trong thân (\`.body\` cuộn hoặc \`.body-fixed\` vừa khung), không thả ra ngoài`,
+    })
   }
   return out
 }
@@ -526,6 +717,8 @@ export function screenViolations(input: {
   html: string
   form: string
   deviceWidths: readonly number[]
+  /** the project's components, so chrome in a component is judged too */
+  components?: Record<string, string>
 }): Violation[] {
   if (fileIsExempt(input.html)) return []
   return [
@@ -534,8 +727,33 @@ export function screenViolations(input: {
     ...shellBandViolations(input.html),
     ...slotViolations(input.html),
     ...undeclaredRegionViolations(input.html, input.form),
+    ...bodyBandViolations(input.html, input.form),
     ...navbarViolations(input.html),
     ...tabbarViolations(input.html, input.form),
+    ...activeTabViolations(input),
+    ...tabSourceViolations(input),
+    ...deviceLiteralViolations(input.html, input.deviceWidths),
+  ]
+}
+
+/**
+ * The same vocabulary rules over one component file.
+ *
+ * A component holds band CONTENT, so it owes the slot rules and the shell-band
+ * rule, but not the screen-shaped ones: it has no `.screen` root to put a body
+ * band in, and `data-tab-active` belongs to the screen that opens it, not to
+ * the shared list of destinations.
+ */
+export function componentViolations(input: {
+  html: string
+  deviceWidths: readonly number[]
+}): Violation[] {
+  if (fileIsExempt(input.html)) return []
+  return [
+    ...offSwitchViolations(input.html),
+    ...chromeViolations(input.html),
+    ...shellBandViolations(input.html),
+    ...slotViolations(input.html),
     ...deviceLiteralViolations(input.html, input.deviceWidths),
   ]
 }

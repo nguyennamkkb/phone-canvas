@@ -4,7 +4,10 @@ import { beforeAll, describe, expect, it } from 'vitest'
 import { describeSkip } from './region-audit.ts'
 import {
   REGION_CLASSES,
+  activeTabViolations,
+  bodyBandViolations,
   chromeViolations,
+  componentViolations,
   deviceLiteralViolations,
   fileIsExempt,
   navbarViolations,
@@ -13,6 +16,7 @@ import {
   screenViolations,
   shellBandViolations,
   slotViolations,
+  tabSourceViolations,
   tabbarViolations,
   touchFloorViolations,
   undeclaredRegionViolations,
@@ -163,16 +167,168 @@ describe('slot values', () => {
     ])
   })
 
-  it('rejects an empty data-tab destination', () => {
-    expect(slotViolations('<button data-tab></button>').map((v) => v.code)).toEqual([
-      'region-slot-unknown',
-    ])
+  it('rejects a data-tab with no destination slug', () => {
+    const codes = slotViolations('<button data-tab><span>Home</span></button>').map((v) => v.code)
+    expect(codes).toEqual(['region-slot-unknown'])
+  })
+
+  it('rejects a data-tab slug that is not kebab-case', () => {
+    const codes = slotViolations('<button data-tab="Saved Meals"><span>Saved</span></button>').map(
+      (v) => v.code,
+    )
+    expect(codes).toEqual(['region-slot-unknown'])
+  })
+
+  it('accepts a kebab-case destination slug', () => {
+    expect(slotViolations('<button data-tab="saved-meals"><span>Saved</span></button>')).toEqual([])
+  })
+
+  it('names several slots on one element, with either separator', () => {
+    expect(slotViolations('<span data-slot="back title">x</span>')).toEqual([])
+    expect(slotViolations('<span data-slot="back|title">x</span>')).toEqual([])
+  })
+
+  it('rejects the unknown name inside a slot list, and says which one', () => {
+    const [v] = slotViolations('<span data-slot="back titel">x</span>')
+    expect(v?.code).toBe('region-slot-unknown')
+    expect(v?.message).toContain('titel')
   })
 
   it('accepts the three nav slots and a labelled tab', () => {
     const html =
-      '<button data-slot="back" aria-label="Quay lại"></button><span data-slot="title">Hôm nay</span><span data-slot="right"></span><button data-tab><span>Home</span></button>'
+      '<button data-slot="back" aria-label="Quay lại"></button><span data-slot="title">Hôm nay</span><span data-slot="right"></span><button data-tab="home"><span>Home</span></button>'
     expect(slotViolations(html)).toEqual([])
+  })
+})
+
+describe('tab identity', () => {
+  const tabs = '<button data-tab="home"><span>Home</span></button><button data-tab="me"><span>Me</span></button>'
+  const screen = (inner: string) => `<div class="screen"${inner}><div class="body"></div></div>`
+
+  it('accepts a screen that opens one of its own destinations', () => {
+    expect(activeTabViolations({ html: screen(` data-tab-active="me"${tabs}`) })).toEqual([])
+  })
+
+  it('demands data-tab-active once a screen has destinations', () => {
+    const [v] = activeTabViolations({ html: screen(tabs) })
+    expect(v?.code).toBe('region-tab-active-missing')
+    expect(v?.message).toContain('data-tab-active="home"')
+  })
+
+  it('rejects two open destinations', () => {
+    const html = `<div class="screen" data-tab-active="home" data-tab-active="me">${tabs}</div>`
+    expect(activeTabViolations({ html }).map((v) => v.code)).toEqual(['region-tab-active-many'])
+  })
+
+  it('rejects an open destination that is not in the set, and lists the real ones', () => {
+    const [v] = activeTabViolations({ html: screen(` data-tab-active="diary"${tabs}`) })
+    expect(v?.code).toBe('region-tab-active-unknown')
+    expect(v?.message).toContain('home · me')
+  })
+
+  it('rejects an open destination when the screen has no destinations at all', () => {
+    const [v] = activeTabViolations({ html: screen(' data-tab-active="home"') })
+    expect(v?.code).toBe('region-tab-active-orphan')
+  })
+
+  it('reads the destinations through the project chrome when the screen declares none', () => {
+    const components = {
+      'app-tabs': '<button data-tab="home"><span>Home</span></button><button data-tab="me"><span>Me</span></button>',
+    }
+    expect(activeTabViolations({ html: screen(' data-tab-active="me"<!-- @component app-tabs -->'), components })).toEqual([])
+    const [v] = activeTabViolations({ html: screen(' data-tab-active="nope"<!-- @component app-tabs -->'), components })
+    expect(v?.code).toBe('region-tab-active-unknown')
+  })
+})
+
+describe('one list of destinations, one source', () => {
+  const chrome = { 'app-tabs': '<button data-tab="home"><span>Home</span></button>' }
+
+  it('accepts a screen that only includes the chrome component', () => {
+    expect(tabSourceViolations({ html: '<div class="screen"><!-- @component app-tabs --></div>', components: chrome })).toEqual([])
+  })
+
+  it('accepts a screen that only declares its own tabs', () => {
+    expect(tabSourceViolations({ html: '<div class="screen"><button data-tab="home"><span>Home</span></button></div>', components: chrome })).toEqual([])
+  })
+
+  it('rejects a screen that does both, and says how many came from where', () => {
+    const html =
+      '<div class="screen"><button data-tab="me"><span>Me</span></button><!-- @component app-tabs --></div>'
+    const [v] = tabSourceViolations({ html, components: chrome })
+    expect(v?.code).toBe('region-tab-source')
+    expect(v?.message).toContain('màn tự khai 1 tab')
+  })
+})
+
+describe('a component is judged by the same vocabulary', () => {
+  it('rejects an unknown slot name inside a component', () => {
+    const codes = componentViolations({
+      html: '<span data-slot="titel">x</span>',
+      deviceWidths: [390],
+    }).map((v) => v.code)
+    expect(codes).toEqual(['region-slot-unknown'])
+  })
+
+  it('rejects a band class inside a component', () => {
+    const codes = componentViolations({
+      html: '<nav class="navbar"><span class="nav-title">x</span></nav>',
+      deviceWidths: [390],
+    }).map((v) => v.code)
+    expect(codes).toEqual(['region-shell-owned'])
+  })
+
+  it('accepts a well-formed chrome component', () => {
+    const html =
+      '<button data-tab="home"><span class="icon" data-symbol="house"></span><span>Home</span></button>'
+    expect(componentViolations({ html, deviceWidths: [390] })).toEqual([])
+  })
+
+  it('does not demand data-tab-active from a component', () => {
+    const html = '<button data-tab="home"><span>Home</span></button>'
+    expect(componentViolations({ html, deviceWidths: [390] })).toEqual([])
+  })
+})
+
+describe('exactly one content band', () => {
+  const wrap = (inner: string) => `<div class="screen">${inner}</div>`
+
+  it('accepts one .body or one .body-fixed', () => {
+    expect(bodyBandViolations(wrap('<div class="body"></div>'), 'phone')).toEqual([])
+    expect(bodyBandViolations(wrap('<div class="body-fixed"></div>'), 'phone')).toEqual([])
+  })
+
+  it('rejects a screen with no content band', () => {
+    const [v] = bodyBandViolations(wrap('<div class="row"></div>'), 'phone')
+    expect(v?.code).toBe('region-body-missing')
+    expect(v?.message).toContain('.body-fixed')
+  })
+
+  it('rejects a second content band', () => {
+    const codes = bodyBandViolations(
+      wrap('<div class="body"></div><div class="body-fixed"></div>'),
+      'phone',
+    ).map((v) => v.code)
+    expect(codes).toEqual(['region-body-many'])
+  })
+
+  it('rejects content that escaped into the screen root', () => {
+    const codes = bodyBandViolations(
+      wrap('<div class="t-headline">lạc</div><div class="body"></div>'),
+      'phone',
+    ).map((v) => v.code)
+    expect(codes).toEqual(['region-body-escaped'])
+  })
+
+  it('leaves slot elements and overlays alone — they are not content', () => {
+    const html = wrap(
+      '<span data-slot="title">Hôm nay</span><button data-slot="back"></button><div class="scrim"></div><div class="body"></div>',
+    )
+    expect(bodyBandViolations(html, 'phone')).toEqual([])
+  })
+
+  it('does not apply to non-phone forms, which use panes instead', () => {
+    expect(bodyBandViolations(wrap('<div class="split"></div>'), 'tablet')).toEqual([])
   })
 })
 

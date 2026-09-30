@@ -15,7 +15,7 @@ nav or tab bar either. You declare slot **content**, and the shell places it.
 ├── .viewport               ← the only scrollable area, via `.body`
 │   ├── .region-nav         ← shell, built from [data-slot]
 │   ├── .screen             ← your markup (the body band)
-│   └── .region-tabs        ← shell, built from [data-tab]
+│   └── .region-tabs        ← shell, built from [data-tab="<slug>"]
 └── .home-indicator         ← shell, safeBottom
 ```
 
@@ -23,7 +23,7 @@ So a screen declares slot content (phone) or an arrangement (iPad/Duo):
 
 | Form factor | Declare | Never |
 |---|---|---|
-| phone | `data-slot="back\|title\|right"`, `data-tab` on the tab buttons | `.navbar` / `.tabbar` / `.navbar-float` / `.tabbar-float` / `.dock` |
+| phone | `data-slot="back\|title\|right"`, `data-tab="<slug>"` on the tab buttons, `data-tab-active="<slug>"` on `.screen` | `.region-nav` / `.region-tabs`, or the v1 names `.navbar` / `.tabbar` / `.navbar-float` / `.tabbar-float` / `.dock` |
 | Duo cover | `.split` + `.pane`, and a trailing `.rail` (`.rail-tools` above, `.rail-tabs` bottom-aligned) | a horizontal tab bar |
 | Duo inner / fold | `.split` + `.pane` (`.pane-lead` / `.pane-trail` open, plain `.pane` ×2 folded) | one edge carrying both panes' controls |
 | tablet | `.sidebar` + `.split` | a sidebar with 2–3 items, a second title above the split |
@@ -32,7 +32,7 @@ So a screen declares slot content (phone) or an arrangement (iPad/Duo):
 
 ```html
 <!-- phone: slots, whatever order you like — the shell lays them out -->
-<div class="screen" style="background-color: var(--bg)">
+<div class="screen" data-tab-active="home" style="background-color: var(--bg)">
   <button data-slot="back" aria-label="Quay lại">
     <span class="icon icon-sm" data-symbol="chevron.left"></span>
   </button>
@@ -43,13 +43,20 @@ So a screen declares slot content (phone) or an arrangement (iPad/Duo):
     …nội dung; `.body` cuộn, `.body-fixed` thì phải vừa khung…
   </div>
 
-  <button data-tab class="tab is-on">…icon + nhãn…</button>
+  <!-- the destination list lives in the project, not in this file -->
+  <!-- @component app-tabs -->
 </div>
 ```
 
-The `back · title · right` order is the shell's, not yours. `data-tab` sits at
-the bottom in document order. No nav? Declare no slot and the shell builds no
-band — correct for splash / full-bleed.
+The `back · title · right` order is the shell's, not yours. No nav? Declare no
+slot and the shell builds no band — correct for splash / full-bleed.
+
+**Do not write `is-active` or `aria-label` on a tab.** Write the slug
+(`data-tab="diary"`) in the project's `components/app-tabs.html`, and name the
+open one once, on `.screen` (`data-tab-active="diary"`). The shell derives the
+active marker, `aria-current="page"`, the label and the "tab N trên M" position
+from the real order of the list — so reordering or adding a destination touches
+one file, not every screen.
 
 ```html
 <!-- Duo cover: content pane + trailing rail -->
@@ -67,15 +74,20 @@ band — correct for splash / full-bleed.
 `npm run gate` runs two tiers, and both fail the build:
 
 * `lint:regions` — from the text: OS chrome redrawn, a shell-owned band drawn by
-  hand (`region-shell-owned`), an unknown/empty slot (`region-slot-unknown`), nav
-  SLOT anatomy (≤ 3 actions, one-line title, back on a push), tab bar 3–5 and
-  labelled, a horizontal tab bar on a cover, px tied to one device, a governed
-  class under the touch floor, an `off` switch with no reason.
+  hand (`region-shell-owned`), an unknown/empty slot (`region-slot-unknown`), a
+  missing or wrong open destination (`region-tab-active-*`), a destination list
+  with two sources (`region-tab-source`), a screen without exactly one content
+  band (`region-body-missing` / `-many` / `-escaped`), nav SLOT anatomy
+  (≤ 3 actions, one-line title, back on a push), tab bar 3–5 and labelled, a
+  horizontal tab bar on a cover, px tied to one device, a governed class under
+  the touch floor, an `off` switch with no reason. The same rules run over
+  `project/*/components/*.html`, because chrome content lives in components too.
 * `audit:regions` — from the real layout in Chrome: the two OS bands exist once
   each and sit outside `.viewport`, `.device` paints what `.screen` paints,
-  exactly one scroller with the bands outside it, `.body-fixed` that fits,
-  every interactive rect is ≥ 44 × 44, the tab bar is the last band, a folded
-  split is 50/50 with nothing on the crease.
+  exactly one scroller with the bands outside it, the bands are in the right
+  order around the content (`.region-order`), `.body-fixed` that fits, every
+  interactive rect is ≥ 44 × 44, a folded split is 50/50 with nothing on the
+  crease.
 
 Escape hatches, both of which must be justified in writing:
 

@@ -156,7 +156,10 @@ Use the live board to confirm observable behavior:
    layout engine and the spec will report the wrong box.
 6. **The shell owns the bands.** Never write a status bar, home indicator,
    navbar or tab bar: `src/extractor/compose.ts` places all of them. Declare the
-   nav/tab content with `data-slot="back|title|right"` and `data-tab`.
+   nav/tab content with `data-slot="back|title|right"`; the destination list
+   lives in `project/<id>/components/app-tabs.html` with a slug per tab
+   (`data-tab="home"`), and the screen names the open one once with
+   `data-tab-active="home"` on `.screen`.
 7. **The frame is fixed and the body scrolls.** `.device` is exactly the device
    height, so a screen has exactly ONE vertical scroller: `.body` for content
    taller than the frame, `.body-fixed` for a page that fits. A `.body-fixed`

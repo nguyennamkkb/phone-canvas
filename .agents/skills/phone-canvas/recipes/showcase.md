@@ -16,7 +16,7 @@ Reference implementation: `project/foundation-kit/screens/foundation-showcase.ht
     │   └── rows                 .list-row / .row of samples
     ├── …more sections…
     └── .spacer
-└── data-tab                     optional — shell builds .region-tabs
+└── data-tab-active on .screen   which destination is open (optional)
 ```
 
 Sections in order: **colors** (core rows, then tint chips) → **type** (one
@@ -37,8 +37,10 @@ sample chips) → **rows & measures** (avatar row, macro + `.meter`,
 4. **One idea per section.** A showcase is read top to bottom; if a section
    needs a subheading, it is two sections.
 5. **The nav and tab bands are shell-owned.** Declare their content with
-   `data-slot` / `data-tab`; never write `.navbar` / `.tabbar`. On tablet and
-   foldable variants, drop the `data-tab` buttons entirely.
+   `data-slot`; never write `.navbar` / `.tabbar`. The destination list is the
+   project's (`components/app-tabs.html`, one slug per tab) — include it with
+   `<!-- @component app-tabs -->` and name the open one with
+   `data-tab-active`. On tablet and foldable variants, include no tab chrome.
 
 ## Skeleton
 
@@ -61,10 +63,8 @@ sample chips) → **rows & measures** (avatar row, macro + `.meter`,
     <div class="spacer"></div>
   </div>
 
-  <button data-tab class="tab is-active">
-    <span class="icon" data-symbol="book"></span>
-    <span>Tokens</span>
-  </button>
+  <!-- the destination list is the project's: components/app-tabs.html -->
+  <!-- @component app-tabs -->
 </div>
 ```
 

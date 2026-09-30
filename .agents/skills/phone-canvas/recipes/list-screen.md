@@ -14,7 +14,7 @@ is rows under a header.
 │           ├── .avatar / .chip-icon
 │           ├── .grow.col          title + subtitle
 │           └── trailing text / icon
-└── data-tab                       shell builds .region-tabs from these
+└── data-tab-active on .screen     which destination is open
 ```
 
 `.bottom-cta` (optional, in-flow action bar) sits inside the content band.
@@ -47,10 +47,9 @@ is rows under a header.
     </div>
   </div>
 
-  <button data-tab class="tab is-active">
-    <span class="icon" data-symbol="book"></span>
-    <span>Entries</span>
-  </button>
+  <!-- the destination list is the project's: components/app-tabs.html -->
+  <!-- @component app-tabs -->
+</div>
   <!-- more tabs -->
 </div>
 ```

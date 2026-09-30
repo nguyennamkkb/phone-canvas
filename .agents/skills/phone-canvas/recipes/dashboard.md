@@ -17,7 +17,7 @@ shows a reading plus supporting cards.
     ├── .row                      feature cards
     ├── .row-card                 a single summary row
     └── .spacer
-└── data-tab                      optional — shell builds .region-tabs
+└── data-tab-active on .screen    which destination is open (optional)
 ```
 
 ## Two ways to draw a reading
@@ -62,7 +62,9 @@ coordinate in a `.ring`:
 `.tab`
 
 The nav and tab bands are **shell-owned**: declare their content with
-`data-slot` / `data-tab`, never `.navbar` / `.tabbar`.
+`data-slot`, never `.navbar` / `.tabbar`. The destination list lives in the
+project (`components/app-tabs.html`), and `.screen` names the open one with
+`data-tab-active="<slug>"`.
 
 ## Gotchas
 

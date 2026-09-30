@@ -38,6 +38,43 @@ Nguồn: `src/extractor/compose.ts` (`CHROME_CSS`, `statusBarHtml`,
   có, nên chúng được đặt trong `.viewport`.
 * `safeBottom = 0` (iPhone SE) ⇒ không có home indicator. Không tự thêm.
 
+### Chrome dùng chung: nav và tab sống ở một chỗ
+
+Ruột band có **hai nguồn**: màn khai trực tiếp, hoặc màn include một component
+dùng chung của project. Màn include bằng một dòng:
+
+```html
+<!-- @component app-tabs -->
+<!-- @component app-nav  -->
+```
+
+Luật ghi đè, gọn một câu: **màn khai slot nào thì slot đó thắng, kể cả slot
+rỗng; slot không khai thì lấy mặc định của component.** Compose nhấc slot của
+màn **trước**, rồi mới expand component và chỉ điền vào chỗ trống — nên không
+cần đánh dấu nguồn gốc, và `<span data-slot="title"></span>` là "để trống có
+chủ đích" (nó chặn tiêu đề mặc định, đúng ca `home` không có tiêu đề).
+
+Với tab — một **danh sách**, không phải slot tên — màn khai bất kỳ `data-tab`
+nào thì thắng **cả danh sách**; vừa include `app-tabs` vừa tự khai `data-tab`
+là lỗi `region-tab-source`.
+
+**Danh tính tab do shell suy ra.** Màn chỉ nói destination nào đang mở:
+
+```html
+<div class="screen" data-tab-active="diary">
+```
+
+`is-active`, `aria-current="page"`, `aria-label` và thứ tự "tab N trên M" đều do
+shell tính từ vị trí thật trong bộ, nên **xếp lại hay thêm destination không
+phải sửa màn nào**. Đó là lý do không viết tay `aria-label="… tab 2 trên 4"`:
+con số đó lệch ngay lần đầu ai đó chèn một tab.
+
+Ai dùng cái gì trong bộ màn hiện tại (`calo-ai`): `home`/`diary` include
+`app-tabs` (nav riêng vì có date switcher); `confirm`/`textvoice` include
+`app-nav` và ghi đè tiêu đề, nên markup "Hủy" chỉ còn một chỗ; `camera` không
+include gì (nav riêng, không tab). `foundation-kit` giữ một bộ destination
+**ví dụ** trong `components/app-tabs.html` để copy sang project mới.
+
 ### Nền dải OS phải nối liền ruột màn
 
 `screenBgOf()` (`src/extractor/compose.ts:230-258`) đọc **longhand**
@@ -211,14 +248,23 @@ apple-design-iphone-duo/SKILL.md.
 | Mã | Nghĩa |
 |---|---|
 | `chrome-redrawn` | màn vẽ lại dải OS (status bar / home indicator / island) |
-| `region-shell-owned` | màn dựng dải nav/tab mà shell đã dựng |
-| `region-slot-unknown` | `data-slot` sai tên / thiếu giá trị, hoặc `data-tab` rỗng |
+| `region-shell-owned` | màn dựng dải nav/tab mà shell đã dựng — gồm cả tên hiện tại `.region-nav` / `.region-tabs` lẫn tên cũ `.navbar` / `.tabbar` / `.navbar-float` / `.tabbar-float` / `.dock` |
+| `region-slot-unknown` | `data-slot` sai tên hoặc thiếu giá trị (nhận cả danh sách `back title` / `back\|title`); `data-tab` thiếu slug, slug không phải kebab-case, hoặc destination rỗng |
 | `region-undeclared` | dải cố định ở mép dựng tay, không slot/class vùng |
+| `region-body-missing` · `region-body-many` · `region-body-escaped` | hợp đồng "đúng một thân": màn thiếu `.body`/`.body-fixed`, có hai thân, hoặc thả nội dung trực tiếp vào `.screen` |
+| `region-tab-active-missing` · `region-tab-active-many` · `region-tab-active-unknown` · `region-tab-active-orphan` | `data-tab-active` trên `.screen`: thiếu, khai hai, trỏ slug lạ, hoặc thừa khi màn không có destination |
+| `region-tab-source` | danh sách destination có hai nguồn — màn tự khai `data-tab` **và** include một component cũng khai |
 | `navbar-too-many-actions` · `navbar-title-long` · `navbar-back-missing` | anatomy slot nav |
 | `tabbar-too-many` · `tabbar-unlabelled` · `cover-horizontal-tabbar` | `data-tab`: 3–5, có nhãn, không ngang ở cover |
 | `touch-floor` | lớp tương tác khai dưới sàn trong `tokens.css` |
 | `device-literal` | số px gắn kích thước một thiết bị |
 | `region-off-without-reason` | `lint-region: off` không kèm lý do |
+
+Luật từ `region-shell-owned` trở xuống áp cho **cả file component**
+(`project/*/components/*.html`), không chỉ file màn: từ `shared-screen-chrome`,
+một phần ruột band sống trong component, nên lint chỉ trên màn sẽ để lọt
+`data-slot="titel"` hay `class="navbar"` nằm trong component. Riêng
+`data-tab-active` do **màn** khai, nên component không bị đòi thuộc tính này.
 
 **Đo — `npm run audit:regions`** (`scripts/region-audit.ts`, đo sau layout
 trong Chrome):
@@ -228,7 +274,7 @@ trong Chrome):
 | `chrome` | đúng 1 `.statusbar` + 1 `.home-indicator`, cả hai ngoài `.viewport` |
 | `background` | `.device` sơn đúng nền của `.screen` |
 | `hit-region` | mọi rect tương tác ≥ 44×44 pt |
-| `region-order` | tab bar không nằm trên nav |
+| `region-order` | dải nav nằm trên thân, tab bar nằm dưới thân — đo trên `.region-nav` / `.screen` / `.region-tabs` thật |
 | `division-band` | không control nào trên dải chia của màn fold |
 | `scroll` | đúng một vùng cuộn, và band ngoài nó |
 | `overflow` | `.screen` / `.body-fixed` không tràn khung |

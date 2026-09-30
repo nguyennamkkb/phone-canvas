@@ -36,6 +36,7 @@ import { fileURLToPath } from 'node:url'
 import { DEVICES, DEFAULT_DEVICE_ID, formFactorOf } from '../src/frame/devices.ts'
 import { scanProjects } from './scan-projects.ts'
 import {
+  componentViolations,
   screenViolations,
   touchFloorViolations,
   type Violation,
@@ -84,26 +85,42 @@ async function main(): Promise<void> {
   }
   violations += floor.length
 
-  // 2. every screen, judged against the form factor its own header declares
+  // 2. every screen, judged against the form factor its own header declares.
+  //    A screen's chrome can live in a component, so each screen is judged with
+  //    its own project's components in hand.
+  const byCode = new Map<string, number>()
+  const count = (file: string, found: Violation[]) => {
+    violations += report(file, found)
+    for (const v of found) byCode.set(v.code, (byCode.get(v.code) ?? 0) + 1)
+  }
+  const componentsOf = (projectId: string) =>
+    Object.fromEntries(
+      registry.components.filter((c) => c.project === projectId).map((c) => [c.id, c.html]),
+    )
+
   for (const screen of registry.screens) {
     const form = formFactorOf(screen.deviceId ?? DEFAULT_DEVICE_ID)
-    violations += report(
+    count(
       screen.file,
-      screenViolations({ html: screen.html, form, deviceWidths: DEVICE_SIZES }),
+      screenViolations({
+        html: screen.html,
+        form,
+        deviceWidths: DEVICE_SIZES,
+        components: componentsOf(screen.projectId),
+      }),
     )
   }
 
-  const byCode = new Map<string, number>()
-  for (const screen of registry.screens) {
-    const form = formFactorOf(screen.deviceId ?? DEFAULT_DEVICE_ID)
-    for (const v of screenViolations({
-      html: screen.html,
-      form,
-      deviceWidths: DEVICE_SIZES,
-    })) {
-      byCode.set(v.code, (byCode.get(v.code) ?? 0) + 1)
-    }
+  // 3. every component. After shared-screen-chrome part of a band's content
+  //    lives in a component, so linting only screens would leave a hole: a
+  //    `data-slot="titel"` or a `class="navbar"` in a component was invisible.
+  for (const component of registry.components) {
+    count(
+      component.file,
+      componentViolations({ html: component.html, deviceWidths: DEVICE_SIZES }),
+    )
   }
+
   const breakdown = [...byCode.entries()]
     .sort((a, b) => b[1] - a[1])
     .map(([code, n]) => `${code} ${n}`)

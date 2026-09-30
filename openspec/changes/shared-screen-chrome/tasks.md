@@ -13,17 +13,17 @@
 
 - [x] 2.1 Trong `src/extractor/compose.ts`, đổi thứ tự `composeScreenDoc`: nhấc `data-slot` / `data-tab` của màn TRƯỚC, rồi `expandComponents`, rồi nhấc phần còn lại và chỉ điền slot còn thiếu. Verify: unit test mới — màn khai `data-slot="title"` thắng tiêu đề mặc định của component, `back` không khai thì vẫn lấy từ component.
 - [x] 2.2 Cho slot rỗng của màn (`<span data-slot="title"></span>`) thắng mặc định của component. Verify: unit test — màn có slot rỗng không nhận tiêu đề mặc định, và không có phần tử tiêu đề nào được phát ra.
-- [ ] 2.3 Với `data-tab`: màn khai bất kỳ tab nào thì cả danh sách của màn thắng; màn vừa include `app-tabs` vừa tự khai `data-tab` bị coi là lỗi nhập nhằng. Verify: unit test cho cả hai ca, và ca nhập nhằng có thông báo nêu rõ chỉ được một nguồn.
+- [x] 2.3 Với `data-tab`: màn khai bất kỳ tab nào thì cả danh sách của màn thắng; màn vừa include `app-tabs` vừa tự khai `data-tab` bị coi là lỗi nhập nhằng. Verify: unit test cho cả hai ca, và ca nhập nhằng có thông báo nêu rõ chỉ được một nguồn.
 - [x] 2.4 Đổi `data-tab` sang mang slug destination; đọc `data-tab-active` trên `.screen` và tự suy ra `is-active`, `aria-current="page"`, `aria-label` và thứ tự "tab N trên M" từ vị trí thật trong bộ. Verify: unit test compose — active đúng một tab, đổi thứ tự bộ thì `aria-label` và số thứ tự đổi theo mà không sửa màn.
 - [x] 2.5 Phát `.region-nav` và `.region-tabs` dưới dạng `<nav>` kèm `aria-label`. Verify: unit test compose kiểm tag và thuộc tính; `npm run audit:regions` vẫn in `chrome: ok` và `region-order: ok` cho 7 màn.
 
 ## 3. Lint: phủ component, luật tab, hợp đồng một thân
 
-- [ ] 3.1 Siết `data-tab` phải có giá trị slug trong `scripts/region-rules.ts`; cập nhật `region-slot-unknown` cho khớp. Verify: `scripts/region-lint.test.ts` có ca `data-tab` rỗng bị báo lỗi kèm `file:line` và mẫu sửa.
-- [ ] 3.2 Thêm luật `data-tab-active`: màn có tab phải khai đúng một, và slug phải có thật trong bộ destination của project. Verify: ba ca test — thiếu, khai hai, trỏ slug lạ — mỗi ca báo lỗi nêu slug sai và bộ hợp lệ.
-- [ ] 3.3 Chạy `slotViolations`, `shellBandViolations` và luật tab trên `project/*/components/*.html`, không chỉ file màn. Verify: test fixture là một file component chứa `data-slot="titel"` và một file chứa `class="navbar"` — cả hai báo lỗi với `file:line` của chính file component.
-- [ ] 3.4 Thêm luật "đúng một thân": màn phải có đúng một `.body` hoặc `.body-fixed`, nội dung nằm trực tiếp trong `.screen` là lỗi. Verify: test fixture cho ca thiếu thân và ca hai thân; `npm run lint:regions` trên 7 màn hiện có vẫn xanh.
-- [ ] 3.5 Cập nhật bảng "Gate kiểm gì" trong `docs/screen-regions.md` với các luật mới và phạm vi phủ component. Verify: mỗi luật mới trong lint có đúng một dòng tương ứng trong bảng, và `npm run lint:regions` báo lỗi kèm gợi ý sửa như bảng mô tả.
+- [x] 3.1 Siết `data-tab` phải có giá trị slug trong `scripts/region-rules.ts`; cập nhật `region-slot-unknown` cho khớp. Verify: `scripts/region-lint.test.ts` có ca `data-tab` rỗng bị báo lỗi kèm `file:line` và mẫu sửa.
+- [x] 3.2 Thêm luật `data-tab-active`: màn có tab phải khai đúng một, và slug phải có thật trong bộ destination của project. Verify: ba ca test — thiếu, khai hai, trỏ slug lạ — mỗi ca báo lỗi nêu slug sai và bộ hợp lệ.
+- [x] 3.3 Chạy `slotViolations`, `shellBandViolations` và luật tab trên `project/*/components/*.html`, không chỉ file màn. Verify: test fixture là một file component chứa `data-slot="titel"` và một file chứa `class="navbar"` — cả hai báo lỗi với `file:line` của chính file component.
+- [x] 3.4 Thêm luật "đúng một thân": màn phải có đúng một `.body` hoặc `.body-fixed`, nội dung nằm trực tiếp trong `.screen` là lỗi. Verify: test fixture cho ca thiếu thân và ca hai thân; `npm run lint:regions` trên 7 màn hiện có vẫn xanh.
+- [x] 3.5 Cập nhật bảng "Gate kiểm gì" trong `docs/screen-regions.md` với các luật mới và phạm vi phủ component. Verify: mỗi luật mới trong lint có đúng một dòng tương ứng trong bảng, và `npm run lint:regions` báo lỗi kèm gợi ý sửa như bảng mô tả.
 
 ## 4. Chrome của calo-ai và migrate 5 màn
 
@@ -32,7 +32,7 @@
 - [x] 4.3 Migrate `confirm` và `textvoice` sang `<!-- @component app-nav -->`, ghi đè tiêu đề bằng slot của màn (giữ nhãn "Hủy" ở slot back). Verify: gate xanh, PNG khung máy của hai màn khớp bản trước.
 - [x] 4.4 Migrate `camera`: giữ nav riêng, không include `app-tabs` vì màn không có tab. Verify: gate xanh, `npm run audit:regions -- --screen camera` không báo band tab, PNG khớp bản trước.
 - [x] 4.5 Dựng `app-nav` / `app-tabs` tham chiếu trong `project/foundation-kit/components/` làm mẫu copy cho project mới. Verify: gate xanh và `foundation-showcase` vẫn dựng đúng.
-- [ ] 4.6 Ghi mục "Chrome dùng chung" vào `docs/screen-regions.md` và recipe `.agents/skills/phone-canvas/recipes/regions.md`: hai file, luật ghi đè từng slot, cách khai `data-tab-active`. Verify: đọc recipe dựng lại được một màn tab theo đúng mô tả mà không cần đọc mã nguồn.
+- [x] 4.6 Ghi mục "Chrome dùng chung" vào `docs/screen-regions.md` và recipe `.agents/skills/phone-canvas/recipes/regions.md`: hai file, luật ghi đè từng slot, cách khai `data-tab-active`. Verify: đọc recipe dựng lại được một màn tab theo đúng mô tả mà không cần đọc mã nguồn.
 
 ## 5. Generator sinh màn hợp lệ
 
