@@ -61,7 +61,17 @@ function PhoneNodeInner({ id, data }: NodeProps) {
 
   const projectId = screen ? (projectOfScreen(screen.id)?.id ?? undefined) : undefined
   const [draft] = useTokenDraft(projectId ?? '')
-  const extraCss = useMemo(() => draftCss(draft), [draft])
+  // Expand chỉ phóng iframe ngoài là chưa đủ: document trong vẫn cố định ở
+  // --device-h nên .viewport kẹp lại và .body tiếp tục scroll. Layer thêm CSS
+  // để .device cao bằng content đã đo, nội dung giãn hết ra. Cần !important
+  // vì extraCss đứng TRƯỚC khối CHROME_CSS trong compose (cùng specificity
+  // thì khối sau thắng) — đây là override của tool, không phải CSS tác giả.
+  const extraCss = useMemo(() => {
+    const draftCssText = draftCss(draft)
+    if (!expanded) return draftCssText
+    const expandCssText = `html, body { height: ${Math.round(contentH)}px !important; } .device { height: ${Math.round(contentH)}px !important; }`
+    return draftCssText ? `${draftCssText}\n${expandCssText}` : expandCssText
+  }, [draft, expanded, contentH])
 
   const srcDoc = useMemo(
     () =>

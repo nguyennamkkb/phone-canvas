@@ -83,6 +83,12 @@ body.is-bare { height: auto; }
   position: relative;
   overflow: hidden;
 }
+/* The frame scrolls its .body, but the scrollbar itself is chrome, not
+   content: hide it visually, keep scrolling. Shell-owned, so it ships to
+   the board, export and locate alike — and it never changes a measured
+   number (audit/spec read scrollHeight, not scrollbar pixels). */
+.body { scrollbar-width: none; -ms-overflow-style: none; }
+.body::-webkit-scrollbar { display: none; }
 .statusbar {
   flex: 0 0 auto; height: var(--safe-top);
   display: flex; flex-direction: row; align-items: center;
