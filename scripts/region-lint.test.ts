@@ -246,7 +246,7 @@ describe('touch floor', () => {
   it('does not mistake line-height for height', () => {
     // an unanchored /height:/ matches inside `line-height: 13px` and once
     // reported a 13 px hit region for a class that was already legal
-    const css = '.tab-item { min-height: 44px; line-height: 13px; }'
+    const css = '.tab { min-height: 44px; line-height: 13px; }'
     expect(touchFloorViolations(css, 44, {})).toEqual([])
   })
 

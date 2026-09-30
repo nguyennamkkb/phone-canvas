@@ -83,8 +83,9 @@ type Probe = {
   paint: { device: string; screen: string; deviceImage: string; screenImage: string }
   interactive: Interactive[]
   regions: {
-    navbar: Rect | null
-    tabbar: Rect | null
+    nav: Rect | null
+    tabs: Rect | null
+    screen: Rect | null
     split: Rect | null
     rail: Rect | null
     panes: Rect[]
@@ -100,7 +101,6 @@ type Probe = {
     tabsOutsideViewport: number
     slotsOutsideNav: number
     tabsOutsideTabs: number
-    handBuilt: boolean
   }
   deviceHeight: number
 }
@@ -168,8 +168,9 @@ const PROBE = `(() => {
     },
     interactive: interactive,
     regions: {
-      navbar: rectOf(q('.navbar, .navbar-float')),
-      tabbar: rectOf(q('.tabbar, .tabbar-float, .dock')),
+      nav: rectOf(q('.region-nav')),
+      tabs: rectOf(q('.region-tabs')),
+      screen: rectOf(q('.screen')),
       split: rectOf(q('.split')),
       rail: rectOf(q('.rail')),
       panes: panes,
@@ -220,7 +221,6 @@ const PROBE = `(() => {
         tabsOutsideViewport: tabs.filter(outsideViewport).length,
         slotsOutsideNav: qa('[data-slot]').filter((el) => !el.closest('.region-nav')).length,
         tabsOutsideTabs: qa('[data-tab]').filter((el) => !el.closest('.region-tabs')).length,
-        handBuilt: nav.length === 0 && tabs.length === 0 && !!q('.navbar, .navbar-float, .tabbar, .tabbar-float, .dock'),
       }
     })(),
     deviceHeight: document.documentElement.clientHeight,
@@ -296,12 +296,23 @@ function checkScreen(id: string, device: Device, probe: Probe): Finding[] {
     })
   }
 
-  const { navbar, tabbar, panes } = probe.regions
-  if (navbar && tabbar && tabbar.y + tabbar.h <= navbar.y) {
+  const { nav, tabs, screen: contentBand, panes } = probe.regions
+  // The shell owns the band order: nav above the content band, tabs below it.
+  // Measuring the content band instead of the old hand-built classes is what
+  // makes this check live again — after v2 the bands come from the shell, so a
+  // probe for `.navbar` / `.tabbar` could never fire.
+  if (nav && contentBand && nav.y + nav.h > contentBand.y + 1) {
     out.push({
       screen: id,
       check: 'region-order',
-      detail: `tab bar (y=${Math.round(tabbar.y)}) nằm trên navbar (y=${Math.round(navbar.y)})`,
+      detail: `dải nav (đáy y=${Math.round(nav.y + nav.h)}) nằm dưới mép trên thân (y=${Math.round(contentBand.y)}) — nav phải ở trên thân`,
+    })
+  }
+  if (tabs && contentBand && tabs.y < contentBand.y + contentBand.h - 1) {
+    out.push({
+      screen: id,
+      check: 'region-order',
+      detail: `tab bar (đỉnh y=${Math.round(tabs.y)}) nằm trên mép dưới thân (y=${Math.round(contentBand.y + contentBand.h)}) — tab phải ở dưới thân`,
     })
   }
 
@@ -375,13 +386,6 @@ function layoutViolations(id: string, probe: Probe): Finding[] {
       screen: id,
       check: 'shell-band',
       detail: `có slot chưa được shell gom: ${sb.slotsOutsideNav} [data-slot], ${sb.tabsOutsideTabs} [data-tab] nằm ngoài band`,
-    })
-  }
-  if (sb.handBuilt) {
-    out.push({
-      screen: id,
-      check: 'shell-band',
-      detail: 'màn còn dựng band trên tay (.navbar/.tabbar) — chuyển sang data-slot / data-tab',
     })
   }
   return out

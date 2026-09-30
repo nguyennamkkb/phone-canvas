@@ -41,6 +41,12 @@ export const REGION_CLASSES = [
  * `.region-tabs`.
  */
 export const SHELL_BAND_CLASSES = [
+  // the current names: writing them is hand-building the band just as much
+  // as writing an old one, and it would style a band with no slot lifting
+  '.region-nav',
+  '.region-tabs',
+  // the v1 names: no longer styled, kept here so an author copying an old
+  // snippet gets a loud error instead of an unstyled div
   '.navbar',
   '.navbar-float',
   '.tabbar',
@@ -65,29 +71,28 @@ const DECLARED_BAND_CLASSES = [...BAND_CLASSES, ...SHELL_BAND_CLASSES]
  * vocabulary defect the gate can prove from the stylesheet alone.
  *
  * Deliberately a short list. The spec raises exactly `.close-btn`,
- * `.pill-soft` and `.icon-btn`; `.tab-item` and `.toggle` are legal only
- * because a parent guarantees them (`.tabbar-float` is 68 px, `.action-row`
- * is 46 px). Everything else — `.chip`, `.seg`, `.pill-sm`, `.badge` — is
- * measured instead, because whether it is a hit target depends on the parent
- * it lands in, and a regex cannot know that. The audit reports those.
+ * `.pill-soft` and `.icon-btn`; `.toggle` is legal only because a parent
+ * guarantees it (`.action-row` is 46 px). Everything else — `.chip`, `.seg`,
+ * `.pill-sm`, `.badge`, `.tab` — is measured instead, because whether it is a
+ * hit target depends on the parent it lands in, and a regex cannot know that.
+ * The audit reports those.
  */
 export const TOUCH_CLASSES = [
   '.close-btn',
   '.pill-soft',
   '.icon-btn',
-  '.tab-item',
   '.toggle',
 ] as const
 
 const INTERACTIVE_TAG = /<(?:button|a|input|select|textarea)\b/i
 const INTERACTIVE_CLASS =
-  /\b(?:nav-round|icon-btn|icon-btn-soft|close-btn|pill|pill-sm|pill-soft|pill-ghost|pill-light|chip|seg|tab|tab-item|toggle|badge|sq-btn|plus-btn|circle-btn|searchbar)\b/
+  /\b(?:nav-round|icon-btn|icon-btn-soft|close-btn|pill|pill-sm|pill-soft|pill-ghost|pill-light|chip|seg|tab|toggle|badge|sq-btn|plus-btn|circle-btn|searchbar)\b/
 const INTERACTIVE_ROLE = /\brole\s*=\s*["'](?:button|tab|switch|link)["']/i
 const FLEX_CLASS = /\b(?:row|col|split|rail|sidebar)\b/
 const FLEX_STYLE = /display\s*:\s*flex/
 const CONTENT_BANDS = /\b(?:body-fixed|body|screen)\b/
 /** a real bottom band spreads its children across the width */
-const DISTRIBUTES = /justify-content\s*:\s*(?:space-between|space-around|flex-end|end)|tabbar/
+const DISTRIBUTES = /justify-content\s*:\s*(?:space-between|space-around|flex-end|end)/
 /** overlays and spacers lead or trail a band; they are not one */
 const OVERLAY_CLASS = /\b(?:scrim|sheet-panel|sheet-head|grabber|spacer)\b/
 

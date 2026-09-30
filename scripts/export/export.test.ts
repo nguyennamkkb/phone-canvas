@@ -72,7 +72,7 @@ describe('export smoke (needs Chrome)', () => {
       ),
     )
     const html = `<div class="screen">
-      <header class="navbar-float" data-m="nav"><span class="nav-title">Glass proof</span><span class="chip">chip</span></header>
+      <header class="region-nav is-glass" data-m="nav"><span class="nav-title">Glass proof</span><span class="chip">chip</span></header>
       <div class="body" style="gap: var(--s3)">
         <div class="paper-card glass" data-m="card">
           <div class="row" data-m="row"><span class="t-headline grow">Row one</span><span class="t-subhead">12</span></div>
@@ -81,7 +81,7 @@ describe('export smoke (needs Chrome)', () => {
         <div class="meter" data-m="meter"><span class="meter-seg is-on"></span><span class="meter-seg is-on"></span><span class="meter-seg is-on"></span><span class="meter-seg"></span><span class="meter-seg"></span><span class="meter-seg"></span><span class="meter-seg"></span><span class="meter-seg"></span><span class="meter-seg"></span><span class="meter-seg"></span></div>
         <div class="chart" data-m="chart"><div class="chart-col"><div class="bar" style="height: 120px"></div></div><div class="chart-col"><div class="bar is-peak" style="height: 160px"></div></div><div class="chart-col"><div class="bar" style="height: 90px"></div></div></div>
       </div>
-      <nav class="tabbar-float" data-m="tab"><span class="tab-item is-on">A</span><span class="tab-item">B</span></nav>
+      <nav class="region-tabs is-glass" data-m="tab"><span class="tab is-active">A</span><span class="tab">B</span></nav>
     </div>`
     const docs = new Map([
       ['glass-proof--reference--light', composeScreenDoc({ html, device, stylesheets: shared, bridgeJs: null })],

@@ -484,17 +484,6 @@ figure {
  * Component vocabulary
  * ========================================================================== */
 
-.navbar {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--s2);
-  flex: 0 0 auto;
-  min-height: var(--navbar-min-h);
-  padding: var(--s2) var(--s4);
-}
-
 .nav-title {
   font-size: var(--t-title2);
   font-weight: 700;
@@ -523,17 +512,6 @@ figure {
   color: var(--accent);
   padding: 0;
   cursor: pointer;
-}
-
-.tabbar {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: space-around;
-  flex: 0 0 auto;
-  padding-top: var(--s2);
-  border-top: 1px solid var(--separator);
-  background: var(--bg-elevated);
 }
 
 .tab {
@@ -910,33 +888,6 @@ figure {
   background: var(--sun);
 }
 
-.tabbar-dark {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  flex: 0 0 auto;
-  height: 54px;
-  padding: 0 var(--s3);
-  border-radius: var(--r-full);
-  background: var(--ink);
-  color: var(--cream);
-}
-
-/* equal slots, so the five centres are evenly spaced even though the middle
-   one is twice as wide as the rest */
-.tab-slot {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  flex: 1 1 0;
-  color: rgba(246, 241, 231, 0.55);
-}
-
-.tab-slot.is-on {
-  color: var(--cream);
-}
-
 .plus-btn {
   display: flex;
   flex-direction: row;
@@ -1192,33 +1143,6 @@ figure {
   background: #e6eae6;
   color: var(--ink);
   cursor: pointer;
-}
-
-.tabbar-light {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  flex: 0 0 auto;
-  height: 64px;
-}
-
-.tab-item {
-  min-height: var(--touch-min);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  flex: 1 1 0;
-  color: var(--slate);
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 13px;
-}
-
-.tab-item.is-on {
-  color: var(--ink);
-  font-weight: 700;
 }
 
 /* ============================================================================
@@ -1797,52 +1721,6 @@ figure {
   border-color: var(--sage);
 }
 
-/* Freud reference: a floating white pill dock. Inactive glyphs are stone,
-   the active glyph is filled ink, and the raised centre button overlaps the
-   dock edge. Height and padding follow the reference proportions. */
-.dock {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-around;
-  flex: 0 0 auto;
-  height: var(--tabbar-h);
-  padding: 0 var(--s4);
-  border: 1px solid var(--hairline);
-  border-radius: var(--r-full);
-  background: var(--card);
-  /* one soft shadow only: lifts the dock without changing layout */
-  box-shadow: 0 8px 24px rgba(43, 29, 22, 0.1);
-}
-
-.dock-item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  flex: 1 1 0;
-  min-width: 0;
-  color: var(--clay);
-}
-
-.dock-item.is-on {
-  color: var(--espresso);
-}
-
-.dock-plus {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
-  width: 56px;
-  height: 56px;
-  margin-top: -30px;
-  border-radius: var(--r-full);
-  background: var(--sage);
-  color: #ffffff;
-}
-
 /* ============================================================================
  * iOS 26 system: Liquid Glass + floating chrome
  *
@@ -1874,16 +1752,11 @@ figure {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
-/* a floating navbar: in-flow pill with side margins, never absolute, so it
-   cannot cover content or disturb measurement. Usage:
-   <header class="navbar-float"><span class="nav-title">…</span>…</header> */
-.navbar-float {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+/* Floating variant of the shell bands: in-flow pill with side margins, never
+   absolute, so it cannot cover content or disturb measurement. The author
+   never writes these — they are modifiers of the bands the shell owns. */
+.region-nav.is-glass {
   justify-content: space-between;
-  gap: var(--s2);
-  flex: 0 0 auto;
   min-height: 52px;
   margin: var(--s3) var(--s4) 0;
   padding: var(--s2) var(--s4);
@@ -1895,16 +1768,9 @@ figure {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
-/* a floating pill tabbar: the .dock pattern detached from the bottom edge.
-   Reuses .tab-item children. Usage:
-   <nav class="tabbar-float"><span class="tab-item is-on">…</span>…</nav> */
-.tabbar-float {
-  display: flex;
-  flex-direction: row;
+/* the same pill detached from the bottom edge */
+.region-tabs.is-glass {
   align-items: center;
-  justify-content: space-around;
-  flex: 0 0 auto;
-  height: var(--tabbar-h);
   margin: 0 var(--s4) var(--s4);
   padding: 0 var(--s4);
   border: 1px solid rgba(60, 60, 67, 0.12);

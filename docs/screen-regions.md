@@ -15,7 +15,7 @@ ghi nguồn. Gate kiểm: `npm run lint:regions` (tĩnh) + `npm run audit:region
 │   ├── .region-nav                  ← SHELL, dựng từ [data-slot]
 │   │   └── .nav-slot-back / -title / -right
 │   ├── .screen                      ← markup của tác giả
-│   └── .region-tabs                 ← SHELL, dựng từ [data-tab]
+│   └── .region-tabs                 ← SHELL, dựng từ [data-tab="<destination>"]
 └── .home-indicator   (safeBottom)   ← SHELL
 ```
 
@@ -24,9 +24,12 @@ Nguồn: `src/extractor/compose.ts` (`CHROME_CSS`, `statusBarHtml`,
 (`.region-nav`, `.region-tabs`).
 
 * **KHÔNG** viết status bar, home indicator, Dynamic Island, notch trong màn.
-* **KHÔNG** viết `.navbar` / `.tabbar` / `.navbar-float` / `.tabbar-float` /
-  `.dock` trong màn — shell dựng band. Khai **ruột** bằng `data-slot`
-  (`back` · `title` · `right`) và `data-tab`; shell xếp slot theo thứ tự chuẩn.
+* **KHÔNG** viết `.region-nav` / `.region-tabs` hay các tên cũ `.navbar` /
+  `.tabbar` / `.navbar-float` / `.tabbar-float` / `.dock` trong màn — shell
+  dựng band, và tên cũ vẫn nằm trong danh sách cấm nên snippet cũ báo lỗi to
+  chứ không im lặng thành `div` không style. Khai **ruột** bằng `data-slot`
+  (`back` · `title` · `right`) và `data-tab="<destination>"`; shell xếp slot
+  theo thứ tự chuẩn.
 * Band shell nằm **trong** `.viewport` (để panel spec vẫn đo được control) nhưng
   **ngoài** `.screen`/`.body` (để không cuộn theo nội dung).
 * **KHÔNG** chèn đệm giả bằng padding cứng tương đương safe area.
@@ -249,13 +252,14 @@ mà khai báo < 44 px là lỗi, trừ khi vùng cha đã bảo đảm).
 
 `.navbar-float` / `.tabbar-float` từng là band nổi **do tác giả dựng**. Từ v2
 chúng thuộc nhóm **shell sở hữu** (`SHELL_BAND_CLASSES`) nên màn không được
-khai nữa; shell dựng band đặc (`.region-nav` / `.region-tabs`) và biến thể kính
-trong suốt là **việc để lại** (xem Open Questions của change
-`shell-region-defaults`). Khi làm, band vẫn phải **in-flow**, lề cạnh 16 pt, tab
-cao 68 pt, và nội dung dưới kính đủ tương phản khi bật Reduce Transparency.
-Nguồn: `tokens.css`, apple-design-iphone-duo/SKILL.md,
-mobile-ux-fundamentals/SKILL.md. `.scrim` dùng `fixed` (không phải `absolute`)
-để phủ được cả vùng OS — `tokens.css`.
+khai nữa, và change `shared-screen-chrome` đã gộp ba họ band còn **một**:
+`.region-nav` / `.region-tabs` + biến thể `.is-glass`. Biến thể kính **đã có
+CSS** nhưng `compose` chưa dựng nó — shell hiện chỉ phát band đặc; khi bật, band
+vẫn phải **in-flow**, lề cạnh 16 pt, tab cao 68 pt, và nội dung dưới kính đủ
+tương phản khi bật Reduce Transparency. Nguồn: `tokens.css`
+(`.region-nav.is-glass`, `.region-tabs.is-glass`),
+apple-design-iphone-duo/SKILL.md, mobile-ux-fundamentals/SKILL.md. `.scrim` dùng
+`fixed` (không phải `absolute`) để phủ được cả vùng OS — `tokens.css`.
 
 ## Tham chiếu vùng Watch (chưa dựng, dùng để ràng buộc bề mặt mới)
 
@@ -361,9 +365,11 @@ Ba lỗi thật mà tầng đo bắt được, đã sửa — ghi lại vì chú
    combinator `.split > .pane-lead`.
 2. Với `flex-basis: 0`, phần padding của pane được cộng **ngoài** phần flex
    chia, nên 1:2 vẽ ra 35:65. Sửa bằng flex-basis phần trăm (border-box).
-3. `.tabbar-float` **không** giãn con mà chỉ canh giữa, nên `.tab-item` chỉ
-   38 pt trong thanh 68 pt — giả định "vùng cha bảo đảm" ở `GUARANTEED_BY` là
-   sai, đã bỏ và cho `.tab-item` tự khai sàn.
+3. Band nổi `.tabbar-float` (nay là `.region-tabs.is-glass`) **không** giãn con
+   mà chỉ canh giữa, nên mục tab chỉ đo 38 pt trong thanh 68 pt — giả định
+   "vùng cha bảo đảm" ở `GUARANTEED_BY` là sai và đã bỏ. Bài học còn nguyên dù
+   class đã đổi tên: một entry trong `GUARANTEED_BY` phải dựa trên **số đo**,
+   không dựa trên hình dạng của cha.
 
 Cùng kiểu, một rule của chính gate cũng sai và đã có test hồi quy: `/height:/`
 không neo cũng khớp `line-height: 13px`, báo nhầm vùng chạm 13 pt.
@@ -403,9 +409,11 @@ Kỳ vọng sau v2: `home` export ra **780×1688** (khung máy) ở mặc địn
 ```
 
 `npm run export -- --screen home`: mặc định **780×1688** (khung máy), `--full`
-**780×2122** (toàn trang). Nav/tab của cả 7 màn do shell dựng; `.navbar` /
-`.tabbar` / `.navbar-float` / `.tabbar-float` / `.dock` đã rời khỏi màn hình và
-thành `SHELL_BAND_CLASSES`.
+**780×2122** (toàn trang). Nav/tab của cả 7 màn do shell dựng; cả họ cũ
+(`.navbar` / `.tabbar` / `.navbar-float` / `.tabbar-float` / `.dock`) lẫn tên
+hiện tại (`.region-nav` / `.region-tabs`) đều nằm trong `SHELL_BAND_CLASSES`, và
+biến thể kính chỉ còn một chỗ khai: `.region-nav.is-glass` /
+`.region-tabs.is-glass`.
 
 Hai phát hiện mới mà v2 bắt được, ghi lại vì mắt không thấy:
 

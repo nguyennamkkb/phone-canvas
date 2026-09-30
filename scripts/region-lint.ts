@@ -54,9 +54,10 @@ const TOUCH_MIN = 44
 const GUARANTEED_BY: Record<string, string> = {
   '.toggle': '.action-row is 46px tall; the 28px track is the glyph, not the target',
 }
-// `.tab-item` used to sit here on the belief that `.tabbar-float` stretches its
-// children. It does not — it centres them — and the audit measured 38 pt inside
-// the 68 pt bar. The class now declares the floor itself.
+// A parent that CENTRES its children does not stretch them: an entry here once
+// claimed `.tabbar-float` guaranteed its tab items, and the audit measured 38 pt
+// inside the 68 pt bar. Every entry must be backed by a measurement, not by the
+// shape of the parent.
 
 const DEVICE_SIZES = DEVICES.flatMap((d) => [d.width, d.height] as const)
 
