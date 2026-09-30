@@ -28,7 +28,7 @@ not a CSS background.
 
 <!-- 3. dark stage (camera, carplay): literal black + manifest flag -->
 <div class="screen" style="background-color: #000">
-<!-- + src/screens/manifest.ts entry: lightStatusBar: true -->
+<!-- + header of the same file: <!-- pc {"lightStatusBar":true} --> -->
 ```
 
 Rules:

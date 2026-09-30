@@ -121,6 +121,21 @@ describe('screenBgOf (optional screen background)', () => {
     expect(html).toContain('.device.is-dark .home-indicator i')
   })
 
+  it('replays a token background onto .device so the OS strips do not seam', () => {
+    // The regression this pins: a screen whose ground is a token (calo-ai sets
+    // --bg on .app-mood, the grey Apple ground) leaves .device on the project
+    // default unless compose replays the declaration. The audit measures the
+    // same thing in a browser, but it skips without one — so this is the test
+    // that still runs everywhere.
+    const html = composeScreenDoc({
+      html: '<div class="screen" style="background-color: var(--bg)">x</div>',
+      device,
+      stylesheets: [],
+    })
+    expect(html).toContain('style="background-color: var(--bg);"')
+    expect(html.indexOf('class="device"')).toBeLessThan(html.indexOf('class="statusbar'))
+  })
+
   it('ignores shorthand background (lint forces longhand for image designs)', () => {
     expect(screenBgOf('<div class="screen" style="background: #000">x</div>')).toEqual({
       style: '',

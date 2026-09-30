@@ -5,7 +5,7 @@ import type { ProjectDef } from './types'
  * A project is a named board: a list of screen ids rendered as phone nodes.
  *
  * Projects and their screens come from the project folders (see
- * `./registry.ts` and `docs/screen-authoring.md`); this module only adds the
+ * `./registry.ts` and `docs/screen-regions.md`); this module only adds the
  * resolving helpers the app uses on top of that registry. Board layout
  * (positions, devices, edges) is per-project runtime state persisted in
  * localStorage (see ./storage.ts), never here.

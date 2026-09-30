@@ -22,10 +22,10 @@ gates, every time.
 Every screen is made the same way. Steps 3 and 6 are the ones people skip and
 then pay for.
 
-1. **Inspect** — read `src/screens/manifest.ts`, the project's own
-   `project/<id>/tokens.css` (its design system — see
-   `recipes/design-tokens.md`), and two or three existing screens. A new
-   screen joins a design system; it does not invent one.
+1. **Inspect** — read the project's own `project/<id>/tokens.css` (its design
+   system — see `recipes/design-tokens.md`), `docs/screen-regions.md` (which
+   bands every screen owes and who owns each), and two or three existing
+   screens. A new screen joins a design system; it does not invent one.
 2. **Model** — before any markup, write down: purpose, primary action, primary
    information, persistent controls, what scrolls. If you cannot name the
    primary action, you do not understand the screen yet.
@@ -49,7 +49,7 @@ then pay for.
 
 | | |
 |---|---|
-| `docs/screen-authoring.md` (repo) | **The contract.** The CSS subset, the token vocabulary, banned constructs. Read before authoring anything. |
+| `docs/screen-regions.md` (repo) | **The region contract.** Which band every screen owes, who owns it (shell vs author), the shared region classes, and the 44 pt / 16 pt / 68 pt numbers. Read before authoring anything. |
 | `references/tooling.md` | Commands, the board's modes, the icon pipeline, the generator. |
 | `references/failure-modes.md` | The silent failures. An icon that vanished, a column that widened, a spec that lied. |
 | `references/spec-to-swiftui.md` | What the panel reports and the SwiftUI it maps to. |
@@ -67,7 +67,8 @@ npm run screen -- add --project <id> --name <name> --title "..." [--device <id>]
 npm run screen -- rename --id <old> --to <new>
 npm run screen -- remove --id <screen-id> [--force]
 npm run screen -- list [--project <id>]
-npm run screen -- gate                # screens:sync + tsc + lint, auto-runs after add/rename/remove
+npm run screen -- gate                # tsc + lint, auto-runs after add/rename/remove
+npm run gate           # + audit:regions (measures regions in Chrome) + vitest
 ```
 
 Old habits keep working — thin aliases over the same scripts:
@@ -76,21 +77,21 @@ Old habits keep working — thin aliases over the same scripts:
 npm run new-screen -- --project <id> --name <name> --title "..."
 npm run rename-screen -- --id <old> --to <new>
 npm run delete-screen -- --id <screen-id> [--force]
-npm run screens:sync          # regenerate generated.ts after manual manifest edits
+npm run screen -- gate          # tsc --noEmit + npm run lint
 ```
 
-- `new-screen` writes the HTML file, inserts the manifest entry, regenerates
-  `generated.ts`, and adds the id to `builtin.ts`. Round-trip with
+- `new-screen` writes the HTML file and nothing else — the file's
+  `<!-- pc {...} -->` header *is* the entry, so there is no manifest, no
+  generated registry and no codegen to keep in step. Round-trip with
   `delete-screen` must leave the repo byte-identical.
-- `rename-screen` moves the id across file + whole manifest entry line
-  (extra props ride along) + builtin ids + on-disk board.json files
-  (nodes, removed, trash) with rollback on write failure. Browser
-  localStorage boards prune reader-side on open — no CLI rescan.
-- `delete-screen` removes the file and unwires the screen. Without `--force`
-  it aborts if any saved board still references the id.
+- `rename-screen` moves the file and rewrites the `<!-- pc -->` header, plus any
+  on-disk `board.json` references (nodes, removed, trash) with rollback on write
+  failure. Browser localStorage boards prune reader-side on open.
+- `delete-screen` removes the file. Without `--force` it aborts if any saved
+  board still references the id.
 - All three refuse bad input without writing; `--force` overrides board-references checks.
 - Every command prints files changed + boards/trash touched; via `screen --`
-  the gate (screens:sync + tsc + lint) runs automatically after.
+  the gate (tsc + lint) runs automatically after.
 - iPad: `new-screen -- --device ipad-11` scaffolds a 2-column template and
   records `deviceId` in the manifest so fresh boards open it at 820pt.
   Write screens fluid (token classes, no px per width); a fundamentally
@@ -191,3 +192,4 @@ classes it uses.
 | per-screen background color / image / dark stage | `recipes/screen-background.md` |
 | free-style catalogue of tokens + components | `recipes/showcase.md` |
 | new project palette, token edit, dark mode, handoff | `recipes/design-tokens.md` |
+| any screen, before you write its top or bottom band | `recipes/regions.md` |

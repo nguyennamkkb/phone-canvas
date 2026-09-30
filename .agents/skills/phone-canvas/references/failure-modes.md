@@ -157,6 +157,10 @@ a duplicate id — it renders the wrong node.
 **Fix.** `src/canvas/nodeId.ts` mints ids from a counter. A node is an *instance*
 of a screen; its identity must never be derived from the screen's.
 
-**Same class of bug, same fix.** Screen ids come from `src/screens/manifest.ts`
-and nowhere else. The registry throws on a duplicate id, and the exporter reads
-the manifest instead of scanning the directory, so the two can never disagree.
+**Same class of bug, same fix.** A screen's identity is its filename stem under
+`project/<id>/screens/`, and that is the only place it is written. The board
+reads the folder through `import.meta.glob`, and lint/export/CLI read it off
+disk through `scripts/scan-projects.ts` — both call the same `deriveRegistry`,
+which throws on a duplicate id, so the two can never disagree. (There used to
+be a hand-maintained `src/screens/manifest.ts` and a codegen step; both are
+gone, which is what removed this whole failure class.)

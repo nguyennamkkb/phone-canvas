@@ -42,6 +42,19 @@
   --r-xl: 28px;
   --r-full: 999px;
 
+  /* ---- region metrics (docs/screen-regions.md is the source) ----
+     Every fixed number that belongs to a screen REGION is named here, so
+     there is one place to change a band and one grep to prove there is no
+     stray literal left. 44 pt is Apple's minimum hit region, 68 pt is the
+     tab bar height, 16 pt is the standard content gutter. */
+  --touch-min: 44px;      /* minimum hit region, both axes */
+  --navbar-min-h: 44px;   /* navbar band floor */
+  --tabbar-h: 68px;       /* tab bar / dock band height */
+  --rail-w: 44px;         /* Duo vertical rail width (fixed, height flexible) */
+  --gutter: var(--s4);    /* standard content margin, 16 pt */
+  --avatar-size: 44px;    /* .avatar, not a hit target — sized like one */
+  --t-score-lh: 68px;     /* .t-score leading, paired with its 64 px size */
+
   /* ---- colors (iOS system) ---- */
   --bg: #ffffff;
   --bg-grouped: #f2f2f7;
@@ -200,6 +213,198 @@ figure {
   gap: var(--s3);
 }
 
+/* ============================================================================
+ * SCREEN REGIONS — the fixed bands every screen owes.
+ *
+ * The shell owns the OS bands (status bar, home indicator) and injects them
+ * outside `.viewport`; a screen author never draws those. These classes are
+ * the regions the author DOES own, and the map of which one a given form
+ * factor must carry is in docs/screen-regions.md.
+ *
+ * Three rules hold for every class in this block:
+ *   1. in-flow — never `position: absolute`. A floating band may have
+ *      margins, but it must not escape the flow and cover content, or the
+ *      spec panel measures the wrong box.
+ *   2. fluid — no width tied to one device. The same file must render at
+ *      390 pt and 890 pt.
+ *   3. named — the extractor reads these class names, so a band it can
+ *      name is a band it can map to SwiftUI.
+ * ========================================================================== */
+
+/* Arrangement: the split between two panes. SwiftUI ArrangementView sits
+   between the navigation container and the content container, so the
+   navigation stays OUTSIDE this. Split, not overlay: main–detail that must
+   not occlude each other.
+   Usage:
+     <div class="split">
+       <div class="pane pane-lead">…</div>
+       <div class="pane pane-trail">…</div>
+     </div> */
+.split {
+  display: flex;
+  flex-direction: row;
+  flex: 1 1 auto;
+  min-height: 0;
+  gap: var(--gutter);
+  align-items: stretch;
+}
+
+.pane {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  gap: var(--s3);
+}
+
+/* How the space divides, as a child of a split.
+   The child combinator is load-bearing: `.paper-card` declares `flex: 0 0 auto`
+   and is defined later in this sheet, so a bare `.pane-lead` would lose the
+   cascade and the "1:2" split would silently measure 41:59. The audit caught
+   exactly that, which is the argument for measuring and not eyeballing. */
+.split > .pane {
+  flex: 1 1 0;
+}
+
+/* The leading pane is the narrower one when the device is open flat; a 1:1
+   split — two plain `.pane`, no lead/trail — is how the folded pose is
+   expressed. (No Duo screen currently ships; see docs/screen-regions.md.)
+
+   The basis is a percentage of the content box rather than `1 1 0` / `2 1 0`,
+   and that is deliberate. With a zero basis the card inset each pane carries
+   is added OUTSIDE the space flex distributes, so a nominal 1:2 split paints
+   as 35:65 — the numbers a designer sees stop matching the numbers the CSS
+   declares. A percentage basis is a border-box size, so padding is inside it
+   and the painted boxes really are 1:2. `flex-shrink: 1` keeps the ratio while
+   still allowing a narrow container to squeeze instead of overflowing. */
+.split > .pane-lead {
+  flex: 0 1 calc((100% - var(--gutter)) / 3);
+}
+
+.split > .pane-trail {
+  flex: 0 1 calc((100% - var(--gutter)) * 2 / 3);
+}
+
+/* The Duo vertical rail: navigation chrome on the TRAILING edge. Fixed
+   width, flexible height — the mirror of a horizontal bar, so items are
+   symbol-first. It stays on the same physical edge across cover and inner,
+   which is what makes the pose change seamless.
+   Usage:
+     <div class="rail">
+       <div class="rail-tools">…primary nav, then the prominent action…</div>
+       <div class="rail-tabs">…destinations, bottom-aligned…</div>
+     </div>
+   The gap BETWEEN .rail-tools and .rail-tabs is the system's job, not
+   yours — do not add padding to fake the grouping. */
+.rail {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  width: var(--rail-w);
+  min-height: 0;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+
+.rail.is-spread {
+  justify-content: space-between;
+}
+
+.rail-tools {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.rail-tabs {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  align-items: center;
+  /* push destinations to the bottom edge of the rail */
+  margin-top: auto;
+}
+
+.rail-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  min-height: var(--touch-min);
+  gap: 2px;
+  padding: var(--s1) 0;
+  border: 0;
+  background: transparent;
+  color: var(--label-3);
+  font-family: var(--font);
+  font-size: var(--t-caption);
+  font-weight: 500;
+  line-height: 14px;
+  cursor: pointer;
+}
+
+.rail-item.is-active {
+  color: var(--accent);
+}
+
+/* The tablet sidebar: a LEADING column for ≥ 4 peer areas. Collapsible, and
+   it must not hide itself by default — a sidebar nobody can find is worse
+   than no sidebar. Not for 2–3 items: use a segmented control or the tab bar.
+   Sidebar and tab bar are the same destinations at two widths.
+   Usage:
+     <div class="sidebar">
+       <div class="sidebar-head">…</div>
+       <button class="sidebar-item is-active">…</button>
+     </div> */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  width: var(--s10);
+  min-height: 0;
+  gap: var(--s1);
+  align-items: stretch;
+}
+
+.sidebar-head {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  gap: var(--s1);
+  padding: var(--s2) var(--s3);
+  color: var(--label-2);
+  font-size: var(--t-caption);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.sidebar-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s2);
+  flex: 0 0 auto;
+  min-height: var(--touch-min);
+  padding: 0 var(--s3);
+  border: 0;
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--label);
+  font-family: var(--font);
+  font-size: var(--t-body);
+  text-align: left;
+  cursor: pointer;
+}
+
+.sidebar-item.is-active {
+  background: var(--fill);
+  font-weight: 600;
+}
+
 .col {
   display: flex;
   flex-direction: column;
@@ -221,7 +426,7 @@ figure {
   justify-content: space-between;
   gap: var(--s2);
   flex: 0 0 auto;
-  min-height: 44px;
+  min-height: var(--navbar-min-h);
   padding: var(--s2) var(--s4);
 }
 
@@ -245,8 +450,8 @@ figure {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: var(--touch-min);
+  height: var(--touch-min);
   border: 0;
   border-radius: var(--r-full);
   background: transparent;
@@ -272,11 +477,16 @@ figure {
   align-items: center;
   gap: 2px;
   flex: 1 1 0;
+  min-height: var(--touch-min);
   padding-bottom: var(--s1);
+  border: 0;
+  background: transparent;
   color: var(--label-3);
+  font-family: var(--font);
   font-size: 10px;
   font-weight: 500;
   line-height: 12px;
+  cursor: pointer;
 }
 
 .tab.is-active {
@@ -304,8 +514,8 @@ figure {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: var(--avatar-size);
+  height: var(--avatar-size);
   border-radius: var(--r-full);
   background: var(--accent-soft);
   color: var(--accent);
@@ -362,14 +572,21 @@ figure {
   align-items: center;
   justify-content: center;
   gap: var(--s1);
-  height: 32px;
+  /* a chip is a target, not a flexible column: it keeps its label's width and
+     never shrinks under a row's pressure (the audit measured "All" at 40 pt) */
+  flex: 0 0 auto;
+  min-height: var(--touch-min);
+  min-width: var(--touch-min);
   padding: 0 var(--s3);
+  border: 0;
   border-radius: var(--r-full);
   background: var(--fill);
   color: var(--label);
+  font-family: var(--font);
   font-size: var(--t-footnote);
   font-weight: 600;
   white-space: nowrap;
+  cursor: pointer;
 }
 
 .chip.is-active {
@@ -586,8 +803,8 @@ figure {
 .circle-btn.is-dashed {
   border-style: dashed;
   border-width: 1.5px;
-  width: 44px;
-  height: 44px;
+  width: var(--touch-min);
+  height: var(--touch-min);
 }
 
 .card-assistant {
@@ -680,8 +897,8 @@ figure {
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  width: 44px;
-  height: 44px;
+  width: var(--touch-min);
+  height: var(--touch-min);
   padding: 0;
   border: 0;
   border-radius: var(--r-full);
@@ -757,6 +974,7 @@ figure {
   gap: var(--s3);
   flex: 0 0 auto;
   padding: var(--s3);
+  border: 0;
   border-radius: var(--r-lg);
   background: var(--bg-grouped);
 }
@@ -901,8 +1119,8 @@ figure {
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  width: 40px;
-  height: 40px;
+  width: var(--touch-min);
+  height: var(--touch-min);
   padding: 0;
   border: 0;
   border-radius: var(--r-full);
@@ -920,6 +1138,7 @@ figure {
 }
 
 .tab-item {
+  min-height: var(--touch-min);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -998,8 +1217,8 @@ figure {
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  width: 30px;
-  height: 30px;
+  width: var(--touch-min);
+  height: var(--touch-min);
   padding: 0;
   border: 0;
   border-radius: var(--r-full);
@@ -1040,6 +1259,7 @@ figure {
   flex: 0 0 auto;
   min-height: 92px;
   padding: var(--s3);
+  border: 0;
   border-radius: var(--r-lg);
   background: var(--bg-grouped);
   color: var(--label-3);
@@ -1064,16 +1284,21 @@ figure {
   justify-content: center;
   flex: 1 1 0;
   min-width: 0;
-  height: 32px;
+  min-height: var(--touch-min);
+  border: 0;
   border-radius: 9px;
+  background: transparent;
   color: var(--label-2);
+  font-family: var(--font);
   font-size: var(--t-footnote);
   font-weight: 600;
+  cursor: pointer;
 }
 
 .seg.is-on {
   background: #ffffff;
   color: var(--label);
+  box-shadow: 0 1px 4px rgba(26, 26, 26, 0.12);
 }
 
 /* ============================================================================
@@ -1215,7 +1440,7 @@ figure {
 .mood-track {
   position: relative;
   width: 100%;
-  height: 44px;
+  height: var(--touch-min);
   flex: 0 0 auto;
 }
 
@@ -1341,7 +1566,8 @@ figure {
   justify-content: center;
   gap: var(--s1);
   flex: 0 0 auto;
-  height: 32px;
+  height: var(--touch-min);
+  min-height: var(--touch-min);
   padding: 0 var(--s3);
   border: 0;
   border-radius: var(--r-full);
@@ -1360,7 +1586,7 @@ figure {
   justify-content: center;
   gap: var(--s1);
   flex: 0 0 auto;
-  height: 38px;
+  min-height: var(--touch-min);
   padding: 0 var(--s4);
   border: 1px solid var(--hairline);
   border-radius: var(--r-full);
@@ -1515,7 +1741,7 @@ figure {
   align-items: center;
   justify-content: space-around;
   flex: 0 0 auto;
-  height: 68px;
+  height: var(--tabbar-h);
   padding: 0 var(--s4);
   border: 1px solid var(--hairline);
   border-radius: var(--r-full);
@@ -1613,7 +1839,7 @@ figure {
   align-items: center;
   justify-content: space-around;
   flex: 0 0 auto;
-  height: 68px;
+  height: var(--tabbar-h);
   margin: 0 var(--s4) var(--s4);
   padding: 0 var(--s4);
   border: 1px solid rgba(60, 60, 67, 0.12);
@@ -1735,7 +1961,7 @@ figure {
 .t-score {
   font-size: 64px;
   font-weight: 700;
-  line-height: 68px;
+  line-height: var(--t-score-lh);
   letter-spacing: -2.2px;
 }
 
@@ -1857,6 +2083,7 @@ figure {
   flex: 0 0 auto;
   height: 46px;
   padding: 0 var(--s4);
+  border: 0;
   border-radius: var(--r-full);
   background: var(--bg-grouped);
   color: var(--clay);

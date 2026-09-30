@@ -1,7 +1,6 @@
 import { existsSync } from 'node:fs'
 
 const CHROME_CANDIDATES = [
-  process.env.CHROME_PATH,
   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
   '/Applications/Google Chrome Canary.app/Contents/MacOS/Chromium',
   '/Applications/Chromium.app/Contents/MacOS/Chromium',
@@ -11,8 +10,20 @@ const CHROME_CANDIDATES = [
   '/usr/bin/chromium-browser',
 ]
 
-/** Chrome already on the machine (or $CHROME_PATH) — throws when absent so smoke tests can skip. */
+/**
+ * Chrome already on the machine (or $CHROME_PATH) — throws when absent so smoke
+ * tests can skip.
+ *
+ * An explicit `$CHROME_PATH` is authoritative: if it is set but wrong, that is
+ * a mistake worth reporting, and silently falling through to some other
+ * browser would make `CHROME_PATH=/nonexistent` look like a successful run.
+ */
 export function findChrome(): string {
+  const override = process.env.CHROME_PATH
+  if (override) {
+    if (existsSync(override)) return override
+    throw new Error(`$CHROME_PATH is set to "${override}", which does not exist.`)
+  }
   const found = CHROME_CANDIDATES.find((candidate) => candidate && existsSync(candidate))
   if (!found) {
     throw new Error(

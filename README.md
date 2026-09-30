@@ -102,7 +102,7 @@ by `src/spec/infer.ts` — locate reuses all three instead of owning a rule.
 
 ---
 
-## The four invariants
+## The five invariants
 
 These are what make the numbers trustworthy. Break one and the spec becomes
 decoration.
@@ -135,7 +135,44 @@ decoration.
    its header `deviceId` opens fresh boards at that width) — never `if-device`
    branches inside one HTML file.
 
+Invariants 3 and 5 are the region contract in practice: which band every screen
+owes, and who owns it. The full map — phone, Duo cover/inner/fold, tablet, plus
+the Watch and Widget reference tables — is in
+[`docs/screen-regions.md`](docs/screen-regions.md), and it is enforced by
+`npm run lint:regions` (static) and `npm run audit:regions` (measured).
+
 ---
+
+## Screen regions
+
+Every screen owes the same fixed bands, and the shell owns two of them. You
+never draw the status bar or the home indicator — `compose.ts` injects both
+outside `.viewport`, so they are also excluded from the captured spec. What you
+declare is the rest:
+
+| Form factor | You declare | Số đo |
+|---|---|---|
+| phone | `.navbar` (or `.navbar-float`) → content → `.tabbar` | navbar ≥ 44 pt · tab bar 68 pt · 3–5 destination, icon + nhãn |
+| Duo cover | `.split` + `.pane`, and a trailing `.rail` (`.rail-tools` above, `.rail-tabs` bottom-aligned) | rail rộng cố định 44 pt; **không** tab ngang |
+| Duo inner | `.split` + `.pane-lead` / `.pane-trail`; mỗi pane giữ control của nó trên cạnh ngoài của pane | 1:2 khi mở phẳng |
+| Duo fold | hai `.pane` bằng nhau; nếp gập là vùng cấm | 50/50, không control nào trên dải chia |
+| tablet | `.sidebar` + `.split` 2–3 cột | sidebar ≥ 4 vùng; 1 tiêu đề trên split |
+
+Content uses a 16 pt gutter on the 4/8 pt grid, and **every interactive element
+renders ≥ 44 × 44 pt**. The full map, the per-form-factor reasoning, and the
+Watch / Widget reference tables are in
+[`docs/screen-regions.md`](docs/screen-regions.md).
+
+Two tiers enforce it, and both fail `npm run gate`:
+
+```bash
+npm run lint:regions    # from the text: undeclared band, navbar anatomy, tab count, device px, touch floor
+npm run audit:regions   # from the real layout in Chrome: 44 pt rects, 50/50 fold, crease clear, background seam
+```
+
+The measured tier is the one that earns its keep: it caught a split that
+declared 1:2 and painted 41:59, and a tab item that was 38 pt inside a 68 pt
+bar. Neither is visible by eye.
 
 ## CSS → SwiftUI reference
 
@@ -347,7 +384,7 @@ flows as edges, and persistence — the board is in-memory.
 ## Next
 
 1. **Authoring loop** — prompt → screen → export → critique → patch, with the
-   lint from `docs/screen-authoring.md` gating each round.
+   lint from `docs/screen-regions.md` gating each round.
 2. **Design tokens as data** — lift `tokens.css` into a token file the panel can
    report against ("`#007AFF` = `--accent`"), instead of raw hex.
 3. **Per-element notes** — the spec becomes a handoff document, not a readout.
