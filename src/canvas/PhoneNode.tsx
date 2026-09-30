@@ -33,7 +33,7 @@ function PhoneNodeInner({ id, data }: NodeProps) {
     focusedNodeId,
     onFocusNode,
   } = useBoardSettings()
-  const { registerFrame, sizes } = useInspector()
+  const { registerFrame, contentSizes } = useInspector()
   const frameRef = useRef<HTMLIFrameElement>(null)
   // click bắt đầu ở đâu — phân biệt click đo với drag di chuyển node (3.1)
   const downPos = useRef<{ x: number; y: number } | null>(null)
@@ -41,6 +41,8 @@ function PhoneNodeInner({ id, data }: NodeProps) {
   const [token] = useState(() => `t${Math.random().toString(36).slice(2, 10)}`)
   // transient copy feedback for the screen id chip
   const [copiedId, setCopiedId] = useState(false)
+  // expand the node to the full content height (default: the device frame)
+  const [expanded, setExpanded] = useState(false)
 
   const selected = activeNodeId === id
   const focused = focusedNodeId === id
@@ -52,9 +54,10 @@ function PhoneNodeInner({ id, data }: NodeProps) {
   const form = formFactorOf(d.deviceId)
   const formChipText = formChip(form)
 
-  // The frame has no fixed height: it reports how tall its own content is and
-  // the node grows to match. A long screen simply makes a long rectangle.
-  const contentH = sizes[id] ?? device.height
+  // The frame is the device height by default — the document scrolls inside
+  // its own `.body`. The toggle expands the node to the content height the
+  // screen reported, so a long screen can be seen in one piece.
+  const contentH = expanded ? (contentSizes[id] ?? device.height) : device.height
 
   const projectId = screen ? (projectOfScreen(screen.id)?.id ?? undefined) : undefined
   const [draft] = useTokenDraft(projectId ?? '')
@@ -143,6 +146,17 @@ function PhoneNodeInner({ id, data }: NodeProps) {
         <span className="phone-label-size">
           {device.width} × {Math.round(contentH)}
         </span>
+        <button
+          type="button"
+          className="phone-expand"
+          title={expanded ? 'Thu về khung thiết bị' : 'Mở rộng xem hết nội dung'}
+          onClick={(e) => {
+            e.stopPropagation()
+            setExpanded((v) => !v)
+          }}
+        >
+          {expanded ? '⤡' : '⤢'}
+        </button>
         {formChipText && (
           <span
             className={`phone-form is-${form}`}

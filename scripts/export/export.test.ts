@@ -28,6 +28,17 @@ describe('export cli', () => {
     expect(exportFileName('home', 'reference', 'light', 2, true)).toBe('home-reference@2x.png')
     expect(exportFileName('home', 'ipad-11', 'dark', 3, true)).toBe('home-ipad-11-dark@3x.png')
   })
+
+  it('keeps a -full suffix so frame and full-page exports never overwrite', () => {
+    expect(exportFileName('home', 'reference', 'light', 2, false, true)).toBe('home-full@2x.png')
+    expect(exportFileName('home', 'ipad-11', 'light', 2, true, true)).toBe('home-ipad-11-full@2x.png')
+    expect(exportFileName('home', 'reference', 'dark', 3, false, true)).toBe('home-full-dark@3x.png')
+  })
+
+  it('parses --full as a boolean capture mode', () => {
+    expect(parseArgs(['--screen', 'home']).full).toBe(false)
+    expect(parseArgs(['--screen', 'home', '--full']).full).toBe(true)
+  })
 })
 
 describe('export smoke (needs Chrome)', () => {
@@ -159,7 +170,7 @@ describe('export smoke (needs Chrome)', () => {
       await site.close()
     }
   }, 60_000)
-  it('renders one reference screen to content-driven PNG geometry', async () => {
+  it('captures the device frame by default and the full page with --full', async () => {
     let chrome: string
     try {
       chrome = findChrome()
@@ -180,7 +191,7 @@ describe('export smoke (needs Chrome)', () => {
     const { renderPng } = await import('./render.ts')
     const { composeScreenDoc } = await import('../../src/extractor/compose.ts')
     const { getDevice } = await import('../../src/frame/devices.ts')
-    const { readFile, mkdir } = await import('node:fs/promises')
+    const { readFile } = await import('node:fs/promises')
     const path = await import('node:path')
 
     const root = path.resolve(__dirname, '..', '..')
@@ -197,18 +208,28 @@ describe('export smoke (needs Chrome)', () => {
     const site = await startSite(docs, path.join(root, 'public'))
     const browser = await launch()
     try {
-      const png = await renderPng(
+      const frame = await renderPng(
         browser.cdp,
         `${site.origin}/screen/smoke--reference--light`,
         device.width,
         device.height,
         1,
       )
-      // width is always the device width. Height follows content: >= the device
-      // height, and never clipped below it. A screen that needs more grows.
-      expect(png.readUInt32BE(16)).toBe(device.width)
-      expect(png.readUInt32BE(20)).toBeGreaterThanOrEqual(device.height)
-      await mkdir('/tmp/shots-smoke', { recursive: true })
+      // v2 default: exactly the device frame (`.device` is height-fixed)
+      expect(frame.readUInt32BE(16)).toBe(device.width)
+      expect(frame.readUInt32BE(20)).toBe(device.height)
+
+      const full = await renderPng(
+        browser.cdp,
+        `${site.origin}/screen/smoke--reference--light`,
+        device.width,
+        device.height,
+        1,
+        true,
+      )
+      // --full un-clips: never shorter than the frame, taller when it overflows
+      expect(full.readUInt32BE(16)).toBe(device.width)
+      expect(full.readUInt32BE(20)).toBeGreaterThanOrEqual(device.height)
     } finally {
       await shutdown(browser)
       await site.close()

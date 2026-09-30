@@ -168,9 +168,10 @@ figure {
  * Layout primitives — the only structural vocabulary screens may use.
  * These map 1:1 onto SwiftUI stacks, so the extractor can always name them.
  *
- * The screen is NOT height-constrained. `.screen` fills whatever height it is
- * given and grows past it without complaint: a design that needs 2000pt is a
- * 2000pt-tall rectangle, not a scrollbar.
+ * `.device` is fixed at the device height, so a screen has exactly ONE
+ * vertical scroll region: `.body` for content taller than the frame,
+ * `.body-fixed` for a page that fits. A `.body-fixed` that overflows is a
+ * bug the measured audit reports (`region-overflow`), not a hidden scrollbar.
  * ========================================================================== */
 
 .screen {
@@ -181,11 +182,14 @@ figure {
   min-height: 0;
   background: var(--bg);
   /* Màn hình không bao giờ cuộn ngang: rộng đúng bằng device, thừa 1px
-     cũng thành thanh cuộn trong iframe. Dọc vẫn giãn tự do (min-height). */
-  overflow-x: hidden;
+     cũng thành thanh cuộn trong iframe. Cuộn dọc là việc của `.body`; `.screen`
+     chỉ kẹp (hidden) — nếu khai `overflow-x: hidden` mà để `overflow-y: visible`
+     thì CSS tự nâng `overflow-y` thành `auto` và màn bị tính là một scroller. */
+  overflow: hidden;
 }
 
-/* the scrolling middle band: VStack middle with .frame(maxHeight: .infinity) */
+/* the scrolling middle band: VStack middle with .frame(maxHeight: .infinity).
+   This is the ONE vertical scroller a screen may have. */
 .body {
   display: flex;
   flex-direction: column;
@@ -195,15 +199,26 @@ figure {
   overflow-x: hidden;
 }
 
-/* a non-scrolling middle band */
+/* a non-scrolling middle band — must fit the frame; overflowing it is
+   `region-overflow`, not a hidden scrollbar */
 /* the content band is the positioning context for .scrim */
 .body-fixed {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
   min-height: 0;
-  /* như .body: kẹp ngang để trang trí thò ra 1px không thành thanh cuộn */
-  overflow-x: hidden;
+  /* như .screen: kẹp cả hai chiều để không tự thành một scroller */
+  overflow: hidden;
+}
+
+/* The content bands are height-bounded now, so their direct children must keep
+   their intrinsic size. A shrinking child squashes instead of overflowing:
+   `.btn` (58 pt) measured 39 pt inside confirm before this rule. Overflow is
+   what `.body` turns into a scroll and what `.body-fixed` reports as a bug.
+   `flex-grow` is untouched, so `.spacer` still fills the leftover space. */
+.body > *,
+.body-fixed > * {
+  flex-shrink: 0;
 }
 
 .row {
@@ -403,6 +418,56 @@ figure {
 .sidebar-item.is-active {
   background: var(--fill);
   font-weight: 600;
+}
+
+/* ----------------------------------------------------------------------------
+   Shell-owned bands (v2)
+   The author never writes these classes. `composeScreenDoc` lifts
+   `[data-slot="back|title|right"]` and `[data-tab]` out of the screen and wraps
+   them here — INSIDE `.viewport` (so the spec panel still measures the controls)
+   but OUTSIDE the scrolling `.screen`. Fixed bands: they do not scroll.
+   ---------------------------------------------------------------------------- */
+.region-nav {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s2);
+  flex: 0 0 auto;
+  min-height: var(--navbar-min-h);
+  padding: var(--s2) var(--s4);
+}
+
+.nav-slot-back {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.nav-slot-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: center;
+}
+
+.nav-slot-right {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s2);
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.region-tabs {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-around;
+  flex: 0 0 auto;
+  height: var(--tabbar-h);
+  padding-top: var(--s2);
+  border-top: 1px solid var(--separator);
+  background: var(--bg-elevated);
 }
 
 .col {

@@ -20,9 +20,12 @@
  *   chrome                 the two OS bands exist once each, outside .viewport
  *   background continuity  .device paints what .screen paints
  *   hit regions            every interactive rect >= 44 x 44
- *   region order           navbar is the first band, tab bar the last
+ *   region order           the tab bar is the last band, never above the nav
  *   split balance          two panes on a folded screen are 50/50
  *   division band          nothing interactive sits on the crease
+ *   scroll                 exactly one scroller, bands outside it
+ *   overflow               a .body-fixed / .screen that fits its frame
+ *   shell-band             band exists when the slot does, inside .viewport
  *
  * A finding fails the gate. When there is no Chrome on the machine it prints a
  * loud SKIPPED line and exits 0, the same precedent as
@@ -85,6 +88,19 @@ type Probe = {
     split: Rect | null
     rail: Rect | null
     panes: Rect[]
+  }
+  scroll: { count: number; labels: string[]; bandInScroller: number }
+  overflow: Array<{ label: string; scrollHeight: number; clientHeight: number }>
+  shellBand: {
+    navCount: number
+    tabsCount: number
+    navInScroller: number
+    tabsInScroller: number
+    navOutsideViewport: number
+    tabsOutsideViewport: number
+    slotsOutsideNav: number
+    tabsOutsideTabs: number
+    handBuilt: boolean
   }
   deviceHeight: number
 }
@@ -158,6 +174,55 @@ const PROBE = `(() => {
       rail: rectOf(q('.rail')),
       panes: panes,
     },
+    // declared scrollers (overflow-y auto|scroll with real size) inside the
+    // viewport. A phone screen owes exactly one, and no nav/tab band inside it.
+    scroll: (() => {
+      const declared = qa('.viewport *').filter((el) => {
+        const o = getComputedStyle(el).overflowY
+        if (o !== 'auto' && o !== 'scroll') return false
+        const r = el.getBoundingClientRect()
+        return r.width > 0 && r.height > 0
+      })
+      const inScroller = (el) => declared.some((s) => s !== el && s.contains(el))
+      const bands = qa('.region-nav, .region-tabs')
+      return {
+        count: declared.length,
+        labels: declared.map(label),
+        bandInScroller: bands.filter(inScroller).length,
+      }
+    })(),
+    // a non-scrolling band must fit: scrollHeight over clientHeight is a bug
+    overflow: qa('.screen, .body-fixed')
+      .map((el) => ({
+        label: label(el),
+        scrollHeight: Math.ceil(el.scrollHeight),
+        clientHeight: Math.ceil(el.clientHeight),
+      }))
+      .filter((o) => o.scrollHeight > o.clientHeight + 1),
+    // shell-owned bands: exist when slots exist, sit inside .viewport but
+    // OUTSIDE the scroller (a band that scrolls with the content is not a band)
+    shellBand: (() => {
+      const nav = qa('.region-nav')
+      const tabs = qa('.region-tabs')
+      const scrollers = qa('.viewport *').filter((el) => {
+        const o = getComputedStyle(el).overflowY
+        if (o !== 'auto' && o !== 'scroll') return false
+        return el.getBoundingClientRect().width > 0 && el.getBoundingClientRect().height > 0
+      })
+      const inScroller = (el) => scrollers.some((s) => s !== el && s.contains(el))
+      const outsideViewport = (el) => !(viewport && viewport.contains(el))
+      return {
+        navCount: nav.length,
+        tabsCount: tabs.length,
+        navInScroller: nav.filter(inScroller).length,
+        tabsInScroller: tabs.filter(inScroller).length,
+        navOutsideViewport: nav.filter(outsideViewport).length,
+        tabsOutsideViewport: tabs.filter(outsideViewport).length,
+        slotsOutsideNav: qa('[data-slot]').filter((el) => !el.closest('.region-nav')).length,
+        tabsOutsideTabs: qa('[data-tab]').filter((el) => !el.closest('.region-tabs')).length,
+        handBuilt: nav.length === 0 && tabs.length === 0 && !!q('.navbar, .navbar-float, .tabbar, .tabbar-float, .dock'),
+      }
+    })(),
     deviceHeight: document.documentElement.clientHeight,
   }
 })()`
@@ -264,6 +329,64 @@ function checkScreen(id: string, device: Device, probe: Probe): Finding[] {
   return out
 }
 
+/**
+ * Scroll and shell-band contract. A phone screen owes exactly one vertical
+ * scroller (`.body`), with the nav/tab bands outside it; a non-scrolling
+ * `.body-fixed` must fit its frame; and a band must exist exactly when its slot
+ * does. All three fail the gate.
+ */
+function layoutViolations(id: string, probe: Probe): Finding[] {
+  const out: Finding[] = []
+  if (probe.scroll.count > 1) {
+    out.push({
+      screen: id,
+      check: 'scroll',
+      detail: `${probe.scroll.count} vùng cuộn khai báo (${probe.scroll.labels.join(', ')}) — nhiều vùng cuộn lồng nhau là lỗi; chỉ giữ một`,
+    })
+  }
+  if (probe.scroll.bandInScroller > 0) {
+    out.push({
+      screen: id,
+      check: 'scroll',
+      detail: `${probe.scroll.bandInScroller} band nav/tab nằm TRONG vùng cuộn — band phải đứng yên ngoài`,
+    })
+  }
+  for (const o of probe.overflow) {
+    out.push({
+      screen: id,
+      check: 'overflow',
+      detail: `${o.label} tràn khung: ${o.scrollHeight} > ${o.clientHeight} — dùng .body (cuộn) hoặc rút nội dung`,
+    })
+  }
+  const sb = probe.shellBand
+  if (sb.navCount + sb.tabsCount > 0) {
+    if (sb.navCount > 1 || sb.tabsCount > 1) {
+      out.push({ screen: id, check: 'shell-band', detail: `nhiều band shell: ${sb.navCount} .region-nav · ${sb.tabsCount} .region-tabs — shell dựng đúng một mỗi loại` })
+    }
+    if (sb.navOutsideViewport + sb.tabsOutsideViewport > 0) {
+      out.push({ screen: id, check: 'shell-band', detail: 'band nằm ngoài .viewport — phải trong .viewport (panel spec mới thấy control)' })
+    }
+    if (sb.navInScroller + sb.tabsInScroller > 0) {
+      out.push({ screen: id, check: 'shell-band', detail: 'band nằm TRONG vùng cuộn — band phải đứng yên ngoài vùng cuộn' })
+    }
+  }
+  if (sb.slotsOutsideNav > 0 || sb.tabsOutsideTabs > 0) {
+    out.push({
+      screen: id,
+      check: 'shell-band',
+      detail: `có slot chưa được shell gom: ${sb.slotsOutsideNav} [data-slot], ${sb.tabsOutsideTabs} [data-tab] nằm ngoài band`,
+    })
+  }
+  if (sb.handBuilt) {
+    out.push({
+      screen: id,
+      check: 'shell-band',
+      detail: 'màn còn dựng band trên tay (.navbar/.tabbar) — chuyển sang data-slot / data-tab',
+    })
+  }
+  return out
+}
+
 async function main(): Promise<void> {
   const argv = process.argv.slice(2)
   const only = (() => {
@@ -335,6 +458,7 @@ async function main(): Promise<void> {
       }
       poses.push(describePose(screen.id, device, probe))
       findings.push(...checkScreen(screen.id, device, probe))
+      findings.push(...layoutViolations(screen.id, probe))
     }
   } catch (error) {
     for (const line of describeSkip(error instanceof Error ? error.message : String(error))) {
@@ -353,7 +477,7 @@ async function main(): Promise<void> {
   // failure is indistinguishable from one that never ran the check, and
   // "background continuity: ok" is the line that proves the grey-ground
   // regression is still guarded.
-  for (const check of ['chrome', 'background', 'region-order', 'division-band'] as const) {
+  for (const check of ['chrome', 'background', 'region-order', 'division-band', 'scroll', 'overflow', 'shell-band'] as const) {
     const bad = findings.filter((f) => f.check === check).length
     console.log(bad === 0 ? `  ${check}: ok` : `  ${check}: ${bad} lỗi`)
   }

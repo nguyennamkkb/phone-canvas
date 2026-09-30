@@ -9,20 +9,30 @@ ghi nguồn. Gate kiểm: `npm run lint:regions` (tĩnh) + `npm run audit:region
 ## Ranh giới shell ↔ tác giả
 
 ```
-.device                      ← shell
-├── .statusbar   (safeTop)   ← SHELL, không được tác giả vẽ
-├── .viewport    (flex: 1)   ← markup của màn nằm ở đây
-│   └── .screen              ← .screen của tác giả (tokens.css:163)
-└── .home-indicator (safeBottom) ← SHELL, không được tác giả vẽ
+.device                              ← shell, cao CỐ ĐỊNH = device.height
+├── .statusbar        (safeTop)      ← SHELL
+├── .viewport         (flex: 1)      ← vùng cuộn nằm trong đây (qua .body)
+│   ├── .region-nav                  ← SHELL, dựng từ [data-slot]
+│   │   └── .nav-slot-back / -title / -right
+│   ├── .screen                      ← markup của tác giả
+│   └── .region-tabs                 ← SHELL, dựng từ [data-tab]
+└── .home-indicator   (safeBottom)   ← SHELL
 ```
 
-Nguồn: `src/extractor/compose.ts:68-111` (`CHROME_CSS`, `statusBarHtml`,
-`homeIndicatorHtml`) và `src/extractor/compose.ts:51-67` (hợp đồng 3 dải).
+Nguồn: `src/extractor/compose.ts` (`CHROME_CSS`, `statusBarHtml`,
+`homeIndicatorHtml`, `takeAttributed`) và `src/screens/tokens.css`
+(`.region-nav`, `.region-tabs`).
 
 * **KHÔNG** viết status bar, home indicator, Dynamic Island, notch trong màn.
+* **KHÔNG** viết `.navbar` / `.tabbar` / `.navbar-float` / `.tabbar-float` /
+  `.dock` trong màn — shell dựng band. Khai **ruột** bằng `data-slot`
+  (`back` · `title` · `right`) và `data-tab`; shell xếp slot theo thứ tự chuẩn.
+* Band shell nằm **trong** `.viewport` (để panel spec vẫn đo được control) nhưng
+  **ngoài** `.screen`/`.body` (để không cuộn theo nội dung).
 * **KHÔNG** chèn đệm giả bằng padding cứng tương đương safe area.
 * Bridge chỉ duyệt phần tử **bên trong** `.viewport` (`src/extractor/bridge.js`),
-  nên vùng OS không bao giờ lọt vào spec — đó là lý do ranh giới này quan trọng.
+  nên vùng OS (status/home) không bao giờ lọt vào spec — còn band nav/tab thì
+  có, nên chúng được đặt trong `.viewport`.
 * `safeBottom = 0` (iPhone SE) ⇒ không có home indicator. Không tự thêm.
 
 ### Nền dải OS phải nối liền ruột màn
@@ -45,6 +55,33 @@ nên **luôn thua** một rule gán trực tiếp lên chính nó. Vì vậy:
 
 Xem `project/calo-ai/tokens.css` (dòng 41-42 ghi nguyên văn bài học này).
 
+### Khung cao cố định và vùng cuộn
+
+`.device` cao **đúng** `Device.height` (`compose.ts` đặt `height`, không
+`min-height`), nên một màn có **đúng một** vùng cuộn dọc:
+
+* `.body` — vùng cuộn (`overflow-y: auto`). Dùng khi nội dung cao hơn khung.
+* `.body-fixed` — một trang, **phải vừa khung**. Tràn khung là lỗi
+  `region-overflow`, không phải thanh cuộn ngầm.
+
+Vì khung bị chặn chiều cao, con trực tiếp của `.body` / `.body-fixed` được đặt
+`flex-shrink: 0` (`tokens.css`) — nếu để co được thì chúng bị **bóp** thay vì
+tràn: `.btn` (khai 58 pt) từng đo còn **39 pt** trong `confirm` vì bị shrink, và
+sàn chạm 44 pt bắt được đúng lỗi đó. `.screen` và `.body-fixed` dùng
+`overflow: hidden` (không phải `overflow-x: hidden`) vì CSS tự nâng `overflow-y`
+thành `auto` khi một chiều là `hidden` — màn sẽ bị tính nhầm là một scroller.
+
+Nguồn: `src/extractor/compose.ts` (`CHROME_CSS`), `src/screens/tokens.css`
+(`.screen`, `.body`, `.body-fixed`), `scripts/region-audit.ts` (check
+`scroll` / `overflow`).
+
+**Export và board cùng một sự thật.** `npm run export` mặc định chụp **đúng
+khung máy** (`device.height × scale`); `npm run export -- --full` chụp toàn
+trang và giữ hậu tố `-full` để hai chế độ không ghi đè nhau. Trên board, node
+cao đúng khung và cuộn bên trong; nút mở rộng (⤢) cho xem hết nội dung. Bridge
+báo cả `deviceHeight` và `contentHeight` (`= khung + phần tràn`), nên nút mở
+rộng và `--full` cho cùng một con số.
+
 ## Bản đồ vùng theo form factor
 
 Form factor **suy ra** từ `deviceId` qua `formFactorOf()` — không khai báo
@@ -55,9 +92,9 @@ thêm, không branch `if-device` trong HTML (invariant #5).
 | # | Vùng (trên→dưới) | Ai sở hữu | Lớp | Số đo | Nguồn |
 |---|---|---|---|---|---|
 | 1 | status bar | shell | `.statusbar` | cao = `safeTop` (59 / 62 / 20 / 0) · lề ngang `--safe-x` = 28 có island, 16 không | `src/frame/devices.ts`, `compose.ts:300-307` |
-| 2 | navbar | tác giả | `.navbar` / `.navbar-float` | cao tối thiểu 44 pt · lề 16 pt · tối đa 3 slot | `.navbar` tokens.css:217-226 · 44 pt: apple-design-iphone/references/SPECS.md |
-| 3 | content | tác giả | `.body-fixed` (1 trang) hoặc `.body` (cuộn) | lề 16 pt, nhịp 4/8 pt | apple-design-iphone/SKILL.md · `.body` tokens.css:176-183 |
-| 4 | tab bar (tuỳ chọn) | tác giả | `.tabbar` / `.tabbar-float` | cao 68 pt · 3–5 destination · icon **+** nhãn | 68 pt: apple-design-iphone/references/SPECS.md, COMPONENTS.md · 3–5: apple-design-iphone/SKILL.md |
+| 2 | dải nav | **shell** (ruột do tác giả khai) | `.region-nav` ← `data-slot="back\|title\|right"` | cao tối thiểu 44 pt · lề 16 pt · tối đa 3 slot | `.region-nav` tokens.css · 44 pt: apple-design-iphone/references/SPECS.md |
+| 3 | content | tác giả | `.body` (cuộn — vùng cuộn **duy nhất**) hoặc `.body-fixed` (1 trang, phải vừa khung) | lề 16 pt, nhịp 4/8 pt | apple-design-iphone/SKILL.md · `.body` tokens.css:188-196 |
+| 4 | tab bar (tuỳ chọn) | **shell** (ruột do tác giả khai) | `.region-tabs` ← `data-tab` | cao 68 pt · 3–5 destination · icon **+** nhãn | 68 pt: apple-design-iphone/references/SPECS.md, COMPONENTS.md · 3–5: apple-design-iphone/SKILL.md |
 | 5 | home indicator | shell | `.home-indicator` | cao = `safeBottom` (34 / 34 / 0 / 0) | `src/frame/devices.ts` |
 
 Navbar: tiêu đề **< 15 ký tự** để chừa chỗ cho control
@@ -67,7 +104,8 @@ chuẩn, **không** dùng chữ "Back"/"Close"
 (apple-design-iphone/references/COMPONENTS.md). Nút tròn `.nav-round` 44×44 là
 điểm chuẩn duy nhất trong từ điển (tokens.css:684-698).
 
-Màn không điều hướng (splash, login, full-bleed) **được phép** không có navbar.
+Màn không điều hướng (splash, login, full-bleed) **được phép** không khai slot
+nav — shell không dựng band, không ép thêm vùng giả.
 
 ### `cover` — `duo-cover` 466×678 (Duo ngoài, dùng khi gập)
 
@@ -160,6 +198,39 @@ selection hay vị trí cuộn; màn inner chỉ **thêm tối đa một tầng*
 Nguồn: apple-design-iphone-duo/references/CONTINUITY-AND-SCENES.md,
 apple-design-iphone-duo/SKILL.md.
 
+## Gate kiểm gì
+
+`npm run gate` chạy hai tầng, cả hai đều fail build.
+
+**Tĩnh — `npm run lint:regions`** (CLI `scripts/region-lint.ts`, luật ở
+`scripts/region-rules.ts`):
+
+| Mã | Nghĩa |
+|---|---|
+| `chrome-redrawn` | màn vẽ lại dải OS (status bar / home indicator / island) |
+| `region-shell-owned` | màn dựng dải nav/tab mà shell đã dựng |
+| `region-slot-unknown` | `data-slot` sai tên / thiếu giá trị, hoặc `data-tab` rỗng |
+| `region-undeclared` | dải cố định ở mép dựng tay, không slot/class vùng |
+| `navbar-too-many-actions` · `navbar-title-long` · `navbar-back-missing` | anatomy slot nav |
+| `tabbar-too-many` · `tabbar-unlabelled` · `cover-horizontal-tabbar` | `data-tab`: 3–5, có nhãn, không ngang ở cover |
+| `touch-floor` | lớp tương tác khai dưới sàn trong `tokens.css` |
+| `device-literal` | số px gắn kích thước một thiết bị |
+| `region-off-without-reason` | `lint-region: off` không kèm lý do |
+
+**Đo — `npm run audit:regions`** (`scripts/region-audit.ts`, đo sau layout
+trong Chrome):
+
+| Check | Nghĩa |
+|---|---|
+| `chrome` | đúng 1 `.statusbar` + 1 `.home-indicator`, cả hai ngoài `.viewport` |
+| `background` | `.device` sơn đúng nền của `.screen` |
+| `hit-region` | mọi rect tương tác ≥ 44×44 pt |
+| `region-order` | tab bar không nằm trên nav |
+| `division-band` | không control nào trên dải chia của màn fold |
+| `scroll` | đúng một vùng cuộn, và band ngoài nó |
+| `overflow` | `.screen` / `.body-fixed` không tràn khung |
+| `shell-band` | band tồn tại khi có slot, nằm trong `.viewport`, ngoài vùng cuộn |
+
 ## Sàn chạm
 
 | Luật | Số đo | Nguồn |
@@ -176,12 +247,15 @@ mà khai báo < 44 px là lỗi, trừ khi vùng cha đã bảo đảm).
 
 ## Kính nổi
 
-`.navbar-float` (cao ≥ 52 pt) và `.tabbar-float` (cao 68 pt) là vùng nổi
-**trong luồng**, có lề cạnh 16 pt, nổi lên trên nội dung cuộn chứ không nằm
-trong nó; nội dung nằm dưới kính phải đủ tương phản khi bật Reduce
-Transparency. Nguồn: `tokens.css:1600-1639`, apple-design-iphone-duo/SKILL.md,
+`.navbar-float` / `.tabbar-float` từng là band nổi **do tác giả dựng**. Từ v2
+chúng thuộc nhóm **shell sở hữu** (`SHELL_BAND_CLASSES`) nên màn không được
+khai nữa; shell dựng band đặc (`.region-nav` / `.region-tabs`) và biến thể kính
+trong suốt là **việc để lại** (xem Open Questions của change
+`shell-region-defaults`). Khi làm, band vẫn phải **in-flow**, lề cạnh 16 pt, tab
+cao 68 pt, và nội dung dưới kính đủ tương phản khi bật Reduce Transparency.
+Nguồn: `tokens.css`, apple-design-iphone-duo/SKILL.md,
 mobile-ux-fundamentals/SKILL.md. `.scrim` dùng `fixed` (không phải `absolute`)
-để phủ được cả vùng OS — `tokens.css:957-962`.
+để phủ được cả vùng OS — `tokens.css`.
 
 ## Tham chiếu vùng Watch (chưa dựng, dùng để ràng buộc bề mặt mới)
 
@@ -293,3 +367,51 @@ Ba lỗi thật mà tầng đo bắt được, đã sửa — ghi lại vì chú
 
 Cùng kiểu, một rule của chính gate cũng sai và đã có test hồi quy: `/height:/`
 không neo cũng khớp `line-height: 13px`, báo nhầm vùng chạm 13 pt.
+
+### Nền đo v2 — `shell-region-defaults`
+
+Chụp trước khi đổi khung cao cố định (đối chiếu ở cuối change):
+
+| Mốc | Giá trị |
+|---|---|
+| `npm run gate` | `0 lỗi, 0 cảnh báo` · `0 lỗi subset` · `0 lỗi component` · `0 lỗi vùng` |
+| `npm run audit:regions` | `chrome: ok` · `background: ok` · `region-order: ok` · `division-band: ok` · `0 lỗi vùng đo được · 7 màn` |
+| `vitest` | 16 file / **143** test passed |
+| Số màn hình | **7** (5 `calo-ai` + 2 `foundation-kit`) |
+| `npm run export -- --screen home` | **780×2122** (toàn bộ nội dung, device `reference` 390×844) |
+
+Kỳ vọng sau v2: `home` export ra **780×1688** (khung máy) ở mặc định, còn
+`home@2x.png --full` vẫn 780×2122.
+
+**Sau v2** — output thật của `npm run gate`:
+
+```
+0 lỗi, 0 cảnh báo          (lint:tokens)
+0 lỗi subset
+0 lỗi component
+0 lỗi vùng
+  chrome: ok
+  background: ok
+  region-order: ok
+  division-band: ok
+  scroll: ok
+  overflow: ok
+  shell-band: ok
+0 lỗi vùng đo được · 7 màn · sàn chạm 44×44
+ Test Files  16 passed (16)
+      Tests  160 passed (160)
+```
+
+`npm run export -- --screen home`: mặc định **780×1688** (khung máy), `--full`
+**780×2122** (toàn trang). Nav/tab của cả 7 màn do shell dựng; `.navbar` /
+`.tabbar` / `.navbar-float` / `.tabbar-float` / `.dock` đã rời khỏi màn hình và
+thành `SHELL_BAND_CLASSES`.
+
+Hai phát hiện mới mà v2 bắt được, ghi lại vì mắt không thấy:
+
+1. **Con co lại thì bị bóp, không tràn.** Khung cao cố định làm `.btn` (khai 58
+   pt) đo còn **39 pt** trong `confirm`; `.body` / `.body-fixed` nay đặt
+   `flex-shrink: 0` cho con trực tiếp. Sàn chạm 44 pt bắt đúng lỗi này.
+2. **`overflow-x: hidden` tự nâng `overflow-y` thành `auto`.** `.screen` và
+   `.body-fixed` bị tính nhầm là scroller; sửa thành `overflow: hidden` và luật
+   "đúng một vùng cuộn" mới đọc đúng.

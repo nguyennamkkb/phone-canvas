@@ -7,7 +7,8 @@ shows a reading plus supporting cards.
 
 ```
 .screen
-└── .body-fixed
+├── data-slot="back|title|right"  shell builds .region-nav from these
+└── .body                         the ONE scroll region
     ├── .row                      identity row: avatar / back, and an overflow button
     ├── .row                      title + a range pill
     ├── .panel                    the chart
@@ -15,8 +16,8 @@ shows a reading plus supporting cards.
     │   └── .chart-labels         same slot geometry as .chart
     ├── .row                      feature cards
     ├── .row-card                 a single summary row
-    ├── .spacer
-    └── .tabbar-light             or .tabbar-dark
+    └── .spacer
+└── data-tab                      optional — shell builds .region-tabs
 ```
 
 ## Two ways to draw a reading
@@ -58,7 +59,10 @@ coordinate in a `.ring`:
 `.panel` · `.chart` · `.chart-col` · `.bar` / `.bar.is-peak` · `.tooltip` ·
 `.chart-labels` / `.chart-label` · `.ring` / `.ring-arcs` / `.badge` ·
 `.feature-card` · `.row-card` · `.chip-icon` · `.meter` / `.meter-seg` ·
-`.tabbar-light` / `.tab-item.is-on`
+`.tab`
+
+The nav and tab bands are **shell-owned**: declare their content with
+`data-slot` / `data-tab`, never `.navbar` / `.tabbar`.
 
 ## Gotchas
 

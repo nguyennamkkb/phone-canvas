@@ -15,7 +15,11 @@
  * The map of which region a given form factor owes is docs/screen-regions.md.
  */
 
-/** the regions a screen author owns. The shell owns the two OS bands below. */
+/**
+ * The regions a screen author still owns: arrangements (split/pane) and side
+ * bars (rail/sidebar). The shell owns the OS bands AND the nav/tab bands — see
+ * `SHELL_BAND_CLASSES`, which a screen must NOT declare.
+ */
 export const REGION_CLASSES = [
   '.split',
   '.pane',
@@ -30,19 +34,31 @@ export const REGION_CLASSES = [
   '.sidebar-item',
 ] as const
 
-/** every class that declares a fixed band, so declaring one is never "extra" */
-export const BAND_CLASSES = [
+/**
+ * Bands the SHELL owns: a screen that declares one of these is drawing a band
+ * the shell already builds. The author declares slot CONTENT instead
+ * (`data-slot` / `data-tab`) and compose lifts it into `.region-nav` /
+ * `.region-tabs`.
+ */
+export const SHELL_BAND_CLASSES = [
   '.navbar',
   '.navbar-float',
   '.tabbar',
   '.tabbar-float',
   '.dock',
+] as const
+
+/** every class that declares a fixed band the AUTHOR still owns */
+export const BAND_CLASSES = [
   '.bottom-cta',
   '.cta-bar',
   '.rail',
   '.sidebar',
   '.split',
 ] as const
+
+/** any fixed band, whoever owns it — declaring one is never "extra" */
+const DECLARED_BAND_CLASSES = [...BAND_CLASSES, ...SHELL_BAND_CLASSES]
 
 /**
  * Classes the STATIC tier governs: a declaration under 44 px here is a
@@ -206,7 +222,86 @@ export function chromeViolations(src: string): Violation[] {
 }
 
 /**
- * Requirement: a fixed band is expressed with a region class.
+ * Requirement: shell-owned bands (nav + tab bar) are built by the shell.
+ *
+ * A screen that declares `.navbar` / `.tabbar` / … is drawing a band twice, the
+ * same failure as redrawing the status bar. The fix is to declare the band's
+ * CONTENT with slots, not the band.
+ */
+export function shellBandViolations(src: string): Violation[] {
+  const out: Violation[] = []
+  const stripped = withoutComments(src)
+  for (const { tag, index } of tagsOf(stripped)) {
+    const classes = classesOf(tag).map((c) => `.${c}`)
+    const hit = SHELL_BAND_CLASSES.find((band) => classes.includes(band))
+    if (!hit) continue
+    out.push({
+      line: lineOf(stripped, index),
+      code: 'region-shell-owned',
+      message: `\`${hit}\` do shell dựng — xoá band này, khai ruột bằng \`data-slot="back|title|right"\` (nav) hoặc \`data-tab\` (tab); shell đặt band trong \`.viewport\` ngoài vùng cuộn (docs/screen-regions.md)`,
+    })
+  }
+  return out
+}
+
+/** elements carrying `data-slot="<slot>"`, with their inner markup */
+function slotHosts(src: string, slot: string): Array<{ tag: string; index: number; body: string }> {
+  const out: Array<{ tag: string; index: number; body: string }> = []
+  for (const { tag, index } of tagsOf(src)) {
+    if (!new RegExp(`\\bdata-slot\\s*=\\s*["']${slot}["']`).test(tag)) continue
+    out.push({ tag, index, body: readUntilClose(src, index)?.body ?? '' })
+  }
+  return out
+}
+
+/** controls inside a fragment: tags or explicit roles */
+function countControls(fragment: string): number {
+  return tagsOf(withoutComments(fragment)).filter(
+    ({ tag }) => INTERACTIVE_TAG.test(tag) || INTERACTIVE_ROLE.test(tag),
+  ).length
+}
+
+/**
+ * Requirement: slot values are known and non-empty.
+ *
+ * `data-slot` takes `back | title | right`; anything else (including a bare
+ * `data-slot`) is a typo the shell would silently drop, so the gate names it.
+ * `data-tab` must carry content — an empty destination is unlabelled by
+ * construction.
+ */
+export function slotViolations(src: string): Violation[] {
+  const out: Violation[] = []
+  const stripped = withoutComments(src)
+  const slotRe = /\bdata-slot(?![-\w])\s*(?:=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+)))?/
+  for (const { tag, index } of tagsOf(stripped)) {
+    const m = slotRe.exec(tag)
+    if (m) {
+      const value = (m[1] ?? m[2] ?? m[3] ?? '').trim()
+      if (!['back', 'title', 'right'].includes(value)) {
+        out.push({
+          line: lineOf(stripped, index),
+          code: 'region-slot-unknown',
+          message: `data-slot="${value}" không hợp lệ — chỉ nhận \`back\` | \`title\` | \`right\``,
+        })
+      }
+    }
+    if (/\bdata-tab(?![-\w])/.test(tag)) {
+      const body = readUntilClose(stripped, index)?.body ?? ''
+      const hasContent = body.replace(/<[^>]*>/g, '').trim().length > 0 || /\bdata-symbol\b|<img\b/.test(body)
+      if (!hasContent) {
+        out.push({
+          line: lineOf(stripped, index),
+          code: 'region-slot-unknown',
+          message: 'data-tab rỗng — mỗi destination cần icon **và** nhãn (apple-design-iphone)',
+        })
+      }
+    }
+  }
+  return out
+}
+
+/**
+ * Requirement: a fixed band is expressed with a slot or a region class.
  *
  * The signal is position, not a keyword: a band is the FIRST element child of
  * the content band (a top band) or the LAST one (a bottom band). Looking
@@ -236,6 +331,11 @@ export function undeclaredRegionViolations(src: string, form: string): Violation
     (c) => !OVERLAY_CLASS.test(classesOf(c.tag).join(' ')),
   )
   const bandLine = lineOf(stripped, bandTag.index)
+  // An edge the screen handed to the shell is not "undeclared": if it declares
+  // a nav slot the top edge is content, and if it declares tabs the bottom is
+  // too. Only a screen that still builds its own chrome gets the edge check.
+  const hasNavSlot = /\bdata-slot\s*=/.test(stripped)
+  const hasTabSlot = /\bdata-tab(?![-\w])/.test(stripped)
   const seen = new Set<number>()
   for (const [position, child] of [
     ['trên', candidates[0]],
@@ -243,9 +343,11 @@ export function undeclaredRegionViolations(src: string, form: string): Violation
   ] as const) {
     if (!child || seen.has(child.offset)) continue
     seen.add(child.offset)
+    if (position === 'trên' && hasNavSlot) continue
+    if (position === 'dưới' && hasTabSlot) continue
     const { tag, offset } = child
     const classes = classesOf(tag)
-    if (classes.some((c) => BAND_CLASSES.map((b) => b.slice(1)).includes(c))) continue
+    if (classes.some((c) => DECLARED_BAND_CLASSES.map((b) => b.slice(1)).includes(c))) continue
     if (!isFlex(tag)) continue
 
     const body = readUntilClose(inner.body, offset)?.body ?? ''
@@ -268,7 +370,7 @@ export function undeclaredRegionViolations(src: string, form: string): Violation
     out.push({
       line: at,
       code: 'region-undeclared',
-      message: `vùng chưa khai báo — \`<${tagName(tag)} class="${classes.join(' ')}">\` là ${kind} ở mép ${position} của vùng nội dung, form \`${form}\`, mà không mang class vùng. Dùng \`.navbar\` (phone), \`.split\` + \`.pane\` (inner/fold), \`.rail\` (cover), \`.sidebar\` (tablet) — docs/screen-regions.md`,
+      message: `vùng chưa khai báo — \`<${tagName(tag)} class="${classes.join(' ')}">\` là ${kind} ở mép ${position} của vùng nội dung, form \`${form}\`, mà không khai slot/class vùng. Dải ngang ở mép: khai ruột bằng \`data-slot="back|title|right"\` / \`data-tab\` (shell dựng band); arrangement: \`.split\`/\`.rail\`/\`.sidebar\` — docs/screen-regions.md`,
     })
   }
   return out
@@ -295,39 +397,41 @@ function directChildren(fragment: string): Array<{ tag: string; offset: number }
   return out
 }
 
-/** Requirement: navbar anatomy — at most three trailing actions, one-line title. */
+/** Requirement: nav slot anatomy — at most three trailing actions, one-line title. */
 export function navbarViolations(src: string): Violation[] {
   const out: Violation[] = []
   const stripped = withoutComments(src)
-  for (const { tag, index } of tagsOf(stripped)) {
-    const classes = classesOf(tag)
-    if (!classes.includes('navbar') && !classes.includes('navbar-float')) continue
-    const start = lineOf(stripped, index)
-    const inner = readUntilClose(stripped, index)
-    if (!inner) continue
 
-    const buttons = [...inner.body.matchAll(/<button\b/gi)].length
-    if (buttons > 3) {
+  for (const host of slotHosts(stripped, 'right')) {
+    const actions = countControls(host.body)
+    if (actions > 3) {
       out.push({
-        line: start,
+        line: lineOf(stripped, host.index),
         code: 'navbar-too-many-actions',
-        message: `navbar có ${buttons} action — tối đa 3 ở slot cuối, phần dư vào menu More (apple-design-iphone)`,
+        message: `slot \`right\` có ${actions} action — tối đa 3, phần dư vào menu More (apple-design-iphone)`,
       })
     }
-    const title = /class="[^"]*\bnav-title\b[^"]*"[^>]*>([^<]*)</.exec(inner.body)?.[1]
-    if (title && title.trim().length >= 15) {
+  }
+
+  for (const host of slotHosts(stripped, 'title')) {
+    const text = host.body.replace(/<[^>]*>/g, '').trim()
+    if (text.length >= 15) {
       out.push({
-        line: start,
+        line: lineOf(stripped, host.index),
         code: 'navbar-title-long',
-        message: `tiêu đề navbar "${title.trim()}" dài ${title.trim().length} ký tự — giữ dưới 15 để chừa chỗ cho control`,
+        message: `tiêu đề navbar "${text}" dài ${text.length} ký tự — giữ dưới 15 để chừa chỗ cho control`,
       })
     }
-    if (isPushScreen(inner.body) && !hasBackButton(inner.body)) {
+  }
+
+  for (const host of slotHosts(stripped, 'back')) {
+    const markup = host.tag + host.body
+    if (isPushScreen(markup) && !hasBackButton(markup)) {
       out.push({
-        line: start,
+        line: lineOf(stripped, host.index),
         code: 'navbar-back-missing',
         message:
-          'màn push (có nút back trong leading slot) phải dùng symbol chuẩn `chevron.left`; không dùng chữ "Back"/"Close"',
+          'slot back ở màn push phải dùng symbol chuẩn `chevron.left`; không dùng chữ "Back"/"Close"',
       })
     }
   }
@@ -362,43 +466,33 @@ function isLabelledTab(fragment: string, index: number, tag: string): boolean {
 export function tabbarViolations(src: string, form: string): Violation[] {
   const out: Violation[] = []
   const stripped = withoutComments(src)
-  for (const { tag, index } of tagsOf(stripped)) {
-    const classes = classesOf(tag)
-    const isTabbar = classes.includes('tabbar') || classes.includes('tabbar-float')
-    if (!isTabbar) continue
-    const start = lineOf(stripped, index)
-    const inner = readUntilClose(stripped, index)
-    if (!inner) continue
+  const tabs = tagsOf(stripped).filter(({ tag }) => /\bdata-tab(?![-\w])/.test(tag))
+  if (tabs.length === 0) return out
+  const first = tabs[0]!
 
-    const items = [...inner.body.matchAll(/<(?:button|span|a)\b([^>]*\bclass\s*=\s*"[^"]*\btab\b[^"]*")/gi)]
-    if (items.length > 5) {
-      out.push({
-        line: start,
-        code: 'tabbar-too-many',
-        message: `tab bar có ${items.length} destination — tối đa 5; gộp vào More ở hẹp, hoặc chuyển sang \`.sidebar\` ở rộng`,
-      })
-    }
-    for (const item of items) {
-      const at = lineOf(inner.body, item.index ?? 0) + start - 1
-      if (isLabelledTab(inner.body, item.index ?? 0, item[0])) continue
-      out.push({
-        line: at,
-        code: 'tabbar-unlabelled',
-        message: 'destination thiếu nhãn — tab luôn có icon **và** nhãn (apple-design-iphone)',
-      })
-    }
+  if (tabs.length > 5) {
+    out.push({
+      line: lineOf(stripped, first.index),
+      code: 'tabbar-too-many',
+      message: `tab bar có ${tabs.length} destination — tối đa 5; gộp vào More ở hẹp, hoặc chuyển sang \`.sidebar\` ở rộng`,
+    })
+  }
+  for (const tab of tabs) {
+    if (isLabelledTab(stripped, tab.index, tab.tag)) continue
+    out.push({
+      line: lineOf(stripped, tab.index),
+      code: 'tabbar-unlabelled',
+      message: 'destination thiếu nhãn — tab luôn có icon **và** nhãn (apple-design-iphone)',
+    })
   }
 
   if (form === 'cover') {
-    const m = /<[a-zA-Z][^>]*class\s*=\s*"[^"]*\btabbar\b/.exec(stripped)
-    if (m) {
-      out.push({
-        line: lineOf(stripped, m.index),
-        code: 'cover-horizontal-tabbar',
-        message:
-          'pose `cover` không được có tab ngang ở đáy — destination chuyển lên dải dọc `.rail-tabs` (apple-design-iphone-duo)',
-      })
-    }
+    out.push({
+      line: lineOf(stripped, first.index),
+      code: 'cover-horizontal-tabbar',
+      message:
+        'pose `cover` không được có tab ngang ở đáy — destination chuyển lên dải dọc `.rail-tabs` (apple-design-iphone-duo)',
+    })
   }
   return out
 }
@@ -432,6 +526,8 @@ export function screenViolations(input: {
   return [
     ...offSwitchViolations(input.html),
     ...chromeViolations(input.html),
+    ...shellBandViolations(input.html),
+    ...slotViolations(input.html),
     ...undeclaredRegionViolations(input.html, input.form),
     ...navbarViolations(input.html),
     ...tabbarViolations(input.html, input.form),

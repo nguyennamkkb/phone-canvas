@@ -360,16 +360,39 @@
   var ready = false
   var emptyTries = 0
   var lastHeight = 0
+  var lastContent = 0
 
   function measuredHeight() {
     return deviceEl ? Math.ceil(deviceEl.getBoundingClientRect().height) : 0
   }
 
+  /**
+   * How tall the screen would be if nothing were clipped: the frame height plus
+   * the overflow of the first band that overflows. Measured WITHOUT un-clipping
+   * on purpose — inserting a style here would change `.device`'s height and
+   * re-trigger the ResizeObserver below, i.e. a measurement loop.
+   */
+  function measuredContentHeight() {
+    var base = measuredHeight()
+    var extra = 0
+    var sels = ['.viewport', '.screen', '.body', '.body-fixed']
+    for (var i = 0; i < sels.length; i++) {
+      var el = document.querySelector(sels[i])
+      if (!el) continue
+      var over = el.scrollHeight - el.clientHeight
+      if (over > extra) extra = over
+    }
+    return base + extra
+  }
+
   function postHeight() {
     var h = measuredHeight()
-    if (h <= 0 || Math.abs(h - lastHeight) < 1) return
+    if (h <= 0) return
+    var c = measuredContentHeight()
+    if (Math.abs(h - lastHeight) < 1 && Math.abs(c - lastContent) < 1) return
     lastHeight = h
-    post({ type: 'height', value: h })
+    lastContent = c
+    post({ type: 'height', value: h, content: c })
   }
 
   function refresh() {

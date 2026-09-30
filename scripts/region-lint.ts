@@ -11,10 +11,12 @@
  * the tests and this CLI cannot drift.
  *
  * Rules (docs/screen-regions.md is the prose):
- *   chrome-redrawn        a screen redraws a band the shell already injects
- *   region-undeclared     a fixed band built by hand instead of a region class
- *   navbar-too-many-actions / navbar-title-long / navbar-back-missing
- *   tabbar-too-many / tabbar-unlabelled / cover-horizontal-tabbar
+ *   chrome-redrawn        a screen redraws an OS band the shell injects
+ *   region-shell-owned    a screen draws a nav/tab band the shell builds
+ *   region-slot-unknown   an unknown or empty data-slot / data-tab
+ *   region-undeclared     a fixed band built by hand instead of a slot/region
+ *   navbar-too-many-actions / navbar-title-long / navbar-back-missing  (nav slot)
+ *   tabbar-too-many / tabbar-unlabelled / cover-horizontal-tabbar      (data-tab)
  *   touch-floor           a governed class declares under --touch-min
  *   device-literal        px tied to one device's width or height
  *   region-off-without-reason  an exemption that does not say why

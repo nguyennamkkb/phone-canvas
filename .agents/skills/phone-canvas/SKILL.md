@@ -154,11 +154,13 @@ Use the live board to confirm observable behavior:
    in `.ring` / `.card-assistant`-style containers and nowhere else, and never
    with `transform: translate(-50%,-50%)` — a transform is invisible to the
    layout engine and the spec will report the wrong box.
-6. **The shell owns the safe areas.** Never write a status bar or home indicator;
-   `src/extractor/compose.ts` injects both.
-7. **The screen is not height-constrained.** Design the whole thing. Nothing is
-   clipped at 844 — a screen that needs 1200 points becomes a 1200-point
-   rectangle.
+6. **The shell owns the bands.** Never write a status bar, home indicator,
+   navbar or tab bar: `src/extractor/compose.ts` places all of them. Declare the
+   nav/tab content with `data-slot="back|title|right"` and `data-tab`.
+7. **The frame is fixed and the body scrolls.** `.device` is exactly the device
+   height, so a screen has exactly ONE vertical scroller: `.body` for content
+   taller than the frame, `.body-fixed` for a page that fits. A `.body-fixed`
+   that overflows is a bug the measured audit reports, not a hidden scrollbar.
 8. **No emoji.** They do not map to SwiftUI. Use the symbol that does.
 9. **State the deviation.** When you cannot match a reference — artwork you had
    to draw, an icon set you only approximated, a detail you chose to change —

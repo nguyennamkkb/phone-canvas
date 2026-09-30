@@ -3,20 +3,20 @@
 **Use for:** a free-style catalogue screen that exhibits a project's design
 vocabulary — colors, type, buttons, chips, rows, meters — each item naming its
 token or class so the panel reads back exactly what an author would type.
-Reference implementation: `project/caloai/c31-showcase.html`.
+Reference implementation: `project/foundation-kit/screens/foundation-showcase.html`.
 
 ## Structure
 
 ```
 .screen
-├── .navbar                     title + one about action
+├── data-slot="title|right"      shell builds .region-nav from these
 └── .body                        gap s4, one section per vocabulary group
     ├── section                  .col, gap s3, padded s4 sides
     │   ├── .t-headline          section name ("Màu · Core")
     │   └── rows                 .list-row / .row of samples
     ├── …more sections…
     └── .spacer
-└── .tabbar-light                optional — mirrors the app's persistent nav
+└── data-tab                     optional — shell builds .region-tabs
 ```
 
 Sections in order: **colors** (core rows, then tint chips) → **type** (one
@@ -36,17 +36,19 @@ sample chips) → **rows & measures** (avatar row, macro + `.meter`,
    first — zero `unmappedSymbol` warnings at the end).
 4. **One idea per section.** A showcase is read top to bottom; if a section
    needs a subheading, it is two sections.
-5. **No tabbar on wide screens.** Phone keeps `.tabbar-light`; tablet/foldable
-   variants drop it (see `screen-background.md` device notes).
+5. **The nav and tab bands are shell-owned.** Declare their content with
+   `data-slot` / `data-tab`; never write `.navbar` / `.tabbar`. On tablet and
+   foldable variants, drop the `data-tab` buttons entirely.
 
 ## Skeleton
 
 ```html
 <div class="screen">
-  <header class="navbar">
-    <span class="nav-title">Showcase</span>
-    <button class="icon-btn" aria-label="About this catalogue"><span class="icon icon-sm" data-symbol="sparkles"></span></button>
-  </header>
+  <span data-slot="title" class="nav-title">Showcase</span>
+  <button data-slot="right" class="icon-btn" aria-label="About this catalogue">
+    <span class="icon icon-sm" data-symbol="sparkles"></span>
+  </button>
+
   <div class="body" style="gap: var(--s4)">
     <div class="col" style="gap: var(--s3); padding: 0 var(--s4)">
       <span class="t-headline">Màu · Core</span>
@@ -58,6 +60,11 @@ sample chips) → **rows & measures** (avatar row, macro + `.meter`,
     </div>
     <div class="spacer"></div>
   </div>
+
+  <button data-tab class="tab is-active">
+    <span class="icon" data-symbol="book"></span>
+    <span>Tokens</span>
+  </button>
 </div>
 ```
 

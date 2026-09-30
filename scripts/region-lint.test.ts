@@ -11,6 +11,8 @@ import {
   offSwitchViolations,
   rulesOf,
   screenViolations,
+  shellBandViolations,
+  slotViolations,
   tabbarViolations,
   touchFloorViolations,
   undeclaredRegionViolations,
@@ -94,13 +96,13 @@ describe('undeclared region', () => {
     ])
   })
 
-  it('accepts a declared navbar', () => {
-    const html = wrap('<div class="navbar"><button class="nav-round"></button><span class="nav-title">T</span></div>')
+  it('accepts a content card that merely holds a button', () => {
+    const html = wrap('<div class="hero-card"><button class="pill-soft">5 ngày</button></div>')
     expect(undeclaredRegionViolations(html, 'phone')).toEqual([])
   })
 
-  it('accepts a content card that merely holds a button', () => {
-    const html = wrap('<div class="hero-card"><button class="pill-soft">5 ngày</button></div>')
+  it('accepts a band the shell already owns (a dedicated rule names it)', () => {
+    const html = wrap('<div class="navbar"><button class="nav-round"></button><span class="nav-title">T</span></div>')
     expect(undeclaredRegionViolations(html, 'phone')).toEqual([])
   })
 
@@ -115,49 +117,107 @@ describe('undeclared region', () => {
     const html = wrap('<div class="row"><button class="nav-round"></button><div class="row"></div></div>')
     expect(undeclaredRegionViolations(html, 'phone').length).toBe(1)
   })
+
+  it('does not flag the top content edge once the screen declares a nav slot', () => {
+    const html =
+      '<div class="screen"><span data-slot="title">Hôm nay</span><div class="body"><div class="row-card"><button class="pill-soft">5</button></div></div></div>'
+    expect(undeclaredRegionViolations(html, 'phone')).toEqual([])
+  })
+
+  it('does not flag the bottom content edge once the screen declares tabs', () => {
+    const html =
+      '<div class="screen"><button data-tab class="tab"><span>Home</span></button><div class="body"><span class="t-headline">Nội dung</span><div class="row" style="justify-content: space-between"><button class="pill-soft">5</button></div></div></div>'
+    expect(undeclaredRegionViolations(html, 'phone')).toEqual([])
+  })
 })
 
-describe('navbar anatomy', () => {
-  it('rejects more than three actions', () => {
-    const html = `<header class="navbar">${'<button class="nav-round"></button>'.repeat(4)}</header>`
+describe('shell-owned band', () => {
+  it('rejects a screen that draws its own navbar', () => {
+    const html = wrap('<header class="navbar"><span class="nav-title">T</span></header>')
+    expect(shellBandViolations(html).map((v) => v.code)).toEqual(['region-shell-owned'])
+  })
+
+  it('rejects a screen that draws its own tab bar', () => {
+    const html = wrap('<nav class="tabbar"><button class="tab"><span>Home</span></button></nav>')
+    expect(shellBandViolations(html).map((v) => v.code)).toEqual(['region-shell-owned'])
+  })
+
+  it('leaves a screen that declares slots alone', () => {
+    const html = wrap(
+      '<span data-slot="title">Hôm nay</span><button data-slot="right" class="pill-soft">5</button><button data-tab>Home</button>',
+    )
+    expect(shellBandViolations(html)).toEqual([])
+  })
+})
+
+describe('slot values', () => {
+  it('rejects an unknown data-slot name', () => {
+    expect(slotViolations('<span data-slot="titel">x</span>').map((v) => v.code)).toEqual([
+      'region-slot-unknown',
+    ])
+  })
+
+  it('rejects a bare data-slot with no value', () => {
+    expect(slotViolations('<span data-slot>x</span>').map((v) => v.code)).toEqual([
+      'region-slot-unknown',
+    ])
+  })
+
+  it('rejects an empty data-tab destination', () => {
+    expect(slotViolations('<button data-tab></button>').map((v) => v.code)).toEqual([
+      'region-slot-unknown',
+    ])
+  })
+
+  it('accepts the three nav slots and a labelled tab', () => {
+    const html =
+      '<button data-slot="back" aria-label="Quay lại"></button><span data-slot="title">Hôm nay</span><span data-slot="right"></span><button data-tab><span>Home</span></button>'
+    expect(slotViolations(html)).toEqual([])
+  })
+})
+
+describe('nav slot anatomy', () => {
+  it('rejects more than three actions in the right slot', () => {
+    const html = `<div class="screen"><span data-slot="right">${'<button class="nav-round"></button>'.repeat(4)}</span></div>`
     expect(navbarViolations(html).map((v) => v.code)).toEqual(['navbar-too-many-actions'])
   })
 
   it('rejects a title of 15 characters or more', () => {
-    const html = '<header class="navbar"><span class="nav-title">Một tiêu đề rất dài</span></header>'
+    const html = '<div class="screen"><span data-slot="title">Một tiêu đề rất dài</span></div>'
     expect(navbarViolations(html).map((v) => v.code)).toEqual(['navbar-title-long'])
   })
 
-  it('rejects a push screen whose back is not a standard symbol', () => {
+  it('rejects a push slot whose back is not a standard symbol', () => {
     const html =
-      '<header class="navbar"><button aria-label="Quay lại"><span class="icon" data-symbol="arrow.uturn.backward"></span></button></header>'
+      '<div class="screen"><button data-slot="back" aria-label="Quay lại"><span class="icon" data-symbol="arrow.uturn.backward"></span></button></div>'
     expect(navbarViolations(html).map((v) => v.code)).toEqual(['navbar-back-missing'])
   })
 
-  it('accepts a navbar with three actions and a short title', () => {
-    const html = `<header class="navbar"><span class="nav-title">Ngắn</span>${'<button class="nav-round"></button>'.repeat(3)}</header>`
+  it('accepts three right actions and a short title', () => {
+    const html = `<div class="screen"><span data-slot="title">Ngắn</span><span data-slot="right">${'<button class="nav-round"></button>'.repeat(3)}</span></div>`
     expect(navbarViolations(html)).toEqual([])
   })
 })
 
 describe('tab bar', () => {
   it('rejects more than five destinations', () => {
-    const html = `<nav class="tabbar">${'<button class="tab"><span>H</span></button>'.repeat(6)}</nav>`
+    const html = `<div class="screen">${'<button data-tab><span>H</span></button>'.repeat(6)}</div>`
     expect(tabbarViolations(html, 'phone').map((v) => v.code)).toContain('tabbar-too-many')
   })
 
   it('rejects a destination with no label', () => {
-    const html = '<nav class="tabbar"><button class="tab"><span class="icon" data-symbol="house"></span></button></nav>'
+    const html =
+      '<div class="screen"><button data-tab><span class="icon" data-symbol="house"></span></button></div>'
     expect(tabbarViolations(html, 'phone').map((v) => v.code)).toEqual(['tabbar-unlabelled'])
   })
 
   it('accepts the repo shape — icon plus a visible label', () => {
-    const html = `<nav class="tabbar">${'<button class="tab"><span class="icon" data-symbol="house"></span><span>Home</span></button>'.repeat(4)}</nav>`
+    const html = `<div class="screen">${'<button data-tab><span class="icon" data-symbol="house"></span><span>Home</span></button>'.repeat(4)}</div>`
     expect(tabbarViolations(html, 'phone')).toEqual([])
   })
 
   it('rejects a horizontal tab bar on the cover pose', () => {
-    const html = '<nav class="tabbar"><button class="tab"><span>Home</span></button></nav>'
+    const html = '<div class="screen"><button data-tab><span>Home</span></button></div>'
     expect(tabbarViolations(html, 'cover').map((v) => v.code)).toEqual([
       'cover-horizontal-tabbar',
     ])

@@ -62,23 +62,26 @@ export type ComposeOptions = {
  * This mirrors the 4-region skeleton of the `mobile-ui-pencil` skill and maps
  * onto SwiftUI's safe area / `.safeAreaInset` without reinterpretation.
  *
- * `.device` has a MINIMUM height but no maximum: a screen that needs 1200pt
- * becomes a 1200pt document rather than a scrollbar.
+ * `.device` is fixed at the device height: the screen scrolls inside its own
+ * `.body` band instead of growing the document, so an export is the device
+ * frame — the way a real phone behaves. `bare` mode still hugs its content.
  */
 const CHROME_CSS = `
-html, body { width: var(--device-w); min-height: var(--device-h); }
+html, body { width: var(--device-w); height: var(--device-h); }
 .device {
   display: flex; flex-direction: column;
-  width: var(--device-w); min-height: var(--device-h);
+  width: var(--device-w); height: var(--device-h);
   background: var(--bg);
+  overflow: hidden;
 }
 /* component preview: no chrome, hug the component's own height */
-.device.is-bare { min-height: 0; }
-body.is-bare { min-height: 0; }
+.device.is-bare { height: auto; }
+body.is-bare { height: auto; }
 .viewport {
   flex: 1 1 auto; min-height: 0;
   display: flex; flex-direction: column;
   position: relative;
+  overflow: hidden;
 }
 .statusbar {
   flex: 0 0 auto; height: var(--safe-top);
@@ -257,6 +260,74 @@ export function screenBgOf(html: string): ScreenBg {
   return { style: parts.join('; ') + ';', isDark: lum !== null && lum < 0.35 }
 }
 
+/** the order the shell lays the nav slots out in, regardless of author order */
+const NAV_SLOT_ORDER = ['back', 'title', 'right'] as const
+
+const VOID_TAGS = new Set([
+  'img', 'input', 'br', 'hr', 'source', 'track', 'wbr', 'area', 'base', 'col',
+  'embed', 'link', 'meta', 'param',
+])
+
+/** end index (exclusive) of the element whose opening tag starts at `openIndex` */
+function matchElementEnd(src: string, openIndex: number): number | null {
+  const open = /^<([a-zA-Z][a-zA-Z0-9-]*)\b([^>]*)>/.exec(src.slice(openIndex))
+  if (!open) return null
+  const name = (open[1] ?? '').toLowerCase()
+  if (/\/\s*$/.test(open[2] ?? '') || VOID_TAGS.has(name)) return openIndex + open[0].length
+  const tagRe = new RegExp(`<(/?)${name}\\b([^>]*)>`, 'gi')
+  tagRe.lastIndex = openIndex + open[0].length
+  let depth = 1
+  let m: RegExpExecArray | null
+  while ((m = tagRe.exec(src)) !== null) {
+    if (/\/\s*$/.test(m[2] ?? '')) continue
+    if (m[1] === '/') {
+      depth -= 1
+      if (depth === 0) return m.index + m[0].length
+    } else depth += 1
+  }
+  return null
+}
+
+/**
+ * Pull every element carrying `attr="…"` out of `html`, preserving document
+ * order. Returns the elements (outer markup + attribute value) and the markup
+ * with them removed. Used by the shell to lift nav/tab slot content out of the
+ * screen so the shell can place it — the author keeps writing plain content.
+ */
+function takeAttributed(
+  html: string,
+  attr: string,
+): { items: Array<{ outer: string; value: string }>; rest: string } {
+  // the value is optional: `data-tab` is a valid boolean attribute, so the
+  // regex accepts `attr`, `attr="v"`, `attr='v'` and `attr=v`, and refuses a
+  // longer name (`data-tabs`) via the trailing boundary.
+  const re = new RegExp(
+    `<([a-zA-Z][a-zA-Z0-9-]*)\\b[^>]*\\b${attr}\\b(?![\\w-])(?:\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+)))?[^>]*>`,
+    'g',
+  )
+  const spans: Array<{ start: number; end: number; value: string; outer: string }> = []
+  let m: RegExpExecArray | null
+  while ((m = re.exec(html)) !== null) {
+    const end = matchElementEnd(html, m.index)
+    if (end === null) continue
+    spans.push({
+      start: m.index,
+      end,
+      value: m[2] ?? m[3] ?? m[4] ?? '',
+      outer: html.slice(m.index, end),
+    })
+    re.lastIndex = end
+  }
+  let rest = ''
+  let last = 0
+  for (const span of spans) {
+    rest += html.slice(last, span.start)
+    last = span.end
+  }
+  rest += html.slice(last)
+  return { items: spans.map(({ outer, value }) => ({ outer, value })), rest }
+}
+
 export function composeScreenDoc(options: ComposeOptions): string {
   const {
     html,
@@ -274,7 +345,27 @@ export function composeScreenDoc(options: ComposeOptions): string {
   // component-system: splice `@component` fragments in before assembly. A
   // missing id / cycle is left as an inert comment here; lint and the board
   // name it. Pure, so the app and the exporter expand identically.
-  const body = components ? expandComponents(html, components).html : html
+  const expanded = components ? expandComponents(html, components).html : html
+
+  // shell-owned bands: the author declares slot CONTENT (`data-slot` /
+  // `data-tab`) and the shell lifts it out and positions the bands. Bare mode
+  // (component preview) keeps the markup untouched.
+  let body = expanded
+  let navHtml = ''
+  let tabsHtml = ''
+  if (!bare) {
+    const nav = takeAttributed(expanded, 'data-slot')
+    const tabs = takeAttributed(nav.rest, 'data-tab')
+    body = tabs.rest
+    const slots = NAV_SLOT_ORDER.map((slot) => {
+      const items = nav.items.filter((item) => item.value === slot).map((item) => item.outer)
+      return items.length > 0 ? `<div class="nav-slot-${slot}">${items.join('')}</div>` : ''
+    }).filter(Boolean)
+    if (slots.length > 0) navHtml = `\n    <div class="region-nav">${slots.join('')}</div>`
+    if (tabs.items.length > 0) {
+      tabsHtml = `\n    <div class="region-tabs">${tabs.items.map((item) => item.outer).join('')}</div>`
+    }
+  }
 
   const styles = stylesheets.map((css) => `<style>${css}</style>`).join('\n')
 
@@ -311,7 +402,7 @@ ${CHROME_CSS}
 <body${bare ? ' class="is-bare"' : ''}>
 <div class="device${bare ? ' is-bare' : ''}${screenBg.isDark ? ' is-dark' : ''}"${screenBg.style ? ` style="${screenBg.style}"` : ''}${deviceAttrs}>
 ${bare ? '' : statusBarHtml(device, lightStatusBar ?? false)}
-  <div class="viewport">${body}</div>${bare ? '' : homeIndicatorHtml(device)}
+  <div class="viewport">${navHtml}${body}${tabsHtml}</div>${bare ? '' : homeIndicatorHtml(device)}
 </div>${bridge}
 </body>
 </html>`

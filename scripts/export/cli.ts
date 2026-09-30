@@ -16,6 +16,12 @@ export type Options = {
    * an iPad export of the same screen never silently overwrite each other.
    */
   explicitDevices: boolean
+  /**
+   * Capture the whole document instead of the device frame. Default is the
+   * frame: `.device` is height-fixed, so a capture is what the phone shows and
+   * taller content is scrolled out.
+   */
+  full: boolean
 }
 
 /**
@@ -28,10 +34,12 @@ export function exportFileName(
   theme: string,
   scale: number,
   multiDevice: boolean,
+  full = false,
 ): string {
   const devSuffix = multiDevice ? `-${deviceId}` : ''
+  const fullSuffix = full ? '-full' : ''
   const themeSuffix = theme === 'dark' ? '-dark' : ''
-  return `${screenId}${devSuffix}${themeSuffix}@${scale}x.png`
+  return `${screenId}${devSuffix}${fullSuffix}${themeSuffix}@${scale}x.png`
 }
 
 export const HELP = `
@@ -45,6 +53,8 @@ Export phone screens to PNG.
   --theme <mode>   light, dark, or all, repeatable            (default: light)
   --scale <n>      pixel density multiplier                  (default: 2)
   --out <dir>      output directory                          (default: exports)
+  --full           capture the whole document, not the device frame
+                   (default: the device frame; taller content is scrolled out)
   --list           print available screens and devices, then exit
   --help           print this message
 
@@ -52,11 +62,12 @@ Examples
   npm run export
   npm run export -- --screen my-screen --scale 3
   npm run export -- --screen my-screen --device ipad-11   # my-screen-ipad-11@2x.png
+  npm run export -- --screen my-screen --full             # my-screen-full@2x.png
   npm run export -- --device all --out docs/shots
 `.trim()
 
 export function parseArgs(argv: string[]): Options {
-  const options: Options = { screens: ['all'], devices: ['reference'], projects: [], themes: ['light'], scale: 2, out: 'exports', explicitDevices: false }
+  const options: Options = { screens: ['all'], devices: ['reference'], projects: [], themes: ['light'], scale: 2, out: 'exports', explicitDevices: false, full: false }
   const screens: string[] = []
   const devices: string[] = []
   const projects: string[] = []
@@ -98,6 +109,9 @@ export function parseArgs(argv: string[]): Options {
       }
       case '--out':
         options.out = next()
+        break
+      case '--full':
+        options.full = true
         break
       default:
         throw new Error(`unknown option: ${arg}`)

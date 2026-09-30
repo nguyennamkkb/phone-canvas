@@ -151,7 +151,7 @@ async function main(): Promise<void> {
         const device = getDevice(deviceId)
         for (const theme of themes) {
           const url = `${site.origin}/screen/${screenId}--${deviceId}--${theme}`
-          const png = await renderPng(browser.cdp, url, device.width, device.height, options.scale)
+          const png = await renderPng(browser.cdp, url, device.width, device.height, options.scale, options.full)
 
           // an explicitly named device always keeps its suffix: without this
           // a phone export and an ipad-11 export of one screen land on the
@@ -159,7 +159,7 @@ async function main(): Promise<void> {
           const multiDevice = devices.length > 1 || options.explicitDevices
           const file = path.join(
             outDir,
-            exportFileName(screenId, deviceId, theme, options.scale, multiDevice),
+            exportFileName(screenId, deviceId, theme, options.scale, multiDevice, options.full),
           )
           await writeFile(file, png)
           written++

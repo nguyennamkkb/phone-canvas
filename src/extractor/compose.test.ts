@@ -85,6 +85,75 @@ describe('composeScreenDoc', () => {
   })
 })
 
+describe('composeScreenDoc · shell-owned bands (v2)', () => {
+  const slotted = {
+    html:
+      '<div class="screen" style="background-color: var(--bg)">' +
+      '<div class="body"><button data-tab>Home</button><button data-tab>Scan</button></div>' +
+      '<button data-slot="right" class="pill-soft">5 ngày</button>' +
+      '<button data-slot="back" aria-label="Quay lại"><span data-symbol="chevron.left"></span></button>' +
+      '<span data-slot="title" class="nav-title">Hôm nay</span>' +
+      '</div>',
+    device,
+    stylesheets: [],
+  }
+
+  it('hoists data-slot into .region-nav in back · title · right order, whatever the author wrote', () => {
+    const html = composeScreenDoc(slotted)
+    expect(html).toContain('<div class="region-nav">')
+    const back = html.indexOf('data-slot="back"')
+    const title = html.indexOf('data-slot="title"')
+    const right = html.indexOf('data-slot="right"')
+    expect(back).toBeGreaterThan(-1)
+    expect(back).toBeLessThan(title)
+    expect(title).toBeLessThan(right)
+  })
+
+  it('hoists data-tab into .region-tabs in document order', () => {
+    const html = composeScreenDoc(slotted)
+    expect(html).toContain('<div class="region-tabs">')
+    expect(html.indexOf('>Home<')).toBeLessThan(html.indexOf('>Scan<'))
+  })
+
+  it('places the bands inside .viewport and outside .screen', () => {
+    const html = composeScreenDoc(slotted)
+    const viewport = html.indexOf('<div class="viewport">')
+    const nav = html.indexOf('<div class="region-nav">')
+    const screen = html.indexOf('<div class="screen')
+    const tabs = html.indexOf('<div class="region-tabs">')
+    expect(viewport).toBeLessThan(nav)
+    expect(nav).toBeLessThan(screen)
+    expect(screen).toBeLessThan(tabs)
+  })
+
+  it('builds no bands when the screen declares no slot', () => {
+    const html = composeScreenDoc({
+      html: '<div class="screen"><div class="body"></div></div>',
+      device,
+      stylesheets: [],
+    })
+    expect(html).not.toContain('region-nav')
+    expect(html).not.toContain('region-tabs')
+  })
+
+  it('lifts slot content out of .screen and leaves the root background intact', () => {
+    const html = composeScreenDoc(slotted)
+    // the root background is still replayed onto .device (screenBgOf ran on the
+    // post-lift markup, which keeps the `.screen` root tag)
+    expect(html).toContain('style="background-color: var(--bg);"')
+    const screenChunk = html.slice(html.indexOf('<div class="screen'), html.indexOf('<div class="region-tabs">'))
+    expect(screenChunk).not.toContain('data-slot="back"')
+    expect(screenChunk).not.toContain('data-tab')
+  })
+
+  it('keeps slot markup untouched in bare mode (component preview)', () => {
+    const html = composeScreenDoc({ ...slotted, bare: true })
+    expect(html).not.toContain('region-nav')
+    expect(html).not.toContain('region-tabs')
+    expect(html).toContain('data-slot="back"')
+  })
+})
+
 describe('screenBgOf (optional screen background)', () => {
   it('returns empty for a plain screen root', () => {
     expect(screenBgOf('<div class="screen"></div>')).toEqual({ style: '', isDark: false })

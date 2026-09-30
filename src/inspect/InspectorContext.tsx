@@ -16,8 +16,10 @@ export type Selection = { nodeId: string; specId: string }
 type InspectorValue = {
   /** spec tree per canvas node, keyed by node id */
   specs: Record<string, SpecNode[]>
-  /** content height per canvas node, reported by the screen itself */
+  /** device frame height per canvas node, reported by the screen itself */
   sizes: Record<string, number>
+  /** full content height per canvas node (frame + overflow), same source */
+  contentSizes: Record<string, number>
   selection: Selection | null
   select: (sel: Selection | null) => void
   registerFrame: (nodeId: string, el: HTMLIFrameElement | null, token: string) => void
@@ -38,6 +40,7 @@ type Incoming = {
   token?: string
   id?: string | null
   value?: number
+  content?: number
   nodes?: RawNode[]
 }
 
@@ -46,6 +49,7 @@ type FrameEntry = { el: HTMLIFrameElement; token: string }
 export function InspectorProvider({ children }: { children: ReactNode }) {
   const [specs, setSpecs] = useState<Record<string, SpecNode[]>>({})
   const [sizes, setSizes] = useState<Record<string, number>>({})
+  const [contentSizes, setContentSizes] = useState<Record<string, number>>({})
   const [selection, setSelection] = useState<Selection | null>(null)
   const frames = useRef(new Map<string, FrameEntry>())
 
@@ -74,6 +78,10 @@ export function InspectorProvider({ children }: { children: ReactNode }) {
         const h = typeof data.value === 'number' ? Math.round(data.value) : 0
         if (h > 0) {
           setSizes((prev) => (prev[data.nodeId as string] === h ? prev : { ...prev, [data.nodeId as string]: h }))
+        }
+        const c = typeof data.content === 'number' ? Math.round(data.content) : 0
+        if (c > 0) {
+          setContentSizes((prev) => (prev[data.nodeId as string] === c ? prev : { ...prev, [data.nodeId as string]: c }))
         }
       } else if (data.type === 'select') {
         setSelection(data.id ? { nodeId: data.nodeId, specId: data.id } : null)
@@ -148,8 +156,8 @@ export function InspectorProvider({ children }: { children: ReactNode }) {
   )
 
   const value = useMemo<InspectorValue>(
-    () => ({ specs, sizes, selection, select, registerFrame, requestRecapture, ancestry, childrenOf, selected }),
-    [specs, sizes, selection, select, registerFrame, requestRecapture, ancestry, childrenOf, selected],
+    () => ({ specs, sizes, contentSizes, selection, select, registerFrame, requestRecapture, ancestry, childrenOf, selected }),
+    [specs, sizes, contentSizes, selection, select, registerFrame, requestRecapture, ancestry, childrenOf, selected],
   )
 
   return <InspectorContext.Provider value={value}>{children}</InspectorContext.Provider>

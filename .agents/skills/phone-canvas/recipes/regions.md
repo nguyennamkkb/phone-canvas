@@ -6,21 +6,24 @@ before authoring a screen, and let `npm run gate` tell you when you drifted.
 
 ## The one rule
 
-The shell owns the OS bands. You never draw them.
+The shell owns the bands. You never draw them — not the OS bands, and not the
+nav or tab bar either. You declare slot **content**, and the shell places it.
 
 ```
-.device
-├── .statusbar        ← injected, safeTop
-├── .viewport         ← your markup goes here
-│   └── .screen
-└── .home-indicator   ← injected, safeBottom
+.device                     ← fixed at the device height
+├── .statusbar              ← shell, safeTop
+├── .viewport               ← the only scrollable area, via `.body`
+│   ├── .region-nav         ← shell, built from [data-slot]
+│   ├── .screen             ← your markup (the body band)
+│   └── .region-tabs        ← shell, built from [data-tab]
+└── .home-indicator         ← shell, safeBottom
 ```
 
-So a screen declares the bands it owns, and nothing else:
+So a screen declares slot content (phone) or an arrangement (iPad/Duo):
 
 | Form factor | Declare | Never |
 |---|---|---|
-| phone | `.navbar` (or `.navbar-float`) on top, `.tabbar` at the bottom | a hand-built row with round buttons in it |
+| phone | `data-slot="back\|title\|right"`, `data-tab` on the tab buttons | `.navbar` / `.tabbar` / `.navbar-float` / `.tabbar-float` / `.dock` |
 | Duo cover | `.split` + `.pane`, and a trailing `.rail` (`.rail-tools` above, `.rail-tabs` bottom-aligned) | a horizontal tab bar |
 | Duo inner / fold | `.split` + `.pane` (`.pane-lead` / `.pane-trail` open, plain `.pane` ×2 folded) | one edge carrying both panes' controls |
 | tablet | `.sidebar` + `.split` | a sidebar with 2–3 items, a second title above the split |
@@ -28,20 +31,25 @@ So a screen declares the bands it owns, and nothing else:
 ## Writing one
 
 ```html
-<!-- phone: the band is a region, not a row you built yourself -->
-<div class="navbar" style="padding: 0">
-  <button class="nav-round is-hollow" aria-label="Quay lại">
+<!-- phone: slots, whatever order you like — the shell lays them out -->
+<div class="screen" style="background-color: var(--bg)">
+  <button data-slot="back" aria-label="Quay lại">
     <span class="icon icon-sm" data-symbol="chevron.left"></span>
   </button>
-  <span class="nav-title">Tiêu đề</span>
-  <button class="nav-round is-hollow" aria-label="Thêm">
-    <span class="icon icon-sm" data-symbol="plus"></span>
-  </button>
+  <span data-slot="title" class="nav-title">Hôm nay</span>
+  <button data-slot="right" class="pill-soft">5 ngày</button>
+
+  <div class="body" style="padding: var(--s4); gap: var(--s3)">
+    …nội dung; `.body` cuộn, `.body-fixed` thì phải vừa khung…
+  </div>
+
+  <button data-tab class="tab is-on">…icon + nhãn…</button>
 </div>
 ```
 
-`padding: 0` because the screen's own gutter already insets the band. Drop it
-when the band owns its inset.
+The `back · title · right` order is the shell's, not yours. `data-tab` sits at
+the bottom in document order. No nav? Declare no slot and the shell builds no
+band — correct for splash / full-bleed.
 
 ```html
 <!-- Duo cover: content pane + trailing rail -->
@@ -58,12 +66,14 @@ when the band owns its inset.
 
 `npm run gate` runs two tiers, and both fail the build:
 
-* `lint:regions` — from the text: OS chrome redrawn, an undeclared band, navbar
-  anatomy (≤ 3 actions, one-line title), tab bar 3–5 and labelled, a horizontal
-  tab bar on a cover, px tied to one device, a governed class under the touch
-  floor, an `off` switch with no reason.
+* `lint:regions` — from the text: OS chrome redrawn, a shell-owned band drawn by
+  hand (`region-shell-owned`), an unknown/empty slot (`region-slot-unknown`), nav
+  SLOT anatomy (≤ 3 actions, one-line title, back on a push), tab bar 3–5 and
+  labelled, a horizontal tab bar on a cover, px tied to one device, a governed
+  class under the touch floor, an `off` switch with no reason.
 * `audit:regions` — from the real layout in Chrome: the two OS bands exist once
   each and sit outside `.viewport`, `.device` paints what `.screen` paints,
+  exactly one scroller with the bands outside it, `.body-fixed` that fits,
   every interactive rect is ≥ 44 × 44, the tab bar is the last band, a folded
   split is 50/50 with nothing on the crease.
 
@@ -74,7 +84,7 @@ Escape hatches, both of which must be justified in writing:
 * measured: an entry in `EXEMPTIONS` in `scripts/region-audit.ts`, naming the
   element and why the parent already guarantees the hit region.
 
-## Two traps that cost real time
+## Three traps that cost real time
 
 * **`:root` only matches `<html>`.** A token declared on `:root` is *inherited*
   by `.screen`, so it always loses to a rule that assigns it directly. Declare
@@ -82,3 +92,6 @@ Escape hatches, both of which must be justified in writing:
 * **Zero flex basis lies about the painted ratio.** `flex: 1 1 0` distributes
   space *inside* the box, so a pane's padding lands outside it and a nominal
   1:2 paints as 35:65. A percentage basis is a border-box size and stays true.
+* **A shrinking child squashes, it does not overflow.** The frame is height-fixed,
+  so `.body` / `.body-fixed` set `flex-shrink: 0` on their children. A fixed-height
+  `.btn` measured 39 pt (not 58) before that rule — the touch floor caught it.

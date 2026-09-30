@@ -54,8 +54,9 @@ element — to an LLM.
 ## Export to PNG
 
 ```bash
-npm run export                                       # every screen, @2x → exports/
+npm run export                                       # every screen, device frame @2x → exports/
 npm run export -- --screen my-screen --scale 3
+npm run export -- --screen my-screen --full          # whole page, not the frame
 npm run export -- --device all --out docs/shots
 npm run export -- --list
 ```
@@ -70,9 +71,13 @@ board is drawn by the React layer and is deliberately excluded — it is
 decoration, and it would be a lie in a handoff. The measurement bridge is left
 out too, so an export carries no `data-pc-*` attributes and no hover overlay.
 
-Height follows content, exactly as on the board: a screen that needs 992pt
-exports at 390×992 on the reference device, and re-wraps to 375×959 on an
-iPhone SE.
+The default export is **the device frame**, exactly `device.height × scale` —
+390×844 at 2x on the reference device. A longer screen scrolls inside its own
+`.body`, so the frame is what the phone actually shows. Pass `--full` to capture
+the whole page instead (the pre-v2 behaviour); the file then keeps a `-full`
+suffix (`home-full@2x.png`) so frame and full-page never overwrite each other.
+The board matches: a node is drawn at the device height and scrolls inside, with
+an expand toggle that shows the whole screen at once.
 
 Both the app and the script call `src/extractor/compose.ts`, so an export cannot
 drift from what the board shows.
@@ -112,10 +117,10 @@ decoration.
    inside the iframe therefore returns points *at any zoom level*. Never add CSS
    `zoom` or a nested scale.
 
-2. **The screen is never height-constrained.** `.device` has a `min-height`
-   (so a short screen still looks like a screen, and `Spacer`-style layouts
-   work) but no maximum. The bridge measures its own content and reports it up;
-   the frame grows to match. Nothing is ever clipped.
+2. **The frame is fixed and the body scrolls.** `.device` is exactly the device
+   height. A screen has **one** vertical scroller: `.body` for content taller
+   than the frame, `.body-fixed` for a page that fits — and a `.body-fixed` that
+   overflows is an error the measured audit reports, not a hidden scrollbar.
 
 3. **Safe areas are explicit regions, not insets.** The status bar and home
    indicator are real elements in the document, owned by the shell — never by
@@ -145,18 +150,23 @@ the Watch and Widget reference tables — is in
 
 ## Screen regions
 
-Every screen owes the same fixed bands, and the shell owns two of them. You
-never draw the status bar or the home indicator — `compose.ts` injects both
-outside `.viewport`, so they are also excluded from the captured spec. What you
-declare is the rest:
+Every screen owes the same fixed bands, and **the shell owns all of them** —
+the OS bands *and* the nav/tab bands. You never draw a status bar, home
+indicator, navbar or tab bar; `compose.ts` places them. What you declare is the
+band's **content** (phone) or an arrangement (iPad/Duo):
 
 | Form factor | You declare | Số đo |
 |---|---|---|
-| phone | `.navbar` (or `.navbar-float`) → content → `.tabbar` | navbar ≥ 44 pt · tab bar 68 pt · 3–5 destination, icon + nhãn |
+| phone | nav content (`data-slot="back\|title\|right"`) + tab buttons (`data-tab`) + a `.body` / `.body-fixed` content band | nav ≥ 44 pt · tab bar 68 pt · 3–5 destination, icon + nhãn |
 | Duo cover | `.split` + `.pane`, and a trailing `.rail` (`.rail-tools` above, `.rail-tabs` bottom-aligned) | rail rộng cố định 44 pt; **không** tab ngang |
 | Duo inner | `.split` + `.pane-lead` / `.pane-trail`; mỗi pane giữ control của nó trên cạnh ngoài của pane | 1:2 khi mở phẳng |
 | Duo fold | hai `.pane` bằng nhau; nếp gập là vùng cấm | 50/50, không control nào trên dải chia |
 | tablet | `.sidebar` + `.split` 2–3 cột | sidebar ≥ 4 vùng; 1 tiêu đề trên split |
+
+Only the **phone** bands are shell-owned today; the Duo/tablet arrangements stay
+author-owned until that form factor ships. The nav band is built inside
+`.viewport` but outside the scrolling `.screen`, so it stays put while the
+content scrolls — and the spec panel can still measure its controls.
 
 Content uses a 16 pt gutter on the 4/8 pt grid, and **every interactive element
 renders ≥ 44 × 44 pt**. The full map, the per-form-factor reasoning, and the
@@ -166,13 +176,14 @@ Watch / Widget reference tables are in
 Two tiers enforce it, and both fail `npm run gate`:
 
 ```bash
-npm run lint:regions    # from the text: undeclared band, navbar anatomy, tab count, device px, touch floor
-npm run audit:regions   # from the real layout in Chrome: 44 pt rects, 50/50 fold, crease clear, background seam
+npm run lint:regions    # from the text: shell-owned band, unknown slot, nav/tab anatomy, device px, touch floor
+npm run audit:regions   # from the real layout in Chrome: 44 pt rects, one scroller, overflow, shell bands, 50/50 fold, background seam
 ```
 
 The measured tier is the one that earns its keep: it caught a split that
-declared 1:2 and painted 41:59, and a tab item that was 38 pt inside a 68 pt
-bar. Neither is visible by eye.
+declared 1:2 and painted 41:59, a tab item that was 38 pt inside a 68 pt bar,
+and a 58 pt button squashed to 39 pt once the frame stopped growing. None is
+visible by eye.
 
 ## CSS → SwiftUI reference
 

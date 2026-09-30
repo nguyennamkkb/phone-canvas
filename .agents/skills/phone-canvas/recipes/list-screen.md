@@ -7,34 +7,31 @@ is rows under a header.
 
 ```
 .screen
-└── .body-fixed
-    ├── .navbar                    title left, actions right
-    ├── .body                      SCROLLS — flex: 1, overflow-y: auto
-    │   └── .list
-    │       └── .list-row          × N
-    │           ├── .avatar / .chip-icon
-    │           ├── .grow.col      title + subtitle
-    │           └── trailing text / icon
-    ├── .bottom-cta                optional, sticky
-    └── .tabbar                    optional
+├── data-slot="back|title|right"   shell builds .region-nav from these
+├── .body                          SCROLLS — the ONE scroll region
+│   └── .list
+│       └── .list-row              × N
+│           ├── .avatar / .chip-icon
+│           ├── .grow.col          title + subtitle
+│           └── trailing text / icon
+└── data-tab                       shell builds .region-tabs from these
 ```
+
+`.bottom-cta` (optional, in-flow action bar) sits inside the content band.
 
 ## Classes
 
-`.navbar` · `.nav-title` · `.icon-btn` · `.body` · `.list` · `.list-row` ·
-`.avatar` · `.chip-icon` · `.grow` · `.spacer` · `.tabbar` + `.tab` ·
-`.bottom-cta`
+`.nav-title` · `.icon-btn` · `.body` · `.body-fixed` · `.list` · `.list-row` ·
+`.avatar` · `.chip-icon` · `.grow` · `.spacer` · `.tab` · `.bottom-cta`
 
 ## Skeleton
 
 ```html
 <div class="screen">
-  <header class="navbar">
-    <div class="nav-title">Inbox</div>
-    <button class="icon-btn" aria-label="Search">
-      <span class="icon icon-sm" data-symbol="magnifyingglass"></span>
-    </button>
-  </header>
+  <span data-slot="title" class="nav-title">Inbox</span>
+  <button data-slot="right" class="icon-btn" aria-label="Search">
+    <span class="icon icon-sm" data-symbol="magnifyingglass"></span>
+  </button>
 
   <div class="body">
     <div class="list">
@@ -50,22 +47,21 @@ is rows under a header.
     </div>
   </div>
 
-  <nav class="tabbar">
-    <div class="tab is-active">
-      <span class="icon" data-symbol="book"></span>
-      <span>Entries</span>
-    </div>
-    <!-- more tabs -->
-  </nav>
+  <button data-tab class="tab is-active">
+    <span class="icon" data-symbol="book"></span>
+    <span>Entries</span>
+  </button>
+  <!-- more tabs -->
 </div>
 ```
 
 ## Gotchas
 
 - **`.body` is the scroll region** and it is the *only* thing that scrolls. The
-  navbar and the tab bar are siblings of it, not children.
-- **A long list makes a long screen.** That is correct — the frame grows. Do not
-  cut rows to force 844.
+  nav and tab bands are built by the shell, outside `.body`.
+- **The frame is the device height; the list scrolls inside it.** Do not cut
+  rows to fit 844 — let `.body` scroll. `.body-fixed` is only for a page that
+  actually fits; one that overflows fails `audit:regions`.
 - **Variable content, fixed geometry.** Titles up to two lines, times always the
   same width. If a row's trailing element changes width, the layout breathes in
   a way a real list never does.
