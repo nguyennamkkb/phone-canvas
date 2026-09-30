@@ -1,6 +1,8 @@
 <!-- pc {"title":"AI result confirm"} -->
 <div class="screen app-mood" style="background-color: var(--bg)">
-  <button data-slot="back" class="pill-ghost" style="border-color: transparent; height: auto; padding-top: var(--s3); padding-bottom: var(--s3)">Hủy</button>
+  <!-- Nav mặc định dạng modal: back = "Hủy" sống ở một chỗ.
+       Màn ghi đè tiêu đề; back lấy từ component. -->
+  <!-- @component app-nav -->
   <span data-slot="title" class="t-headline">Xác nhận món</span>
   <button data-slot="right" class="nav-round is-hollow" aria-label="Chụp lại ảnh">
     <span class="icon icon-sm" data-symbol="camera"></span>

@@ -328,6 +328,99 @@ function takeAttributed(
   return { items: spans.map(({ outer, value }) => ({ outer, value })), rest }
 }
 
+/**
+ * `data-slot="back title"` and `data-slot="back|title"` both name several
+ * slots, so an element can serve more than one. Normalising here means the
+ * rules and compose cannot disagree about what a value means.
+ */
+export function slotNames(value: string): string[] {
+  return value.split(/[\s|]+/).filter(Boolean)
+}
+
+/** the opening tag split from its content — attributes only ever go on the tag */
+function splitOpenTag(outer: string): { open: string; close: string } {
+  let quote: string | null = null
+  for (let i = 0; i < outer.length; i += 1) {
+    const ch = outer[i] as string
+    if (quote) {
+      if (ch === quote) quote = null
+      continue
+    }
+    if (ch === '"' || ch === "'") quote = ch
+    else if (ch === '>') return { open: outer.slice(0, i + 1), close: outer.slice(i + 1) }
+  }
+  return { open: outer, close: '' }
+}
+
+/** the visible text of an element: tags stripped, whitespace collapsed */
+function textOf(html: string): string {
+  return html
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+/** set an attribute on an opening tag, replacing any earlier one; null removes */
+function withAttr(open: string, name: string, value: string | null): string {
+  const re = new RegExp(`\\s+${name}\\s*=\\s*(?:"[^"]*"|'[^']*'|[^\\s>]+)`, 'i')
+  const stripped = open.replace(re, '')
+  if (value === null) return stripped
+  const escaped = value.replace(/&/g, '&amp;').replace(/"/g, '&quot;')
+  return stripped.replace(/(\s*\/?>)$/, ` ${name}="${escaped}"$1`)
+}
+
+/** add or remove one class on an opening tag, leaving the rest alone */
+function withClass(open: string, cls: string, on: boolean): string {
+  const m = /\sclass\s*=\s*("([^"]*)"|'([^']*)')/i.exec(open)
+  if (!m) return on ? withAttr(open, 'class', cls) : open
+  const names = (m[2] ?? m[3] ?? '')
+    .split(/\s+/)
+    .filter(Boolean)
+    .filter((c) => c !== cls)
+  if (on) names.push(cls)
+  return open.replace(m[0], ` class="${names.join(' ')}"`)
+}
+
+/** the destination the screen says is open, declared on the `.screen` root */
+export function activeTabOf(html: string): string | null {
+  const m = /\bdata-tab-active\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i.exec(html)
+  return m ? (m[1] ?? m[2] ?? m[3] ?? null) : null
+}
+
+/**
+ * Tab identity lives in the shell: the slug names the destination, and the
+ * active marker, `aria-current` and the label (name + position) are derived
+ * here. Hand-written `aria-label="… tab 2 trên 4"` went stale the moment a
+ * destination moved, which is exactly what this removes.
+ */
+function decorateTabs(items: Array<{ outer: string; value: string }>, active: string | null): string[] {
+  const total = items.length
+  return items.map((item, index) => {
+    const slug = slotNames(item.value)[0] ?? ''
+    const name = textOf(item.outer) || slug
+    const { open, close } = splitOpenTag(item.outer)
+    const isActive = active !== null && slug === active
+    let tag = withClass(open, 'is-active', isActive)
+    tag = withAttr(tag, 'aria-current', isActive ? 'page' : null)
+    tag = withAttr(tag, 'aria-label', `${name}, tab ${index + 1} trên ${total}`)
+    return tag + close
+  })
+}
+
+/** every `data-slot` element in `html`, grouped by the slots it names */
+function liftNav(html: string): { slots: Map<string, string[]>; rest: string } {
+  const { items, rest } = takeAttributed(html, 'data-slot')
+  const slots = new Map<string, string[]>()
+  for (const item of items) {
+    for (const name of slotNames(item.value)) {
+      const list = slots.get(name) ?? []
+      list.push(item.outer)
+      slots.set(name, list)
+    }
+  }
+  return { slots, rest }
+}
+
 export function composeScreenDoc(options: ComposeOptions): string {
   const {
     html,
@@ -342,28 +435,45 @@ export function composeScreenDoc(options: ComposeOptions): string {
     bare = false,
   } = options
   const themeAttr = theme === 'dark' ? ' data-theme="dark"' : ''
-  // component-system: splice `@component` fragments in before assembly. A
-  // missing id / cycle is left as an inert comment here; lint and the board
-  // name it. Pure, so the app and the exporter expand identically.
-  const expanded = components ? expandComponents(html, components).html : html
-
-  // shell-owned bands: the author declares slot CONTENT (`data-slot` /
-  // `data-tab`) and the shell lifts it out and positions the bands. Bare mode
-  // (component preview) keeps the markup untouched.
-  let body = expanded
+  let body: string
   let navHtml = ''
   let tabsHtml = ''
-  if (!bare) {
-    const nav = takeAttributed(expanded, 'data-slot')
-    const tabs = takeAttributed(nav.rest, 'data-tab')
-    body = tabs.rest
+  if (bare) {
+    // component preview: splice `@component` fragments in, but leave the
+    // markup untouched — no band is built, so a component can be inspected
+    const expanded = components ? expandComponents(html, components).html : html
+    body = expanded
+  } else {
+    // shell-owned bands, in two passes. The screen's OWN slot content is lifted
+    // first, so it always wins; the components are expanded afterwards and only
+    // fill what the screen left open. Lifting first is also what makes "empty
+    // slot wins" work: `<span data-slot="title"></span>` is a deliberate blank,
+    // and an element the screen already removed cannot be overwritten.
+    const ownNav = liftNav(html)
+    const ownTabs = takeAttributed(ownNav.rest, 'data-tab')
+    const expanded = components ? expandComponents(ownTabs.rest, components).html : ownTabs.rest
+    const defNav = liftNav(expanded)
+    const defTabs = takeAttributed(defNav.rest, 'data-tab')
+    body = defTabs.rest
+
     const slots = NAV_SLOT_ORDER.map((slot) => {
-      const items = nav.items.filter((item) => item.value === slot).map((item) => item.outer)
-      return items.length > 0 ? `<div class="nav-slot-${slot}">${items.join('')}</div>` : ''
+      const items = ownNav.slots.has(slot) ? ownNav.slots.get(slot) : defNav.slots.get(slot)
+      if (!items || items.length === 0) return ''
+      return `<div class="nav-slot-${slot}">${items.join('')}</div>`
     }).filter(Boolean)
-    if (slots.length > 0) navHtml = `\n    <div class="region-nav">${slots.join('')}</div>`
-    if (tabs.items.length > 0) {
-      tabsHtml = `\n    <div class="region-tabs">${tabs.items.map((item) => item.outer).join('')}</div>`
+    if (slots.length > 0) {
+      navHtml = `\n    <nav class="region-nav" aria-label="Điều hướng">${slots.join('')}</nav>`
+    }
+
+    // tabs are a LIST, not a named slot: a screen that declares any tab wins the
+    // whole list, because two sources for one list is a mistake, not a merge.
+    // Lint names that mistake (`region-tab-source`); here the rule stays
+    // deterministic so the app and the exporter can never diverge.
+    const tabItems = ownTabs.items.length > 0 ? ownTabs.items : defTabs.items
+    if (tabItems.length > 0) {
+      const active = activeTabOf(body)
+      const tabs = decorateTabs(tabItems, active).join('')
+      tabsHtml = `\n    <nav class="region-tabs" aria-label="Thanh tab">${tabs}</nav>`
     }
   }
 

@@ -1,0 +1,24 @@
+<!-- Bộ destination của calo-ai — MỘT nguồn duy nhất.
+     Màn không chép lại danh sách này; màn chỉ khai destination đang mở bằng
+     `data-tab-active="<slug>"` trên `.screen`. Shell suy ra `is-active`,
+     `aria-current="page"`, `aria-label` và thứ tự "tab N trên M" từ vị trí
+     thật trong bộ, nên thêm hay xếp lại destination không phải sửa màn nào.
+
+     Slug là danh tính của destination (`data-tab="home"`), không phải chuỗi
+     hiển thị: đổi slug là đổi hợp đồng với mọi màn đang trỏ tới nó. -->
+<button data-tab="home" class="tab">
+  <span class="icon" data-symbol="house"></span>
+  <span>Home</span>
+</button>
+<button data-tab="scan" class="tab">
+  <span class="icon" data-symbol="camera"></span>
+  <span>Scan</span>
+</button>
+<button data-tab="diary" class="tab">
+  <span class="icon" data-symbol="list.bullet"></span>
+  <span>Diary</span>
+</button>
+<button data-tab="me" class="tab">
+  <span class="icon" data-symbol="person"></span>
+  <span>Me</span>
+</button>

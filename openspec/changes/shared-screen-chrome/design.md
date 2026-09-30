@@ -46,6 +46,10 @@ Ràng buộc:
 
 Vì sao không phải một `app-shell` gộp: `camera`/`confirm`/`textvoice` **không có tab**, nên một component gộp sẽ nhét 4 tab vào chúng; tách rời cho phép chọn từng dải. Vì sao theo project chứ không toàn cục: bộ destination là của app, không phổ quát, và component xuyên project phá nguyên tắc cô lập hiện có. Vì sao không nhét vào `project.json`: đó là metadata, không phải chỗ chứa markup — sẽ mất syntax highlighting, khuôn mẫu component và lint.
 
+**Ai dùng cái nào (đo từ 5 màn thật, không suy đoán):** `home`/`diary` có tab và nav riêng (date switcher) → chỉ include `app-tabs`. `confirm`/`textvoice` lặp **y hệt** nhau ở cặp "back = Hủy + tiêu đề" → include `app-nav` và ghi đè tiêu đề, nên markup "Hủy" chỉ còn một chỗ. `camera` có nav riêng và không tab → không include file nào. Kit `foundation-kit` giữ một bộ destination **ví dụ** trong `app-tabs.html` để copy sang project mới.
+
+Hệ quả: một file chrome không có ai include là file chết — `camera` cố tình không include `app-nav`, và điều đó được ghi ở đây thay vì để lại một component không dùng.
+
 ### D2. Hai lượt nhấc, màn thắng từng slot
 
 Thứ tự mới trong `composeScreenDoc`:

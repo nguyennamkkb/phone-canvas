@@ -11,11 +11,11 @@
 
 ## 2. Compose: hai lượt nhấc, màn thắng từng slot, tab có danh tính
 
-- [ ] 2.1 Trong `src/extractor/compose.ts`, đổi thứ tự `composeScreenDoc`: nhấc `data-slot` / `data-tab` của màn TRƯỚC, rồi `expandComponents`, rồi nhấc phần còn lại và chỉ điền slot còn thiếu. Verify: unit test mới — màn khai `data-slot="title"` thắng tiêu đề mặc định của component, `back` không khai thì vẫn lấy từ component.
-- [ ] 2.2 Cho slot rỗng của màn (`<span data-slot="title"></span>`) thắng mặc định của component. Verify: unit test — màn có slot rỗng không nhận tiêu đề mặc định, và không có phần tử tiêu đề nào được phát ra.
+- [x] 2.1 Trong `src/extractor/compose.ts`, đổi thứ tự `composeScreenDoc`: nhấc `data-slot` / `data-tab` của màn TRƯỚC, rồi `expandComponents`, rồi nhấc phần còn lại và chỉ điền slot còn thiếu. Verify: unit test mới — màn khai `data-slot="title"` thắng tiêu đề mặc định của component, `back` không khai thì vẫn lấy từ component.
+- [x] 2.2 Cho slot rỗng của màn (`<span data-slot="title"></span>`) thắng mặc định của component. Verify: unit test — màn có slot rỗng không nhận tiêu đề mặc định, và không có phần tử tiêu đề nào được phát ra.
 - [ ] 2.3 Với `data-tab`: màn khai bất kỳ tab nào thì cả danh sách của màn thắng; màn vừa include `app-tabs` vừa tự khai `data-tab` bị coi là lỗi nhập nhằng. Verify: unit test cho cả hai ca, và ca nhập nhằng có thông báo nêu rõ chỉ được một nguồn.
-- [ ] 2.4 Đổi `data-tab` sang mang slug destination; đọc `data-tab-active` trên `.screen` và tự suy ra `is-active`, `aria-current="page"`, `aria-label` và thứ tự "tab N trên M" từ vị trí thật trong bộ. Verify: unit test compose — active đúng một tab, đổi thứ tự bộ thì `aria-label` và số thứ tự đổi theo mà không sửa màn.
-- [ ] 2.5 Phát `.region-nav` và `.region-tabs` dưới dạng `<nav>` kèm `aria-label`. Verify: unit test compose kiểm tag và thuộc tính; `npm run audit:regions` vẫn in `chrome: ok` và `region-order: ok` cho 7 màn.
+- [x] 2.4 Đổi `data-tab` sang mang slug destination; đọc `data-tab-active` trên `.screen` và tự suy ra `is-active`, `aria-current="page"`, `aria-label` và thứ tự "tab N trên M" từ vị trí thật trong bộ. Verify: unit test compose — active đúng một tab, đổi thứ tự bộ thì `aria-label` và số thứ tự đổi theo mà không sửa màn.
+- [x] 2.5 Phát `.region-nav` và `.region-tabs` dưới dạng `<nav>` kèm `aria-label`. Verify: unit test compose kiểm tag và thuộc tính; `npm run audit:regions` vẫn in `chrome: ok` và `region-order: ok` cho 7 màn.
 
 ## 3. Lint: phủ component, luật tab, hợp đồng một thân
 
@@ -27,11 +27,11 @@
 
 ## 4. Chrome của calo-ai và migrate 5 màn
 
-- [ ] 4.1 Tạo `project/calo-ai/components/app-tabs.html` với 4 destination slug (`home`, `scan`, `diary`, `me`), mỗi tab có icon và nhãn; tạo `app-nav.html` với `data-slot="back"` (symbol chuẩn) và `data-slot="title"`. Verify: `npm run lint:components` và `npm run lint:regions` xanh; board preview được từng component.
-- [ ] 4.2 Migrate `home` và `diary` sang `<!-- @component app-tabs -->` + `data-tab-active`, bỏ 4 nút tab chép tay ở mỗi màn. Verify: `npm run gate` xanh, `npm run export -- --screen home` và `--screen diary` ra PNG khung máy khớp bản trước.
-- [ ] 4.3 Migrate `confirm` và `textvoice` sang `<!-- @component app-nav -->`, ghi đè tiêu đề bằng slot của màn (giữ nhãn "Hủy" ở slot back). Verify: gate xanh, PNG khung máy của hai màn khớp bản trước.
-- [ ] 4.4 Migrate `camera`: giữ nav riêng, không include `app-tabs` vì màn không có tab. Verify: gate xanh, `npm run audit:regions -- --screen camera` không báo band tab, PNG khớp bản trước.
-- [ ] 4.5 Dựng `app-nav` / `app-tabs` tham chiếu trong `project/foundation-kit/components/` làm mẫu copy cho project mới. Verify: gate xanh và `foundation-showcase` vẫn dựng đúng.
+- [x] 4.1 Tạo `project/calo-ai/components/app-tabs.html` với 4 destination slug (`home`, `scan`, `diary`, `me`), mỗi tab có icon và nhãn; tạo `app-nav.html` với `data-slot="back"` (symbol chuẩn) và `data-slot="title"`. Verify: `npm run lint:components` và `npm run lint:regions` xanh; board preview được từng component.
+- [x] 4.2 Migrate `home` và `diary` sang `<!-- @component app-tabs -->` + `data-tab-active`, bỏ 4 nút tab chép tay ở mỗi màn. Verify: `npm run gate` xanh, `npm run export -- --screen home` và `--screen diary` ra PNG khung máy khớp bản trước.
+- [x] 4.3 Migrate `confirm` và `textvoice` sang `<!-- @component app-nav -->`, ghi đè tiêu đề bằng slot của màn (giữ nhãn "Hủy" ở slot back). Verify: gate xanh, PNG khung máy của hai màn khớp bản trước.
+- [x] 4.4 Migrate `camera`: giữ nav riêng, không include `app-tabs` vì màn không có tab. Verify: gate xanh, `npm run audit:regions -- --screen camera` không báo band tab, PNG khớp bản trước.
+- [x] 4.5 Dựng `app-nav` / `app-tabs` tham chiếu trong `project/foundation-kit/components/` làm mẫu copy cho project mới. Verify: gate xanh và `foundation-showcase` vẫn dựng đúng.
 - [ ] 4.6 Ghi mục "Chrome dùng chung" vào `docs/screen-regions.md` và recipe `.agents/skills/phone-canvas/recipes/regions.md`: hai file, luật ghi đè từng slot, cách khai `data-tab-active`. Verify: đọc recipe dựng lại được một màn tab theo đúng mô tả mà không cần đọc mã nguồn.
 
 ## 5. Generator sinh màn hợp lệ

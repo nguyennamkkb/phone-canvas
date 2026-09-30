@@ -89,7 +89,7 @@ describe('composeScreenDoc · shell-owned bands (v2)', () => {
   const slotted = {
     html:
       '<div class="screen" style="background-color: var(--bg)">' +
-      '<div class="body"><button data-tab>Home</button><button data-tab>Scan</button></div>' +
+      '<div class="body"><button data-tab="home" class="tab">Home</button><button data-tab="scan" class="tab">Scan</button></div>' +
       '<button data-slot="right" class="pill-soft">5 ngày</button>' +
       '<button data-slot="back" aria-label="Quay lại"><span data-symbol="chevron.left"></span></button>' +
       '<span data-slot="title" class="nav-title">Hôm nay</span>' +
@@ -100,7 +100,7 @@ describe('composeScreenDoc · shell-owned bands (v2)', () => {
 
   it('hoists data-slot into .region-nav in back · title · right order, whatever the author wrote', () => {
     const html = composeScreenDoc(slotted)
-    expect(html).toContain('<div class="region-nav">')
+    expect(html).toContain('<nav class="region-nav"')
     const back = html.indexOf('data-slot="back"')
     const title = html.indexOf('data-slot="title"')
     const right = html.indexOf('data-slot="right"')
@@ -111,16 +111,16 @@ describe('composeScreenDoc · shell-owned bands (v2)', () => {
 
   it('hoists data-tab into .region-tabs in document order', () => {
     const html = composeScreenDoc(slotted)
-    expect(html).toContain('<div class="region-tabs">')
+    expect(html).toContain('<nav class="region-tabs"')
     expect(html.indexOf('>Home<')).toBeLessThan(html.indexOf('>Scan<'))
   })
 
   it('places the bands inside .viewport and outside .screen', () => {
     const html = composeScreenDoc(slotted)
     const viewport = html.indexOf('<div class="viewport">')
-    const nav = html.indexOf('<div class="region-nav">')
+    const nav = html.indexOf('<nav class="region-nav"')
     const screen = html.indexOf('<div class="screen')
-    const tabs = html.indexOf('<div class="region-tabs">')
+    const tabs = html.indexOf('<nav class="region-tabs"')
     expect(viewport).toBeLessThan(nav)
     expect(nav).toBeLessThan(screen)
     expect(screen).toBeLessThan(tabs)
@@ -141,9 +141,9 @@ describe('composeScreenDoc · shell-owned bands (v2)', () => {
     // the root background is still replayed onto .device (screenBgOf ran on the
     // post-lift markup, which keeps the `.screen` root tag)
     expect(html).toContain('style="background-color: var(--bg);"')
-    const screenChunk = html.slice(html.indexOf('<div class="screen'), html.indexOf('<div class="region-tabs">'))
+    const screenChunk = html.slice(html.indexOf('<div class="screen'), html.indexOf('<nav class="region-tabs"'))
     expect(screenChunk).not.toContain('data-slot="back"')
-    expect(screenChunk).not.toContain('data-tab')
+    expect(screenChunk).not.toContain('data-tab=')
   })
 
   it('keeps slot markup untouched in bare mode (component preview)', () => {
@@ -151,6 +151,108 @@ describe('composeScreenDoc · shell-owned bands (v2)', () => {
     expect(html).not.toContain('region-nav')
     expect(html).not.toContain('region-tabs')
     expect(html).toContain('data-slot="back"')
+  })
+})
+
+describe('composeScreenDoc · shared chrome', () => {
+  const components = {
+    'app-nav':
+      '<button data-slot="back" aria-label="Quay lại"><span data-symbol="chevron.left"></span></button>' +
+      '<span data-slot="title" class="nav-title">Tiêu đề mặc định</span>',
+    'app-tabs':
+      '<button data-tab="home" class="tab">Home</button>' +
+      '<button data-tab="diary" class="tab">Diary</button>',
+  }
+  const compose = (html: string) => composeScreenDoc({ html, device, stylesheets: [], components })
+
+  it('emits both bands as <nav> with a label, so the author never names them', () => {
+    const html = compose(
+      '<div class="screen"><div class="body"></div>' +
+        '<span data-slot="title">Hôm nay</span><button data-tab="home" class="tab">Home</button></div>',
+    )
+    expect(html).toContain('<nav class="region-nav" aria-label="Điều hướng">')
+    expect(html).toContain('<nav class="region-tabs" aria-label="Thanh tab">')
+  })
+
+  it('lets the screen win a slot the component also declares', () => {
+    const html = compose(
+      '<div class="screen"><div class="body"></div>' +
+        '<span data-slot="title">Xác nhận món</span><!-- @component app-nav --></div>',
+    )
+    expect(html).toContain('Xác nhận món')
+    expect(html).not.toContain('Tiêu đề mặc định')
+    // the slot the screen did not declare still comes from the component
+    expect(html).toContain('data-slot="back"')
+  })
+
+  it('treats an empty screen slot as a deliberate blank that blocks the default', () => {
+    const html = compose(
+      '<div class="screen"><div class="body"></div>' +
+        '<span data-slot="title"></span><!-- @component app-nav --></div>',
+    )
+    expect(html).toContain('<div class="nav-slot-title">')
+    expect(html).not.toContain('Tiêu đề mặc định')
+  })
+
+  it('fills the whole nav from the component when the screen declares none', () => {
+    const html = compose('<div class="screen"><div class="body"></div><!-- @component app-nav --></div>')
+    expect(html).toContain('<div class="nav-slot-back">')
+    expect(html).toContain('<div class="nav-slot-title">')
+    expect(html).toContain('Tiêu đề mặc định')
+  })
+
+  it('names several slots on one element, in either separator style', () => {
+    const spaced = compose(
+      '<div class="screen"><div class="body"></div><span data-slot="back title" class="nav-title">Cả hai</span></div>',
+    )
+    expect(spaced).toContain('<div class="nav-slot-back">')
+    expect(spaced).toContain('<div class="nav-slot-title">')
+    const piped = compose(
+      '<div class="screen"><div class="body"></div><span data-slot="back|title" class="nav-title">Cả hai</span></div>',
+    )
+    expect(piped).toContain('<div class="nav-slot-back">')
+    expect(piped).toContain('<div class="nav-slot-title">')
+  })
+
+  it('derives the active tab, aria-current and the label from data-tab-active', () => {
+    const html = compose(
+      '<div class="screen" data-tab-active="diary"><div class="body"></div><!-- @component app-tabs --></div>',
+    )
+    const band = html.slice(html.indexOf('<nav class="region-tabs"'), html.indexOf('</nav>'))
+    const first = band.slice(0, band.indexOf('</button>') + 9)
+    const second = band.slice(band.indexOf('<button', band.indexOf('</button>')))
+    expect(first).not.toContain('is-active')
+    expect(first).toContain('aria-label="Home, tab 1 trên 2"')
+    expect(second).toContain('is-active')
+    expect(second).toContain('aria-current="page"')
+    expect(second).toContain('aria-label="Diary, tab 2 trên 2"')
+  })
+
+  it('omits any active marker when the screen declares no data-tab-active', () => {
+    const html = compose('<div class="screen"><div class="body"></div><!-- @component app-tabs --></div>')
+    expect(html).not.toContain('is-active')
+    expect(html).not.toContain('aria-current')
+  })
+
+  it("lets the screen's own tab list win the whole list over the component's", () => {
+    const html = compose(
+      '<div class="screen"><div class="body"></div>' +
+        '<!-- @component app-tabs --><button data-tab="me" class="tab">Me</button></div>',
+    )
+    expect(html).toContain('>Me<')
+    expect(html).not.toContain('>Diary<')
+  })
+
+  it('expands components in bare mode without building a band', () => {
+    const html = composeScreenDoc({
+      html: '<div class="screen"><div class="body"></div><!-- @component app-nav --></div>',
+      device,
+      stylesheets: [],
+      components,
+      bare: true,
+    })
+    expect(html).toContain('Tiêu đề mặc định')
+    expect(html).not.toContain('region-nav')
   })
 })
 
