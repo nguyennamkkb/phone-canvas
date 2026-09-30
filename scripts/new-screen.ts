@@ -192,7 +192,7 @@ function template(title, themeClass, deviceId, kind, firstSlug) {
     // Proven by scratch-watch/heart (change device-format-coverage). No slots,
     // no tabs: watch chrome is author-owned, and a scroller-less surface must
     // not inherit the phone body.
-    return `<div class="screen${themeClass}" style="background-color: var(--bg); padding: var(--s3); gap: var(--s1)">
+    return `<div class="screen${themeClass}" style="background-color: var(--bg); padding: var(--s3) var(--s4); gap: var(--s1)">
   <div class="row" style="justify-content: space-between; align-items: center">
     <span class="t-footnote t-secondary">9:41</span>
     <span class="t-footnote t-secondary">${title}</span>
@@ -210,7 +210,7 @@ function template(title, themeClass, deviceId, kind, firstSlug) {
     // Proven by scratch-widget/today (change device-format-coverage). An
     // overflowing widget is a content bug, so there is deliberately no body
     // to hide behind; keep every child inside 169 pt of height.
-    return `<div class="screen${themeClass}" style="background-color: var(--bg); padding: var(--s3); gap: var(--s1); justify-content: center">
+    return `<div class="screen${themeClass}" style="background-color: var(--bg); padding: var(--s4); gap: var(--s1); justify-content: center">
   <span class="t-footnote t-secondary">${title}</span>
   <div class="t-title2">Thay bằng một số thật</div>
   <div class="t-subhead t-secondary">thay bằng một dòng phụ</div>

@@ -8,3 +8,7 @@
   --cta: #0a84ff;
   --track: rgba(120, 120, 128, 0.24);
 }
+
+.screen {
+  --faint: rgba(60, 60, 67, 0.5);
+}

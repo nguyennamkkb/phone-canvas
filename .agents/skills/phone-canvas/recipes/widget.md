@@ -28,15 +28,14 @@ insufficient — small first, like `reference` 390 does for phone.
 
 ```html
 <!-- pc {"title":"...","deviceId":"widget-small"} -->
-<div class="screen" style="background-color: var(--bg); padding: var(--s3); gap: var(--s1); justify-content: center">
+<div class="screen" style="background-color: var(--bg); padding: var(--s4); gap: var(--s1); justify-content: center">
   <span class="t-footnote t-secondary">…eyebrow…</span>
   <div class="t-title2">…one value…</div>
   <div class="t-subhead t-secondary">…one sub-line…</div>
 </div>
 ```
 
-- Main text ≥ medium weight; body ≥ 11 pt; margin concentric with the
-  container's own radius.
+- Lề 16 pt (`--s4`), đồng tâm với bo của container.
 - Dynamic Type Large → AX5 must not break the fit — short strings only.
 - A project that draws widgets needs its own `tokens.css` layer (the global
   set does not define product colors like `--cta`); the gate names the

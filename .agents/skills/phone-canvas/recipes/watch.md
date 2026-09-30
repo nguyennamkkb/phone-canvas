@@ -27,7 +27,7 @@ export/audit matrix small, mirroring what `reference` 390 does for phone.
 
 ```html
 <!-- pc {"title":"...","deviceId":"watch-45"} -->
-<div class="screen" style="background-color: var(--bg); padding: var(--s3); gap: var(--s1)">
+<div class="screen" style="background-color: var(--bg); padding: var(--s3) var(--s4); gap: var(--s1)">
   <div class="row" style="justify-content: space-between; align-items: center">
     <span class="t-footnote t-secondary">9:41</span>
     <span class="t-footnote t-secondary">…context…</span>
@@ -40,7 +40,7 @@ export/audit matrix small, mirroring what `reference` 390 does for phone.
 </div>
 ```
 
-- Labels stay short (≤ 3 words per surface); body text ≥ 11 pt.
+- Lề ngang 16 pt (`--s4`) vì mép cong ăn nội dung; lề dọc 12 pt (`--s3`).
 - The action fills the bottom bar at full width, ≥ 44 pt tall.
 - Everything must fit 242 pt: nothing scrolls, so an overflowing face is a
   content bug the audit reports, not a hidden scrollbar.
