@@ -86,6 +86,9 @@ function registryGuardDev(): Plugin {
 
       void refresh(false)
       const onProjectFile = (file: string) => {
+        // export output lives beside the screens — a PNG landing must not
+        // re-run the registry check, let alone disturb the board
+        if (file.includes(`${path.sep}exports${path.sep}`)) return
         if (file.includes(`${path.sep}project${path.sep}`)) void refresh(true)
       }
       server.watcher.on('add', onProjectFile)

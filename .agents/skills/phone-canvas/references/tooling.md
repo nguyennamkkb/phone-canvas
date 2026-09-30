@@ -18,9 +18,11 @@ npm run new-screen -- --project <id> --name <name> --title "..." [--kind push]  
 npm run rename-screen -- --id <old> --to <new>                   # alias: same as screen -- rename
 npm run delete-screen -- --id <screen-id> [--force]                # alias: same as screen -- remove
 npm run export     # every screen → exports/<id>@2x.png
+npm run export -- --project <id>   # that project's screens → project/<id>/exports/
 npm run export -- --screen lesson-details --scale 3
 npm run export -- --device all --out docs/shots
 npm run export -- --list          # ids, titles, devices
+npm run export:icons -- --project <id>   # that project's glyphs → project/<id>/exports/icons/
 npm run icons      # regenerate src/screens/icon-set.css from public/icons/
 ```
 

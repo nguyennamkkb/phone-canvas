@@ -55,10 +55,12 @@ element — to an LLM.
 
 ```bash
 npm run export                                       # every screen, device frame @2x → exports/
+npm run export -- --project calo-ai                  # that project's screens → project/calo-ai/exports/
 npm run export -- --screen my-screen --scale 3
 npm run export -- --screen my-screen --full          # whole page, not the frame
 npm run export -- --device all --out docs/shots
 npm run export -- --list
+npm run export:icons -- --project calo-ai            # that project's glyphs → project/calo-ai/exports/icons/
 ```
 
 Zero dependencies. A screen is real HTML, so something has to lay it out — the

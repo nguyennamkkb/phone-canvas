@@ -39,6 +39,13 @@ describe('export cli', () => {
     expect(parseArgs(['--screen', 'home']).full).toBe(false)
     expect(parseArgs(['--screen', 'home', '--full']).full).toBe(true)
   })
+
+  it('defaults --out into the project folder for a single --project', () => {
+    expect(parseArgs(['--project', 'calo-ai']).out).toBe('project/calo-ai/exports')
+    expect(parseArgs(['--project', 'calo-ai', '--out', '/tmp/x']).out).toBe('/tmp/x')
+    expect(parseArgs([]).out).toBe('exports')
+    expect(parseArgs(['--project', 'a', '--project', 'b']).out).toBe('exports')
+  })
 })
 
 describe('export smoke (needs Chrome)', () => {

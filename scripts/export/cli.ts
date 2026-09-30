@@ -11,6 +11,11 @@ export type Options = {
   scale: number
   out: string
   /**
+   * True when the user passed `--out` explicitly. A single `--project` picks
+   * a project folder default only when `--out` was not given.
+   */
+  explicitOut: boolean
+  /**
    * True when the user passed ≥1 `--device` explicitly. The exporter keeps a
    * device suffix in that case even for a single device, so a phone export and
    * an iPad export of the same screen never silently overwrite each other.
@@ -52,7 +57,7 @@ Export phone screens to PNG.
                    suffix, so phone and tablet exports never overwrite
   --theme <mode>   light, dark, or all, repeatable            (default: light)
   --scale <n>      pixel density multiplier                  (default: 2)
-  --out <dir>      output directory                          (default: exports)
+  --out <dir>      output directory (default: exports, or project/<id>/exports with one --project)
   --full           capture the whole document, not the device frame
                    (default: the device frame; taller content is scrolled out)
   --list           print available screens and devices, then exit
@@ -67,7 +72,7 @@ Examples
 `.trim()
 
 export function parseArgs(argv: string[]): Options {
-  const options: Options = { screens: ['all'], devices: ['reference'], projects: [], themes: ['light'], scale: 2, out: 'exports', explicitDevices: false, full: false }
+  const options: Options = { screens: ['all'], devices: ['reference'], projects: [], themes: ['light'], scale: 2, out: 'exports', explicitOut: false, explicitDevices: false, full: false }
   const screens: string[] = []
   const devices: string[] = []
   const projects: string[] = []
@@ -109,6 +114,7 @@ export function parseArgs(argv: string[]): Options {
       }
       case '--out':
         options.out = next()
+        options.explicitOut = true
         break
       case '--full':
         options.full = true
@@ -123,5 +129,8 @@ export function parseArgs(argv: string[]): Options {
   options.explicitDevices = devices.length > 0
   options.themes = themes.length ? themes : ['light']
   options.projects = projects
+  if (!options.explicitOut && projects.length === 1) {
+    options.out = `project/${projects[0]}/exports`
+  }
   return options
 }

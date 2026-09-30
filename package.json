@@ -8,6 +8,7 @@
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
     "export": "node --disable-warning=ExperimentalWarning scripts/export.ts",
+    "export:icons": "node --disable-warning=ExperimentalWarning scripts/export-icons.ts",
     "locate": "node --disable-warning=ExperimentalWarning scripts/locate.ts",
     "icons": "node --disable-warning=ExperimentalWarning scripts/icons.ts",
     "lint:tokens": "node --disable-warning=ExperimentalWarning scripts/tokens-lint.ts",
