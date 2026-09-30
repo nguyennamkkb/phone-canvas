@@ -334,3 +334,40 @@ describe('screenBgOf (optional screen background)', () => {
     expect(html).not.toContain('class="device is-dark"')
   })
 })
+
+describe('ensureNavButton (nav slot auto-wrap)', () => {
+  const doc = (inner: string) =>
+    composeScreenDoc({
+      html: `<div class="screen"><div class="body">${inner}</div></div>`,
+      device,
+      stylesheets: [],
+    })
+
+  it('bọc chữ/icon trần ở slot back/right thành nút shell', () => {
+    const html = doc(
+      '<span data-slot="right" class="t-footnote">1.250/1.850 kcal</span>' +
+        '<span data-slot="back"><span class="icon" data-symbol="chevron.left"></span></span>',
+    )
+    expect(html).toContain(
+      '<button type="button" class="shell-nav-btn"><span data-slot="right" class="t-footnote">1.250/1.850 kcal</span></button>',
+    )
+    expect(html).toContain('data-symbol="chevron.left"></span></span></button>')
+  })
+
+  it('giữ nguyên nút tác giả viết và không bọc title', () => {
+    const html = doc(
+      '<button data-slot="right" class="nav-round" aria-label="Chụp"><span class="icon"></span></button>' +
+        '<span data-slot="title" class="t-headline">Xác nhận món</span>',
+    )
+    expect(html).not.toContain('shell-nav-btn"><button')
+    expect(html).toContain('<div class="nav-slot-title"><span data-slot="title" class="t-headline">Xác nhận món</span></div>')
+  })
+
+  it('không bọc lồng khi ruột đã có control', () => {
+    const html = doc(
+      '<div data-slot="right" class="row"><button class="pill-soft" aria-label="Streak">5 ngày</button></div>',
+    )
+    expect(html).not.toContain('shell-nav-btn')
+    expect(html).toContain('<div class="nav-slot-right"><div data-slot="right" class="row">')
+  })
+})

@@ -383,26 +383,25 @@ Output thật của `npm run gate`:
       Tests  143 passed (143)
 ```
 
-### Cập nhật 30/09/2026 — thu gọn bộ màn calo-ai
+### Cập nhật 30/09/2026 — thu gọn bộ màn calo-ai (đợt 2: còn 3 màn)
 
-Theo yêu cầu, calo-ai giữ lại **5 màn lõi** để test chức năng chính:
+Đợt 1 giữ lại 5 màn lõi (`home`, `camera`, `textvoice`, `confirm`, `diary`).
+Đợt 2 theo yêu cầu chỉ giữ **3 màn vẽ lại theo Wireframes**:
 
-| Màn | Vai trò trong vòng lặp lõi |
+| Màn | Vai trò |
 |---|---|
-| `home` | hub: tổng calo hôm nay, bữa ăn, streak, đổi ngày |
-| `camera` | log bằng ảnh — AI nhận món |
-| `textvoice` | log bằng chữ/giọng nói, có xem trước "AI hiểu như sau" |
-| `confirm` | human-in-the-loop: sửa/xác nhận kết quả AI trước khi lưu |
-| `diary` | vòng lặp: log đã ghi theo ngày |
+| `stats` | WF-017 History/Stats: segmented tuần/tháng, chart cột, history relog |
+| `food-detail` | WF-009: macro meter, suất 0.5/1.0/1.5, chọn bữa, CTA Log |
+| `settings` | WF-015: grouped list, toggle, danger zone |
 
-21 màn còn lại đã xoá (đã backup ngoài git). Từ đây:
+Từ đây:
 
-* `npm run audit:regions` chạy trên **7 màn** (5 calo-ai + 2 foundation-kit),
-  không phải 28 — các số ở cột "Sau" bên trên là nền đo lúc change hoàn tất.
+* `npm run audit:regions` chạy trên **5 màn** (3 calo-ai + 2 foundation-kit).
 * `.split` / `.rail` / `.sidebar` / `.pane` hiện **không màn nào dùng** nữa;
   luật của chúng vẫn đúng nhưng chỉ còn được kiểm bằng fixture trong
   `scripts/region-lint.test.ts`. Muốn có ví dụ sống lại thì tạo một màn với
-  `--device duo-inner`.
+  `--device duo-inner` (Duo) hoặc `ipad-11` (tablet, xem change
+  `device-format-coverage`).
 
 Ba lỗi thật mà tầng đo bắt được, đã sửa — ghi lại vì chúng không thấy được bằng mắt:
 

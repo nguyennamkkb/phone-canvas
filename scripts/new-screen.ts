@@ -145,33 +145,75 @@ ${nav}${body('body', 'padding: var(--s4) var(--s5); gap: var(--s4)')}${closed}`
 
 function template(title, themeClass, deviceId, kind, firstSlug) {
   if (deviceId && deviceId.startsWith('ipad')) {
-    // iPad template: list + detail side by side, token classes only — no px.
-    // Flex ratios are unitless so the same file stays fluid on any device width.
-    // No band classes: the shell owns nav/tab bands on every form factor, so a
-    // hand-built `.navbar` here would fail lint:regions.
-    return `<div class="screen${themeClass}">
-  <span data-slot="title" class="nav-title">${title}</span>
-  <div class="body" style="padding: var(--s4) var(--s5); gap: var(--s4)">
-    <div class="row" style="gap: var(--s4); align-items: stretch">
-      <div class="paper-card" style="flex: 1 1 0; min-width: 0; gap: var(--s2)">
+    // iPad template: leading sidebar + title + 2-pane split, proven by the
+    // scratch-tablet/library sample (change device-format-coverage). Token
+    // classes only — no px. Tablet bands are author-owned (the shell only
+    // owns phone bands), so sidebar/split are drawn here, never a phone
+    // nav/tab: no data-slot, no app-tabs include.
+    return `<div class="screen${themeClass}" style="background-color: var(--bg); flex-direction: row">
+  <div class="sidebar" style="padding: var(--s4) var(--s3)">
+    <div class="sidebar-head">Danh mục</div>
+    <button class="sidebar-item is-active" aria-current="page" aria-label="Mục một">
+      <span class="icon icon-sm" data-symbol="square.grid.2x2"></span>
+      <span>Mục một</span>
+    </button>
+    <button class="sidebar-item" aria-label="Mục hai">
+      <span class="icon icon-sm" data-symbol="clock"></span>
+      <span>Mục hai</span>
+    </button>
+    <button class="sidebar-item" aria-label="Mục ba">
+      <span class="icon icon-sm" data-symbol="star"></span>
+      <span>Mục ba</span>
+    </button>
+    <button class="sidebar-item" aria-label="Mục bốn">
+      <span class="icon icon-sm" data-symbol="gear"></span>
+      <span>Mục bốn</span>
+    </button>
+  </div>
+  <div class="col" style="flex: 1 1 auto; min-width: 0; gap: 0">
+    <div class="t-title2" style="padding: var(--s4) var(--s4) var(--s2)">${title}</div>
+    <div class="split" style="flex: 1 1 auto; min-height: 0; padding: 0 var(--s4) var(--s4); gap: var(--s4)">
+      <div class="pane-lead paper-card" style="gap: var(--s2)">
         <div class="t-headline">Danh sách</div>
-        <div class="row" style="justify-content: space-between">
-          <span class="t-subhead">Mục mẫu một</span>
-          <span class="chip">Mới</span>
-        </div>
-        <div class="row" style="justify-content: space-between">
-          <span class="t-subhead">Mục mẫu hai</span>
-          <span class="chip">Xem</span>
-        </div>
+        <div class="t-subhead t-secondary">Các mục của ngăn dẫn hiện ở đây.</div>
       </div>
-      <div class="paper-card" style="flex: 2 1 0; min-width: 0; gap: var(--s2)">
-        <div class="t-title2">Chi tiết</div>
-        <p class="t-subhead t-secondary">Chọn một mục bên trái để xem chi tiết ở đây.</p>
-        <div class="spacer"></div>
-        <button class="btn btn-primary btn-block">Tiếp tục</button>
+      <div class="pane-trail paper-card" style="gap: var(--s2); align-items: center; justify-content: center">
+        <div class="t-title3">Ngăn chi tiết</div>
+        <div class="t-subhead t-secondary">Placeholder — không để cột trống trơn.</div>
+        <button class="btn btn-primary">Tiếp tục</button>
       </div>
     </div>
   </div>
+</div>
+`
+  }
+  if (deviceId && deviceId.startsWith('watch')) {
+    // Watch template: top bar + one metric + bottom-bar action, no scroll.
+    // Proven by scratch-watch/heart (change device-format-coverage). No slots,
+    // no tabs: watch chrome is author-owned, and a scroller-less surface must
+    // not inherit the phone body.
+    return `<div class="screen${themeClass}" style="background-color: var(--bg); padding: var(--s3); gap: var(--s1)">
+  <div class="row" style="justify-content: space-between; align-items: center">
+    <span class="t-footnote t-secondary">9:41</span>
+    <span class="t-footnote t-secondary">${title}</span>
+  </div>
+  <div class="col" style="flex: 1 1 auto; min-height: 0; gap: 0; align-items: center; justify-content: center">
+    <div class="t-large">–</div>
+    <div class="t-subhead t-secondary">thay bằng một số thật</div>
+  </div>
+  <button class="btn btn-primary btn-block">Thay bằng hành động chính</button>
+</div>
+`
+  }
+  if (deviceId && deviceId.startsWith('widget')) {
+    // Widget template: glance content only — no scroll, no input, no bands.
+    // Proven by scratch-widget/today (change device-format-coverage). An
+    // overflowing widget is a content bug, so there is deliberately no body
+    // to hide behind; keep every child inside 169 pt of height.
+    return `<div class="screen${themeClass}" style="background-color: var(--bg); padding: var(--s3); gap: var(--s1); justify-content: center">
+  <span class="t-footnote t-secondary">${title}</span>
+  <div class="t-title2">Thay bằng một số thật</div>
+  <div class="t-subhead t-secondary">thay bằng một dòng phụ</div>
 </div>
 `
   }
@@ -240,7 +282,10 @@ async function main() {
   // `root` screen needs a real destination to point `data-tab-active` at.
   // Refuse BEFORE writing: a scaffold that fails lint is what this replaces.
   const isIpad = deviceId !== null && deviceId.startsWith('ipad')
-  const needs = !isIpad && (kind === 'root' || kind === 'modal') ? `app-${kind === 'root' ? 'tabs' : 'nav'}` : null
+  const isWatch = deviceId !== null && deviceId.startsWith('watch')
+  const isWidget = deviceId !== null && deviceId.startsWith('widget')
+  const nonPhone = isIpad || isWatch || isWidget
+  const needs = !nonPhone && (kind === 'root' || kind === 'modal') ? `app-${kind === 'root' ? 'tabs' : 'nav'}` : null
   const chrome = new Map(
     registry.components.filter((c) => c.project === project).map((c) => [c.id, c.html]),
   )
@@ -251,7 +296,7 @@ async function main() {
     )
   }
   const destinations = chrome.has('app-tabs') ? slugsIn(chrome.get('app-tabs')) : []
-  if (!isIpad && kind === 'root' && destinations.length === 0) {
+  if (!nonPhone && kind === 'root' && destinations.length === 0) {
     fail(
       `--kind root cần ít nhất một destination trong project/${project}/components/app-tabs.html\n` +
         `  thêm một \`data-tab="<slug>"\` vào đó trước, hoặc dùng --kind push | bare`,
@@ -275,8 +320,8 @@ async function main() {
   )
 
   console.log(`created ${file}`)
-  console.log(`kind: ${isIpad ? '(ipad template)' : kind}`)
-  if (!isIpad && kind !== 'bare' && title.length >= 15) {
+  console.log(`kind: ${isIpad ? '(ipad template)' : isWatch ? '(watch template)' : isWidget ? '(widget template)' : kind}`)
+  if (!nonPhone && kind !== 'bare' && title.length >= 15) {
     console.log(
       'note: --title dài ≥ 15 ký tự nên slot nav dùng placeholder "Tiêu đề" — sửa thành tiêu đề thật, một dòng và ngắn',
     )

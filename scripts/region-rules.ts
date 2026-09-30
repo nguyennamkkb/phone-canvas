@@ -510,9 +510,12 @@ export function bodyBandViolations(html: string, form: string): Violation[] {
  * `.rail` exist to name.
  */
 export function undeclaredRegionViolations(src: string, form: string): Violation[] {
+  // Watch/widget chrome is author-owned by design — the static edge check
+  // hunts hand-built *phone* chrome, so it stays silent on these surfaces.
+  // The measured audit still guards touch targets and overflow.
+  if (form === 'watch' || form === 'widget') return []
   const out: Violation[] = []
   const stripped = withoutComments(src)
-  // `.screen` and `.body-fixed`/`.body` are the same kind of wrapper, nested.
   // Bands are the children of the INNERMOST one, so take the last match.
   const bandTag = tagsOf(stripped)
     .filter(({ tag }) => CONTENT_BANDS.test(classesOf(tag).join(' ')))

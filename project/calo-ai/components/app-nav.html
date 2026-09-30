@@ -1,4 +1,4 @@
-<!-- Nav mặc định cho màn dạng modal (confirm, textvoice): quay lại bằng chữ
+<!-- Nav mặc định cho màn dạng modal (confirm, textvoice): quay lại bằng nút
      "Hủy" thay vì chevron, đúng quy ước modal của app.
 
      Màn include file này rồi GHI ĐÈ từng slot: khai `data-slot="title"` của
@@ -6,5 +6,5 @@
      markup "Hủy" chỉ tồn tại ở một chỗ.
 
      Màn có nav riêng (home, diary, camera) thì KHÔNG include file này. -->
-<button data-slot="back" class="pill-ghost" style="border-color: transparent; height: auto; padding-top: var(--s3); padding-bottom: var(--s3)">Hủy</button>
+<button data-slot="back" class="pill-ghost" style="height: auto; padding-top: var(--s3); padding-bottom: var(--s3)">Hủy</button>
 <span data-slot="title" class="nav-title"></span>

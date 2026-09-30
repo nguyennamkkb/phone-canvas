@@ -79,6 +79,43 @@ describe('new-screen produces a screen that already passes the gate', () => {
     })
   }
 
+  it('ipad is born clean (sidebar + split, no phone bands)', async () => {
+    const run = scaffold('zz-kind-ipad', '--device', 'ipad-11')
+    expect(run.status, run.stderr).toBe(0)
+    const html = await readFile(path.join(DIR, 'screens', 'zz-kind-ipad.html'), 'utf8')
+    expect(html).toContain('deviceId":"ipad-11')
+    expect(html).toContain('class="sidebar"')
+    expect(html).toContain('class="split"')
+    expect(html).not.toContain('data-slot')
+    expect(html).not.toContain('app-tabs')
+    expect(
+      await screenViolations({ html, form: 'tablet', deviceWidths: DEVICE_SIZES, components: CHROME }),
+    ).toEqual([])
+  })
+
+  it('watch is born clean (top bar + metric + action, no scroll)', async () => {
+    const run = scaffold('zz-kind-watch', '--device', 'watch-45')
+    expect(run.status, run.stderr).toBe(0)
+    const html = await readFile(path.join(DIR, 'screens', 'zz-kind-watch.html'), 'utf8')
+    expect(html).toContain('deviceId":"watch-45')
+    expect(html).not.toContain('data-slot')
+    expect(html).not.toContain('class="body')
+    expect(
+      await screenViolations({ html, form: 'watch', deviceWidths: DEVICE_SIZES, components: CHROME }),
+    ).toEqual([])
+  })
+
+  it('widget is born clean (glance only, no scroll, no bands)', async () => {
+    const run = scaffold('zz-kind-widget', '--device', 'widget-small')
+    expect(run.status, run.stderr).toBe(0)
+    const html = await readFile(path.join(DIR, 'screens', 'zz-kind-widget.html'), 'utf8')
+    expect(html).toContain('deviceId":"widget-small')
+    expect(html).not.toContain('data-slot')
+    expect(html).not.toContain('class="body')
+    expect(
+      await screenViolations({ html, form: 'widget', deviceWidths: DEVICE_SIZES, components: CHROME }),
+    ).toEqual([])
+  })
   it('defaults to push, which needs no chrome from the project', async () => {
     const run = scaffold('zz-kind-default')
     expect(run.status, run.stderr).toBe(0)

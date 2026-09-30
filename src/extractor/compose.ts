@@ -343,6 +343,26 @@ export function slotNames(value: string): string[] {
   return value.split(/[\s|]+/).filter(Boolean)
 }
 
+const NAV_BUTTON_TAG = /^\s*<\s*([a-zA-Z][a-zA-Z0-9-]*)\b/
+const NAV_BUTTON_ROLE = /\brole\s*=\s*["'](?:button|link|tab|switch)["']/i
+const NAV_NESTED_BUTTON = /<(button|a|input|select|textarea)\b|\brole\s*=\s*["'](?:button|link|tab|switch)["']/i
+
+/**
+ * Slot back/right: chữ/icon trần shell tự bọc thành nút đủ 44pt
+ * (`.shell-nav-btn`). Giữ nguyên khi root đã là nút, mang role nút, hoặc
+ * bên trong đã có control — bọc lồng <button> là HTML lỗi, trình duyệt tự
+ * đóng nút ngoài sớm làm vỡ DOM. Slot title không bao giờ bọc.
+ */
+export function ensureNavButton(item: string): string {
+  const tag = NAV_BUTTON_TAG.exec(item)?.[1]?.toLowerCase() ?? ''
+  if (tag === 'button' || tag === 'a' || tag === 'input' || tag === 'select' || tag === 'textarea') return item
+  const openEnd = item.indexOf('>')
+  const open = openEnd === -1 ? item : item.slice(0, openEnd + 1)
+  if (NAV_BUTTON_ROLE.test(open)) return item
+  if (NAV_NESTED_BUTTON.test(item.slice(openEnd + 1))) return item
+  return `<button type="button" class="shell-nav-btn">${item}</button>`
+}
+
 /** the opening tag split from its content — attributes only ever go on the tag */
 function splitOpenTag(outer: string): { open: string; close: string } {
   let quote: string | null = null
@@ -462,12 +482,18 @@ export function composeScreenDoc(options: ComposeOptions): string {
     const defTabs = takeAttributed(defNav.rest, 'data-tab')
     body = defTabs.rest
 
-    const slots = NAV_SLOT_ORDER.map((slot) => {
+    // Ba div luôn đủ mặt: div rỗng làm đối trọng flex:1 để title giữa tâm
+    // cả khi một cạnh không có ruột (goals chỉ có title + right). Không slot
+    // nào có ruột thì khỏi dựng band.
+    const slotBodies = NAV_SLOT_ORDER.map((slot) => {
       const items = ownNav.slots.has(slot) ? ownNav.slots.get(slot) : defNav.slots.get(slot)
       if (!items || items.length === 0) return ''
-      return `<div class="nav-slot-${slot}">${items.join('')}</div>`
-    }).filter(Boolean)
-    if (slots.length > 0) {
+      // back/right: chữ/icon trần thành nút bấm được; title là nhãn, giữ nguyên
+      const bodies = slot === 'title' ? items : items.map(ensureNavButton)
+      return bodies.join('')
+    })
+    if (slotBodies.some((b) => b !== '')) {
+      const slots = slotBodies.map((bodies, i) => `<div class="nav-slot-${NAV_SLOT_ORDER[i]}">${bodies}</div>`)
       navHtml = `\n    <nav class="region-nav" aria-label="Điều hướng">${slots.join('')}</nav>`
     }
 

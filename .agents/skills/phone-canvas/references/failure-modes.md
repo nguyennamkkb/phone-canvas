@@ -164,3 +164,25 @@ disk through `scripts/scan-projects.ts` — both call the same `deriveRegistry`,
 which throws on a duplicate id, so the two can never disagree. (There used to
 be a hand-maintained `src/screens/manifest.ts` and a codegen step; both are
 gone, which is what removed this whole failure class.)
+
+---
+
+## 11. An expanded node that still cuts its content
+
+**Symptom.** The node label shows the content height (e.g. `390 × 863`) but
+the bottom of the screen is cut off and `.body` still scrolls.
+
+**Cause (two stacked).** Growing the iframe is not enough — the document
+inside is still fixed at `--device-h`, so `.viewport` clamps and `.body`
+keeps scrolling. And the override that grows it must beat `CHROME_CSS`,
+which is emitted *after* `extraCss` in `composeScreenDoc`: same specificity
+means the later block wins, so the override needs `!important`.
+
+**How it was found.** The bridge settles it: after expanding, a `height`
+post with `value` (inner document) below `content` (true height) means the
+inner document never grew. `value === content` is the done condition.
+
+**Fix.** `src/canvas/PhoneNode.tsx` layers
+`html, body, .device { height: <contentH>px !important; }` into `extraCss`
+when expanded. Do not "fix" it by editing `CHROME_CSS` heights — that would
+change frame mode too.

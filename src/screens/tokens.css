@@ -35,6 +35,9 @@
   --s8: 32px;
   --s10: 40px;
 
+  /* ---- fixed band widths (Apple dimensions, not spacing) ---- */
+  --sidebar-w: 280px;   /* iPad leading sidebar: fits icon + label, collapsible */
+
   /* ---- radii (iOS 26: larger continuous read; sm/md/full untouched) ---- */
   --r-sm: 8px;
   --r-md: 12px;
@@ -379,7 +382,7 @@ figure {
   display: flex;
   flex-direction: column;
   flex: 0 0 auto;
-  width: var(--s10);
+  width: var(--sidebar-w);
   min-height: 0;
   gap: var(--s1);
   align-items: stretch;
@@ -433,29 +436,58 @@ figure {
   align-items: center;
   gap: var(--s2);
   flex: 0 0 auto;
-  min-height: var(--navbar-min-h);
+  /* Sàn band vừa khít nút 44pt + padding để vùng bấm không bao giờ thò ra ngoài. */
+  min-height: calc(var(--touch-min) + var(--s2) * 2);
   padding: var(--s2) var(--s4);
 }
 
+/* Tự đụng vùng kiểu SwiftUI: hai cạnh flex:1 chia đều band nên điểm giữa
+   của title luôn là tâm band — không phải khoảng thừa lệch nhau. Title dài
+   quá thì tự cụt (ellipsis) thay vì đè lên nút; nút hai cạnh không co
+   (control con đều flex:none / min 44pt). Không absolute, không grid:
+   audit đo gBCR sạch, spec không dính ZStack/Block. */
 .nav-slot-back {
+  flex: 1 1 0;
+  min-width: 0;
   display: flex;
   align-items: center;
-  flex: 0 0 auto;
+  justify-content: flex-start;
 }
 
 .nav-slot-title {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   text-align: center;
 }
 
 .nav-slot-right {
+  flex: 1 1 0;
+  min-width: 0;
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: flex-end;
   gap: var(--s2);
-  flex: 0 0 auto;
-  margin-left: auto;
+}
+
+/* Vùng bấm shell bọc: compose.ts bọc chữ/icon trần trong slot back/right
+   thành nút đủ 44pt. Nút tác giả tự viết giữ nguyên. */
+.shell-nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--touch-min);
+  min-height: var(--touch-min);
+  padding: 0 var(--s1);
+  border: 0;
+  border-radius: var(--r-md);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
 }
 
 .region-tabs {

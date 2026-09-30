@@ -53,7 +53,7 @@ old habits keep working.
 | **Đo đạc** | iframes take pointer events; hover highlights, click selects an element. |
 | **Khung đơn giản / Khung máy** | cosmetic only — never changes a measured number |
 | **+ Màn hình** | clone the next screen onto the board |
-| **Vừa khung** | fit the board |
+| **⤢ / ⤡** | expand the node to the full content height — the iframe *and* the inner document grow together (an `extraCss` override, `!important` so it beats `CHROME_CSS`), then the bridge re-measures and it converges. If an expanded node still cuts content, see failure mode 11. |
 | **🗑** | open the per-project trash dialog (badge = count) |
 | **Xuất** | download `project-id-board.json` (`{ v: 1, projectId, exportedAt, board }`) |
 | **Nhập** | upload a previously exported `.json` — validates version/projectId/schema, then reloads |
@@ -207,3 +207,7 @@ im = Image.open('x.png').convert('RGB'); px = im.load()
 - `npm run delete-screen` refuses if saved boards still reference the id
   (use `--force` to override). Files are only removed by the script — the
   browser never writes into the repo.
+- The `.body` scrollbar is hidden shell-wide (board, export, locate) by
+  `CHROME_CSS` — scrolling still works, and no measured number changes
+  (audit/spec read `scrollHeight`, not scrollbar pixels). Do not re-add
+  scrollbar styling per screen.

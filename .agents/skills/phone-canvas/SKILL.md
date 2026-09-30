@@ -166,7 +166,11 @@ Use the live board to confirm observable behavior:
    nav/tab content with `data-slot="back|title|right"`; the destination list
    lives in `project/<id>/components/app-tabs.html` with a slug per tab
    (`data-tab="home"`), and the screen names the open one once with
-   `data-tab-active="home"` on `.screen`.
+   `data-tab-active="home"` on `.screen`. The shell centres the title on the
+   bar width by balancing both sides (`flex: 1` each, overlong titles get an
+   ellipsis), auto-wraps bare `back`/`right` content into 44 pt buttons
+   (never the title, never anything already containing a control), and floors
+   the band at 60 pt.
 7. **The frame is fixed and the body scrolls.** `.device` is exactly the device
    height, so a screen has exactly ONE vertical scroller: `.body` for content
    taller than the frame, `.body-fixed` for a page that fits. A `.body-fixed`
@@ -205,3 +209,6 @@ classes it uses.
 | free-style catalogue of tokens + components | `recipes/showcase.md` |
 | new project palette, token edit, dark mode, handoff | `recipes/design-tokens.md` |
 | any screen, before you write its top or bottom band | `recipes/regions.md` |
+| iPad sidebar + split (tablet bands are author-owned) | `recipes/tablet.md` |
+| Watch face: top bar + metric + action, no scroll | `recipes/watch.md` |
+| Widget glance: no scroll, no input, no bands | `recipes/widget.md` |

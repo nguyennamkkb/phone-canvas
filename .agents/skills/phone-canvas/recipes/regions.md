@@ -51,6 +51,23 @@ So a screen declares slot content (phone) or an arrangement (iPad/Duo):
 The `back · title · right` order is the shell's, not yours. No nav? Declare no
 slot and the shell builds no band — correct for splash / full-bleed.
 
+## How the shell lays the nav out (you do not)
+
+Three slot divs are always rendered (empty = balancer), and the two sides
+are `flex: 1` each — so the title's midpoint is the bar's midpoint even when
+a side is missing or wider than the other. A title that still overflows
+truncates with an ellipsis instead of sliding under a button.
+
+* Bare text/icons in `back`/`right` are auto-wrapped by `compose.ts` into a
+  44 pt `.shell-nav-btn` — write a plain `<span data-slot="right">…</span>`
+  and it still taps. Anything already a button (or containing one) and the
+  `title` slot are never wrapped.
+* The band floor is 60 pt (`touch-min` + padding), so a 44 pt control never
+  sticks out of it — a collapsed band used to break the measured audit.
+* Modal chrome comes from `components/app-nav.html`: a visible `pill-ghost`
+  **Hủy** button plus an overridable `title` slot. Do not restyle it per
+  screen; override the slot.
+
 **Do not write `is-active` or `aria-label` on a tab.** Write the slug
 (`data-tab="diary"`) in the project's `components/app-tabs.html`, and name the
 open one once, on `.screen` (`data-tab-active="diary"`). The shell derives the

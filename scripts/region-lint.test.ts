@@ -91,6 +91,17 @@ describe('undeclared region', () => {
     ])
   })
 
+  it('stays silent on author-owned surfaces (watch, widget)', () => {
+    const html = wrap(
+      '<div class="row" style="justify-content: space-between"><button class="pill-ghost">Hủy</button><span class="t-headline">Tiêu đề</span></div>',
+    )
+    expect(undeclaredRegionViolations(html, 'phone').map((v) => v.code)).toEqual([
+      'region-undeclared',
+    ])
+    expect(undeclaredRegionViolations(html, 'watch')).toEqual([])
+    expect(undeclaredRegionViolations(html, 'widget')).toEqual([])
+  })
+
   it('rejects a hand-built split between two panes', () => {
     const html = wrap(
       '<div class="row" style="align-items: stretch"><div class="paper-card" style="flex: 1 1 0">a</div><div class="paper-card" style="flex: 2 1 0">b</div></div>',

@@ -25,7 +25,7 @@ export type Device = {
    * source of truth); a node that overrides its device in NodePicker follows
    * the resolved device automatically.
    */
-  form: 'phone' | 'tablet' | 'cover' | 'inner'
+  form: 'phone' | 'tablet' | 'cover' | 'inner' | 'watch' | 'widget'
 }
 
 export const DEVICES: Device[] = [
@@ -125,6 +125,42 @@ export const DEVICES: Device[] = [
     safeBottom: 0,
     island: 'none',
   },
+  {
+    id: 'watch-45',
+    form: 'watch',
+    name: 'Watch 45mm · 198×242',
+    width: 198,
+    height: 242,
+    bezel: 8,
+    radius: 24,
+    safeTop: 0,
+    safeBottom: 0,
+    island: 'none',
+  },
+  {
+    id: 'widget-small',
+    form: 'widget',
+    name: 'Widget Small · 169×169',
+    width: 169,
+    height: 169,
+    bezel: 8,
+    radius: 22,
+    safeTop: 0,
+    safeBottom: 0,
+    island: 'none',
+  },
+  {
+    id: 'widget-medium',
+    form: 'widget',
+    name: 'Widget Medium · 360×169',
+    width: 360,
+    height: 169,
+    bezel: 8,
+    radius: 22,
+    safeTop: 0,
+    safeBottom: 0,
+    island: 'none',
+  },
 ]
 
 export const DEFAULT_DEVICE_ID = 'reference'
@@ -142,7 +178,7 @@ export function isKnownDevice(id: string): boolean {
   return DEVICES.some((d) => d.id === id)
 }
 
-export type FormFactor = 'phone' | 'tablet' | 'cover' | 'inner'
+export type FormFactor = 'phone' | 'tablet' | 'cover' | 'inner' | 'watch' | 'widget'
 
 /**
  * Board label source of truth. Declared `form` wins; a device without one
@@ -158,5 +194,5 @@ export function formFactorOf(id: string): FormFactor {
 
 /** short chip text for the board label — phone is the default, chipless */
 export function formChip(form: FormFactor): string {
-  return form === 'phone' ? '' : form === 'tablet' ? 'Tablet' : form === 'cover' ? 'Cover' : 'Inner'
+  return form === 'phone' ? '' : form === 'tablet' ? 'Tablet' : form === 'cover' ? 'Cover' : form === 'inner' ? 'Inner' : form === 'watch' ? 'Watch' : 'Widget'
 }
