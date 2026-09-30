@@ -1,19 +1,17 @@
 <!-- pc {"title":"Camera scan"} -->
 <div class="screen app-mood" style="background-color: var(--bg)">
-  <div class="body-fixed" style="padding: var(--s4) var(--s5) var(--s5); gap: var(--s4)">
-    <div class="navbar" style="padding: 0">
-      <button class="nav-round is-hollow" style="width: 44px; height: 44px" aria-label="Đóng camera">
-        <span class="icon icon-sm" data-symbol="xmark"></span>
-      </button>
-      <span class="pill-soft">
-        <span class="icon icon-xs" data-symbol="sparkles"></span>
-        Còn 2 scans
-      </span>
-      <button class="nav-round is-hollow" style="width: 44px; height: 44px" aria-label="Bật đèn flash">
-        <span class="icon icon-sm" data-symbol="bolt.fill"></span>
-      </button>
-    </div>
+  <button data-slot="back" class="nav-round is-hollow" style="width: 44px; height: 44px" aria-label="Đóng camera">
+    <span class="icon icon-sm" data-symbol="xmark"></span>
+  </button>
+  <span data-slot="title" class="pill-soft">
+    <span class="icon icon-xs" data-symbol="sparkles"></span>
+    Còn 2 scans
+  </span>
+  <button data-slot="right" class="nav-round is-hollow" style="width: 44px; height: 44px" aria-label="Bật đèn flash">
+    <span class="icon icon-sm" data-symbol="bolt.fill"></span>
+  </button>
 
+  <div class="body-fixed" style="padding: var(--s4) var(--s5) var(--s5); gap: var(--s4)">
     <div class="paper-card" style="flex: 1 1 auto; align-items: center; justify-content: center; gap: var(--s3); padding: var(--s10) var(--s5)">
       <span class="circle-btn is-dashed" style="width: 88px; height: 88px; border-color: var(--clay); color: var(--clay)">
         <span class="icon" data-symbol="camera"></span>

@@ -1,11 +1,9 @@
 <!-- pc {"title":"Text voice log"} -->
 <div class="screen app-mood" style="background-color: var(--bg)">
-  <div class="body-fixed" style="padding: var(--s4) var(--s4) var(--s5); gap: var(--s4)">
-    <div class="navbar" style="padding: 0">
-      <button class="pill-ghost" style="border-color: transparent; height: auto; padding-top: var(--s3); padding-bottom: var(--s3)">Hủy</button>
-      <span class="t-headline">Gõ / Nói món ăn</span>
-    </div>
+  <button data-slot="back" class="pill-ghost" style="border-color: transparent; height: auto; padding-top: var(--s3); padding-bottom: var(--s3)">Hủy</button>
+  <span data-slot="title" class="t-headline">Gõ / Nói món</span>
 
+  <div class="body-fixed" style="padding: var(--s4) var(--s4) var(--s5); gap: var(--s4)">
     <div class="paper-card" style="gap: var(--s2)">
       <span class="t-section">Mô tả món</span>
       <div class="row" style="gap: var(--s2); align-items: flex-start">

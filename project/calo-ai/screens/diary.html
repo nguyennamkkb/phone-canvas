@@ -1,15 +1,13 @@
 <!-- pc {"title":"Diary"} -->
 <div class="screen app-mood" style="background-color: var(--bg)">
-  <div class="body-fixed" style="padding: var(--s4) var(--s4) 0; gap: var(--s4)">
-    <div class="navbar" style="padding: 0">
-      <button style="display: flex; flex-direction: row; align-items: center; gap: var(--s1); min-height: var(--touch-min); background: transparent; border: 0; padding: var(--s2) var(--s1)" aria-label="Đổi ngày">
-        <span class="icon icon-sm" data-symbol="chevron.left" style="color: var(--faint)"></span>
-        <span class="t-headline">Hôm nay</span>
-        <span class="icon icon-sm" data-symbol="chevron.right" style="color: var(--faint)"></span>
-      </button>
-      <span class="t-footnote t-secondary">1.250/1.850 kcal</span>
-    </div>
+  <button data-slot="back" style="display: flex; flex-direction: row; align-items: center; gap: var(--s1); min-height: var(--touch-min); background: transparent; border: 0; padding: var(--s2) var(--s1)" aria-label="Đổi ngày">
+    <span class="icon icon-sm" data-symbol="chevron.left" style="color: var(--faint)"></span>
+    <span class="t-headline">Hôm nay</span>
+    <span class="icon icon-sm" data-symbol="chevron.right" style="color: var(--faint)"></span>
+  </button>
+  <span data-slot="right" class="t-footnote t-secondary">1.250/1.850 kcal</span>
 
+  <div class="body" style="padding: var(--s4); gap: var(--s4)">
     <div class="paper-card" style="gap: var(--s2)">
       <span class="t-section">Sáng · 520 kcal</span>
       <div class="row" style="gap: var(--s3); align-items: center">
@@ -85,24 +83,22 @@
     </div>
 
     <div class="spacer"></div>
-
-    <nav class="tabbar">
-      <button class="tab" aria-label="Home, tab 1 trên 4">
-        <span class="icon" data-symbol="house"></span>
-        <span>Home</span>
-      </button>
-      <button class="tab" aria-label="Scan, tab 2 trên 4">
-        <span class="icon" data-symbol="camera"></span>
-        <span>Scan</span>
-      </button>
-      <button class="tab is-active" aria-label="Diary, tab 3 trên 4">
-        <span class="icon" data-symbol="list.bullet"></span>
-        <span>Diary</span>
-      </button>
-      <button class="tab" aria-label="Me, tab 4 trên 4">
-        <span class="icon" data-symbol="person"></span>
-        <span>Me</span>
-      </button>
-    </nav>
   </div>
+
+  <button data-tab class="tab" aria-label="Home, tab 1 trên 4">
+    <span class="icon" data-symbol="house"></span>
+    <span>Home</span>
+  </button>
+  <button data-tab class="tab" aria-label="Scan, tab 2 trên 4">
+    <span class="icon" data-symbol="camera"></span>
+    <span>Scan</span>
+  </button>
+  <button data-tab class="tab is-active" aria-label="Diary, tab 3 trên 4">
+    <span class="icon" data-symbol="list.bullet"></span>
+    <span>Diary</span>
+  </button>
+  <button data-tab class="tab" aria-label="Me, tab 4 trên 4">
+    <span class="icon" data-symbol="person"></span>
+    <span>Me</span>
+  </button>
 </div>
