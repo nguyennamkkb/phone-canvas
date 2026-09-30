@@ -472,3 +472,27 @@ Hai phát hiện mới mà v2 bắt được, ghi lại vì mắt không thấy:
 2. **`overflow-x: hidden` tự nâng `overflow-y` thành `auto`.** `.screen` và
    `.body-fixed` bị tính nhầm là scroller; sửa thành `overflow: hidden` và luật
    "đúng một vùng cuộn" mới đọc đúng.
+
+### Nền đo v3 — `shared-screen-chrome`
+
+Output thật sau change (7 màn, device `reference`):
+
+| Mốc | Giá trị |
+|---|---|
+| `npm run gate` | `0 lỗi, 0 cảnh báo` · `0 lỗi subset` · `0 lỗi component` · `0 lỗi vùng` |
+| `npm run audit:regions` | `chrome/background/region-order/division-band/scroll/overflow/shell-band: ok` · `0 lỗi vùng đo được · 7 màn` |
+| `vitest` | 17 file / **204** test passed |
+| Export khung máy | cả 7 màn **780×1688** |
+| Export `--full` | `home` 2152 · `diary` 1860 · `confirm` 1726 · `camera`/`textvoice`/`alert-demo` 1688 (vừa khung) · `foundation-showcase` 3300 |
+
+Ba chỗ đáng ghi vì đã suýt tin nhầm:
+
+1. **Gate xanh không có nghĩa là sản phẩm đúng.** Sau khi đổi compose sang tab
+   có danh tính, gate vẫn xanh nhưng probe cho thấy `active=0` trên 4 màn — màn
+   còn dùng `data-tab` rỗng nên tab active biến mất. Phải migrate rồi mới tin.
+2. **Một check "ok" có thể là check chết.** `region-order` probe `.navbar` /
+   `.tabbar` không còn tồn tại nên chưa bao giờ chạy; đã chứng minh nó sống lại
+   bằng cách tạm đảo thứ tự band trong compose → audit báo 2 lỗi, exit 1.
+3. **`|tabbar` trong `DISTRIBUTES` chưa bao giờ khớp gì.** Dòng đó chứa ký tự
+   backspace thật (`\x08`) thay vì escape `\b`. Đã sửa và quét toàn repo: không
+   còn ký tự backspace lạc.

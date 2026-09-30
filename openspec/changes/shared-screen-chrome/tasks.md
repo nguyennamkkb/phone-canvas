@@ -42,6 +42,6 @@
 
 ## 6. Tích hợp
 
-- [ ] 6.1 Chạy `npm run gate` trên toàn repo và xác nhận cả bốn tầng lint, `audit:regions` và vitest đều xanh. Verify: exit code 0, không còn check nào bị bỏ qua hoặc luôn-xanh.
-- [ ] 6.2 Export cả 7 màn ở chế độ khung máy và `--full`, rồi so bằng mắt với bản trước change. Verify: PNG khung máy đúng kích thước thiết bị, `--full` dài hơn khung, và không màn nào lệch so với ảnh trước.
-- [ ] 6.3 Chạy `openspec validate shared-screen-chrome --strict`. Verify: valid, và delta không làm rơi scenario nào của base spec.
+- [x] 6.1 Chạy `npm run gate` trên toàn repo và xác nhận cả bốn tầng lint, `audit:regions` và vitest đều xanh. Verify: exit code 0, không còn check nào bị bỏ qua hoặc luôn-xanh.
+- [x] 6.2 Export cả 7 màn ở chế độ khung máy và `--full`, rồi so bằng mắt với bản trước change. Verify: PNG khung máy đúng kích thước thiết bị, `--full` dài hơn khung, và không màn nào lệch so với ảnh trước.
+- [x] 6.3 Chạy `openspec validate shared-screen-chrome --strict`. Verify: valid, và delta không làm rơi scenario nào của base spec.
