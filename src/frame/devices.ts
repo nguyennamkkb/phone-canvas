@@ -113,6 +113,18 @@ export const DEVICES: Device[] = [
     safeBottom: 20,
     island: 'none',
   },
+  {
+    id: 'appstore-67',
+    form: 'phone',
+    name: 'App Store 6.7″ · 430×932',
+    width: 430,
+    height: 932,
+    bezel: 12,
+    radius: 30,
+    safeTop: 0,
+    safeBottom: 0,
+    island: 'none',
+  },
 ]
 
 export const DEFAULT_DEVICE_ID = 'reference'

@@ -106,6 +106,13 @@ const SYMBOLS: Record<string, string> = {
   'arrow.triangle.2.circlepath': 'sync.svg',
   'questionmark.circle': 'help.svg',
   lock: 'lock.svg',
+  barcode: 'barcode.svg',
+  microphone: 'microphone.svg',
+  camera: 'camera.svg',
+  wifi: 'wifi.svg',
+  scale: 'scale.svg',
+  minus: 'minus.svg',
+  'play.fill': 'play.svg',
 }
 
 /** Tighten the markup, then percent-encode it so it is safe inside url("…") */

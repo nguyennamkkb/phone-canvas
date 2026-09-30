@@ -1,0 +1,43 @@
+<!-- pc {"title":"Text voice log"} -->
+<div class="screen app-mood" style="background-color: var(--bg)">
+  <div class="body-fixed" style="padding: var(--s4) var(--s4) var(--s5); gap: var(--s4)">
+    <div class="navbar" style="padding: 0">
+      <button class="pill-ghost" style="border-color: transparent; height: auto; padding-top: var(--s3); padding-bottom: var(--s3)">Hủy</button>
+      <span class="t-headline">Gõ / Nói món ăn</span>
+    </div>
+
+    <div class="paper-card" style="gap: var(--s2)">
+      <span class="t-section">Mô tả món</span>
+      <div class="row" style="gap: var(--s2); align-items: flex-start">
+        <button class="text-field grow" style="background: var(--card); color: var(--label); text-align: left" aria-label="Sửa mô tả món, đang là 2 trứng cộng 1 chén cơm">
+          2 trứng + 1 chén cơm
+        </button>
+        <button class="nav-round is-hollow" aria-label="Nói thay vì gõ">
+          <span class="icon icon-sm" data-symbol="microphone"></span>
+        </button>
+      </div>
+      <p class="t-footnote t-secondary">Thử: “1 tô phở bò”, “nửa cái bánh mì” — có dấu hay không đều được.</p>
+    </div>
+
+    <div class="paper-card" style="gap: var(--s2)">
+      <span class="t-section">AI hiểu như sau</span>
+      <div class="row" style="gap: var(--s3); align-items: center">
+        <span class="icon icon-sm" data-symbol="checkmark" style="color: var(--success)"></span>
+        <div class="grow col" style="gap: 0">
+          <div class="t-headline">Trứng gà · 2 quả</div>
+          <div class="t-subhead t-secondary">~140 kcal</div>
+        </div>
+      </div>
+      <div class="row" style="gap: var(--s3); align-items: center">
+        <span class="icon icon-sm" data-symbol="checkmark" style="color: var(--success)"></span>
+        <div class="grow col" style="gap: 0">
+          <div class="t-headline">Cơm trắng · 1 chén</div>
+          <div class="t-subhead t-secondary">~200 kcal</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+    <button class="btn btn-primary btn-block">Xác nhận kết quả</button>
+  </div>
+</div>

@@ -1,0 +1,100 @@
+/* Calo AI — palette "Sang tuoi" (light + dark).
+   Nen trang sach, muc nhom xam lanh, chu muc den trung tinh,
+   xanh la dam cho moi fill co chu (pill, toggle, tab active),
+   xanh tuoi giu lai cho do hoa (vong, meter, icon). Ty so do thuc te:
+   chu/fill CTA 5.39 · chu phu 6.00 · ink 14.90 · danger 4.83. */
+:root {
+  --paper: #ffffff;
+  --card: #ffffff;
+  --bg-grouped: #f2f4f7;
+  --bg: #f2f2f7;
+  --espresso: #22282d;
+  --clay: #5b6470;
+  --success: #34c759;
+  --cta: #237a31;
+  --alarm: #d92d20;
+  --track: #e3e8ee;
+  --hairline: rgba(34, 40, 45, 0.12);
+}
+
+:root[data-theme='dark'] {
+  --paper: #101418;
+  --card: #1a2127;
+  --bg-grouped: #1a2127;
+  --bg: #101418;
+  --espresso: #edf1f4;
+  --clay: #a8b3bd;
+  --success: #40d061;
+  --cta: #237a31;
+  --alarm: #ff6961;
+  --track: #2a333b;
+  --hairline: rgba(237, 241, 244, 0.16);
+  --sun-soft: #38300f;
+  --sage-soft: #1e2e22;
+}
+
+.screen {
+  --faint: rgba(34, 40, 45, 0.45);
+}
+
+/* Nhan hanh dong + toggle bat: xanh dam, chu trang (5.39). */
+/* Nen xam Apple: dat truc tiep tren .app-mood vi :root chi match <html>
+   (ke thua luon thua rule truc tiep). .device an theo :root o tren. */
+.app-mood {
+  --bg: #f2f2f7;
+  --bg-grouped: var(--bg-grouped);
+  --label: var(--espresso);
+  --label-2: var(--clay);
+  --accent: var(--cta);
+}
+:root[data-theme='dark'] .app-mood {
+  --bg: #101418;
+}
+.app-mood .pill-sage {
+  background: var(--cta);
+  color: #ffffff;
+}
+/* Nut hanh dong chinh tren toolbar doc: tron, nen CTA, icon trang (5.39). */
+.app-mood .nav-round.is-accent {
+  background: var(--cta);
+  border-color: transparent;
+  color: #ffffff;
+}
+.app-mood .toggle {
+  background: var(--cta);
+}
+.app-mood .toggle.is-off {
+  background: rgba(34, 40, 45, 0.14);
+}
+/* iOS tach bang mat tong, khong vien: nut tron rong thanh fill mo,
+   the paper thanh fill grouping, selected dung fill chu khong outline. */
+.app-mood .nav-round.is-hollow {
+  border-color: transparent;
+  background: var(--fill);
+}
+.app-mood .paper-card {
+  border-color: transparent;
+  background: var(--card);
+}
+/* Nen xam Apple: mat the trang tren nen xam nhom. */
+.app-mood .row-card,
+.app-mood .list-row,
+.app-mood .panel,
+.app-mood .card,
+.app-mood .searchbar,
+.app-mood .segmented-light {
+  background: var(--card);
+}
+/* Card-Based UI (2026-09-28): 1 ban kinh nhe duy nhat --r-lg (20px) cho moi
+   the noi dung; tach bang mat tong iOS, khong vien, khong bong. */
+.app-mood .paper-card,
+.app-mood .row-card,
+.app-mood .hero-card,
+.app-mood .band,
+.app-mood .panel {
+  border-radius: var(--r-lg);
+  border-color: transparent;
+}
+.app-mood .panel {
+  background: var(--bg-grouped);
+}
