@@ -184,6 +184,9 @@ figure {
   width: 100%;
   min-height: 0;
   background: var(--bg);
+  /* Chữ mặc định ăn token --label, như nền ăn --bg: theme tối mà chữ vẫn
+     đen mặc định của UA thì mọi màn tối đều hỏng mà gate không bắt được. */
+  color: var(--label);
   /* Màn hình không bao giờ cuộn ngang: rộng đúng bằng device, thừa 1px
      cũng thành thanh cuộn trong iframe. Cuộn dọc là việc của `.body`; `.screen`
      chỉ kẹp (hidden) — nếu khai `overflow-x: hidden` mà để `overflow-y: visible`
@@ -439,6 +442,9 @@ figure {
   /* Sàn band vừa khít nút 44pt + padding để vùng bấm không bao giờ thò ra ngoài. */
   min-height: calc(var(--touch-min) + var(--s2) * 2);
   padding: var(--s2) var(--s4);
+  /* Chữ band ăn token như .screen: band nằm ngoài .screen nên không hưởng
+     màu chữ của màn — thiếu dòng này mọi band trên nền tối đều đen. */
+  color: var(--label);
 }
 
 /* Tự đụng vùng kiểu SwiftUI: hai cạnh flex:1 chia đều band nên điểm giữa

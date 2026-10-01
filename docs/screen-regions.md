@@ -92,8 +92,22 @@ nên **luôn thua** một rule gán trực tiếp lên chính nó. Vì vậy:
   `project/<id>/tokens.css`;
 * `--bg` cho `.screen` khai **trực tiếp** trên scope dùng nó (`.app-mood`),
   kèm một bản `:root[data-theme='dark'] .app-mood`.
-
 Xem `project/calo-ai/tokens.css` (dòng 41-42 ghi nguyên văn bài học này).
+
+Ba quy tắc từ ca "Sân khấu đêm" của frank-sound (10/2026 — theme tối hỏng
+toàn bộ mà gate vẫn xanh, vì chữ mặc định của UA là đen còn token không
+chạm tới nó):
+
+1. **Chữ phải ăn token như nền.** Core đã gán `.screen { color: var(--label) }`
+   và `.region-nav { color: var(--label) }` (`src/screens/tokens.css`) — mọi
+   chữ không class màu đều đi theo ink của theme, sáng hay tối đều đúng.
+2. **Token ngữ nghĩa (`--label`, `--accent`, `--bg-elevated`, `--separator`,
+   `--fill`) khai ở `:root` của `tokens.css` project, không scope `.app-*`.**
+   Band shell (`.region-nav`, `.region-tabs`) nằm ngoài `.screen` nên scope
+   màn không bao giờ tới được chúng — scope chỉ dành cho phong cách
+   (hình dáng, mặt màu, namespace chống rò), không chứa token ngữ nghĩa.
+3. **Xóa khối dark trùng light.** App dark-first thì không cần khối
+   `:root[data-theme='dark']` — thiếu nó, dark kế thừa light, đúng ý đồ.
 
 ### Khung cao cố định và vùng cuộn
 
