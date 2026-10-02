@@ -1,8 +1,11 @@
 # Regions — which bands a screen owes
 
 This is a **pointer, not a copy**. The numbers and the full map live in
-`docs/screen-regions.md`; if the two ever disagree, that file wins. Read it
-before authoring a screen, and let `npm run gate` tell you when you drifted.
+`openspec/specs/screen-regions` (migration notes in
+`docs/upgrade-core/02_PLATFORM_RULES.md` + `03_REGION_SYSTEM.md`; spacing
+vars in `src/screens/tokens.css`, sizes in `src/frame/devices.ts`); if the
+two ever disagree, the spec wins. Read it before authoring a screen, and let
+`npm run gate` tell you when you drifted.
 
 ## The one rule
 
@@ -62,8 +65,9 @@ truncates with an ellipsis instead of sliding under a button.
   44 pt `.shell-nav-btn` — write a plain `<span data-slot="right">…</span>`
   and it still taps. Anything already a button (or containing one) and the
   `title` slot are never wrapped.
-* The band floor is 60 pt (`touch-min` + padding), so a 44 pt control never
-  sticks out of it — a collapsed band used to break the measured audit.
+* The band floor is 44 pt (`--navbar-min-h: 44px` in `src/screens/tokens.css`),
+  so a 44 pt control never sticks out of it — a collapsed band used to break
+  the measured audit.
 * Modal chrome comes from `components/app-nav.html`: a visible `pill-ghost`
   **Hủy** button plus an overridable `title` slot. Do not restyle it per
   screen; override the slot.

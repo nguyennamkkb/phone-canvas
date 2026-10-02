@@ -1,9 +1,9 @@
 # Watch — one face, one idea, no scroll
 
-This is a **pointer, not a copy**. The numbers live in `docs/screen-regions.md`
-(Tham chiếu vùng Watch) and the sizes in `src/frame/devices.ts` (`watch-45` =
-45mm · 198×242 pt, the single reference). If they disagree with this file,
-they win.
+This is a **pointer, not a copy**. The numbers live in
+`openspec/specs/screen-regions` (Tham chiếu vùng Watch) and the sizes in
+`src/frame/devices.ts` (`watch-45` = 45mm · 198×242 pt, the single
+reference). If they disagree with this file, they win.
 
 ## The one rule
 

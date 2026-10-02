@@ -73,3 +73,14 @@ you do not have to infer it.
 
 For a whole screen, use **Copy JSON** and hand it to yourself as reference while
 writing, or paste it to a model with this document attached.
+
+## Versioned handoff (Spec IR v1)
+
+Copy JSON rides the Spec IR v1 envelope: `{ irVersion: 1, … }`
+(`src/spec/ir.ts:buildSpecIR`, `src/spec/types.ts:IR_VERSION`). `buildSpec`
+keeps returning the bare node list — existing readers are untouched; new
+producers that want the versioned envelope call `buildSpecIR`. Old readers
+ignore unknown fields, so the envelope can grow without breaking them.
+When comparing renders across machines, pair the JSON with a golden PNG
+(`npm run export -- --golden`, manifest `goldens.json` —
+`scripts/export/golden.ts`).

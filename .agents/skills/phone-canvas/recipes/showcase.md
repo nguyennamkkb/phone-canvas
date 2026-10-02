@@ -41,6 +41,10 @@ sample chips) → **rows & measures** (avatar row, macro + `.meter`,
    project's (`components/app-tabs.html`, one slug per tab) — include it with
    `<!-- @component app-tabs -->` and name the open one with
    `data-tab-active`. On tablet and foldable variants, include no tab chrome.
+6. **Shared components open with anatomy.** A sample promoted to
+   `project/<id>/components/*.html` needs its 11-item `<!-- @anatomy … -->`
+   header (`scripts/component-anatomy.ts`) — `lint:components` BLOCKS without
+   it. Scaffold with `npm run new-screen -- --project <id> --component <slug>`.
 
 ## Skeleton
 

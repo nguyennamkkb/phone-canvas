@@ -6,9 +6,10 @@
 npm run dev        # board at http://localhost:5273
 npm run build      # icon generator first, then vite build — stale glyphs cannot ship
 npm run typecheck  # tsc --noEmit — run it before claiming anything works
-npm run lint       # gate: typecheck + lint:tokens + lint:subset + lint:components
+npm run lint       # gate: typecheck + lint:tokens + lint:subset + lint:components + lint:regions
+npm run lint:tokens | lint:subset | lint:components | lint:regions   # one tier; every lint takes --screen <id> (scripts/screen-filter.ts)
 npm test           # vitest run
-npm run gate       # lint + test — the full integrity gate
+npm run gate       # lint + audit:regions + test — the full integrity gate (matches package.json)
 npm run screen -- add --project <id> --name <n> --title "..."      # lifecycle: add (+ auto-gate)
 npm run screen -- rename --id <old> --to <new>                   # lifecycle: rename (+ auto-gate)
 npm run screen -- remove --id <screen-id> [--force]              # lifecycle: remove (+ auto-gate)
@@ -20,8 +21,14 @@ npm run delete-screen -- --id <screen-id> [--force]                # alias: same
 npm run export     # every screen → exports/<id>@2x.png
 npm run export -- --project <id>   # that project's screens → project/<id>/exports/
 npm run export -- --screen lesson-details --scale 3
-npm run export -- --device all --out docs/shots
+npm run export -- --all-devices --out docs/shots   # every width in DEVICES (README shorthand: --device all)
+npm run export -- --all-devices --golden           # + versioned PNGs + sha256 records (scripts/export/golden.ts)
+npm run export -- --device ipad-11 --full --theme dark   # --full = whole page, --theme = light|dark
 npm run export -- --list          # ids, titles, devices
+npm run locate -- --screen my-screen --x 195 --y 640 [--pad 32 --scale 2 --device iphone-se --theme dark]
+npm run project -- freeze <id>   # write project/<id>/board.json seed (scripts/board-freeze.ts)
+npm run scan:projects            # print the registry both readers see (scripts/scan-projects.ts)
+npm run preview                  # vite preview (static host, no rewrite rules needed)
 npm run export:icons -- --project <id>   # that project's glyphs → project/<id>/exports/icons/
 npm run icons      # regenerate src/screens/icon-set.css from public/icons/
 ```
@@ -60,6 +67,17 @@ old habits keep working.
 | **Xuất** | download `project-id-board.json` (`{ v: 1, projectId, exportedAt, board }`) |
 | **Nhập** | upload a previously exported `.json` — validates version/projectId/schema, then reloads |
 
+Each node carries a two-row vertical label (`src/canvas/PhoneNode.tsx`,
+`docs/upgrade-core/13_NODE_LABEL_PROPOSAL.md` — never wider than the node,
+so ids ellipsis instead of squeezing controls):
+
+- **Row 1** — title · `#project/screen` (click to copy) · `W × H` · golden badge (`khớp` / `lệch` / `chưa có golden`, read-only — `src/inspect/badges.ts`) · **×** delete (always visible, right-aligned).
+- **Row 2** — copy-id · form chip (phone is chipless) · **⤢ Mở rộng / ⤡ Thu về** toggle.
+
+Owner badges (`src/inspect/badges.ts:ownerOf`) name the band that owns the
+selected node — shell bands (status/nav/tab) win over content, so chrome is
+never misread as content.
+
 The panel's **Copy JSON** hands the selected element, or the whole screen, to
 whatever you want to write the SwiftUI.
 
@@ -88,6 +106,15 @@ or recover from a wiped cache:
 3. After import the board reloads from the file; the cache is the write-through
    copy, and the file wins on the next open as long as it is newer.
 
+### Frozen seed (`project/<id>/board.json`)
+
+`npm run project -- freeze <id>` writes a board snapshot in the exact
+`ProjectStateFile` shape `parseStateFile` validates (`scripts/board-freeze.ts`,
+`src/projects/storage.ts`) — positions use the same `nextSlotX` rule as the
+board (gap 120). An empty board with no saved state reads it as a seed
+(render-path read; never touches localStorage, reconcile, or flow). It seeds,
+it never replaces Xuất/Nhập.
+
 ## Where things live
 
 ```
@@ -112,7 +139,14 @@ scripts/new-screen.ts        create a screen from a contract-valid template
 scripts/rename-screen.ts     rename a screen id (rollback on failure)
 scripts/delete-screen.ts     permanently remove a screen
 scripts/screen.ts            unified entry: add|rename|remove|list|gate (+ auto-gate)
-docs/screen-regions.md       region map + which layer owns which band
+scripts/screen-filter.ts     shared --screen <id> filter for the lint CLIs
+scripts/export/cli.ts        export flags (--screen/--project/--device/--all-devices/--golden/--full/--theme)
+scripts/export/golden.ts     golden store (goldens.json manifest + versioned PNGs + sha256)
+scripts/board-freeze.ts      project -- freeze: board.json seed writer
+scripts/component-anatomy.ts 11-item @anatomy header (lint:components BLOCKS when missing)
+src/spec/ir.ts               Spec IR v1 envelope builder (irVersion)
+src/inspect/badges.ts        owner + golden badges (pure, read-only)
+openspec/specs/screen-regions/ region contract (spec) + docs/upgrade-core/02,03 (migration notes)
 public/icons/                monochrome glyphs
 public/images/               full-colour art
 ```
@@ -174,7 +208,8 @@ Full-colour illustration → `<img class="art" src="/images/x.svg" width=".." he
 Always set `width`, `height` and `alt`; `alt` or `data-asset` becomes the asset
 catalogue name in the spec (`alt="Notebook"` → `Image("Notebook")`).
 
-The drawing house style is in `docs/screen-regions.md`.
+The drawing house style is in `openspec/specs/screen-regions` (migration notes:
+`docs/upgrade-core/02_PLATFORM_RULES.md`).
 
 ## Verifying without a browser
 

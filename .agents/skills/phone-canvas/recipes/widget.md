@@ -1,9 +1,9 @@
 # Widget — glance only: no scroll, no input, no bands
 
-This is a **pointer, not a copy**. The numbers live in `docs/screen-regions.md`
-(Tham chiếu vùng Widget) and the sizes in `src/frame/devices.ts`
-(`widget-small` 169×169, `widget-medium` 360×169). If they disagree with this
-file, they win.
+This is a **pointer, not a copy**. The numbers live in
+`openspec/specs/screen-regions` (Tham chiếu vùng Widget) and the sizes in
+`src/frame/devices.ts` (`widget-small` 169×169, `widget-medium` 360×169).
+If they disagree with this file, they win.
 
 ## The one rule
 

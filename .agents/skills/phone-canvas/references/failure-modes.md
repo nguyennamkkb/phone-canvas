@@ -186,3 +186,51 @@ inner document never grew. `value === content` is the done condition.
 `html, body, .device { height: <contentH>px !important; }` into `extraCss`
 when expanded. Do not "fix" it by editing `CHROME_CSS` heights — that would
 change frame mode too.
+
+---
+
+## 12. Parallel test workers racing on the same files
+
+**Symptom.** Two probe suites pass alone, fail together — one's cleanup
+deletes files the other's assertions still need. Flaky, order-dependent,
+green on re-run.
+
+**Cause.** Vitest runs test files in parallel workers by default. Suites
+that write into the same directory (export probes, golden fixtures) race
+each other.
+
+**Fix.** `test: { fileParallelism: false }` in `vite.config.ts` — serial
+files, still parallel asserts inside a file. Do not "fix" it by
+reordering tests; the race returns with the next new suite.
+
+---
+
+## 13. A script that imports without its extension
+
+**Symptom.** `vite` dev works, but `node scripts/x.ts` (any lint/export CLI)
+fails to resolve a relative import.
+
+**Cause.** Node ESM requires the extension: `from '../src/frame/devices.ts'`,
+not `from '../src/frame/devices'` (see `scripts/export.ts`). Vite resolves
+extensionless paths; Node does not — so the failure only appears outside
+the dev server.
+
+**Fix.** Always write the `.ts` extension in script-relative imports. `tsc`
+and vitest tolerate both; Node tolerates exactly one.
+
+---
+
+## 14. An empty board that ignores its seed file
+
+**Symptom.** `project/<id>/board.json` exists (written by
+`npm run project -- freeze <id>`), but a fresh board opens empty.
+
+**Cause.** The seed is read on the render path, where `async` is not an
+option — so `src/projects/storage.ts` reads it with a synchronous XHR
+(`async=false`). Anything that breaks sync reads (SSR context, missing
+`XMLHttpRequest`, a worker without sync XHR) silently yields no seed, and
+the board falls back to empty — by design, never an error.
+
+**Fix.** This is a read path, not a bug: open the board in the browser
+(Vite serves the file from cache), or re-freeze. Do not "fix" it by making
+the read async — render cannot await.

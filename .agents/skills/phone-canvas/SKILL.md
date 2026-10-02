@@ -23,9 +23,11 @@ Every screen is made the same way. Steps 3 and 6 are the ones people skip and
 then pay for.
 
 1. **Inspect** — read the project's own `project/<id>/tokens.css` (its design
-   system — see `recipes/design-tokens.md`), `docs/screen-regions.md` (which
-   bands every screen owes and who owns each), and two or three existing
-   screens. A new screen joins a design system; it does not invent one.
+   system — see `recipes/design-tokens.md`), the region contract in
+   `openspec/specs/screen-regions` (bands + who owns each; numbers in
+   `src/screens/tokens.css` vars, sizes in `src/frame/devices.ts`,
+   migration notes in `docs/upgrade-core/02_PLATFORM_RULES.md` +
+   `03_REGION_SYSTEM.md`), and two or three existing screens. A new screen joins a design system; it does not invent one.
 2. **Model** — before any markup, write down: purpose, primary action, primary
    information, persistent controls, what scrolls. If you cannot name the
    primary action, you do not understand the screen yet.
@@ -49,7 +51,7 @@ then pay for.
 
 | | |
 |---|---|
-| `docs/screen-regions.md` (repo) | **The region contract.** Which band every screen owes, who owns it (shell vs author), the shared region classes, and the 44 pt / 16 pt / 68 pt numbers. Read before authoring anything. |
+| `openspec/specs/screen-regions` + `src/screens/tokens.css` + `src/frame/devices.ts` (repo; migration notes `docs/upgrade-core/02_PLATFORM_RULES.md`, `03_REGION_SYSTEM.md`) | **The region contract.** Which band every screen owes, who owns it (shell vs author), the shared region classes, and the 44 pt / 16 pt / 68 pt numbers. Read before authoring anything. |
 | `references/tooling.md` | Commands, the board's modes, the icon pipeline, the generator. |
 | `references/failure-modes.md` | The silent failures. An icon that vanished, a column that widened, a spec that lied. |
 | `references/spec-to-swiftui.md` | What the panel reports and the SwiftUI it maps to. |
@@ -103,7 +105,7 @@ npm run screen -- gate          # tsc --noEmit + npm run lint
   records `deviceId` in the manifest so fresh boards open it at 820pt.
   Write screens fluid (token classes, no px per width); a fundamentally
   different tablet layout is a separate screen, never `if-device` in one file.
-- Devices (see `docs/devices.md`): `reference` 390 (default), `iphone-16-pro`
+- Devices (sizes in `src/frame/devices.ts`, rules in `openspec/specs/screen-regions`): `reference` 390 (default), `iphone-16-pro`
   402, `iphone-se` 375, `ipad-11` 820, `ipad-mini` 744, `duo-cover` 466,
   `duo-inner` 890 landscape. Each device declares a `form` (phone / tablet /
   cover / inner) shown as a chip on the board label — phone is chipless.
@@ -127,10 +129,10 @@ npm run screen -- gate          # tsc --noEmit + npm run lint
 Run before claiming any board change works:
 
 ```bash
-npm run gate        # lint + typecheck + lint:tokens + lint:subset + lint:components + vitest
+npm run gate        # lint + audit:regions (measures regions in Chrome) + vitest — matches package.json exactly
 ```
 
-Or step by step: `npm run typecheck && npm run lint && npm test`.
+Or step by step: `npm run typecheck && npm run lint && npm run audit:regions && npm test`.
 
 The board also boots via `npm run dev` — open http://localhost:5273 and
 confirm no runtime errors in the console.
@@ -144,6 +146,15 @@ Use the live board to confirm observable behavior:
    restore (confirm position + edges), then `delete-screen --force` (confirm
    the file is gone and registry clean — grep the id).
 3. Export → import the downloaded file → confirm board + trash restored.
+
+### E-track additions (one-liners with pointers)
+
+- **Single-screen check** — every lint takes `--screen <id>` (`scripts/screen-filter.ts`): `npm run lint:regions -- --screen today`. Unknown id exits 1, never a green zero.
+- **Goldens** — `npm run export -- --all-devices --golden` renders every width in `DEVICES` and writes versioned PNGs + sha256 records (`scripts/export/cli.ts`, `scripts/export/golden.ts`; manifest `goldens.json`). The node label shows `khớp golden` / `lệch golden` / `chưa có golden` (read-only — `src/inspect/badges.ts`).
+- **Shared components need anatomy** — every `project/<id>/components/*.html` opens with an 11-item `<!-- @anatomy … -->` header (`scripts/component-anatomy.ts`); `lint:components` BLOCKS when it is missing. Scaffold one born-passing: `npm run new-screen -- --project <id> --component <slug> --title "…"`.
+- **Board seed** — `npm run project -- freeze <id>` writes `project/<id>/board.json` (`scripts/board-freeze.ts`); an empty board reads it as seed via a render-path read (`src/projects/storage.ts`). It never replaces Xuất/Nhập.
+- **Handoff is versioned** — Copy JSON rides the Spec IR v1 envelope (`irVersion`, `src/spec/ir.ts`, `src/spec/types.ts`). Old readers ignore unknown fields.
+- **Upgrade background** — `docs/upgrade-core/04_COMPONENT_SYSTEM.md` §3 (anatomy), `09_QUALITY_GATES.md` (gates), `11_GOLDEN_REFERENCES.md` (goldens), `13_NODE_LABEL_PROPOSAL.md` (label rows).
 
 ## Hard rules
 
@@ -170,7 +181,7 @@ Use the live board to confirm observable behavior:
    bar width by balancing both sides (`flex: 1` each, overlong titles get an
    ellipsis), auto-wraps bare `back`/`right` content into 44 pt buttons
    (never the title, never anything already containing a control), and floors
-   the band at 60 pt.
+   the band at 44 pt (`--navbar-min-h: 44px` in `src/screens/tokens.css`).
 7. **The frame is fixed and the body scrolls.** `.device` is exactly the device
    height, so a screen has exactly ONE vertical scroller: `.body` for content
    taller than the frame, `.body-fixed` for a page that fits. A `.body-fixed`

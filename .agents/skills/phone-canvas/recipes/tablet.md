@@ -1,7 +1,8 @@
 # Tablet — one screen per layout, shell does not own the bands (yet)
 
-This is a **pointer, not a copy**. The numbers live in `docs/screen-regions.md`
-(`tablet` section) and the requirement in the `screen-regions` spec
+This is a **pointer, not a copy**. The numbers live in
+`openspec/specs/screen-regions` (`tablet` section; vars in
+`src/screens/tokens.css`) and the requirement in the `screen-regions` spec
 ("Tablet — sidebar + split, thu gọn được về tab bar"). If they disagree with
 this file, they win.
 
