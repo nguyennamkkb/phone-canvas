@@ -19,6 +19,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { scanProjects } from './scan-projects.ts'
+import { renderAnatomyHeader } from './component-anatomy.ts'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -30,7 +31,11 @@ function usage() {
       'Scaffold a new phone screen.',
       '',
       '  npm run new-screen -- --project <id> --name <slug> --title "Title" [--kind push] [--dark] [--device ipad-11]',
+      '  npm run new-screen -- --project <id> --component <slug> --title "Title"   (scaffold a component with its @anatomy header)',
       '',
+      '  --component  component id (kebab-case): writes components/<slug>.html instead of',
+      '               screens/<slug>.html, with the 11-item @anatomy header prefilled and',
+      '               DNA tokens of the template pre-listed (lint:components passes at birth)',
       '  --project  project folder id (see npm run project -- list)',
       '  --name     kebab-case screen id, unique across all screens',
       '  --title    board/panel title',
@@ -238,9 +243,15 @@ async function main() {
     fail(e instanceof Error ? e.message : String(e))
   }
   const { project, name, title, dark, device } = o
-  if (!project || !name || !title) {
+  if (!project || !title || (!name && !o.component)) {
     usage()
-    fail('missing --project, --name or --title')
+    fail('missing --project, --title and --name (or --component)')
+  }
+  // component scaffold: same gate, cheaper default — a component is born
+  // with its @anatomy header so lint:components passes at birth.
+  if (o.component) {
+    await scaffoldComponent(project, o.component, title)
+    return
   }
   if (!SLUG_RE.test(name)) {
     fail(`bad --name "${name}" — use kebab-case, e.g. my-screen`)
@@ -328,6 +339,59 @@ async function main() {
   }
   console.log(`board: màn xuất hiện ngay khi reload (không cần đăng ký)`)
   console.log('next: npm run lint && npm run build')
+}
+
+/** scaffold a component: header + minimal body, born passing lint:components.
+ * DNA-token prefill: the template body only uses global spacing/radius vars,
+ * so the header pre-lists exactly the vars the body names — the lint's
+ * tokens cross-check (every body var listed) holds without author edits. */
+async function scaffoldComponent(project, slug, title) {
+  if (!SLUG_RE.test(slug)) {
+    fail(`bad --component "${slug}" — use kebab-case, e.g. stat-tile`)
+  }
+  const { registry, errors } = await scanProjects()
+  if (errors.length > 0) {
+    fail(`project registry có lỗi — sửa trước:\n  ${errors.map((e) => `${e.file}: ${e.message}`).join('\n  ')}`)
+  }
+  if (!registry.projects.some((p) => p.id === project)) {
+    fail(`unknown --project "${project}" — tạo trước: npm run project -- add <id>`)
+  }
+  if (registry.components.some((c) => c.project === project && c.id === slug)) {
+    fail(`component "${slug}" đã tồn tại trong project/${project}/components/`)
+  }
+  const file = `project/${project}/components/${slug}.html`
+  const absFile = path.join(ROOT, file)
+  try {
+    await readFile(absFile, 'utf8')
+    fail(`${file} already exists on disk`)
+  } catch (e) {
+    if (e.code !== 'ENOENT') throw e
+  }
+  const body = [
+    '<div class="col" style="gap: var(--s2)">',
+    `  <div class="t-headline">${title}</div>`,
+    '  <div class="t-subhead t-secondary">Thay bằng nội dung thật.</div>',
+    '</div>',
+    '',
+  ].join('\n')
+  const headerText = renderAnatomyHeader({
+    name: slug,
+    purpose: `${title}: mo ta 1 cau cong viec cua component.`,
+    anatomy: 'div.col > div.t-headline + div.t-subhead',
+    variants: 'khong co — them is-* khi can bien the that',
+    states: 'default; pressed/loading khong bieu dien trong HTML tinh',
+    tokens: '--s2',
+    regions: 'body; khong dung trong nav/tab-list',
+    platforms: 'phone ok; watch/widget rut gon khi can',
+    interaction: 'khong tuong tac — the hien thi (sua khi them nut that)',
+    a11y: 'tieu de la text that; them aria-label khi co hanh dong',
+    examples: 'dung: text that + token; sai: de placeholder',
+  })
+  await mkdir(path.dirname(absFile), { recursive: true })
+  await writeFile(absFile, headerText + body)
+  console.log(`created ${file}`)
+  console.log('anatomy: header 11 muc da prefill — sua noi dung + tokens cho khop body that')
+  console.log('next: npm run lint:components')
 }
 
 /** the destination slugs a chrome component declares, in document order */

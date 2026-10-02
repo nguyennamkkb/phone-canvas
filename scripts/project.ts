@@ -18,6 +18,7 @@ import { mkdir, rm, stat, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
 import { ROOT, scanProjects } from './scan-projects.ts'
+import { writeBoardFreeze } from './board-freeze.ts'
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 
@@ -28,6 +29,7 @@ function usage() {
       '',
       '  npm run project -- add <id> [--title "Title"] [--description "…"]',
       '  npm run project -- remove <id> [--force]',
+      '  npm run project -- freeze <id>              # write project/<id>/board.json layout seed',
       '  npm run project -- list',
       '',
       `  folders live in project/<id>/ — screens/, components/, tokens.css, assets/`,
@@ -134,11 +136,21 @@ async function main() {
     await remove(id, Boolean(flags.force))
     return
   }
+  if (cmd === 'freeze') {
+    if (!id) fail('freeze needs an id')
+    // board.json is a layout seed only: the board still loads localStorage
+    // first and reads this file solely when no saved state exists.
+    const file = await writeBoardFreeze(id).catch((e) => fail(e instanceof Error ? e.message : String(e)))
+    const rel = path.relative(ROOT, file)
+    console.log(`froze ${rel}`)
+    console.log('note: board loads localStorage first; board.json seeds empty boards only')
+    return
+  }
   if (cmd === 'list') {
     await list()
     return
   }
-  fail(`unknown command "${cmd}" — want: add | remove | list`)
+  fail(`unknown command "${cmd}" — want: add | remove | freeze | list`)
 }
 
 main().catch((e) => fail(e instanceof Error ? e.message : String(e)))

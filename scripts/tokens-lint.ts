@@ -4,6 +4,7 @@
  * Token lint (v3 gate): screens may only name defined tokens.
  *
  *   npm run lint:tokens
+ *   npm run lint:tokens -- --screen <id>   (only that screen; same pattern as region-audit/export)
  *
  * Rules:
  *   error  var(--x) with no definition in the global or project tokens.css
@@ -23,6 +24,7 @@ import { readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import { filterByScreen, parseScreenFilter, printHelpIfRequested, reportNoScreenMatch } from './screen-filter.ts'
 import { scanProjects } from './scan-projects.ts'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -72,7 +74,21 @@ function rootBackgroundOf(html) {
   }
 }
 
+const HELP = `
+Token lint: screens may only name defined tokens.
+
+  --screen <id>   only check that screen (default: all screens)
+  --help          print this message
+
+Examples
+  npm run lint:tokens
+  npm run lint:tokens -- --screen today
+`.trim()
+
 async function main() {
+  const argv = process.argv.slice(2)
+  if (printHelpIfRequested(argv, HELP)) return
+  const only = parseScreenFilter(argv)
   const { registry, errors: registryErrors } = await scanProjects()
   let errors = registryErrors.length
   let warns = 0
@@ -105,7 +121,10 @@ async function main() {
 
   const sharedImages = new Set(await readdir(path.join(ROOT, 'public/images')).catch(() => []))
 
-  for (const screen of registry.screens) {
+  const screens = filterByScreen(registry.screens, only)
+  if (only && screens.length === 0) reportNoScreenMatch('lint:tokens', only)
+
+  for (const screen of screens) {
     const html = screen.html
     const pid = screen.projectId
     const known = projectNames.get(pid) ?? names

@@ -1,4 +1,5 @@
 import type { SpecNode } from '../../spec/types'
+import { ownerOf, type OwnerKind } from '../badges'
 
 const px = (v: number) => (Number.isInteger(v) ? String(v) : v.toFixed(2))
 
@@ -25,6 +26,31 @@ export function Field({ label, value, mono = true }: { label: string; value: str
   )
 }
 
+const OWNER_LABEL: Record<OwnerKind, string> = {
+  status: 'status',
+  nav: 'nav',
+  content: 'content',
+  tab: 'tab',
+  shell: 'shell',
+  component: 'component',
+}
+
+/**
+ * Region-owner badge (read-only E3). The bridge captures only `.viewport`
+ * content, so every measured node is `content` by construction today — the
+ * badge still renders because the ordering (shell > content) is the contract
+ * future slot/tab hints will plug into, and a wrong default would bless
+ * chrome as content. No mutation path: span only, no buttons, no handlers.
+ */
+export function OwnerBadge({ node }: { node: SpecNode }) {
+  const owner = ownerOf(node, {})
+  return (
+    <span className={`owner-badge is-${owner}`} title={`Band sở hữu: ${OWNER_LABEL[owner]} (read-only)`}>
+      {OWNER_LABEL[owner]}
+    </span>
+  )
+}
+
 export function SpecDetail({ node, lookup }: { node: SpecNode; lookup: (raw: string) => string | null }) {
   const t = node.typography
   const su = node.surface
@@ -41,6 +67,7 @@ export function SpecDetail({ node, lookup }: { node: SpecNode; lookup: (raw: str
       <div className="detail-head">
         <span className="detail-tag">{node.tag}</span>
         <code className="detail-shape">{node.swiftUiShape}</code>
+        <OwnerBadge node={node} />
       </div>
 
       {node.role === 'Block' && (

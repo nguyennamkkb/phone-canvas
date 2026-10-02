@@ -118,8 +118,10 @@ function validTrashEntry(e: unknown): e is TrashEntry {
 }
 
 export function loadBoard(projectId: string): BoardSnapshot | null {
-  const file = importedStateFile(projectId)
+  const file = fileBoard(projectId)
   const raw = safeGet(BOARD_PREFIX + projectId)
+  // localStorage first, always: a dragged arrangement beats any artifact.
+  // board.json only seeds a board that has no saved state yet.
   if (!raw) return file ? file.board : null
   try {
     const rawParsed = JSON.parse(raw) as {
@@ -184,6 +186,58 @@ export type ProjectStateFile = {
 
 export function toStateFile(projectId: string, board: BoardSnapshot): ProjectStateFile {
   return { v: 1, projectId, exportedAt: Date.now(), board }
+}
+
+/**
+ * board.json fallback seed (E4 freeze artifact).
+ *
+ * Priority is unchanged: localStorage first; only when no saved state exists
+ * does the board read `project/<id>/board.json` — written by
+ * `npm run project -- freeze <id>`, validated by `parseStateFile`, pruned by
+ * the same zombie-prune + reconcile path as every other load. Returns the
+ * BoardSnapshot directly (the freeze file has no localStorage marker twin).
+ *
+ * Sync XHR keeps this a pure function of (localStorage, disk): BoardView
+ * calls loadBoard during render, where async is not an option. board.json is
+ * a Vite-served static asset, so a blocking read here costs one cached GET.
+ */
+function frozenBoard(projectId: string): ProjectStateFile | null {
+  try {
+    const req = new XMLHttpRequest()
+    // async=false: render-path read, see docblock. Served from Vite cache.
+    req.open('GET', `/project/${projectId}/board.json`, false)
+    req.send(null)
+    if (req.status !== 200 || !req.responseText) return null
+    return parseStateFile(req.responseText, projectId)
+  } catch {
+    return null
+  }
+}
+
+/** file seed: explicit import marker wins, else the board.json freeze.
+ * Keeps the ProjectStateFile wrapper so the exportedAt-vs-savedAt recency
+ * check in loadBoard keeps working for both seeds. A thrown frozen read
+ * (no XHR in Node/tests, 404, corrupt JSON) never masks the marker. */
+function fileBoard(projectId: string): ProjectStateFile | null {
+  try {
+    const imported = importedStateFile(projectId)
+    if (imported) return imported
+  } catch {
+    // corrupt marker warns inside importedStateFile; still try the freeze
+  }
+  let frozen: ProjectStateFile | null = null
+  try {
+    frozen = typeof XMLHttpRequest === 'undefined' ? null : frozenBoard(projectId)
+  } catch {
+    frozen = null
+  }
+  if (frozen) return frozen
+  try {
+    const imported = importedStateFile(projectId)
+    return imported ? imported : null
+  } catch {
+    return null
+  }
 }
 
 /* imported file marker — survives clearBoard so a cleared cache still restores */

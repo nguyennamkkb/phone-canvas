@@ -279,6 +279,27 @@
   color: var(--chrome-muted);
 }
 
+/* region-owner badge (read-only E3) — which band owns the selected node */
+.owner-badge {
+  font: 700 10px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  border-radius: 999px;
+  padding: 3px 7px;
+  white-space: nowrap;
+  background: #eef2ff;
+  color: #3730a3;
+}
+
+.owner-badge.is-content {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.owner-badge.is-nav,
+.owner-badge.is-tab {
+  background: #fef3c7;
+  color: #92400e;
+}
+
 .detail-shape {
   font: 600 11.5px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
   color: #007aff;

@@ -4,6 +4,7 @@
  * Subset lint (4.3 gate): screens must stay inside the SwiftUI-mappable subset.
  *
  *   npm run lint:subset
+ *   npm run lint:subset -- --screen <id>   (only that screen; same pattern as region-audit/export)
  *
  * Rules (error, exit 1):
  *   banned layout  display:grid | float: | transform: | clip-path: | filter:
@@ -24,6 +25,7 @@ import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import { filterByScreen, parseScreenFilter, printHelpIfRequested, reportNoScreenMatch } from './screen-filter.ts'
 import { scanProjects } from './scan-projects.ts'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -50,7 +52,22 @@ function isTokenVar(name) {
   return !IGNORED_PREFIX.some((p) => name.startsWith(p))
 }
 
+const HELP = `
+Subset lint: screens stay inside the SwiftUI-mappable subset.
+
+  --screen <id>   only check that screen (components stay in scope: a filtered
+                  screen may include them)
+  --help          print this message
+
+Examples
+  npm run lint:subset
+  npm run lint:subset -- --screen today
+`.trim()
+
 async function main() {
+  const argv = process.argv.slice(2)
+  if (printHelpIfRequested(argv, HELP)) return
+  const only = parseScreenFilter(argv)
   const { registry, errors: registryErrors } = await scanProjects()
   let errors = 0
   const err = (file, line, msg) => {
@@ -77,9 +94,14 @@ async function main() {
 
   // screens and components share the subset: both render inside a screen, so a
   // banned layout or an un-symbolled glyph in a component is the same defect.
+  const screens = filterByScreen(registry.screens, only)
+  if (only && screens.length === 0) reportNoScreenMatch('lint:subset', only)
+
   const targets = [
-    ...registry.screens.map((s) => ({ file: s.file, project: s.projectId, html: s.html, kind: 'screen' })),
-    ...registry.components.map((c) => ({ file: c.file, project: c.project, html: c.html, kind: 'component' })),
+    ...screens.map((s) => ({ file: s.file, project: s.projectId, html: s.html, kind: 'screen' as const })),
+    // components stay in scope under a filter: a filtered screen may include
+    // them, and a cycle/missing check needs the whole project graph
+    ...registry.components.map((c) => ({ file: c.file, project: c.project, html: c.html, kind: 'component' as const })),
   ]
 
   for (const target of targets) {

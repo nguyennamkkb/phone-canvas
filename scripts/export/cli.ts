@@ -27,6 +27,17 @@ export type Options = {
    * taller content is scrolled out.
    */
   full: boolean
+  /**
+   * Render every screen at every width in DEVICES (via the existing --device
+   * all loop). Shorthand so reviewers never hand-list devices.
+   */
+  allDevices: boolean
+  /**
+   * Write versioned PNGs + a sha256 record per render into the golden store
+   * (`project/<id>/goldens/` for a single --project, else `goldens/`).
+   * Off by default; plain exports never touch the store.
+   */
+  golden: boolean
 }
 
 /**
@@ -60,6 +71,11 @@ Export phone screens to PNG.
   --out <dir>      output directory (default: exports, or project/<id>/exports with one --project)
   --full           capture the whole document, not the device frame
                    (default: the device frame; taller content is scrolled out)
+  --all-devices    render every screen at every width in DEVICES
+                   (shorthand for --device all)
+  --golden         also write versioned PNGs + a sha256 record per render
+                   into the golden store (project/<id>/goldens/ for a single
+                   --project, else goldens/). Off by default.
   --list           print available screens and devices, then exit
   --help           print this message
 
@@ -72,7 +88,7 @@ Examples
 `.trim()
 
 export function parseArgs(argv: string[]): Options {
-  const options: Options = { screens: ['all'], devices: ['reference'], projects: [], themes: ['light'], scale: 2, out: 'exports', explicitOut: false, explicitDevices: false, full: false }
+  const options: Options = { screens: ['all'], devices: ['reference'], projects: [], themes: ['light'], scale: 2, out: 'exports', explicitOut: false, explicitDevices: false, full: false, allDevices: false, golden: false }
   const screens: string[] = []
   const devices: string[] = []
   const projects: string[] = []
@@ -118,6 +134,13 @@ export function parseArgs(argv: string[]): Options {
         break
       case '--full':
         options.full = true
+        break
+      case '--all-devices':
+        devices.push('all')
+        options.allDevices = true
+        break
+      case '--golden':
+        options.golden = true
         break
       default:
         throw new Error(`unknown option: ${arg}`)

@@ -59,6 +59,7 @@ npm run export -- --project calo-ai                  # that project's screens �
 npm run export -- --screen my-screen --scale 3
 npm run export -- --screen my-screen --full          # whole page, not the frame
 npm run export -- --device all --out docs/shots
+npm run export -- --all-devices --golden           # every width in DEVICES + golden store
 npm run export -- --list
 npm run export:icons -- --project calo-ai            # that project's glyphs → project/calo-ai/exports/icons/
 ```
@@ -80,6 +81,13 @@ the whole page instead (the pre-v2 behaviour); the file then keeps a `-full`
 suffix (`home-full@2x.png`) so frame and full-page never overwrite each other.
 The board matches: a node is drawn at the device height and scrolls inside, with
 an expand toggle that shows the whole screen at once.
+
+`--all-devices` renders every screen at every width in `DEVICES` (shorthand
+for `--device all`). `--golden` additionally writes versioned PNGs plus a
+sha256 record per render into the golden store — `project/<id>/goldens/` for
+a single `--project`, else `goldens/` (`goldens.json` manifest; the hash covers
+PNG bytes only, so an identical re-run keeps the same hash). Both flags are
+off by default and plain exports never touch the store.
 
 Both the app and the script call `src/extractor/compose.ts`, so an export cannot
 drift from what the board shows.
@@ -180,6 +188,10 @@ Two tiers enforce it, and both fail `npm run gate`:
 ```bash
 npm run lint:regions    # from the text: shell-owned band, unknown slot, nav/tab anatomy, device px, touch floor
 npm run audit:regions   # from the real layout in Chrome: 44 pt rects, one scroller, overflow, shell bands, 50/50 fold, background seam
+
+Every lint also takes `--screen <id>` to check one screen while building
+(`npm run lint:regions -- --screen today`) — same pattern as `export`/`audit`.
+Without the flag the behavior is unchanged (all screens).
 ```
 
 The measured tier is the one that earns its keep: it caught a split that
@@ -281,7 +293,7 @@ project/                    one folder per project — the registry itself
    ├─ project.json          optional: title · description · cover
    ├─ tokens.css            optional: project override layer
    ├─ screens/*.html        id = filename · unique across projects
-   ├─ components/*.html     id = filename · scoped to the project
+   ├─ components/*.html     id = filename · scoped to the project · opens with an 11-item `<!-- @anatomy … -->` header (lint:components BLOCKS when missing; `new-screen -- --component` scaffolds one)
    └─ assets/**             served at /project/<id>/assets/…
 
 scripts/

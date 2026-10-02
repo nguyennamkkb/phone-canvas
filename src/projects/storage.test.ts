@@ -106,6 +106,64 @@ describe('loadBoard', () => {
   })
 })
 
+describe('board.json fallback seed (E4 freeze)', () => {
+  function installFrozenBoard(boardJson: string): void {
+    vi.stubGlobal('XMLHttpRequest', class {
+      status = 0
+      responseText = ''
+      open(_method: string, _url: string, _async: boolean): void {}
+      send(): void {
+        this.status = 200
+        this.responseText = boardJson
+      }
+    })
+  }
+
+  function freezeJson(projectId: string, screenIds: string[]): string {
+    return JSON.stringify({
+      v: 1,
+      projectId,
+      exportedAt: 1000,
+      board: {
+        v: 4,
+        nodes: screenIds.map((screenId, i) => ({
+          id: `${projectId}-n${i + 1}`,
+          type: 'phone',
+          position: { x: i * 500, y: 0 },
+          data: { screenId, deviceId: 'reference' },
+        })),
+        edges: [],
+        removed: [],
+        trash: [],
+      },
+    })
+  }
+
+  beforeEach(() => {
+    // board.json fallback reads via sync XHR: fail closed (404) unless a
+    // test installs a frozen response. Without this the pre-existing
+    // state-file tests below would hit the real (absent) file path.
+    vi.stubGlobal('XMLHttpRequest', class {
+      status = 404
+      responseText = ''
+      open(_method: string, _url: string, _async: boolean): void {}
+      send(): void {}
+    })
+  })
+
+  it('empty localStorage seeds from board.json (round-trip layout)', () => {
+    installFrozenBoard(freezeJson('pz', ['home', 'about']))
+    const loaded = loadBoard('pz')
+    expect(loaded?.nodes.map((n) => n.data.screenId)).toEqual(['home', 'about'])
+  })
+
+  it('localStorage still wins over board.json', () => {
+    installFrozenBoard(freezeJson('pz', ['home', 'about']))
+    saveBoard('pz', { nodes: [], edges: [], removed: ['home'], trash: [] })
+    expect(loadBoard('pz')?.removed).toEqual(['home'])
+  })
+})
+
 describe('loadCustomProjects', () => {
   it('returns [] for garbage without throwing', () => {
     seed('pc.projects.custom', '[[[broken')

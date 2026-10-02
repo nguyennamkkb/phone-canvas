@@ -4,11 +4,15 @@
  * Component lint (component-system gate).
  *
  *   npm run lint:components
+ *   npm run lint:components -- --screen <id>   (only that screen + the components it reaches)
  *
  * Rules:
  *   missing id   error — `<!-- @component x -->` with no component "x" in the
  *                        owning project (components never cross projects)
  *   cycle        error — component A includes B includes A (would not expand)
+ *   anatomy      error — component missing its `<!-- @anatomy … -->` header
+ *                        (all 11 items per docs/upgrade-core/04_COMPONENT_SYSTEM
+ *                        §3; tokens must list every var(--*) the body uses)
  *   unused       warn  — a component no screen and no other component references
  *
  * Discovery comes from scripts/scan-projects.ts, so component ids are scoped
@@ -19,6 +23,8 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import { filterByScreen, parseScreenFilter, printHelpIfRequested, reportNoScreenMatch } from './screen-filter.ts'
+import { anatomyOf, ANATOMY_ITEMS, bodyVars, missingAnatomyItems } from './component-anatomy.ts'
 import { scanProjects } from './scan-projects.ts'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -69,8 +75,25 @@ function findCycles(graph) {
   return cycles
 }
 
+const HELP = `
+Component lint: @component refs resolve inside their own project, no cycles.
+
+  --screen <id>   only check that screen's refs (cycle/unused checks still see
+                  the whole graph so a filtered run cannot bless a broken project)
+  --help          print this message
+
+Examples
+  npm run lint:components
+  npm run lint:components -- --screen today
+`.trim()
+
 async function main() {
+  const argv = process.argv.slice(2)
+  if (printHelpIfRequested(argv, HELP)) return
+  const only = parseScreenFilter(argv)
   const { registry, errors: registryErrors } = await scanProjects()
+  const screens = filterByScreen(registry.screens, only)
+  if (only && screens.length === 0) reportNoScreenMatch('lint:components', only)
   let errors = registryErrors.length
   let warnings = 0
   for (const error of registryErrors) console.error(`error  ${error.file}  ${error.message}`)
@@ -88,7 +111,9 @@ async function main() {
     new Set(registry.components.filter((c) => c.project === projectId).map((c) => c.id))
 
   // 1. every reference must resolve inside its own project
-  for (const screen of registry.screens) {
+  // (under --screen: only the selected screen; cycle/unused checks still see
+  // the whole graph so a filtered run cannot bless a broken project)
+  for (const screen of screens) {
     const ids = componentIdsOf(screen.projectId)
     for (const ref of refsIn(screen.html)) {
       if (!ids.has(ref.id)) {
@@ -113,7 +138,23 @@ async function main() {
     }
   }
 
-  // 2. no cycles in each project's component graph
+  // 2. every component opens with its anatomy header (E6 enforcement, no
+  //    warn mode: missing items BLOCK, per the 09 no-warn precedent)
+  for (const component of registry.components) {
+    const missing = missingAnatomyItems(component.html, component.id)
+    if (missing.length > 0) {
+      const header = anatomyOf(component.html, component.id)
+      const detail =
+        !header
+          ? 'thiếu header `<!-- @anatomy … -->` (11 mục: name/purpose/anatomy/variants/states/tokens/regions/platforms/interaction/a11y/examples)'
+          : missing.includes('tokens')
+            ? `tokens chưa liệt kê hết var() component dùng (dùng: ${bodyVars(component.html).join(' ') || '—'})`
+            : `thiếu mục: ${missing.join(', ')}`
+      err(component.file, 1, `anatomy ${component.id}: ${detail} — xem docs/upgrade-core/04_COMPONENT_SYSTEM.md §3`)
+    }
+  }
+
+  // 3. no cycles in each project's component graph
   const projects = new Set([...registry.screens.map((s) => s.projectId), ...registry.components.map((c) => c.project)])
   for (const projectId of projects) {
     const graph = new Map()
@@ -127,7 +168,7 @@ async function main() {
     }
   }
 
-  // 3. unused components (warning), per project
+  // 4. unused components (warning), per project
   const referenced = new Map()
   const note = (projectId, id) => {
     let set = referenced.get(projectId)

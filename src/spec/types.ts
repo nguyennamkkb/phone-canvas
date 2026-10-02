@@ -28,6 +28,27 @@ export type RawPayload = {
   device: { w: number; h: number } | null
 }
 
+/* ---------------- Spec IR v1 (E5, additive — 12_MIGRATION_PLAN.md App.) ---- */
+
+/** current IR version. Bump only with a migration note + re-verified goldens. */
+export const IR_VERSION = 1 as const
+
+/**
+ * Versioned envelope over today's SpecNode list. The node shape is unchanged;
+ * readers ignore unknown fields (forward-compatible by construction), so an
+ * old reader parsing a newer envelope keeps working on the fields it knows.
+ */
+export type SpecIR = {
+  irVersion: typeof IR_VERSION
+  screenId: string
+  deviceId: string
+  theme: 'light' | 'dark'
+  /** UTC, fresh per export — never part of any content hash */
+  exportedAt: string
+  nodes: SpecNode[]
+  device: { w: number; h: number } | null
+}
+
 /* -------------------------------------------------------------------------- */
 
 export type Direction = 'row' | 'column' | 'none'

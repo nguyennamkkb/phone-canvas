@@ -1,4 +1,4 @@
-import { DEFAULT_DEVICE_ID, getDevice } from '../frame/devices'
+import { DEFAULT_DEVICE_ID, getDevice } from '../frame/devices.ts'
 
 /**
  * Column math for board nodes with mixed device widths (phone + iPad).

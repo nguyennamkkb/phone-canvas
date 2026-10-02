@@ -1,4 +1,5 @@
 import { memo, useEffect, useMemo, useRef, useState } from 'react'
+import { labelCopyText } from './nodeLabel'
 import type { Node, NodeProps } from '@xyflow/react'
 import { Handle, Position } from '@xyflow/react'
 import { formChip, formFactorOf, getDevice, isKnownDevice } from '../frame/devices'
@@ -8,6 +9,7 @@ import { projectOfScreen } from '../projects/projects'
 import { draftCss, useTokenDraft } from '../tokens/store'
 import { useBoardSettings } from './BoardContext'
 import { useInspector } from '../inspect/InspectorContext'
+import { goldenStatusFor } from '../inspect/badges'
 import { InlineConfirm } from './InlineConfirm'
 
 export type PhoneNodeData = {
@@ -41,7 +43,8 @@ function PhoneNodeInner({ id, data }: NodeProps) {
   const [token] = useState(() => `t${Math.random().toString(36).slice(2, 10)}`)
   // transient copy feedback for the screen id chip
   const [copiedId, setCopiedId] = useState(false)
-  // expand the node to the full content height (default: the device frame)
+  // 020: collapse/expand toggle restored (pre-019 behavior) — default collapsed
+  // (device-frame height, internal scroll); ghost text row in 019 clean style.
   const [expanded, setExpanded] = useState(false)
 
   const selected = activeNodeId === id
@@ -54,18 +57,23 @@ function PhoneNodeInner({ id, data }: NodeProps) {
   const form = formFactorOf(d.deviceId)
   const formChipText = formChip(form)
 
-  // The frame is the device height by default — the document scrolls inside
-  // its own `.body`. The toggle expands the node to the content height the
-  // screen reported, so a long screen can be seen in one piece.
+  // Collapsed = device frame (internal scroll); expanded = full content height.
   const contentH = expanded ? (contentSizes[id] ?? device.height) : device.height
 
   const projectId = screen ? (projectOfScreen(screen.id)?.id ?? undefined) : undefined
+  // C (13§5): projected copy text — pure derivation, pinned by labelCopyText test
+  const { ref: copyRef, label: idLabel } = labelCopyText(projectId, d.screenId)
+  // Golden badge (read-only E3): manifest is build-time data only. The board
+  // never fetches goldens.json at runtime (Vite would need a glob + the file
+  // may not exist), so without injected data every node reads `missing` —
+  // "chưa có golden", never an error.stable prop contract below lets a
+  // future provider inject records without touching this node.
+  const golden = goldenStatusFor(null, d.screenId, { sha256: '', width: device.width, height: device.height })
   const [draft] = useTokenDraft(projectId ?? '')
-  // Expand chỉ phóng iframe ngoài là chưa đủ: document trong vẫn cố định ở
-  // --device-h nên .viewport kẹp lại và .body tiếp tục scroll. Layer thêm CSS
-  // để .device cao bằng content đã đo, nội dung giãn hết ra. Cần !important
-  // vì extraCss đứng TRƯỚC khối CHROME_CSS trong compose (cùng specificity
-  // thì khối sau thắng) — đây là override của tool, không phải CSS tác giả.
+  // Expanded only: outer iframe alone is not enough since the inner document
+  // is fixed at --device-h, so layer CSS to stretch .device to the measured
+  // content height. Needs !important because extraCss comes BEFORE CHROME_CSS
+  // in compose (same specificity, later block wins).
   const extraCss = useMemo(() => {
     const draftCssText = draftCss(draft)
     if (!expanded) return draftCssText
@@ -137,73 +145,89 @@ function PhoneNodeInner({ id, data }: NodeProps) {
         }}
         title="Double-click để focus 100%"
       >
-        <span className="phone-label-title">{screen?.title ?? d.screenId}</span>
-        <button
-          type="button"
-          className="phone-id"
-          title={screen ? `${projectId ?? '?'}/${screen.id} · ${screen.file} (click để chép id)` : 'click để chép id'}
-          onClick={(e) => {
-            e.stopPropagation()
-            const ref = projectId ? `${projectId}/${d.screenId}` : d.screenId
-            void navigator.clipboard.writeText(ref).then(() => {
-              setCopiedId(true)
-              window.setTimeout(() => setCopiedId(false), 1200)
-            })
-          }}
-        >
-          {copiedId ? 'Đã chép' : `#${projectId ? `${projectId}/` : ''}${d.screenId}`}
-        </button>
-        <span className="phone-label-size">
-          {device.width} × {Math.round(contentH)}
-        </span>
-        <button
-          type="button"
-          className="phone-expand"
-          title={expanded ? 'Thu về khung thiết bị' : 'Mở rộng xem hết nội dung'}
-          onClick={(e) => {
-            e.stopPropagation()
-            setExpanded((v) => !v)
-          }}
-        >
-          {expanded ? '⤡' : '⤢'}
-        </button>
-        {formChipText && (
-          <span
-            className={`phone-form is-${form}`}
-            title={`Form-factor: ${device.name} — đổi ở dropdown Thiết bị trong panel`}
-          >
-            {formChipText}
+        {/* 018 hàng dọc luôn mở: dòng 1 định danh + các dòng action full-width,
+            in-flow column trên frame (trục Y tự do, không chạm placement X);
+            ngoài iframe nên không chặn pickAt; ellipsis chỉ ở dòng id */}
+        <div className="phone-label-top">
+          <span className="phone-label-title">{screen?.title ?? d.screenId}</span>
+          <span className="phone-label-size">
+            {device.width} × {Math.round(contentH)}
           </span>
-        )}
-        {!isKnownDevice(d.deviceId) && (
           <span
-            className="phone-device-warn"
-            title={`Thiết bị “${d.deviceId}” không tồn tại — đang hiển thị ở Reference`}
+            className={`golden-badge is-${golden.state}`}
+            title={`Golden: ${golden.label} (read-only — chạy export --golden để tạo) — ${d.screenId}`}
           >
-            ⚠ device lạ
+            {golden.state === 'match' ? '●' : golden.state === 'mismatch' ? '●' : '○'}
           </span>
-        )}
-        {deleteConfirmId === id ? (
-          <InlineConfirm
-            message="Xóa màn này? File HTML giữ nguyên."
-            onConfirm={() => onConfirmDelete?.(id)}
-            onCancel={() => onCancelDelete?.()}
-          />
-        ) : (
-          onRequestDelete && (
-            <button
-              type="button"
-              className="phone-delete"
-              title="Xóa màn hình khỏi board (Delete)"
-              onClick={(e) => {
-                e.stopPropagation()
-                onRequestDelete(id)
-              }}
+          {formChipText && (
+            <span
+              className={`phone-form is-${form}`}
+              title={`Form-factor: ${device.name} — đổi ở dropdown Thiết bị trong panel`}
             >
-              ×
-            </button>
-          )
-        )}
+              {formChipText}
+            </span>
+          )}
+          {/* 021: delete lives on the first row, right-aligned — no extra line. */}
+          {deleteConfirmId === id ? (
+            <InlineConfirm
+              message="Xóa màn này? File HTML giữ nguyên."
+              onConfirm={() => onConfirmDelete?.(id)}
+              onCancel={() => onCancelDelete?.()}
+            />
+          ) : (
+            onRequestDelete && (
+              <button
+                type="button"
+                className="phone-delete"
+                title="Xóa màn hình khỏi board (Delete)"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onRequestDelete(id)
+                }}
+              >
+                ×
+              </button>
+            )
+          )}
+        </div>
+        <div className="phone-label-actions" onClick={(e) => e.stopPropagation()}>
+          <button
+            type="button"
+            className="phone-id"
+            title={screen ? `${projectId ?? '?'}/${screen.id} · ${screen.file} (click để chép id)` : 'click để chép id'}
+            onClick={(e) => {
+              e.stopPropagation()
+              void navigator.clipboard.writeText(copyRef).then(() => {
+                setCopiedId(true)
+                window.setTimeout(() => setCopiedId(false), 1200)
+              })
+            }}
+          >
+            {copiedId ? 'Đã chép' : idLabel}
+          </button>
+          <span className="phone-golden-text" title={`Golden: ${golden.label} (read-only — chạy export --golden để tạo)`}>
+            {golden.state === 'match' ? '● khớp golden' : golden.state === 'mismatch' ? '● lệch golden' : '○ chưa có golden'}
+          </span>
+          <button
+            type="button"
+            className="phone-expand"
+            title={expanded ? 'Thu về khung thiết bị' : 'Mở rộng xem hết nội dung'}
+            onClick={(e) => {
+              e.stopPropagation()
+              setExpanded((v) => !v)
+            }}
+          >
+            {expanded ? '⤡ Thu về' : '⤢ Mở rộng'}
+          </button>
+          {!isKnownDevice(d.deviceId) && (
+            <span
+              className="phone-device-warn"
+              title={`Thiết bị “${d.deviceId}” không tồn tại — đang hiển thị ở Reference`}
+            >
+              ⚠ device lạ
+            </span>
+          )}
+        </div>
       </div>
 
       <div

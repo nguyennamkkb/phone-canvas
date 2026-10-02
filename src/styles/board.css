@@ -309,33 +309,106 @@
   gap: 8px;
 }
 
+/* 021: label text at 18px — muted chrome colors kept so chrome never
+   mimics content. Line-height tightened since everything is bigger. */
 .phone-label {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
   padding: 0 4px;
-  font-size: 11px;
-  line-height: 1;
+  font-size: 18px;
+  line-height: 1.3;
   color: var(--chrome-muted);
+}
+
+/* 018 hàng dọc luôn mở: dòng 1 định danh gọn (title + size + dot + chip).
+   021: delete sits at the row end (margin-left auto) — no extra line. */
+.phone-label-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.phone-label-top .phone-delete {
+  margin-left: auto;
+}
+
+/* 019 clean chrome: actions are bare text rows on the canvas — no card.
+   In-flow column (018 geometry kept): first child of .phone-node flex-column,
+   free Y axis so placement X is untouched; outside the iframe so pickAt in
+   inspect mode is never blocked; one action per full-width line. */
+.phone-label-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+  min-width: 0;
+  max-width: 100%;
+  padding: 0;
+  background: transparent;
+  border: 0;
+}
+
+/* full-id copy: hết ellipsis ở 390px, ellipsis chỉ khi hẹp hơn (widget 169px) */
+.phone-label-actions .phone-id {
+  max-width: 100%;
+}
+
+.phone-golden-text {
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--chrome-faint);
+  white-space: nowrap;
+}
+
+/* 020 ghost expand row (pre-019 behavior, 019 clean style): text-only,
+   full-width, min-height 28px; underline on hover only, no card visuals. */
+.phone-label-actions .phone-expand {
+  width: 100%;
+  min-height: 28px;
+  padding: 2px 0;
+  background: transparent;
+  border: 0;
+  color: var(--chrome-muted);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: left;
+  cursor: pointer;
+}
+
+.phone-label-actions .phone-expand:hover {
+  color: var(--chrome-text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* 018: copy-id full-width, min-height 24px — mỗi action 1 dòng, dễ bấm */
+.phone-label-actions .phone-id {
+  width: 100%;
+  min-height: 24px;
 }
 
 .phone-label-title {
   font-weight: 650;
+  font-size: 18px;
   letter-spacing: -0.1px;
-  color: var(--chrome-text-2);
+  color: var(--chrome-muted);
 }
 
 .phone-label-size {
   font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
-  font-size: 10px;
+  font-size: 18px;
   font-variant-numeric: tabular-nums;
   color: var(--chrome-faint);
 }
 
 /* form-factor chip (board-only) — non-phone nodes name their kind */
 .phone-form {
-  font-size: 10px;
+  font-size: 18px;
   font-weight: 700;
   border-radius: 999px;
   padding: 1px 7px;
@@ -354,9 +427,28 @@
   color: #065f46;
 }
 
+/* 019 golden dot (read-only E3): one bare char, muted — no pill, no card. */
+.golden-badge {
+  font-size: 18px;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: var(--chrome-faint);
+}
+
+.golden-badge.is-match {
+  color: #16a34a;
+}
+
+.golden-badge.is-mismatch {
+  color: #dc2626;
+}
+
 /* unknown deviceId fallback badge — node renders at Reference, say so */
 .phone-device-warn {
-  font-size: 10px;
+  font-size: 18px;
   font-weight: 600;
   color: #b45309;
   background: #fef3c7;
@@ -365,49 +457,33 @@
   white-space: nowrap;
 }
 
-/* screen identity chip — click copies the manifest id (ai đọc/sửa theo id này) */
+/* 019 ghost copy-id: bare muted text on the canvas, border only on hover.
+   Click still copies the manifest id; ellipsis only when narrower than 169px. */
 .phone-id {
-  flex: 0 1 auto;
   min-width: 0;
-  max-width: 150px;
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  border-radius: 999px;
-  padding: 2px 8px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.55));
-  backdrop-filter: blur(12px) saturate(1.5);
-  -webkit-backdrop-filter: blur(12px) saturate(1.5);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  color: var(--chrome-text-2);
+  padding: 2px 0;
+  background: transparent;
+  border: 0;
+  color: var(--chrome-muted);
   font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
-  font-size: 10px;
+  font-size: 18px;
+  text-align: left;
   cursor: pointer;
 }
 
 .phone-id:hover {
   color: var(--chrome-text);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.7));
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
-.phone-expand {
-  flex: 0 0 auto;
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  border-radius: 999px;
-  padding: 2px 6px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.55));
-  color: var(--chrome-text-2);
-  font-size: 10px;
-  line-height: 1;
-  cursor: pointer;
-}
-.phone-expand:hover {
-  color: var(--chrome-text);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.7));
-}
-
+/* 021: delete always visible — hover-only reveal removed, circular ghost
+   style and InlineConfirm flow untouched, red hover kept. */
 .phone-delete {
-  display: none;
+  display: inline-flex;
   flex: 0 0 auto;
   width: 20px;
   height: 20px;
@@ -424,10 +500,6 @@
   justify-content: center;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   transition: color 120ms ease, border-color 120ms ease, transform 100ms ease;
-}
-
-.phone-node:hover .phone-delete {
-  display: inline-flex;
 }
 
 .phone-delete:hover {

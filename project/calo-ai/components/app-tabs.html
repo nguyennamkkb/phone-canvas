@@ -1,3 +1,4 @@
+<!-- @anatomy name="app-tabs" purpose="Bo destination duy nhat cua calo-ai; man chi khai data-tab-active, shell suy is-active." anatomy="button[data-tab=<slug>].tab > span.icon[data-symbol] + span Label (x4: home/scan/diary/me)" variants="is-active do shell suy, khong khai tay" states="default/is-active; khong co disabled/loading" tokens="khong dung var — icon + text ke thua" regions="tab list (shell); khong dung trong body/nav" platforms="phone day du 4 tab; cover cam tab ngang (chuyen rail-doc); watch/widget khong dung" interaction="tap chuyen destination, target la .tab (>=44pt theo touch floor)" a11y="aria-current/aria-label do shell suy tu vi tri; moi tab co icon + nhan chu" examples="dung: man khai data-tab-active; sai: copy danh sach tab vao man" -->
 <!-- Bộ destination của calo-ai — MỘT nguồn duy nhất.
      Màn không chép lại danh sách này; màn chỉ khai destination đang mở bằng
      `data-tab-active="<slug>"` trên `.screen`. Shell suy ra `is-active`,

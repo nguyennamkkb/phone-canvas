@@ -3,6 +3,7 @@
  * Region lint (screen-region-standard): the static half of the region gate.
  *
  *   npm run lint:regions
+ *   npm run lint:regions -- --screen <id>   (only that screen; same pattern as region-audit/export)
  *
  * Everything here is knowable from the text of a screen. The measured half —
  * a hit region under 44 pt, a control sitting on the fold, whether the status
@@ -34,6 +35,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { DEVICES, DEFAULT_DEVICE_ID, formFactorOf } from '../src/frame/devices.ts'
+import { filterByScreen, parseScreenFilter, printHelpIfRequested, reportNoScreenMatch } from './screen-filter.ts'
 import { scanProjects } from './scan-projects.ts'
 import {
   componentViolations,
@@ -69,8 +71,24 @@ function report(file: string, violations: Violation[]): number {
   return violations.length
 }
 
+const HELP = `
+Region lint: the static half of the region gate (text-knowable rules).
+
+  --screen <id>   only check that screen (default: all screens + components)
+  --help          print this message
+
+Examples
+  npm run lint:regions
+  npm run lint:regions -- --screen today
+`.trim()
+
 async function main(): Promise<void> {
+  const argv = process.argv.slice(2)
+  if (printHelpIfRequested(argv, HELP)) return
+  const only = parseScreenFilter(argv)
   const { registry, errors: registryErrors } = await scanProjects()
+  const screens = filterByScreen(registry.screens, only)
+  if (only && screens.length === 0) reportNoScreenMatch('lint:regions', only)
   let violations = 0
   for (const error of registryErrors) {
     console.error(`error  ${error.file}  ${error.message}`)
@@ -98,7 +116,7 @@ async function main(): Promise<void> {
       registry.components.filter((c) => c.project === projectId).map((c) => [c.id, c.html]),
     )
 
-  for (const screen of registry.screens) {
+  for (const screen of screens) {
     const form = formFactorOf(screen.deviceId ?? DEFAULT_DEVICE_ID)
     count(
       screen.file,

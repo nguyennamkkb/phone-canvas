@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>phone-canvas — Phân tích app gốc (Dashboard · Board · Spec panel)</title>
+<style>
+  :root { color-scheme: light; --bg:#f5f5f7; --card:#fff; --ink:#1d1d1f; --mut:#6e6e73;
+          --accent:#0071e3; --line:#e5e5ea; --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+         font:16px/1.65 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif; }
+  .wrap { max-width:960px; margin:0 auto; padding:40px 20px 80px; }
+  header.hero { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:32px; }
+  header.hero h1 { margin:0 0 4px; font-size:30px; letter-spacing:-.5px; }
+  header.hero p.sub { margin:0; color:var(--mut); }
+  section.card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:28px 32px; margin-top:20px; }
+  h2 { font-size:23px; margin:0 0 6px; letter-spacing:-.3px; }
+  h3 { font-size:16px; margin:20px 0 6px; color:var(--accent); }
+  p { margin:8px 0; } ul,ol { margin:8px 0 8px 22px; padding:0; } li { margin:5px 0; }
+  code,tt { font-family:var(--mono); font-size:.85em; background:#f2f2f7; border:1px solid var(--line); border-radius:6px; padding:1px 6px; }
+  pre { background:#1d1d1f; color:#f5f5f7; border-radius:12px; padding:14px 18px; overflow:auto; font-size:12.5px; line-height:1.6; }
+  pre code { background:none; border:none; padding:0; color:inherit; }
+  table { width:100%; border-collapse:collapse; margin:10px 0; font-size:13.5px; }
+  th,td { text-align:left; padding:7px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--mut); font-weight:600; }
+  .risk { border-left:4px solid #ff9500; padding:4px 0 4px 14px; margin:10px 0; }
+  footer { color:var(--mut); font-size:13px; margin-top:24px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>phone-canvas — Phân tích app gốc</h1>
+  <p class="sub">Đối tượng: app React (src/ + styles + public), KHÔNG phải project/*. Nguồn đọc trực tiếp: index.html, main.tsx, App.tsx, shell/, projects/Dashboard.tsx, board/, canvas/, inspect/, styles/ (4 file), screens/*.css, tokens/, components/, frame/devices.ts, public/. Không viết code SwiftUI — chỉ mô tả đủ chi tiết để agent khác tái tạo.</p>
+</header>
+
+<!-- ================= VIEW 1 ================= -->
+<section class="card" id="dashboard">
+  <h2>View 1 — Dashboard (project picker)</h2>
+  <p>File: <code>src/projects/Dashboard.tsx:54-186</code>, khung <code>src/App.tsx:169-179</code>, style <code>src/styles/shell.css:86-321</code>. Route <code>#/</code> qua <code>src/shell/useHashRoute.ts:12-25</code>.</p>
+  <h3>1. Viewport &amp; kích thước</h3>
+  <ul>
+    <li>Full-window: <code>.app-dashboard { display:block; overflow-y:auto }</code> (<code>shell.css:86-89</code>). Nội dung <code>.dash { max-width:1120px; margin:0 auto; padding:48px 28px 72px }</code> (<code>shell.css:93-97</code>).</li>
+    <li>Không có khái niệm device ở view này — device chỉ xuất hiện từ Board trở đi.</li>
+  </ul>
+  <h3>2. Structure ngoài → trong</h3>
+<pre><code>div.app-dashboard[data-theme]          App.tsx:169
+└─ Dashboard (projects, onOpen/onCreate/onDelete, uiTheme)
+   └─ div.dash
+      ├─ header.dash-head
+      │  ├─ div &gt; h1 "Dự án (n)" + p.dash-sub
+      │  └─ div.dash-actions: reset(InlineConfirm) + segmented Sáng/Tối
+      │     + input.dash-search + div.dash-create(input + button.dash-btn "+ Dự án")
+      ├─ p.empty (khi không khớp lọc)
+      └─ div.dash-grid &gt; article.dash-card &gt; button.dash-open
+         &gt; Cover (.dash-cover img | .dash-cover-fallback initials)
+         + div.dash-meta (title-row + badge "tự tạo" + desc + count)
+         + button.dash-delete (chỉ project custom)</code></pre>
+  <h3>3. Regions</h3>
+  <ul>
+    <li>Header: <code>.dash-head</code> flex, căn cuối, wrap, gap 16, margin-bottom 24 (<code>shell.css:99-106</code>).</li>
+    <li>Grid: <code>repeat(auto-fill, minmax(270px, 1fr))</code>, gap 18 (<code>shell.css:182-186</code>).</li>
+    <li>Card: radius 18, cover cao 200px + meta padding 14/16/16 (<code>shell.css:188-254</code>); hover nổi −2px + bóng 12/32.</li>
+    <li>Nút Xóa absolute top-right 10px, ẩn (opacity 0) → hiện khi hover card (<code>shell.css:296-316</code>).</li>
+  </ul>
+  <h3>4. Component &amp; anatomy</h3>
+  <ul>
+    <li><code>Cover</code> (<code>Dashboard.tsx:27-52</code>): ưu tiên ảnh export thật <code>/exports/&lt;coverId&gt;@2x.png</code> (lazy, object-fit cover, căn top); hỏng → fallback initials (2 chữ đầu viết hoa) + tên screen.</li>
+    <li>Tìm kiếm: lọc theo title/description/id, không phân biệt hoa thường (<code>Dashboard.tsx:59-68</code>).</li>
+    <li>Tạo mới: Enter hoặc nút <code>+ Dự án</code>, disabled khi trống; id slug kebab-case ≤32 ký tự, trùng thì nối hậu tố thời gian (<code>App.tsx:18-27,70-81</code>).</li>
+    <li><code>Đặt lại</code>: hỏi 2 bước qua <code>InlineConfirm</code> → <code>clearAllLocalState()</code> + reload; title ghi rõ "File trên đĩa giữ nguyên" (<code>Dashboard.tsx:87-107</code>).</li>
+    <li>Theme: segmented Sáng/Tối ghi <code>pc.ui.theme</code> toàn cục (<code>store.ts:110-141</code>).</li>
+  </ul>
+  <h3>5. Position / width / height / spacing / padding / alignment</h3>
+  <ul>
+    <li>h1 24px/700/−0.5; sub 13.5px; input cao 34 radius 10, min-width 176; nút tạo cao 34 radius 10; badge 10px pill padding 2/7; count 11px uppercase +0.4.</li>
+  </ul>
+  <h3>6. Typography (của APP)</h3>
+  <ul><li>Body: <code>-apple-system … 'SF Pro Text', 'SF Pro', system-ui</code>, antialiased (<code>shell.css:51-57</code>). Card title 14.5px/650/−0.1; desc 12.5px/1.55; initials 34px/750.</li></ul>
+  <h3>7. Color / background / border / radius / shadow</h3>
+  <ul>
+    <li>Biến chrome <code>--chrome-*</code> (<code>shell.css:8-35</code>): nền #f6f6f8, mặt #fff/#f4f4f5, chữ #18181b/#3f3f46, mờ #71717a/#a1a1aa; dark: nền #1c1c1e, mặt #2c2c2e/#3a3a3c, chữ #f5f5f7.</li>
+    <li>Fallback cover gradient #eef5ff→#f4f4f5, initials #007aff; badge chữ #0a5fbf nền #e6f0ff; focus ring rgba(0,122,255,.55) + halo 3px rgba(0,122,255,.14).</li>
+  </ul>
+  <h3>8. Asset / icon / image</h3>
+  <ul><li>Ảnh cover là PNG export (<code>npm run export</code>), không phải asset vẽ tay. <code>public/favicon.svg</code> 64px: nền bo tròn #2b1d16 + hình điện thoại #faf8f5 + 2 thanh xanh lá #9db06c / vàng #e7c65a. <code>public/images/</code> trống (chỉ <code>.gitkeep</code>) — không có art dùng chung nào được ship.</li></ul>
+  <h3>9. States / interaction / CTA</h3>
+  <ul><li>Empty 2 loại ("Chưa có dự án nào" / "Không tìm thấy … cho …"). Project lạ → view "Không tìm thấy dự án …" + nút Về Dashboard (<code>App.tsx:124-137</code>). Board crash → boundary card "Board gặp lỗi" + Thử mở lại (giữ bố cục đã lưu) (<code>App.tsx:139-167</code>).</li></ul>
+  <h3>10. Responsive</h3>
+  <ul><li>Grid auto-fill co giãn; header wrap; panel thành overlay ≤1100px (xem View 2).</li></ul>
+  <h3>11. Design tokens</h3>
+  <ul><li>App dùng <code>var(--chrome-*)</code> (shell.css), TÁCH BIỆT token screens (<code>src/screens/tokens.css</code>) — đổi theme app không đổi số đo.</li></ul>
+  <h3>12. Điểm đặc biệt / dependency / constraint</h3>
+  <ul><li>Hash routing (<code>#/</code>, <code>#/p/:id</code>) để chạy được trên static host không rewrite (<code>useHashRoute.ts:3-11</code>); URL là source of truth, id lạ rơi về not-found. Custom projects + đếm screen bám localStorage (<code>pc.projects.custom</code>). <code>ErrorBoundary</code> là class (React 19 không có hook form).</li></ul>
+  <h3>13. Vấn đề / rủi ro</h3>
+  <ul><li>[THẤP] <code>.dash-btn</code> dùng nền #18181b cứng (<code>shell.css:156-167</code>) thay vì biến chrome — hiện hiển thị đúng cả 2 theme nhưng là ngoại lệ cần nhớ khi đổi palette. Ngoài ra: không phát hiện anti-pattern.</li></ul>
+</section>
+
+<!-- ================= VIEW 2 ================= -->
+<section class="card" id="board">
+  <h2>View 2 — Board + canvas nodes</h2>
+  <p>Files: <code>src/board/BoardView.tsx</code> (644 dòng: state + reconcile + xóa/undo + import/export), <code>src/canvas/Board.tsx:263-551</code> (toolbar + ReactFlow), <code>src/canvas/PhoneNode.tsx:22-252</code>, <code>src/canvas/BoardContext.ts:1-67</code>, <code>src/board/flow.ts</code>, <code>placement.ts</code>, <code>reconcile.ts</code>, <code>src/canvas/TokenDock.tsx</code>, <code>src/components/ComponentDock.tsx</code>, <code>TrashDialog.tsx</code>, <code>InlineConfirm.tsx</code>. Style <code>src/styles/board.css</code> (733) + glass <code>src/styles/tokens-ui.css:360-580</code>.</p>
+  <h3>1. Viewport / form factor &amp; kích thước</h3>
+  <ul>
+    <li><code>.app { display:flex; height/width:100% }</code>; <code>.board-wrap</code> cột flex (<code>shell.css:76-80,390-397</code>). Panel là sibling rộng 384px.</li>
+    <li>Node rộng = device.width (+2×bezel khi Khung máy); cao = device.height (mặc định) hoặc content height khi expand (<code>PhoneNode.tsx:57-60,209-216</code>). 12 presets từ <code>devices.ts</code> (reference 390×844 … widget 360×169).</li>
+    <li>ReactFlow: <code>minZoom 0.1, maxZoom 2.5, fitView padding 0.12</code> (<code>Board.tsx:487-490</code>); nền dots gap 24/size 1.5/#d4d4d8; MiniMap 140×96, node #007aff, mask rgba(244,244,245,.75), mờ 0.35 → 1 khi hover (<code>Board.tsx:502-510</code>, <code>board.css:13-24</code>).</li>
+  </ul>
+  <h3>2. Structure ngoài → trong</h3>
+<pre><code>BoardViewInner &gt; BoardContext.Provider &gt; ReactFlowProvider(key=project.id)
+└─ ErrorBoundary &gt; Board (.app[data-theme] &gt; dock + .board-wrap + panel)
+   ├─ dock: TokenDock (Tokens | Components)
+   ├─ .board-wrap &gt; .toolbar (back/project/link/count | Di chuyển·Đo đạc |
+   │   Khung đơn giản·máy + Sáng·Tối (gộp vào ⋯ khi hẹp) | +Màn hình/+/
+   │   Vừa khung/Thùng rác/Xuất/Nhập | panel toggle) + .board &gt; ReactFlow
+   │   (Background + Controls + MiniMap + nodes + hint-bar/undo-bar/empty overlay)
+   ├─ panel: SpecPanel (khi panelVisible)
+   └─ TrashDialog + input file ẩn (import board.json)</code></pre>
+  <h3>3. Regions</h3>
+  <ul>
+    <li>Toolbar: pill kính nổi (margin 10/12, radius 15 → 22 ở lớp glass, blur 14 saturate 1.4, <code>board.css:41-61</code> + <code>tokens-ui.css:360-370</code>). Rộng &lt;720px (đo wrapper, không đo window) thì nhóm phụ ẩn vào <code>⋯</code> (<code>Board.tsx:108-129</code>, <code>board.css:62-103</code>).</li>
+    <li>Phone node = label (title + chip <code>#project/id</code> chép được + <code>WxH</code> mono + expand ⤢ + chip form + cảnh báo device lạ + ×) + khung (handles trái/phải 12px viền #007aff + iframe + overlay click-through + island/notch CSS).</li>
+    <li>Dock trái 320px (gọn 44px); panel phải 384px (overlay ≤1100px, dock overlay ≤900px).</li>
+  </ul>
+  <h3>4. Component &amp; anatomy (props/state chính)</h3>
+  <ul>
+    <li><code>PhoneNode</code>: data <code>{screenId, deviceId}</code>; state token/token ngẫu nhiên mỗi instance (định tuyến message), expanded, copiedId; iframe <code>sandbox="allow-scripts"</code>, <code>pointerEvents</code> theo mode (<code>PhoneNode.tsx:229-237</code>). Move mode: overlay trong suốt bắt click → <code>pickAt</code> (bỏ qua nếu kéo &gt;5px, quy về px iframe bằng <code>device.width/rect.width</code>, <code>PhoneNode.tsx:110-127</code>).</li>
+    <li><code>TokenDock</code>: 2 tab Tokens/Components (<code>TokenDock.tsx:13-50</code>); bảng token project (4 nhóm Màu/Khoảng cách/Bo góc/Chữ, swatch 22px, draft viền vàng #f2c81c, nút × revert, Copy CSS promote bằng tay); coach-mark hiện 1 lần.</li>
+    <li><code>ComponentDock</code>: catalog + preview <code>bare:true</code> cùng pipeline compose/bridge, scale-nhỏ-không-phóng-to (<code>ComponentDock.tsx:27-42</code>), chọn độ rộng preview theo device, hiện usage "n chỗ".</li>
+    <li><code>TrashDialog</code>: per-project, restore 1:1 (vị trí + edges), "dọn sạch" chỉ xóa board — xóa file thật hiện lệnh <code>npm run delete-screen</code> để copy. <code>InlineConfirm</code>: hỏi tại chỗ, tự hủy sau 6s.</li>
+    <li>Focus 100%: <code>setCenter(zoom:1)</code>, ←/→ đi theo trục x, Esc thoát (<code>Board.tsx:180-261</code>).</li>
+  </ul>
+  <h3>5. Position / sizes cụ thể</h3>
+  <ul><li>Tool icon 30px tròn; segmented padding 3/radius 10, nút 7/10 12px; select ≤148px (bản compact 34px); label node 11px gap 8; chip id mono 10px ≤150px; PLAIN_RADIUS 16; island 122×36@top11, notch 164×30; hint/undo pill bottom 14 (undo nhích 56 khi có hint); trash dialog 380–520px, cao ≤70vh.</li></ul>
+  <h3>6. Typography (app)</h3>
+  <ul><li>Dải 10–14px; label-title 650; toolbar-project 13/650 ellipsis ≤110px; count tabular 11px; hint 12px trắng #fafafa trên nền đen mờ.</li></ul>
+  <h3>7. Color / surface</h3>
+  <ul><li>Kính iOS-26-giả: gradient trắng + blur 24 saturate 1.8 + highlight trên (CHỈ chrome app, không bao giờ screens — <code>tokens-ui.css:354-358</code>). Select xanh #007aff (ring + halo); focus tím #af52de; danger #dc2626/#fef2f2/#fecaca; chip form (mặc định #e0e7ff/#3730a3, cover vàng, inner xanh lá).</li></ul>
+  <h3>8. Asset / icon</h3>
+  <ul><li>Island/notch vẽ bằng CSS thuần. Icon toolbar là ký tự (← ⧉ ✓ ⤢ 🗑 ⋯ →). Controls tiếng Anh của lib được đổi title/aria-label Việt tại chỗ (<code>Board.tsx:159-172</code>). State board xuất/nhập file <code>&lt;project&gt;-board.json</code> (định dạng v4).</li></ul>
+  <h3>9. States / interaction</h3>
+  <ul><li>Modes Di chuyển/Đo đạc (đơn switch, không song song — <code>BoardContext.ts:4-11</code>). Chọn: viền xanh (plain 2px+halo 6px). Xóa 2 bước + Hoàn tác 6s (file HTML giữ nguyên). Edge: cấm tự vòng/trùng cặp, dblclick đặt nhãn "nút nào dẫn sang", Delete ưu tiên edge. Phím: Esc thang (focus → measure → thôi), Cmd/Ctrl+. panel, F = Vừa khung. Copy link board (feedback 1.6s). Board trống → thẻ overlay hướng dẫn. Refit debounce 300ms trong 8s đầu khi iframe báo size.</li></ul>
+  <h3>10. Responsive</h3>
+  <ul><li>Toolbar wrap + ⋯; panel/dock thành overlay có bóng ở breakpoint hẹp; board-empty overlay không đẩy layout.</li></ul>
+  <h3>11. Tokens</h3>
+  <ul><li>Toggle board ghi cả theme per-project (iframes qua <code>data-theme</code>) lẫn theme chrome toàn cục (<code>BoardView.tsx:423-430</code>). Draft là lớp phủ preview (<code>draftCss()</code> thắng nhờ đứng sau, <code>store.ts:161-176</code>); localStorage: <code>pc.board.&lt;id&gt;</code>, <code>pc.projects.custom</code>, <code>pc.ui.panelVisible</code>, <code>pc.tokens.draft./theme.</code>, <code>pc.ui.dock.</code>, <code>pc.ui.theme</code>.</li></ul>
+  <h3>12. Đặc biệt / constraint</h3>
+  <ul><li>1px=1pt (camera chỉ transform). Iframe inert ↔ pointer-events. Định tuyến bằng token (WindowProxy sandbox không ổn định). <code>activeNodeId</code> riêng (react-flow tự xả select khi re-measure — <code>BoardContext.ts:21-28</code>). Id node đếm đơn điệu theo project (<code>BoardView.tsx:42-45</code>). Xếp cột theo mép phải + gap 120 (<code>placement.ts</code>). Mở board reconcile màn thiếu nhưng tôn trọng danh sách removed (<code>reconcile.ts</code>). Zombie prune + cảnh báo device lạ. <code>TokenNode</code> cũ chỉ còn để migration, bị lọc im lặng.</li></ul>
+  <h3>13. Vấn đề / rủi ro</h3>
+  <div class="risk">[THẤP] Tồn tại 2 hàm đặt id node (<code>BoardView.tsx:42</code> theo project vs <code>nodeId.ts</code> toàn cục) — mối dùng thực tế của <code>nodeId.ts</code> nằm ngoài phạm vi đọc, cần grep trước khi xóa.</div>
+  <div class="risk">[THẤP] Lớp kính <code>tokens-ui.css:360-437</code> dùng gradient trắng cố định — ở chrome dark có thể bị sáng lệch; quan sát từ code, chưa render kiểm chứng.</div>
+</section>
+
+<!-- ================= VIEW 3 ================= -->
+<section class="card" id="panel">
+  <h2>View 3 — Spec panel / inspector</h2>
+  <p>Files: <code>src/inspect/SpecPanel.tsx:29-167</code>, <code>InspectorContext.tsx:49-170</code>, <code>element-tree/ElementTree.tsx</code>, <code>node-picker/NodePicker.tsx</code>, <code>spec-detail/SpecDetail.tsx</code>, <code>copy-json/copyJson.ts</code>, <code>src/tokens/tokens.ts</code> + <code>usage.ts</code> + <code>swiftui.ts</code>. Style <code>src/styles/panel.css</code> (332).</p>
+  <h3>1. Viewport &amp; kích thước</h3>
+  <ul><li><code>aside.panel { flex:0 0 384px; width:384px; column; border-left }</code> (<code>panel.css:6-14</code>); body cuộn (padding 4/0/32). ≤1100px thành overlay <code>min(384px,92vw)</code> + bóng + nút Đóng (desktop ẩn nút này).</li></ul>
+  <h3>2. Structure</h3>
+<pre><code>aside.panel &gt; header.panel-head (h2 "Thông số SwiftUI" + Đóng ✕ + Copy JSON)
+└─ div.panel-body &gt; empty | NodePicker | "Đang đọc DOM…" |
+   timeout + "Thử đọc lại" | ElementTree + (SpecDetail | gợi ý chọn)</code></pre>
+  <h3>3. Regions</h3>
+  <ul><li>Header padding 15/16; section 12/16, tiêu đề 10.5px uppercase +0.8; cây element khung inset max-h 300; đầu chi tiết: tag mono + chip shape xanh.</li></ul>
+  <h3>4. Component &amp; anatomy</h3>
+  <ul>
+    <li><code>NodePicker</code>: select Màn hình (toàn bộ SCREENS) + Thiết bị (12 DEVICES) + Xóa khỏi board 2 bước — patch node tại chỗ (<code>NodePicker.tsx:28-70</code>).</li>
+    <li><code>ElementTree</code>: danh sách phẳng (thụt 8+depth×11), lọc role/label/size, đếm hiện/tổng, chấm màu theo role (<code>ElementTree.tsx:13-67</code>).</li>
+    <li><code>SpecDetail</code>: các mục Khung (x/y, w×h) · Layout (hướng/spacing/justify/align/layer→ZStack+offset/wrap/ScrollView) · Padding · Kích thước (grow/fill) · Chữ (font/size/weight/line-height/lineSpacing/tracking/align/transform/color) · Nền &amp; viền (hex + "= --token", ảnh→Image, gradient→LinearGradient tự viết, radius/border/shadow) · Nội dung; cảnh báo Block/inline-svg/mask-URL/symbol-lạ (<code>SpecDetail.tsx:28-186</code>).</li>
+    <li>Copy JSON: payload v1 đóng băng <code>{version, screen, selectedElement|elements}</code>, stringify indent 2 (<code>copyJson.ts:10-24</code>).</li>
+  </ul>
+  <h3>5. Sizes</h3>
+  <ul><li>h2 13.5/650; ghost 6/11 11.5px; tree-row 11.5px; dot 6px; field 12px; select ≤220px; filter full-width; scrollbar 8px chỉ hiện khi hover.</li></ul>
+  <h3>6. Typography</h3>
+  <ul><li>Font app; số mono tabular; chip shape 11.5px #007aff trên #eef5ff; warn 11.5px #92400e trên #fff4e5.</li></ul>
+  <h3>7. Colors</h3>
+  <ul><li>Chấm role: stacks #007aff, Z #af52de, Text #34c759, Image #ff9500, Button #ff2d55, shapes #5ac8fa, Block #ff3b30, khác #d4d4d8 (<code>panel.css:234-267</code>). Dòng active #e3efff/#0a5fbf. Tên token suy từ khớp rgba (kể cả alpha — <code>tokens.ts:100-144</code>).</li></ul>
+  <h3>8. Asset</h3>
+  <ul><li>Panel thuần chữ, không icon/ảnh. (Swatch màu nằm ở TokenDock, View 2.)</li></ul>
+  <h3>9. States / interaction</h3>
+  <ul><li>Empty (chưa chọn / chưa có màn + CTA "Focus màn đầu"). Loading → timeout 8s → "Thử đọc lại": xóa spec + gửi <code>recapture</code>, 1.5s sau reload iframe nếu bridge im (<code>SpecPanel.tsx:55-63</code>, <code>InspectorContext.tsx:103-129</code>). Copy disabled kèm lý do rõ ràng. Chọn 2 chiều (panel ↔ iframe qua <code>selectFromPanel</code>). Chuỗi tổ tiên chặn 64. Hex tính sẵn, weight đặt tên, lineSpacing = lineHeight − size.</li></ul>
+  <h3>10. Responsive</h3>
+  <ul><li>Overlay phải khi hẹp; body + cây cuộn độc lập; field ellipsis chống tràn.</li></ul>
+  <h3>11. Tokens</h3>
+  <ul><li>Tra cứu theo mode (dark dùng giá trị dark). Phân nhóm: <code>s\d+</code>→spacing, r-sm/md/lg/xl/full→radius, <code>t-/font</code>→type, còn lại parse được màu→color (<code>tokens.ts:53-61</code>). Gộp project-trước-global-sau; <code>usageOf</code> đếm <code>var(--x)</code> trực tiếp (bỏ qua --icon/--device-/--safe-/--status-); <code>swiftUITokens()</code> sinh extension Color/CGFloat (type tokens loại ra — size px không phải UIFont).</li></ul>
+  <h3>12. Đặc biệt / constraint</h3>
+  <ul><li>Router message: chấp nhận khi <code>pc===true</code> + khớp nodeId + token; 3 loại <code>spec/height/select</code>; <code>sizes</code> (frame) vs <code>contentSizes</code> (frame+tràn) cùng nguồn. Preview component dùng frameId <code>component:project:id</code> + <code>bare:true</code>. Draft preview qua <code>extraCss</code>; promote = Copy CSS rồi paste tay — không backend.</li></ul>
+  <h3>13. Vấn đề / rủi ro</h3>
+  <ul><li>Không phát hiện blocker. Ghi nhận trung tính: payload pretty-print (indent 2) nên screen lớn cho clipboard lớn — hành vi có chủ ý (đọc cho người/LLM), không phải bug.</li></ul>
+</section>
+
+<section class="card" id="lien-ket">
+  <h2>Liên kết với docs/phone-canvas-overview.html</h2>
+  <p>File tổng quan (<code>docs/phone-canvas-overview.html</code>) mô tả <b>dự án là gì, pipeline 5 chặng, 5 invariants, chức năng core, stack và cây thư mục</b> — đọc trước để có bản đồ. File này đi sâu vào <b>app gốc render ra sao</b>: Dashboard chọn project thế nào, Board bày nodes/toolbar/dock/panel bằng component và CSS nào, Spec panel đọc spec ra sao — với mọi con số và path đủ để agent khác dựng lại đặc tả SwiftUI mà không cần mở code.</p>
+</section>
+
+<footer>
+  Trung thực: mọi tên file, số đo và hành vi đều đọc từ code (path:dòng kèm theo); suy luận gắn nhãn INFERRED trong handback, không có trong file này. Phạm vi viết: chỉ file này + _state/ của scout-opencode. Task 005 (foundation-kit) đã cancelled nên nội dung project/* không thuộc file này.
+</footer>
+
+</div>
+</body>
+</html>

@@ -32,6 +32,13 @@ import { exportFileName, parseArgs } from './export/cli.ts'
 import { launch, shutdown } from './export/cdp.ts'
 import { startSite } from './export/site.ts'
 import { renderPng } from './export/render.ts'
+import {
+  buildGoldenRecord,
+  loadManifest,
+  resolveGoldenDir,
+  saveManifest,
+  upsertRecord,
+} from './export/golden.ts'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const SCREENS_DIR = path.join(ROOT, 'src/screens')
@@ -154,6 +161,9 @@ async function main(): Promise<void> {
   const site = await startSite(documents, PUBLIC_DIR)
   const browser = await launch()
   let written = 0
+  // golden store only exists when flagged; plain exports never touch it
+  const goldenDir = options.golden ? path.resolve(ROOT, resolveGoldenDir(options)) : null
+  let manifest = goldenDir ? loadManifest(goldenDir) : null
   try {
     for (const screenId of screens) {
       const screenDevices = devicesFor(screenId)
@@ -176,6 +186,29 @@ async function main(): Promise<void> {
           // PNG IHDR: width at byte 16, height at byte 20, big-endian
           const pngWidth = png.readUInt32BE(16)
           const pngHeight = png.readUInt32BE(20)
+          if (goldenDir && manifest) {
+            const goldens = path.join(
+              goldenDir,
+              exportFileName(screenId, deviceId, theme, options.scale, true, options.full),
+            )
+            await mkdir(goldenDir, { recursive: true })
+            await writeFile(goldens, png)
+            manifest = upsertRecord(
+              manifest,
+              buildGoldenRecord({
+                screen: screenId,
+                device: deviceId,
+                theme,
+                scale: options.scale,
+                full: options.full,
+                file: path.basename(goldens),
+                png,
+                width: pngWidth,
+                height: pngHeight,
+                timestamp: new Date().toISOString(),
+              }),
+            )
+          }
           console.log(
             `${display(file)}  ${pngWidth}×${pngHeight}  ${(png.length / 1024).toFixed(0)} KB`,
           )
@@ -188,6 +221,10 @@ async function main(): Promise<void> {
   }
 
   console.log(`\n${written} file${written === 1 ? '' : 's'} → ${display(outDir)}/`)
+  if (goldenDir && manifest) {
+    saveManifest(goldenDir, manifest)
+    console.log(`${Object.keys(manifest.records).length} golden record(s) → ${display(goldenDir)}/`)
+  }
 }
 
 main().catch((error: unknown) => {
