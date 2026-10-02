@@ -86,16 +86,24 @@ async function main(): Promise<void> {
   }
 
   const screens = options.screens.includes('all') ? allScreens : options.screens
-  const devices = options.devices.includes('all')
-    ? DEVICES.map((device) => device.id)
-    : options.devices
+  // No explicit --device: each screen renders at its own header deviceId
+  // (`<!-- pc {"deviceId":"widget-small"} -->`), falling back to reference.
+  // An explicit --device (even once) overrides every screen, so a phone export
+  // and a widget export of the same screen never silently share a filename.
+  const explicitDeviceIds = options.explicitDevices ? options.devices : null
+  const devicesFor = (screenId: string): string[] => {
+    if (explicitDeviceIds) return explicitDeviceIds.includes('all') ? DEVICES.map((d) => d.id) : explicitDeviceIds
+    return [screenById.get(screenId)?.deviceId ?? 'reference']
+  }
   const themes = options.themes.includes('all') ? ['light', 'dark'] : options.themes
-
   for (const id of screens) {
     if (!allScreens.includes(id)) fail(`unknown screen "${id}". Try --list`)
   }
-  for (const id of devices) {
-    if (!DEVICES.some((device) => device.id === id)) fail(`unknown device "${id}". Try --list`)
+  const knownDevice = (id: string): boolean => DEVICES.some((device) => device.id === id)
+  if (explicitDeviceIds && !explicitDeviceIds.includes('all')) {
+    for (const id of explicitDeviceIds) {
+      if (!knownDevice(id)) fail(`unknown device "${id}". Try --list`)
+    }
   }
   for (const id of themes) {
     if (id !== 'light' && id !== 'dark') fail(`unknown theme "${id}". Try --list`)
@@ -122,7 +130,8 @@ async function main(): Promise<void> {
       components[component.id] = component.html
     }
     const stylesheets = projectTokens ? [...sharedStyles, projectTokens] : sharedStyles
-    for (const deviceId of devices) {
+    for (const deviceId of devicesFor(screenId)) {
+      if (!knownDevice(deviceId)) fail(`unknown device "${deviceId}". Try --list`)
       const device = getDevice(deviceId)
       // no bridge: an export carries no measurement scaffolding
       for (const theme of themes) {
@@ -147,7 +156,8 @@ async function main(): Promise<void> {
   let written = 0
   try {
     for (const screenId of screens) {
-      for (const deviceId of devices) {
+      const screenDevices = devicesFor(screenId)
+      for (const deviceId of screenDevices) {
         const device = getDevice(deviceId)
         for (const theme of themes) {
           const url = `${site.origin}/screen/${screenId}--${deviceId}--${theme}`
@@ -156,7 +166,7 @@ async function main(): Promise<void> {
           // an explicitly named device always keeps its suffix: without this
           // a phone export and an ipad-11 export of one screen land on the
           // same filename and the second silently overwrites the first
-          const multiDevice = devices.length > 1 || options.explicitDevices
+          const multiDevice = screenDevices.length > 1 || options.explicitDevices
           const file = path.join(
             outDir,
             exportFileName(screenId, deviceId, theme, options.scale, multiDevice, options.full),

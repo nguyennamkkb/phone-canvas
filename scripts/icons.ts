@@ -113,6 +113,9 @@ const SYMBOLS: Record<string, string> = {
   scale: 'scale.svg',
   minus: 'minus.svg',
   'play.fill': 'play.svg',
+  'pause.fill': 'pause-fill.svg',
+  'backward.fill': 'backward-fill.svg',
+  'forward.fill': 'forward-fill.svg',
 }
 
 /** Tighten the markup, then percent-encode it so it is safe inside url("…") */

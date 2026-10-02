@@ -49,8 +49,9 @@ npm run export -- --device all                     # mọi device, có suffix
 ```
 
 Truyền `--device` (kể cả một device duy nhất) luôn giữ suffix `-<device>`
-để bản phone và bản tablet không ghi đè nhau. Export render theo `--device`
-truyền vào, không theo `deviceId` trong header/board.
+để bản phone và bản tablet không ghi đè nhau. Không truyền `--device`, mỗi
+màn render đúng `deviceId` trong header của nó (mặc định `reference`);
+truyền rồi thì `--device` thắng header.
 
 ## Giới hạn đã biết
 
