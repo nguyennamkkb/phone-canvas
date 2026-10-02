@@ -7,8 +7,8 @@
 
   <div class="body" style="padding: var(--s4); gap: var(--s4)">
     <div class="segmented-light" role="group" aria-label="Khoảng thống kê">
-      <button class="seg is-on" style="height: auto; padding-top: var(--s2); padding-bottom: var(--s2)">Tuần</button>
-      <button class="seg" style="height: auto; padding-top: var(--s2); padding-bottom: var(--s2)">Tháng</button>
+      <button class="seg is-on">Tuần</button>
+      <button class="seg">Tháng</button>
     </div>
 
     <div class="paper-card" style="gap: var(--s2)">
@@ -28,31 +28,31 @@
       <span class="t-section">Kcal theo ngày</span>
       <div class="row" style="gap: var(--s2); align-items: flex-end">
         <div class="grow col" style="gap: var(--s1); align-items: center">
-          <div style="width: 100%; height: 64px; border-radius: var(--r-md); background: var(--track)"></div>
+          <div class="mini-bar" style="width: 100%; height: 64px; background: var(--track)"></div>
           <span class="t-footnote t-secondary">T2</span>
         </div>
         <div class="grow col" style="gap: var(--s1); align-items: center">
-          <div style="width: 100%; height: 96px; border-radius: var(--r-md); background: var(--track)"></div>
+          <div class="mini-bar" style="width: 100%; height: 96px; background: var(--track)"></div>
           <span class="t-footnote t-secondary">T3</span>
         </div>
         <div class="grow col" style="gap: var(--s1); align-items: center">
-          <div style="width: 100%; height: 78px; border-radius: var(--r-md); background: var(--track)"></div>
+          <div class="mini-bar" style="width: 100%; height: 78px; background: var(--track)"></div>
           <span class="t-footnote t-secondary">T4</span>
         </div>
         <div class="grow col" style="gap: var(--s1); align-items: center">
-          <div style="width: 100%; height: 118px; border-radius: var(--r-md); background: var(--cta)"></div>
+          <div class="mini-bar" style="width: 100%; height: 118px; background: var(--cta)"></div>
           <span class="t-footnote">T5</span>
         </div>
         <div class="grow col" style="gap: var(--s1); align-items: center">
-          <div style="width: 100%; height: 86px; border-radius: var(--r-md); background: var(--track)"></div>
+          <div class="mini-bar" style="width: 100%; height: 86px; background: var(--track)"></div>
           <span class="t-footnote t-secondary">T6</span>
         </div>
         <div class="grow col" style="gap: var(--s1); align-items: center">
-          <div style="width: 100%; height: 102px; border-radius: var(--r-md); background: var(--track)"></div>
+          <div class="mini-bar" style="width: 100%; height: 102px; background: var(--track)"></div>
           <span class="t-footnote t-secondary">T7</span>
         </div>
         <div class="grow col" style="gap: var(--s1); align-items: center">
-          <div style="width: 100%; height: 54px; border-radius: var(--r-md); background: var(--track)"></div>
+          <div class="mini-bar" style="width: 100%; height: 54px; background: var(--track)"></div>
           <span class="t-footnote t-secondary">CN</span>
         </div>
       </div>
@@ -60,26 +60,7 @@
 
     <div class="paper-card" style="gap: var(--s2)">
       <span class="t-section">Món đã log</span>
-      <div class="row" style="gap: var(--s3); align-items: center">
-        <img class="art" src="/project/calo-ai/assets/pho.svg" width="48" height="48" alt="Pho bo" style="border-radius: var(--r-md)" />
-        <div class="grow col" style="gap: 0">
-          <div class="t-headline">Phở bò · 520 kcal</div>
-          <div class="t-subhead t-secondary">26/09 · bữa trưa</div>
-        </div>
-        <button class="nav-round is-hollow" aria-label="Log lại phở bò">
-          <span class="icon icon-sm" data-symbol="arrow.triangle.2.circlepath"></span>
-        </button>
-      </div>
-      <div class="row" style="gap: var(--s3); align-items: center">
-        <img class="art" src="/project/calo-ai/assets/com-tam.svg" width="48" height="48" alt="Com tam" style="border-radius: var(--r-md)" />
-        <div class="grow col" style="gap: 0">
-          <div class="t-headline">Cơm tấm · 730 kcal</div>
-          <div class="t-subhead t-secondary">25/09 · bữa trưa</div>
-        </div>
-        <button class="nav-round is-hollow" aria-label="Log lại cơm tấm">
-          <span class="icon icon-sm" data-symbol="arrow.triangle.2.circlepath"></span>
-        </button>
-      </div>
+      <!-- @component meal-log-row -->
     </div>
   </div>
 

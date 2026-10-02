@@ -1,0 +1,21 @@
+<!-- @anatomy name="meal-log-row" purpose="Mot dong mon da log: anh + ten/kcal + meta + nut Log lai." anatomy="div.row > img.art.art-food[width=48][height=48] + div.grow.col(div.t-headline + div.t-subhead.t-secondary) + button.nav-round.is-hollow" variants="khong co — mot dang duy nhat" states="default; khong co pressed/loading trong HTML tinh" tokens="--s3 --corner-media" regions="body" platforms="phone du; cover/inner/watch/widget khong dung" interaction="tap Log lai (nav-round >=44pt) lap lai mon" a11y="aria-label tren nut Log lai; alt anh la ten mon" examples="dung: 1 anh + 2 dong chu + nut Log lai; sai: doi img sang pham vi khac" -->
+<div class="row" style="gap: var(--s3); align-items: center">
+  <img class="art art-food" src="/project/calo-ai/assets/pho.svg" width="48" height="48" alt="Pho bo" />
+  <div class="grow col" style="gap: 0">
+    <div class="t-headline">Phở bò · 520 kcal</div>
+    <div class="t-subhead t-secondary">26/09 · bữa trưa</div>
+  </div>
+  <button class="nav-round is-hollow" aria-label="Log lại phở bò">
+    <span class="icon icon-sm" data-symbol="arrow.triangle.2.circlepath"></span>
+  </button>
+</div>
+<div class="row" style="gap: var(--s3); align-items: center">
+  <img class="art art-food" src="/project/calo-ai/assets/com-tam.svg" width="48" height="48" alt="Com tam" />
+  <div class="grow col" style="gap: 0">
+    <div class="t-headline">Cơm tấm · 730 kcal</div>
+    <div class="t-subhead t-secondary">25/09 · bữa trưa</div>
+  </div>
+  <button class="nav-round is-hollow" aria-label="Log lại cơm tấm">
+    <span class="icon icon-sm" data-symbol="arrow.triangle.2.circlepath"></span>
+  </button>
+</div>

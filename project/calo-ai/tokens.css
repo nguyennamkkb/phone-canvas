@@ -15,6 +15,10 @@
   --alarm: #d92d20;
   --track: #e3e8ee;
   --hairline: rgba(34, 40, 45, 0.12);
+  /* Corner language (calo-ai): alias core scale — doi core tu dong theo.
+     card = the noi dung, media = thumbnail/mini-bar, pill = --r-full. */
+  --corner-card: var(--r-lg);
+  --corner-media: var(--r-md);
 }
 
 :root[data-theme='dark'] {
@@ -92,9 +96,48 @@
 .app-mood .hero-card,
 .app-mood .band,
 .app-mood .panel {
-  border-radius: var(--r-lg);
+  border-radius: var(--corner-card);
   border-color: transparent;
 }
 .app-mood .panel {
   background: var(--bg-grouped);
+}
+
+/* Go bo CTA rieng: .btn.btn-primary = primary duy nhat (iOS 26 fill dam).
+   .pill-soft/.pill-ghost/.pill-sage du (moi family mot job) + seg/toggle/chip-icon
+   la control rieng, khong lam nut. .btn plain (fill mo) khong dung o day. */
+.app-mood .btn.btn-primary {
+  background: var(--cta);
+  color: #ffffff;
+}
+/* Segmentation khit 44pt (024 iOS 26 round): container + thumb tron --r-full;
+   thumb noi var(--bg-elevated) + vien hairline + 1 bong (khong backdrop-filter
+   tren content — subset chi cho glass tren floating chrome). Vien trong suot
+   o trang thai off de box hai thumb giong het nhau, bat/tat khong nhay layout. */
+.app-mood .segmented-light {
+  border-radius: var(--r-full);
+}
+.app-mood .seg {
+  height: auto;
+  padding-top: var(--s2);
+  padding-bottom: var(--s2);
+  border: 1px solid transparent;
+  border-radius: var(--r-full);
+}
+.app-mood .seg.is-on {
+  background: var(--bg-elevated);
+  border-color: var(--hairline);
+  color: var(--label);
+  box-shadow: 0 1px 4px rgba(26, 26, 26, 0.12);
+}
+/* Thumb hinh dung rieng, khong tang hit-target. */
+.app-mood .art-food {
+  border-radius: var(--corner-media);
+}
+.app-mood .mini-bar {
+  border-radius: var(--corner-media);
+}
+.app-mood .chip-food {
+  background: var(--sun-soft);
+  color: var(--espresso);
 }
