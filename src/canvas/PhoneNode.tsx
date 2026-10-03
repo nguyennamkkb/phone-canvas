@@ -257,7 +257,8 @@ function PhoneNodeInner({ id, data }: NodeProps) {
             width={device.width}
             height={contentH}
             sandbox="allow-scripts"
-            style={{ pointerEvents: mode === 'inspect' ? 'auto' : 'none' }}
+            scrolling="no"
+            style={{ pointerEvents: mode === 'inspect' ? 'auto' : 'none', overflow: 'hidden' }}
           />
           {clickThrough && (
             <div

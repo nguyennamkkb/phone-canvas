@@ -3302,3 +3302,17 @@
   font-weight: 700;
   cursor: pointer;
 }
+
+/* Spark-trial palette (blue gradient paywall). Class rules live in the
+   screen's own <style> block (screens/spark-trial.html) per screen-style
+   recipe; only shared color roles stay here so lint:tokens stays silent. */
+:root,
+:root[data-theme='dark'] {
+  --sp-top: #7fb0ec;
+  --sp-mid: #4a86dd;
+  --sp-bot: #2f66cf;
+  --sp-ink: #ffffff;
+  --sp-dot-dim: rgba(255, 255, 255, 0.28);
+  --sp-glyph: #2f7cf6;
+  --sp-line: rgba(255, 255, 255, 0.55);
+}

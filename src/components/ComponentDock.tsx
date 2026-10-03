@@ -127,6 +127,8 @@ function ComponentPreview({
             width={device.width}
             height={contentH}
             sandbox="allow-scripts"
+            scrolling="no"
+            style={{ overflow: 'hidden' }}
           />
         </div>
       </div>

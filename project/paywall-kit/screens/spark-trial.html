@@ -1,0 +1,157 @@
+<!-- pc {"title":"Spark Trial","lightStatusBar":true} -->
+<style>
+.sp-headline {
+  font-family: var(--font);
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 46px;
+  letter-spacing: -0.5px;
+  color: var(--sp-ink);
+}
+.sp-dot {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--pw-dot-size);
+  height: var(--pw-dot-size);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--sp-ink);
+  color: var(--sp-glyph);
+}
+.sp-dot.is-todo {
+  background: var(--sp-dot-dim);
+  color: var(--sp-ink);
+}
+.sp-rail {
+  width: 6px;
+  height: 68px;
+  background: var(--sp-ink);
+}
+.sp-rail.is-fade {
+  background: linear-gradient(180deg, var(--sp-ink) 0%, var(--sp-dot-dim) 100%) var(--sp-dot-dim);
+}
+.sp-divline {
+  flex: 1 1 0;
+  height: 1px;
+  background: var(--sp-line);
+}
+.sp-plan {
+  color: var(--sp-ink);
+  font-family: var(--font);
+  font-size: var(--t-title3);
+  font-weight: 600;
+}
+.sp-plan-u {
+  text-decoration: underline;
+}
+.sp-sub {
+  color: var(--sp-ink);
+  font-family: var(--font);
+  font-size: 19px;
+  font-weight: 400;
+}
+.sp-cta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 60px;
+  padding: 0 var(--s5);
+  border: 0;
+  border-radius: var(--r-lg);
+  background: var(--sp-ink);
+  color: var(--sp-glyph);
+  font-family: var(--font);
+  font-size: var(--t-title3);
+  font-weight: 700;
+  cursor: pointer;
+}
+.sp-restore {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-min);
+  color: var(--sp-ink);
+  font-family: var(--font);
+  font-size: var(--t-headline);
+}
+</style>
+<div class="screen" style="background-color: var(--sp-bot); background-image: linear-gradient(180deg, var(--sp-top) 0%, var(--sp-mid) 48%, var(--sp-bot) 100%); background-size: cover; background-position: center; background-repeat: no-repeat">
+  <div class="body" style="padding: var(--s4) var(--s4) var(--s10); gap: var(--s4)">
+    <div class="col" style="gap: 0">
+      <div class="row" style="gap: 0">
+        <button class="mx-x" aria-label="Close">
+          <span class="icon icon-sm" data-symbol="xmark"></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="sp-headline">How your free<br />trial works</div>
+
+    <div class="col" style="gap: 0">
+      <div class="row" style="gap: var(--s4); align-items: flex-start">
+        <div class="col" style="gap: 0; align-items: center">
+          <span class="sp-dot">
+            <span class="icon icon-sm" data-symbol="checkmark.fill"></span>
+          </span>
+          <div class="sp-rail"></div>
+        </div>
+        <div class="grow col" style="gap: var(--s1); padding-top: var(--s2); padding-bottom: var(--s8)">
+          <div class="t-headline" style="color: var(--sp-ink)">Get the app</div>
+          <div class="t-subhead" style="color: var(--sp-ink)">You've successfully created your Spark account.</div>
+        </div>
+      </div>
+      <div class="row" style="gap: var(--s4); align-items: flex-start">
+        <div class="col" style="gap: 0; align-items: center">
+          <span class="sp-dot">
+            <span class="icon icon-sm" data-symbol="lock.fill"></span>
+          </span>
+          <div class="sp-rail is-fade"></div>
+        </div>
+        <div class="grow col" style="gap: var(--s1); padding-top: var(--s2); padding-bottom: var(--s8)">
+          <div class="t-headline" style="color: var(--sp-ink)">Today: Get instant access</div>
+          <div class="t-subhead" style="color: var(--sp-ink)">Access all Premium features: Priority, Gatekeeper, Spark +AI, Large Attachments, and more.</div>
+        </div>
+      </div>
+      <div class="row" style="gap: var(--s4); align-items: flex-start">
+        <div class="col" style="gap: 0; align-items: center">
+          <span class="sp-dot is-todo">
+            <span class="icon icon-sm" data-symbol="bell.fill"></span>
+          </span>
+        </div>
+        <div class="grow col" style="gap: var(--s1); padding-top: var(--s2)">
+          <div class="t-headline" style="color: var(--sp-ink)">Day 5: Trial reminder</div>
+          <div class="t-subhead" style="color: var(--sp-ink)">We'll send you an email that your trial is ending.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" style="gap: var(--s3); align-items: center">
+      <div class="sp-divline"></div>
+      <div class="row" style="gap: 0; align-items: center">
+        <span class="icon icon-sm" data-symbol="person.fill" style="color: var(--sp-ink)"></span>
+        <span class="icon icon-sm" data-symbol="person.fill" style="color: var(--sp-ink); margin-left: -14px"></span>
+      </div>
+      <div class="sp-divline"></div>
+    </div>
+
+    <div class="col" style="gap: var(--s1); align-items: center">
+      <div class="row" style="gap: var(--s2); align-items: center">
+        <span class="sp-plan"><span class="sp-plan-u">Annual</span></span>
+        <span class="icon icon-sm" data-symbol="chevron.right" style="color: var(--sp-ink)"></span>
+        <span class="sp-plan">$59.99/year</span>
+      </div>
+      <div class="sp-sub" style="text-align: center">7-day free trial • Cancel anytime</div>
+    </div>
+
+    <div class="col" style="gap: var(--s2)">
+      <button class="sp-cta">Continue</button>
+      <div class="sp-restore">Restore purchases</div>
+    </div>
+  </div>
+</div>

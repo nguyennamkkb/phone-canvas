@@ -69,6 +69,7 @@ export type ComposeOptions = {
 const CHROME_CSS = `
 html, body { width: var(--device-w); height: var(--device-h); }
 .device {
+  position: relative;
   display: flex; flex-direction: column;
   width: var(--device-w); height: var(--device-h);
   background: var(--bg);
@@ -104,8 +105,9 @@ body.is-bare { height: auto; }
 .sb-right { display: flex; flex-direction: row; align-items: center; gap: 5px; }
 .sb-ico { display: block; color: currentColor; }
 .home-indicator {
-  flex: 0 0 auto; height: var(--safe-bottom);
+  position: absolute; left: 0; right: 0; bottom: 0; height: var(--safe-bottom);
   display: flex; flex-direction: row; align-items: center; justify-content: center;
+  background: transparent;
   pointer-events: none;
 }
 .home-indicator i {
