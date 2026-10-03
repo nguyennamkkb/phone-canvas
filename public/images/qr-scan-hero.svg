@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 300" width="340" height="300" role="img" aria-label="Woman scanning QR code">
+  <!-- backdrop -->
+  <circle cx="170" cy="138" r="118" fill="#e8eef5"/>
+  <!-- kneeling legs (black pants) -->
+  <path d="M52 252 q30 -18 78 -14 l6 22 q-52 8 -84 10 z" fill="#1c1e24"/>
+  <path d="M96 236 q34 -10 62 -4 l4 20 q-36 8 -64 6 z" fill="#2a2d36"/>
+  <!-- torso (blue sweater) -->
+  <path d="M92 138 q30 -16 58 0 l10 66 q-40 14 -78 0 z" fill="#2f6dbf"/>
+  <!-- arm reaching to phone -->
+  <path d="M140 150 q30 6 52 26 l-8 14 q-26 -16 -52 -20 z" fill="#2f6dbf"/>
+  <!-- head -->
+  <circle cx="118" cy="102" r="26" fill="#f2c9a4"/>
+  <!-- hair + ponytail (blonde) -->
+  <path d="M92 100 q0 -30 28 -30 q26 0 26 28 q-6 -12 -16 -14 q2 10 -4 14 q-4 -12 -14 -14 q-12 2 -14 16 z" fill="#e8b64c"/>
+  <path d="M140 84 q22 8 20 38 q-2 14 -10 20 q2 -22 -4 -32 q-8 -12 -12 -18 z" fill="#e8b64c"/>
+  <!-- big phone (dark frame) -->
+  <rect x="184" y="52" width="112" height="176" rx="16" fill="#23262e"/>
+  <rect x="194" y="66" width="92" height="148" rx="6" fill="#ffffff"/>
+  <!-- QR grid (decorative, not scannable) -->
+  <g fill="#23262e">
+    <rect x="204" y="78" width="26" height="26"/>
+    <rect x="244" y="78" width="26" height="26"/>
+    <rect x="204" y="118" width="26" height="26"/>
+    <rect x="238" y="118" width="14" height="14"/>
+    <rect x="256" y="118" width="14" height="14"/>
+    <rect x="238" y="136" width="14" height="14"/>
+    <rect x="256" y="136" width="14" height="8"/>
+    <rect x="208" y="82" width="18" height="18" fill="#ffffff"/>
+    <rect x="248" y="82" width="18" height="18" fill="#ffffff"/>
+    <rect x="208" y="122" width="18" height="18" fill="#ffffff"/>
+    <rect x="212" y="86" width="10" height="10"/>
+    <rect x="252" y="86" width="10" height="10"/>
+    <rect x="212" y="126" width="10" height="10"/>
+    <rect x="204" y="152" width="66" height="8"/>
+    <rect x="204" y="164" width="40" height="8"/>
+    <rect x="248" y="164" width="22" height="8"/>
+  </g>
+  <!-- pointing hand / finger tapping QR -->
+  <path d="M282 130 q16 -4 22 6 q4 8 -4 12 l-20 6 q-8 -2 -8 -10 l2 -10 z" fill="#f2c9a4"/>
+  <rect x="272" y="132" width="26" height="10" rx="5" fill="#f2c9a4"/>
+  <!-- two small pills below phone -->
+  <rect x="192" y="236" width="48" height="30" rx="15" fill="#ffffff" stroke="#d4dbe3" stroke-width="2"/>
+  <path d="M219 240 l-10 12 h7 l-3 10 l10 -13 h-7 z" fill="#f2b705"/>
+  <rect x="248" y="236" width="48" height="30" rx="15" fill="#ffffff" stroke="#d4dbe3" stroke-width="2"/>
+  <rect x="260" y="243" width="16" height="14" rx="3" fill="#2f6dbf"/>
+  <circle cx="264" cy="247" r="2" fill="#ffffff"/>
+  <path d="M260 254 l5 -6 l4 4 l3 -3 l4 5 z" fill="#ffffff"/>
+  <!-- hand-drawn curved arrow toward headline -->
+  <path d="M150 272 q60 8 108 2" fill="none" stroke="#2f6dbf" stroke-width="5" stroke-linecap="round"/>
+  <path d="M246 262 l16 12 l-18 4 z" fill="#2f6dbf"/>
+</svg>

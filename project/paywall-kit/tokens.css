@@ -4,6 +4,16 @@
 :root {
   --accent-lime: #e6fd32;
   --bg: #0a0618;
+  --fa-blue: #2f7cf6;
+  --fa-blue-deep: #1f5fd0;
+  --fa-blue-ink: #0a2540;
+  --fa-check: #2f7cf6;
+  --fa-life: #f0433a;
+  --fa-life-deep: #e8622a;
+  --fa-mute: #6b7280;
+  --fa-paper: #ffffff;
+  --fa-plan-blue-deep: #4a9bf5;
+  --fa-plan-sub: rgba(255, 255, 255, 0.8);
   --label: #ffffff;
   --label-2: rgba(226, 214, 240, 0.78);
   --pw-arc: #b678e6;
@@ -25,6 +35,16 @@
 :root[data-theme='dark'] {
   --accent-lime: #e6fd32;
   --bg: #0a0618;
+  --fa-blue: #2f7cf6;
+  --fa-blue-deep: #1f5fd0;
+  --fa-blue-ink: #0a2540;
+  --fa-check: #2f7cf6;
+  --fa-life: #f0433a;
+  --fa-life-deep: #e8622a;
+  --fa-mute: #6b7280;
+  --fa-paper: #ffffff;
+  --fa-plan-blue-deep: #4a9bf5;
+  --fa-plan-sub: rgba(255, 255, 255, 0.8);
   --label: #ffffff;
   --label-2: rgba(226, 214, 240, 0.78);
   --pw-arc: #b678e6;
@@ -139,5 +159,531 @@
   font-style: italic;
   line-height: 32px;
   letter-spacing: -1px;
+  color: #ffffff;
+}
+
+/* Full-access (light): nut X tron mo tren nen trang. */
+.fa-x {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--fill);
+  color: var(--fa-mute);
+}
+
+/* Hang loi ich: check xanh + chu den, khong nen rieng. */
+.fa-benefit {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  min-height: var(--touch-min);
+}
+.fa-check {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  color: var(--fa-check);
+}
+
+/* CTA chinh: gradient xanh (background-image tren element, khong phai root
+   nen subset cho phep; gradient co job: thu bac hanh dong chinh). */
+.fa-cta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 56px;
+  padding: 0 var(--s5);
+  border: 0;
+  border-radius: var(--r-md);
+  background-color: var(--fa-blue);
+  background-image: linear-gradient(180deg, var(--fa-plan-blue-deep) 0%, var(--fa-blue) 55%, var(--fa-blue-deep) 100%);
+  color: #ffffff;
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* The goi: gradient xanh / do-cam, chu trang, radius card project. */
+.fa-plan {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  width: 100%;
+  min-height: 76px;
+  padding: var(--s3) var(--s4);
+  border: 0;
+  border-radius: var(--r-md);
+  color: #ffffff;
+  font-family: var(--font);
+  text-align: left;
+  cursor: pointer;
+}
+.fa-plan.is-yearly {
+  background-color: var(--fa-blue);
+  background-image: linear-gradient(180deg, var(--fa-plan-blue-deep) 0%, var(--fa-blue) 60%, var(--fa-blue-deep) 100%);
+}
+.fa-plan.is-life {
+  background-color: var(--fa-life);
+  background-image: linear-gradient(180deg, var(--fa-life-deep) 0%, var(--fa-life) 60%, var(--fa-life-deep) 100%);
+}
+
+/* Footer phap ly: chu xam gach chan, cach deu. */
+.fa-legal {
+  color: var(--fa-mute);
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  text-decoration: underline;
+}
+
+/* Live-captions (light): white canvas paywall, vivid-blue CTA pair.
+   Reuses .fa-x (dismiss) + .fa-paper (white). lc-* only for genuinely
+   new roles: near-black ink, vivid blue, mint check/bolt, orange mega. */
+:root,
+:root[data-theme='dark'] {
+  --lc-paper: #ffffff;
+  --lc-ink: #111318;
+  --lc-blue: #1a3ee0;
+  --lc-blue-deep: #122da6;
+  --lc-mint: #c9f2e8;
+  --lc-bolt: #a7e8d8;
+  --lc-mega: #f0711a;
+  --lc-chip: #f1f3f5;
+}
+
+/* Cleaner-pro (dark navy): gradient navy→indigo canvas, layered white
+   nested squares, blue app icon, green popular tag + trust shield. */
+:root,
+:root[data-theme='dark'] {
+  --cp-app: #2f7cf6;
+  --cp-card: rgba(255, 255, 255, 0.08);
+  --cp-faint: rgba(255, 255, 255, 0.35);
+  --cp-green: #22b07d;
+  --cp-indigo: #4b2a9e;
+  --cp-ink: #ffffff;
+  --cp-navy: #1a2a6c;
+  --cp-nest-1: rgba(255, 255, 255, 0.14);
+  --cp-nest-2: rgba(255, 255, 255, 0.22);
+  --cp-sub: #b9c0e8;
+}
+
+/* Hero composite: 3 nested rounded squares (layered rgba fills) centering
+   a blue app icon + photo badges + sparkles, all CSS-positioned glyphs
+   (subset allows position:absolute inside composite graphics; no transform).
+   Zero assets: broom glyph approximated by paintbrush icon. */
+.cp-hero {
+  position: relative;
+  width: 100%;
+  height: 200px;
+}
+.cp-nest {
+  position: absolute;
+  border-radius: 28px;
+}
+.cp-nest-1 {
+  left: 50%;
+  top: 50%;
+  width: 168px;
+  height: 168px;
+  margin: -84px 0 0 -84px;
+  background: var(--cp-nest-1);
+}
+.cp-nest-2 {
+  left: 50%;
+  top: 50%;
+  width: 128px;
+  height: 128px;
+  margin: -64px 0 0 -64px;
+  background: var(--cp-nest-2);
+}
+.cp-nest-3 {
+  left: 50%;
+  top: 50%;
+  width: 92px;
+  height: 92px;
+  margin: -46px 0 0 -46px;
+  background: var(--cp-faint);
+}
+.cp-app {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 68px;
+  height: 68px;
+  margin: -34px 0 0 -34px;
+  border-radius: 22px;
+  background: var(--cp-app);
+  color: #ffffff;
+}
+.cp-badge {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--cp-nest-2);
+  color: #ffffff;
+}
+.cp-badge-1 {
+  left: 22%;
+  bottom: 12%;
+}
+.cp-badge-2 {
+  right: 22%;
+  top: 12%;
+}
+.cp-star {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  color: #ffffff;
+}
+.cp-star-1 {
+  left: 16%;
+  top: 18%;
+}
+.cp-star-2 {
+  right: 14%;
+  top: 44%;
+}
+.cp-star-3 {
+  left: 30%;
+  bottom: 6%;
+}
+.cp-star-4 {
+  right: 28%;
+  bottom: 16%;
+}
+
+/* Plan cards: dark navy translucent, selected gets blue border + green tag
+   straddling the top edge (tag is in-flow first child with negative margin,
+   not absolute — keeps the card box measurable). */
+.cp-plan {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  width: 100%;
+  min-height: 76px;
+  padding: var(--s3) var(--s4);
+  border: 1px solid var(--cp-faint);
+  border-radius: var(--r-md);
+  background: var(--cp-card);
+  color: #ffffff;
+  font-family: var(--font);
+  text-align: left;
+  cursor: pointer;
+}
+.cp-plan.is-on {
+  position: relative;
+  overflow: visible;
+  border-color: var(--cp-app);
+}
+.cp-tag {
+  position: absolute;
+  top: 0;
+  left: var(--s4);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 0 0 auto;
+  min-height: 24px;
+  margin-top: -12px;
+  padding: 0 var(--s2);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--cp-green);
+  color: #ffffff;
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* CTA: bright blue solid, chevron at trailing end. */
+.cp-cta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  width: 100%;
+  height: 56px;
+  padding: 0 var(--s5);
+  border: 0;
+  border-radius: var(--r-md);
+  background: var(--cp-app);
+  color: #ffffff;
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Trust row: green shield + white text, centered. */
+.cp-trust {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+}
+.cp-trust .icon {
+  color: var(--cp-green);
+}
+
+/* Footer legal: muted underlined, spaced. */
+.cp-legal {
+  color: var(--cp-sub);
+  font-family: var(--font);
+  font-size: var(--t-caption);
+  text-decoration: underline;
+}
+
+/* Hero composite: orange speaker glyph + 2 mint bolts, CSS-positioned
+   (subset allows position:absolute inside composite graphics; no transform).
+   Zero assets: 3D reference art recreated as glyph composition. */
+.lc-hero {
+  position: relative;
+  width: 100%;
+  height: 88px;
+}
+.lc-mega {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 76px;
+  height: 76px;
+  color: var(--lc-mega);
+}
+.lc-bolt {
+  position: absolute;
+  color: var(--lc-bolt);
+}
+.lc-bolt-1 {
+  left: 84px;
+  top: 6px;
+  width: 34px;
+  height: 34px;
+}
+.lc-bolt-2 {
+  left: 108px;
+  top: 42px;
+  width: 24px;
+  height: 24px;
+}
+
+/* Headline: near-black line 1 + vivid-blue line 2, bold ~30. */
+.lc-headline {
+  font-family: var(--font);
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 36px;
+  letter-spacing: -0.5px;
+  color: var(--lc-ink);
+}
+.lc-headline-blue {
+  color: var(--lc-blue);
+}
+
+/* Benefit row: mint filled circle + dark check; row floor 44pt. */
+.lc-benefit {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  min-height: var(--touch-min);
+}
+.lc-check {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--lc-mint);
+  color: var(--lc-ink);
+}
+
+/* CTA pair: solid vivid blue primary + white/blue-border secondary.
+   Same 56+ height, radius ~14 per reference (not project pill language —
+   paywall reference mandates card radius here). */
+.lc-cta-primary {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 56px;
+  padding: 0 var(--s5);
+  border: 0;
+  border-radius: 14px;
+  background: var(--lc-blue);
+  color: #ffffff;
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 600;
+  cursor: pointer;
+}
+.lc-cta-secondary {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 56px;
+  padding: 0 var(--s5);
+  border: 1px solid var(--lc-blue);
+  border-radius: 14px;
+  background: var(--lc-paper);
+  color: var(--lc-blue);
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Social-proof chips: light-gray pill + mint mini-check. Static labels. */
+.lc-chip {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s2);
+  padding: var(--s2) var(--s3);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--lc-chip);
+}
+.lc-mini {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--lc-mint);
+  color: var(--lc-ink);
+}
+
+/* QR-scan (light): white canvas, brand-blue CTA, blue filled checks.
+   Reuses global --success (green trust check); qs-* only for new roles. */
+:root,
+:root[data-theme='dark'] {
+  --qs-paper: #ffffff;
+  --qs-ink: #111318;
+  --qs-blue: #2f6dbf;
+  --qs-blue-deep: #23548f;
+  --qs-sub: #6b7280;
+}
+
+/* Top links: gray, 44pt floor via row min-height. */
+.qs-link {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: var(--touch-min);
+  color: var(--qs-sub);
+  font-family: var(--font);
+  font-size: var(--t-subhead);
+}
+
+/* Hero art: centered flat SVG, fixed geometry. */
+.qs-hero {
+  width: 100%;
+  height: 250px;
+}
+
+/* Headline: line1 vivid blue + line2 near-black, bold ~28. */
+.qs-headline {
+  font-family: var(--font);
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 34px;
+  letter-spacing: -0.5px;
+  color: var(--qs-ink);
+}
+.qs-headline-blue {
+  color: var(--qs-blue);
+}
+
+/* Benefit row: blue filled circle + white check, title + gray sub. */
+.qs-benefit {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  min-height: var(--touch-min);
+}
+.qs-check {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--qs-blue);
+  color: #ffffff;
+}
+
+/* CTA: solid brand blue, radius ~14, height 56+. */
+.qs-cta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 56px;
+  padding: 0 var(--s5);
+  border: 0;
+  border-radius: 14px;
+  background: var(--qs-blue);
+  color: #ffffff;
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Trust check: global green, no new token. */
+.qs-trust-check {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--success);
   color: #ffffff;
 }

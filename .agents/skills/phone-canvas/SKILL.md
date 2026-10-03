@@ -171,7 +171,10 @@ Use the live board to confirm observable behavior:
 5. **Coordinates only inside a composite graphic.** `position: absolute` is legal
    in `.ring` / `.card-assistant`-style containers and nowhere else, and never
    with `transform: translate(-50%,-50%)` — a transform is invisible to the
-   layout engine and the spec will report the wrong box.
+   layout engine and the spec will report the wrong box. An edge-straddling
+   tag is the same pattern: `absolute; top: 0` + negative half-height margin
+   on a `relative` card, with headroom padding on the parent column for the
+   half that sticks out (SwiftUI: `overlay` + `offset`).
 6. **The shell owns the bands.** Never write a status bar, home indicator,
    navbar or tab bar: `src/extractor/compose.ts` places all of them. Declare the
    nav/tab content with `data-slot="back|title|right"`; the destination list
