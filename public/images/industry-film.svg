@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 260" width="340" height="260" role="img" aria-label="Flat film production cluster">
+  <!-- storyboard paper left (over script paper left edge) -->
+  <g transform="rotate(-14 110 150)">
+    <rect x="62" y="88" width="96" height="124" rx="6" fill="#eef3f6"/>
+    <path d="M76 108 l28 -8 M74 124 l34 -10 M72 140 l22 -6 M84 160 l30 4 M82 176 l26 6 M80 192 l20 8" stroke="#7ed3b2" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  <!-- megaphone -->
+  <g>
+    <path d="M62 78 L128 52 L128 104 L62 96 z" fill="#f2cd7e"/>
+    <rect x="48" y="72" width="16" height="30" rx="4" fill="#3a4450"/>
+    <path d="M96 92 q4 14 -8 20 q-10 5 -18 -2" fill="none" stroke="#e09a2b" stroke-width="6" stroke-linecap="round"/>
+  </g>
+  <!-- script paper front (drawn first = behind) -->
+  <g>
+    <rect x="132" y="52" width="104" height="140" rx="6" fill="#ffffff"/>
+    <g stroke="#3a4450" stroke-width="3" stroke-linecap="round">
+      <path d="M148 74 h72 M148 86 h72 M168 100 h32 M160 112 h48 M148 126 h72 M148 138 h72 M168 152 h32 M160 164 h48 M148 178 h56"/>
+    </g>
+  </g>
+  <!-- clapperboard -->
+  <g>
+    <rect x="52" y="176" width="84" height="52" rx="4" fill="#dfe9f2"/>
+    <rect x="52" y="156" width="84" height="22" rx="4" fill="#3a4450"/>
+    <g fill="#ffffff">
+      <rect x="58" y="158" width="16" height="8" rx="1" transform="rotate(24 66 162)"/>
+      <rect x="80" y="158" width="16" height="8" rx="1" transform="rotate(24 88 162)"/>
+      <rect x="102" y="158" width="16" height="8" rx="1" transform="rotate(24 110 162)"/>
+    </g>
+    <rect x="62" y="192" width="30" height="24" rx="2" fill="none" stroke="#5fb7e8" stroke-width="3"/>
+    <rect x="98" y="192" width="28" height="24" rx="2" fill="none" stroke="#5fb7e8" stroke-width="3"/>
+  </g>
+  <!-- director chair back (behind papers) -->
+  <g>
+    <rect x="216" y="18" width="64" height="18" rx="3" fill="#5fb7e8"/>
+    <rect x="216" y="44" width="64" height="16" rx="3" fill="#5fb7e8"/>
+    <path d="M224 62 L212 108 M272 62 L284 108 M218 84 L278 84" stroke="#3a4450" stroke-width="7" stroke-linecap="round"/>
+  </g>
+  <!-- pencil ruler -->
+  <g transform="rotate(14 236 150)">
+    <rect x="224" y="92" width="24" height="116" rx="3" fill="#f2cd7e"/>
+    <g stroke="#c98f2e" stroke-width="2">
+      <path d="M228 106 h8 M228 118 h8 M228 130 h8 M228 142 h8 M228 154 h8 M228 166 h8 M228 178 h8"/>
+    </g>
+  </g>
+  <!-- film reel -->
+  <g>
+    <circle cx="252" cy="176" r="22" fill="#3a4450"/>
+    <g fill="#dfe9f2">
+      <circle cx="252" cy="168" r="4"/>
+      <circle cx="260" cy="176" r="4"/>
+      <circle cx="252" cy="184" r="4"/>
+      <circle cx="244" cy="176" r="4"/>
+    </g>
+  </g>
+  <!-- video camera -->
+  <g>
+    <rect x="212" y="196" width="76" height="38" rx="10" fill="#5fb7e8"/>
+    <path d="M288 202 L314 188 L314 228 L288 222 z" fill="#dfe9f2"/>
+    <path d="M288 202 L314 188 L314 228 L288 222 z" fill="none" stroke="#3a4450" stroke-width="4" stroke-linejoin="round"/>
+    <g stroke="#2f7ca8" stroke-width="4" stroke-linecap="round">
+      <path d="M226 206 v14 M234 206 v14 M242 206 v14"/>
+    </g>
+  </g>
+</svg>
