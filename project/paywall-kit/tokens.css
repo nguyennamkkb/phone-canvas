@@ -1,0 +1,143 @@
+/* Paywall Kit — dark premium trial paywall.
+   Dark-first: nen gradient den→tim→hong tren .screen root; chu trang;
+   accent lime cho dot timeline + tag. Light = dark (paywall luon toi). */
+:root {
+  --accent-lime: #e6fd32;
+  --bg: #0a0618;
+  --label: #ffffff;
+  --label-2: rgba(226, 214, 240, 0.78);
+  --pw-arc: #b678e6;
+  --pw-bot: #c37ec6;
+  --pw-card: rgba(255, 255, 255, 0.08);
+  --pw-cta-bg: #ffffff;
+  --pw-cta-ink: #000000;
+  --pw-deep: #14073a;
+  --pw-dot-size: 48px;
+  --pw-hero-h: 210px;
+  --pw-lime-ink: #000000;
+  --pw-magenta: #7a2b98;
+  --pw-marquee-h: 170px;
+  --pw-mid: #2a0e63;
+  --pw-rail: #8a6a45;
+  --pw-top: #01010a;
+}
+
+:root[data-theme='dark'] {
+  --accent-lime: #e6fd32;
+  --bg: #0a0618;
+  --label: #ffffff;
+  --label-2: rgba(226, 214, 240, 0.78);
+  --pw-arc: #b678e6;
+  --pw-bot: #c37ec6;
+  --pw-deep: #14073a;
+  --pw-card: rgba(255, 255, 255, 0.08);
+  --pw-cta-bg: #ffffff;
+  --pw-cta-ink: #000000;
+  --pw-dot-size: 48px;
+  --pw-hero-h: 210px;
+  --pw-lime-ink: #000000;
+  --pw-magenta: #7a2b98;
+  --pw-marquee-h: 170px;
+  --pw-mid: #2a0e63;
+  --pw-rail: #8a6a45;
+  --pw-top: #01010a;
+}
+
+/* CTA trang vien tron: nen dac + chu den (tuong phan cao tren nen toi).
+   Cao 56 thoa san 44pt; radius --r-full theo ngon ngu pill cua project. */
+.pw-cta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 56px;
+  padding: 0 var(--s6);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--pw-cta-bg);
+  color: var(--pw-cta-ink);
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Dot lime dac cho timeline: glyph den tren lime (do tuong phan cao),
+   khong glass vi nam tren content do luong (quy tac 023). */
+.pw-dot {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--pw-dot-size);
+  height: var(--pw-dot-size);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--accent-lime);
+  color: var(--pw-lime-ink);
+}
+
+/* Cot rail timeline: doc theo truc dot, soi toc 6px mau bronze. */
+.pw-rail-line {
+  width: 6px;
+  height: 44px;
+  background: var(--pw-rail);
+}
+
+/* The goi: nen mo + vien hairline sang; ban duoc chon vien lime + tag. */
+.pw-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  min-height: var(--touch-min);
+  padding: var(--s4);
+  border: 1px solid var(--pw-line);
+  border-radius: var(--r-lg);
+  background: var(--pw-card);
+  color: var(--label);
+  font-family: var(--font);
+  text-align: left;
+  cursor: pointer;
+}
+.pw-card.is-best {
+  border-color: var(--accent-lime);
+}
+.pw-tag {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 0 0 auto;
+  min-height: var(--touch-min);
+  padding: 0 var(--s3);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--accent-lime);
+  color: var(--pw-lime-ink);
+  font-family: var(--font);
+  font-size: var(--t-caption);
+  font-weight: 700;
+}
+
+/* Hero marquee: art curved-text + wordmark trang giua.
+   Marquee la composite art (<img class="art">) vi textPath khong map
+   sang SwiftUI text — SwiftUI dung asset catalog (Image("MarqueeSuper")). */
+.pw-hero {
+  width: 100%;
+  height: var(--pw-hero-h);
+}
+.pw-marquee {
+  width: 100%;
+  height: var(--pw-marquee-h);
+}
+.pw-word {
+  font-family: var(--font);
+  font-size: 34px;
+  font-weight: 900;
+  font-style: italic;
+  line-height: 32px;
+  letter-spacing: -1px;
+  color: #ffffff;
+}
