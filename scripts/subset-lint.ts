@@ -27,6 +27,7 @@ import { fileURLToPath } from 'node:url'
 
 import { filterByScreen, parseScreenFilter, printHelpIfRequested, reportNoScreenMatch } from './screen-filter.ts'
 import { scanProjects } from './scan-projects.ts'
+import { chromeSelectorHits, styleDefsOf } from './screen-style.ts'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -106,7 +107,16 @@ async function main() {
 
   for (const target of targets) {
     const html = target.html
-    const known = perProject.get(target.project) ?? names
+    // per-screen <style> blocks (recipe screen-style.md): local definitions
+    // count as known — BANNED and chrome-guard scans below still cover them.
+    const known = new Set([...(perProject.get(target.project) ?? names), ...styleDefsOf(html)])
+    for (const hit of chromeSelectorHits(html)) {
+      err(
+        target.file,
+        lineOf(html, hit.index),
+        `${hit.selector} là chrome/shell của compose — <style> trong màn hình không được nhắm vào nó (xem .agents/skills/phone-canvas/recipes/screen-style.md)`,
+      )
+    }
 
     // 1. banned layout declarations (skip HTML comments so docs in comments don't fail)
     const stripped = html.replace(/<!--[\s\S]*?-->/g, (c) => '\n'.repeat(c.split('\n').length - 1))

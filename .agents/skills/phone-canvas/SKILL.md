@@ -220,6 +220,7 @@ classes it uses.
 | score, stats, overview, anything with a chart | `recipes/dashboard.md` |
 | modal action menu, preview, short form, filter | `recipes/bottom-sheet.md` |
 | per-screen background color / image / dark stage | `recipes/screen-background.md` |
+| one-off per-screen CSS (own `<style>` block, not tokens.css) | `recipes/screen-style.md` |
 | free-style catalogue of tokens + components | `recipes/showcase.md` |
 | new project palette, token edit, dark mode, handoff | `recipes/design-tokens.md` |
 | any screen, before you write its top or bottom band | `recipes/regions.md` |

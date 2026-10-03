@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220" width="200" height="220" role="img" aria-label="Duo owl mascot">
+  <defs>
+    <linearGradient id="duoBody" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2ee59d"/>
+      <stop offset="0.45" stop-color="#3b82f6"/>
+      <stop offset="1" stop-color="#a855f7"/>
+    </linearGradient>
+  </defs>
+  <!-- back sticker halo (tight white shell around head only, reference outline) -->
+  <rect x="38" y="18" width="124" height="98" rx="46" fill="#ffffff"/>
+  <!-- body -->
+  <path d="M40 30 q20 -14 40 -6 q10 -6 20 0 q20 -8 40 6 q10 8 8 30 l-4 100 q-2 30 -34 32 l-20 2 q-32 0 -34 -32 l-4 -100 q-2 -24 8 -32 z" fill="url(#duoBody)"/>
+  <!-- eyes -->
+  <ellipse cx="75" cy="85" rx="22" ry="26" fill="#e8fbff"/>
+  <ellipse cx="125" cy="85" rx="22" ry="26" fill="#e8fbff"/>
+  <ellipse cx="78" cy="80" rx="9" ry="13" fill="#4c1d95"/>
+  <ellipse cx="122" cy="80" rx="9" ry="13" fill="#4c1d95"/>
+  <circle cx="81" cy="76" r="3" fill="#ffffff"/>
+  <circle cx="125" cy="76" r="3" fill="#ffffff"/>
+  <!-- beak -->
+  <path d="M92 100 q8 -4 16 0 q-2 12 -8 12 q-6 0 -8 -12 z" fill="#fbbf24"/>
+  <!-- feet (pink-magenta per reference) -->
+  <ellipse cx="72" cy="188" rx="10" ry="14" fill="#f472b6"/>
+  <ellipse cx="128" cy="188" rx="10" ry="14" fill="#f472b6"/>
+  <!-- wing hints -->
+  <path d="M42 120 q-8 30 6 44 q2 -22 6 -40 z" fill="#1f9d63" opacity="0.6"/>
+  <path d="M158 120 q8 30 -6 44 q-2 -22 -6 -40 z" fill="#7c3aed" opacity="0.6"/>
+  <!-- feather tufts -->
+  <path d="M60 28 l8 -12 4 12 z" fill="#2ee59d"/>
+  <path d="M140 28 l-8 -12 -4 12 z" fill="#a855f7"/>
+</svg>

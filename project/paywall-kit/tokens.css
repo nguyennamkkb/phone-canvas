@@ -1601,8 +1601,10 @@
 .lp-grid {
   display: flex;
   flex-direction: column;
-  gap: var(--s2);
-  padding: var(--s4) var(--s4) 0;
+  gap: var(--s1);
+  opacity: 1;
+}
+.lp-grid .is-dim {
   opacity: 0.35;
 }
 .lp-cell {
@@ -1615,8 +1617,8 @@
 }
 .lp-badge {
   flex: 0 0 auto;
-  width: 88px;
-  height: 88px;
+  width: 56px;
+  height: 56px;
   border: 0;
 }
 .lp-b-gold {
@@ -1634,13 +1636,16 @@
 .lp-cell span {
   color: var(--lp-mute);
   font-family: var(--font);
-  font-size: var(--t-subhead);
+  font-size: var(--t-caption);
+}
+.lp-glyph {
+  color: var(--lp-mute);
 }
 .lp-title {
   font-family: var(--font);
-  font-size: 40px;
+  font-size: 32px;
   font-weight: 800;
-  line-height: 46px;
+  line-height: 38px;
   color: var(--lp-label);
 }
 .lp-feat {
@@ -1658,8 +1663,8 @@
   align-items: center;
   gap: var(--s3);
   width: 100%;
-  min-height: 76px;
-  padding: var(--s3) var(--s4);
+  min-height: 64px;
+  padding: var(--s2) var(--s4);
   border: 1px solid var(--lp-line);
   border-radius: var(--r-full);
   background: transparent;
@@ -1721,7 +1726,7 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 60px;
+  height: 56px;
   padding: 0 var(--s5);
   border: 0;
   border-radius: var(--r-full);
@@ -1735,4 +1740,1565 @@
 .lp-legal {
   color: var(--lp-mute);
   text-decoration: underline;
+}
+
+/* Headspace-trial (light): white canvas, hand-drawn sunrise hero,
+   segmented pill, orange-dot timeline (pw-dot grammar, hs colors). */
+:root,
+:root[data-theme='dark'] {
+  --hs-paper: #ffffff;
+  --hs-ink: #1c1611;
+  --hs-sub: #6b7280;
+  --hs-orange: #ff7a1a;
+  --hs-orange-deep: #f25c05;
+  --hs-rail: #ffd9bd;
+  --hs-seg-bg: #f6f0f0;
+  --hs-seg-ink: #3a3230;
+  --hs-blue: #2f7cf6;
+}
+.hs-hero {
+  width: 100%;
+  height: 200px;
+}
+.hs-top {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+}
+.hs-x {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border: 0;
+  border-radius: var(--r-full);
+  background: transparent;
+  color: var(--hs-ink);
+}
+.hs-title {
+  font-family: var(--font);
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 34px;
+  letter-spacing: -0.5px;
+  color: var(--hs-ink);
+}
+.hs-seg {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s1);
+  padding: 4px;
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--hs-seg-bg);
+}
+.hs-seg-opt {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  min-width: 110px;
+  height: var(--touch-min);
+  padding: 0 var(--s4);
+  border: 0;
+  border-radius: var(--r-full);
+  background: transparent;
+  color: var(--hs-seg-ink);
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 600;
+  cursor: pointer;
+}
+.hs-seg-opt.is-on {
+  background: var(--hs-ink);
+  color: #ffffff;
+}
+.hs-dot {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--pw-dot-size);
+  height: var(--pw-dot-size);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--hs-orange);
+  color: #ffffff;
+}
+.hs-rail {
+  width: 6px;
+  height: 44px;
+  background: var(--hs-rail);
+}
+.hs-restore {
+  color: var(--hs-blue);
+}
+.hs-cta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 60px;
+  padding: 0 var(--s5);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--hs-blue);
+  color: #ffffff;
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Monzo-bank (light upsell): white canvas, coral card hero, white plan
+   card with dark icon tiles, teal sticky CTA. Reuses .tb-x (X dismiss). */
+:root,
+:root[data-theme='dark'] {
+  --mb-ink: #101418;
+  --mb-sub: #6b7280;
+  --mb-card: #ffffff;
+  --mb-line: #e8eaed;
+  --mb-teal: #2f8fa8;
+  --mb-tile: #101828;
+  --mb-tile-amber: #f5b90d;
+}
+
+/* Hero art: tilted card svg, full-bleed top via negative side margins.
+   Fixed geometry (aspect kept) so audit stays green. */
+.mb-hero {
+  width: calc(100% + var(--s8));
+  height: 240px;
+}
+
+/* Headline: near-black extra-bold ~34, left. */
+.mb-headline {
+  font-family: var(--font);
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 40px;
+  letter-spacing: -0.5px;
+  color: var(--mb-ink);
+}
+
+/* Plan card: white, radius 16, hairline border. */
+.mb-card {
+  background: var(--mb-card);
+  border: 1px solid var(--mb-line);
+  border-radius: var(--r-lg);
+  padding: var(--s4);
+}
+
+/* Benefit row: dark rounded-square tile + bold title + gray sub.
+   Hairline divider under rows 1-2 (border-bottom, last row none). */
+.mb-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  min-height: 56px;
+  border-bottom: 1px solid var(--mb-line);
+  padding: var(--s2) 0;
+}
+.mb-row.is-last {
+  border-bottom: 0;
+}
+.mb-tile {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--mb-tile);
+  color: #ffffff;
+}
+.mb-tile.is-amber {
+  color: var(--mb-tile-amber);
+}
+
+/* Sticky bottom CTA: teal, full-width, radius 12, height 56. */
+.mb-cta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 56px;
+  padding: 0 var(--s5);
+  border: 0;
+  border-radius: 12px;
+  background: var(--mb-teal);
+  color: #ffffff;
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Duolingo-plans (dark): navy-to-purple gradient canvas, translucent blue
+   cards; selected card gradient border via double-bg (padding-box + border-box,
+   subset-safe: longhand background-color + background-image on element).
+   Shared owl asset duo-owl.svg reused by file (4) screen later. */
+:root,
+:root[data-theme='dark'] {
+  --dl-navy: #0b3b4f;
+  --dl-mid: #1e3a6e;
+  --dl-plum: #4c1d95;
+  --dl-deep: #0b1e3a;
+  --dl-mute: #b9c4d6;
+  --dl-card: rgba(80, 140, 220, 0.22);
+  --dl-card-ink: #ffffff;
+  --dl-green: #2ee59d;
+  --dl-tag-bg: #2ee59d;
+  --dl-tag-ink: #0b3b4f;
+}
+.dl-top {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+}
+.dl-x {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border: 0;
+  border-radius: var(--r-full);
+  background: transparent;
+  color: #ffffff;
+}
+.dl-x .icon {
+  width: 30px;
+  height: 30px;
+}
+.dl-super {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 var(--s3);
+  border: 0;
+  border-radius: 10px;
+  background-color: var(--dl-green);
+  background-image: linear-gradient(100deg, var(--dl-green) 10%, #38e0c8 45%, #a855f7 90%);
+  color: #ffffff;
+  font-family: var(--font);
+  font-size: var(--t-subhead);
+  font-weight: 900;
+  font-style: italic;
+}
+/* Hero capsule: frosted glass tube + white sticker halo behind owl.
+   Capsule uses solid translucent fill (blur outside subset); halo is a
+   white rounded shell peeking around owl top/sides. Twinkles are .icon. */
+.dl-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 240px;
+  min-height: 250px;
+}
+.dl-capsule {
+  position: absolute;
+  left: 30px;
+  top: 8px;
+  width: 180px;
+  height: 236px;
+  border: 0;
+  border-radius: 56px;
+  background-color: rgba(180, 210, 235, 0.35);
+  background-image: linear-gradient(180deg, rgba(180, 210, 235, 0.35) 55%, rgba(180, 210, 235, 0) 100%);
+}
+.dl-halo {
+  position: absolute;
+  left: 34px;
+  top: 14px;
+  width: 172px;
+  height: 104px;
+  border: 0;
+  border-radius: 48px;
+  background: #ffffff;
+}
+.dl-owl {
+  position: absolute;
+  left: 20px;
+  top: 8px;
+  width: 200px;
+  height: 220px;
+}
+.dl-tw {
+  position: absolute;
+  color: #ffffff;
+}
+.dl-tw-1 {
+  left: 0;
+  top: 70px;
+}
+.dl-tw-2 {
+  right: 6px;
+  top: 96px;
+}
+.dl-headline {
+  max-width: 320px;
+  font-family: var(--font);
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 34px;
+  color: #ffffff;
+}
+.dl-green {
+  color: var(--dl-green);
+}
+.dl-card {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  width: 100%;
+  min-height: 88px;
+  padding: var(--s3) var(--s4);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 14px;
+  background: var(--dl-card);
+}
+.dl-card.is-best {
+  border: 3px solid transparent;
+  background-color: var(--dl-card);
+  background-image: linear-gradient(rgba(30, 80, 140, 0.55), rgba(30, 80, 140, 0.55)), linear-gradient(135deg, var(--dl-green) 0%, #3b82f6 55%, #d946ef 100%);
+  background-origin: padding-box, border-box;
+  background-clip: padding-box, border-box;
+}
+.dl-tag {
+  position: absolute;
+  top: 0;
+  left: 16px;
+  margin-top: -14px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 var(--s3);
+  border: 0;
+  border-radius: 8px 8px 8px 0;
+  background: var(--dl-tag-bg);
+  color: var(--dl-tag-ink);
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  font-weight: 900;
+}
+.dl-check {
+  position: absolute;
+  top: 0;
+  right: -8px;
+  margin-top: -14px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: var(--r-full);
+  background: #3b82f6;
+  color: #ffffff;
+}
+.dl-cta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 60px;
+  padding: 0 var(--s5);
+  border: 0;
+  border-radius: var(--r-full);
+  background: #ffffff;
+  color: var(--dl-deep);
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 800;
+  cursor: pointer;
+}
+.dl-all {
+  color: #ffffff;
+}
+
+/* Untitled-music (light): white canvas, abstract avatar circles, dual
+   plan cards, black pill CTA. Zero assets (flat CSS gradients only). */
+:root,
+:root[data-theme='dark'] {
+  --um-paper: #ffffff;
+  --um-ink: #101418;
+  --um-sub: #8a8f98;
+  --um-sheet: #f4f4f6;
+  --um-ring: #f0508c;
+}
+
+/* X close top-right in light-gray circle, 44pt. */
+.um-x {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--um-sheet);
+  color: var(--um-ink);
+}
+
+/* Avatar carousel: 5 abstract gradient circles, center larger with
+   pink ring highlight. Pure CSS radial/linear gradients, decorative. */
+.um-avatars {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  height: 140px;
+}
+.um-ava {
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: var(--r-full);
+}
+.um-ava-1 {
+  width: 56px;
+  height: 56px;
+  background-color: #5fb7e8;
+  background-image: radial-gradient(circle at 30% 30%, #8fd8f5 0%, #5fb7e8 60%, #3f8fc0 100%);
+}
+.um-ava-2 {
+  width: 72px;
+  height: 72px;
+  background-color: #2f7cf6;
+  background-image: radial-gradient(circle at 30% 30%, #7db4fa 0%, #2f7cf6 60%, #1f5fc0 100%);
+}
+.um-ava-3 {
+  width: 96px;
+  height: 96px;
+  border: 4px solid var(--um-ring);
+  background-color: #f0508c;
+  background-image: radial-gradient(circle at 30% 30%, #f78fb8 0%, #f0508c 55%, #c03068 100%);
+}
+.um-ava-4 {
+  width: 72px;
+  height: 72px;
+  background-color: #8b5cf6;
+  background-image: radial-gradient(circle at 30% 30%, #b89dfa 0%, #8b5cf6 60%, #6b3fd0 100%);
+}
+.um-ava-5 {
+  width: 56px;
+  height: 56px;
+  background-color: #38b6c9;
+  background-image: radial-gradient(circle at 30% 30%, #7fdce8 0%, #38b6c9 60%, #2490a0 100%);
+}
+
+/* Feature row: glyph left + bold title + gray sub, 44pt floor. */
+.um-feat {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s4);
+  min-height: 56px;
+}
+.um-glyph {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  color: var(--um-ink);
+}
+
+/* Page dots: 4, first filled black, rest gray. */
+.um-dots {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  min-height: var(--touch-min);
+}
+
+/* Plan cards side by side: Monthly selected (black border), Annual
+   light-gray fill with black -42% tag. */
+.um-plans {
+  display: flex;
+  flex-direction: row;
+  gap: var(--s2);
+}
+.um-plan {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s1);
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 76px;
+  padding: var(--s3);
+  border: 1px solid var(--um-sub);
+  border-radius: var(--r-md);
+  background: #ffffff;
+  color: var(--um-ink);
+  font-family: var(--font);
+  text-align: left;
+  cursor: pointer;
+}
+.um-plan.is-on {
+  border: 2px solid var(--um-ink);
+}
+.um-plan.is-alt {
+  border: 0;
+  background: var(--um-sheet);
+}
+.um-off {
+  position: absolute;
+  top: var(--s2);
+  right: var(--s2);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 var(--s2);
+  border: 0;
+  border-radius: var(--r-sm);
+  background: var(--um-ink);
+  color: #ffffff;
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  font-weight: 800;
+}
+
+/* CTA black pill + restore link. */
+.um-cta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 56px;
+  padding: 0 var(--s5);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--um-ink);
+  color: #ffffff;
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 600;
+  cursor: pointer;
+}
+.um-restore {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-min);
+  color: var(--um-ink);
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 600;
+}
+
+/* Duolingo-compare (dark gradient top + white sheet): reuse dl-* ramp
+   and duo-owl asset. dm-* only for the compare table + sheet + CTA. */
+:root,
+:root[data-theme='dark'] {
+  --dm-super: #2f7cf6;
+  --dm-sheet: #ffffff;
+  --dm-ink: #101418;
+  --dm-mute: #6b7280;
+  --dm-lav: #eef0fe;
+  --dm-dash: #d4d7dd;
+}
+
+/* Compare sheet: white rounded-top, full-bleed via negative side margins. */
+.dm-sheet {
+  background: var(--dm-sheet);
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  padding: var(--s4);
+}
+
+/* Owl straddling the sheet top edge: first element of sheet with
+   negative top margin (technique declared in handback). */
+.dm-owl {
+  width: 140px;
+  height: 154px;
+  margin-top: -90px;
+}
+
+/* Compare table: label column + FREE + SUPER columns. SUPER column
+   highlighted lavender full-height via cell backgrounds. */
+.dm-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+}
+.dm-trow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s2);
+  min-height: 56px;
+}
+.dm-tlabel {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 1 1 0;
+  min-width: 0;
+}
+.dm-tcell {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 72px;
+  min-height: 56px;
+}
+.dm-tcell.is-super {
+  background: var(--dm-lav);
+}
+.dm-tcell.is-super.is-first {
+  border-radius: 12px 12px 0 0;
+}
+.dm-tcell.is-super.is-last {
+  border-radius: 0 0 12px 12px;
+}
+.dm-check-free {
+  color: var(--dm-mute);
+}
+.dm-check-super {
+  color: var(--dm-super);
+}
+.dm-dash {
+  color: var(--dm-dash);
+}
+.dm-freecap {
+  color: var(--dm-mute);
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 800;
+}
+.dm-superpill {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 0 var(--s3);
+  border: 0;
+  border-radius: 8px;
+  background-color: var(--dl-green);
+  background-image: linear-gradient(90deg, var(--dl-green) 0%, #3b82f6 55%, #d946ef 100%);
+  color: #ffffff;
+  font-family: var(--font);
+  font-size: var(--t-subhead);
+  font-weight: 900;
+  font-style: italic;
+}
+
+/* CTA blue pill + NO THANKS link. */
+.dm-cta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 60px;
+  padding: 0 var(--s5);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--dm-super);
+  color: #ffffff;
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 800;
+  cursor: pointer;
+}
+.dm-no {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-min);
+  color: var(--dm-super);
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 800;
+}
+
+/* Babbel-timeline (cream sheet): serif-feel title, orange-dot timeline with
+   two-tone rail (orange done / gray todo), struck-through completed row.
+   Sheet-style: no X chrome (dismiss via back gesture, declared). Photo-strip
+   peek above sheet skipped (out-of-screen chrome, declared). */
+:root,
+:root[data-theme='dark'] {
+  --bb-paper: #faf7f2;
+  --bb-ink: #1c1611;
+  --bb-orange: #ff5a00;
+  --bb-rail-done: #ff5a00;
+  --bb-rail-todo: #e5e0d8;
+  --bb-dot-todo: #efe9e0;
+}
+.bb-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 40px;
+  color: var(--bb-ink);
+}
+.bb-dot {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--pw-dot-size);
+  height: var(--pw-dot-size);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--bb-orange);
+  color: #ffffff;
+}
+.bb-dot.is-todo {
+  background: var(--bb-dot-todo);
+  color: var(--bb-ink);
+}
+.bb-rail {
+  width: 6px;
+  height: 44px;
+  background: var(--bb-rail-todo);
+}
+.bb-rail.is-done {
+  background: var(--bb-rail-done);
+}
+.bb-done {
+  text-decoration: line-through;
+}
+.bb-cta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 60px;
+  padding: 0 var(--s5);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--bb-orange);
+  color: #ffffff;
+  font-family: var(--font);
+  font-size: var(--t-title3);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Craft-notes (royal blue onboarding paywall): solid blue canvas, white
+   doc cards fanned without transform (offset overlap), white trial
+   sheet. Zero assets (pure CSS shapes + glyphs). */
+:root,
+:root[data-theme='dark'] {
+  --cn-blue: #1f5cf0;
+  --cn-deep: #1a4fd0;
+  --cn-ink: #101418;
+  --cn-paper: #ffffff;
+  --cn-sub: #6b7280;
+  --cn-chip: #f1f3f5;
+  --cn-red: #f0433a;
+  --cn-check: #2f7cf6;
+  --cn-sky: #9dc0f7;
+  --cn-ava: #e8a33d;
+}
+
+/* Header row: craft wordmark left (square glyph + lowercase bold),
+   X in translucent circle right, 44pt. */
+.cn-brand {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s2);
+  min-height: var(--touch-min);
+  color: #ffffff;
+  font-family: var(--font);
+  font-size: var(--t-title2);
+  font-weight: 800;
+}
+.cn-mark {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--cn-blue);
+}
+.cn-x {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border: 0;
+  border-radius: var(--r-full);
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+}
+
+/* Page dots: 6, first elongated white, rest translucent. */
+.cn-dots {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  min-height: var(--touch-min);
+  color: rgba(255, 255, 255, 0.45);
+}
+.cn-dots .dot {
+  background: currentColor;
+}
+.cn-dots .dot.is-active {
+  width: 22px;
+  background: var(--cn-paper);
+}
+
+/* Doc cards fan: relative zone, cards absolutely offset to fake tilt
+   (no transform — subset bans it; overlap reads as fanned stack). */
+.cn-fan {
+  position: relative;
+  width: 100%;
+  height: 360px;
+}
+.cn-cardtitle {
+  font-family: var(--font);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+.cn-shared {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s1);
+  min-height: 28px;
+}
+.cn-ava {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--cn-ava);
+  color: var(--cn-ink);
+}
+.cn-title {
+  font-family: var(--font);
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 42px;
+  letter-spacing: -0.5px;
+}
+.cn-card {
+  position: absolute;
+  background: var(--cn-paper);
+  border-radius: var(--r-lg);
+  padding: var(--s3);
+}
+.cn-card-back {
+  left: 27%;
+  top: 0;
+  width: 70%;
+  height: 270px;
+}
+.cn-card-front {
+  left: 4%;
+  top: 108px;
+  width: 70%;
+  height: 228px;
+}
+.cn-chipcal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 0 0 auto;
+  width: 62px;
+  border-radius: 12px;
+  background: var(--cn-paper);
+  overflow: hidden;
+}
+.cn-chipcal-top {
+  width: 100%;
+  padding: 3px 0 1px;
+  text-align: center;
+  font-style: italic;
+  background: var(--cn-red);
+  color: #ffffff;
+  font-family: var(--font);
+  font-size: var(--t-caption);
+  font-weight: 700;
+}
+.cn-checkrow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s2);
+  min-height: 28px;
+}
+.cn-box {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--cn-sub);
+  border-radius: 6px;
+  background: var(--cn-paper);
+  color: #ffffff;
+}
+.cn-box.is-on {
+  border: 0;
+  background: var(--cn-check);
+}
+
+/* Bottom trial sheet: white card floating on blue, rounded all corners. */
+.cn-sheet {
+  background: var(--cn-paper);
+  border-radius: 28px;
+  padding: var(--s4);
+}
+.cn-tag {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-self: flex-start;
+  min-height: 40px;
+  padding: 0 var(--s4);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--cn-blue);
+  color: #ffffff;
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 700;
+}
+.cn-price {
+  font-family: var(--font);
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 32px;
+  color: var(--cn-ink);
+}
+.cn-cta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 56px;
+  padding: 0 var(--s5);
+  border: 0;
+  border-radius: var(--r-md);
+  background: var(--cn-blue);
+  color: #ffffff;
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Ahead-manager (purple): solid canvas, tinted tiles, laurel award block
+   (glyph approximation, decorative), white pill CTA. No X chrome (dismiss
+   unknown, declared). */
+:root,
+:root[data-theme='dark'] {
+  --am-bg: #4b2fb3;
+  --am-ink: #ffffff;
+  --am-mute: #b9a5e8;
+  --am-tile-lilac: #8b7cf0;
+  --am-tile-green: #3ecf8e;
+  --am-tile-gold: #f5b800;
+  --am-star: #ffd60a;
+}
+.am-hero {
+  width: 100%;
+  height: 180px;
+}
+.am-title {
+  font-family: var(--font);
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 32px;
+  color: #ffffff;
+}
+.am-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  min-height: var(--touch-min);
+}
+.am-tile {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 52px;
+  height: 52px;
+  border: 0;
+  border-radius: 16px;
+  color: #ffffff;
+}
+.am-tile.is-lilac {
+  background: var(--am-tile-lilac);
+}
+.am-tile.is-green {
+  background: var(--am-tile-green);
+}
+.am-tile.is-gold {
+  background: var(--am-tile-gold);
+}
+.am-laurel {
+  color: var(--am-mute);
+}
+.am-star {
+  color: var(--am-star);
+}
+.am-cta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 60px;
+  padding: 0 var(--s5);
+  border: 0;
+  border-radius: var(--r-full);
+  background: #ffffff;
+  color: var(--am-bg);
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* MFP-plans (white): food photo corner skipped (zero photo bytes, declared);
+   crown rows (yellow glyph + bold lead-in); dual plan cards with 62% straddle
+   tag (rule 5), struck price, 44pt radio hit rows. */
+:root,
+:root[data-theme='dark'] {
+  --mf-paper: #ffffff;
+  --mf-ink: #101418;
+  --mf-sub: #6b7280;
+  --mf-crown: #f5b800;
+  --mf-green: #2fae5f;
+  --mf-tag-bg: #2fd48a;
+  --mf-cta: #2f7cf6;
+}
+.mf-x {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--fill);
+  color: var(--mf-sub);
+}
+.mf-title {
+  font-family: var(--font);
+  font-size: 38px;
+  font-weight: 800;
+  line-height: 44px;
+  letter-spacing: -0.5px;
+  color: var(--mf-ink);
+}
+.mf-perk {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--s3);
+  min-height: var(--touch-min);
+}
+.mf-crown {
+  color: var(--mf-crown);
+}
+.mf-plan {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  flex: 1 1 0;
+  min-height: 200px;
+  padding: var(--s4) var(--s3);
+  border: 1px solid #d8dce2;
+  border-radius: 20px;
+  background: var(--mf-paper);
+}
+.mf-plan.is-best {
+  border-color: var(--mf-green);
+}
+.mf-tag {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  margin-top: -14px;
+  margin-left: -62px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 var(--s3);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--mf-tag-bg);
+  color: var(--mf-ink);
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  font-weight: 900;
+  white-space: nowrap;
+}
+.mf-radio-hit {
+  position: absolute;
+  top: var(--s2);
+  right: var(--s2);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-min);
+  height: var(--touch-min);
+}
+.mf-radio-dot {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--mf-green);
+  color: #ffffff;
+}
+.mf-radio-ring {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border: 2px solid #d8dce2;
+  border-radius: var(--r-full);
+}
+.mf-struck {
+  text-decoration: line-through;
+}
+.mf-cta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 60px;
+  padding: 0 var(--s5);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--mf-cta);
+  color: #ffffff;
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* AllTrails-week (white canvas + forest-green gradient band): rail
+   single-line timeline, mini compare table with NEW tag, dark-green
+   pill CTA. Zero assets (gradient stand-in for photo). */
+:root,
+:root[data-theme='dark'] {
+  --at-paper: #ffffff;
+  --at-band-deep: #0e3b2e;
+  --at-band: #1e6b4a;
+  --at-ink: #14261c;
+  --at-sub: #5d6b7a;
+  --at-rail: #2f7cf6;
+  --at-cta: #1e4d2b;
+  --at-plus: #2f7cf6;
+  --at-new: #14261c;
+  --at-sheet: #eef0fe;
+}
+
+/* Green band: full-bleed forest gradient replacing the photo strip,
+   X in white circle top-left. */
+.at-band {
+  margin: 0 calc(-1 * var(--s4));
+  background-color: var(--at-band-deep);
+  background-image: linear-gradient(180deg, var(--at-band-deep) 0%, var(--at-band) 100%);
+  padding: var(--s4);
+  min-height: 180px;
+}
+.at-x {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border: 0;
+  border-radius: var(--r-full);
+  background: #ffffff;
+  color: var(--at-ink);
+}
+
+/* Brand row: mountain glyph + AllTrails bold + blue plus. */
+.at-brand {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s1);
+  min-height: var(--touch-min);
+  color: var(--at-ink);
+  font-family: var(--font);
+  font-size: var(--t-title2);
+  font-weight: 800;
+}
+.at-brand .at-plus {
+  color: var(--at-plus);
+  font-weight: 900;
+}
+
+/* Timeline: blue rail + white dots, single-line bold titles, no body. */
+.at-tl {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s4);
+  min-height: 56px;
+}
+.at-rail {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 44px;
+  min-height: 56px;
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--at-rail);
+  color: #ffffff;
+}
+
+/* Collapsed section header: centered + gray chevron. */
+.at-included {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s1);
+  min-height: var(--touch-min);
+  color: var(--at-ink);
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 700;
+}
+.at-included .icon {
+  color: var(--at-sub);
+}
+
+/* Mini compare table: label + Free + Plus(highlighted sheet column). */
+.at-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+}
+.at-trow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s2);
+  min-height: 52px;
+}
+.at-tlabel {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s1);
+  flex: 1 1 0;
+  min-width: 0;
+}
+.at-tcell {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 64px;
+  min-height: 52px;
+}
+.at-tcell.is-plus {
+  background: var(--at-sheet);
+}
+.at-tcell.is-plus.is-first {
+  border-radius: 12px 12px 0 0;
+}
+.at-tcell.is-plus.is-last {
+  border-radius: 0 0 12px 12px;
+}
+.at-check {
+  color: var(--at-rail);
+}
+.at-dash {
+  color: var(--at-sub);
+}
+.at-plusbadge {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--at-rail);
+  color: #ffffff;
+}
+.at-new {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 var(--s2);
+  border: 0;
+  border-radius: 6px;
+  background: var(--at-new);
+  color: #ffffff;
+  font-family: var(--font);
+  font-size: var(--t-caption);
+  font-weight: 800;
+}
+
+/* CTA dark-green pill. */
+.at-cta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 56px;
+  padding: 0 var(--s5);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--at-cta);
+  color: #ffffff;
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Happn Supreme (black canvas + peach accent): top X right, Supreme
+   wordmark, thread art, 3-col plan cards with popular tag, legal, CTA. */
+:root,
+:root[data-theme='dark'] {
+  --hp-ink: #0b0b0c;
+  --hp-paper: #f4ede3;
+  --hp-sub: #9a9aa0;
+  --hp-card: #1e1e20;
+  --hp-peach: #f2a488;
+}
+
+/* Dismiss row: X in dark rounded square, right aligned. */
+.hp-x {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border: 0;
+  border-radius: 12px;
+  background: var(--hp-card);
+  color: var(--hp-paper);
+}
+
+/* Supreme wordmark: cream, centered, bold. */
+.hp-brand {
+  color: var(--hp-paper);
+  font-family: var(--font);
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  text-align: center;
+}
+
+/* Value prop: big bold headline + softer sub, both centered. */
+.hp-head {
+  color: var(--hp-paper);
+  font-family: var(--font);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  text-align: center;
+}
+.hp-sub {
+  color: var(--hp-paper);
+  font-family: var(--font);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 24px;
+  text-align: center;
+}
+.hp-price {
+  font-family: var(--font);
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+.hp-per {
+  font-family: var(--font);
+  font-size: 16px;
+  font-weight: 400;
+}
+
+/* Thread art: full-bleed decorative squiggle + badge. */
+.hp-thread {
+  display: block;
+  width: calc(100% + var(--s4) * 2);
+  height: auto;
+  margin: 0 calc(-1 * var(--s4));
+}
+
+/* Carousel dots: 7 gray dots, 5th active cream. */
+.hp-dots {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  min-height: var(--touch-min);
+}
+.hp-dot {
+  flex: 0 0 auto;
+  width: 12px;
+  height: 12px;
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--hp-sub);
+}
+.hp-dot.is-on {
+  background: var(--hp-paper);
+}
+
+/* Plan cards: 3 equal columns, middle peach highlighted. */
+.hp-plans {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: var(--s3);
+}
+.hp-plan {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s1);
+  flex: 1 1 0;
+  min-width: 0;
+  padding: var(--s3) var(--s1);
+  border: 0;
+  border-radius: 28px;
+  background: var(--hp-card);
+}
+.hp-plan.is-hot {
+  background: var(--hp-peach);
+}
+.hp-num {
+  font-family: var(--font);
+  font-size: 48px;
+  font-weight: 800;
+  line-height: 1;
+}
+.hp-tag {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 var(--s2);
+  border: 0;
+  border-radius: 8px;
+  background: var(--hp-ink);
+  color: var(--hp-paper);
+  font-family: var(--font);
+  font-size: var(--t-caption);
+  font-weight: 700;
+}
+.hp-off {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 var(--s2);
+  border: 0;
+  border-radius: 8px;
+  background: var(--hp-ink);
+  color: var(--hp-paper);
+  font-family: var(--font);
+  font-size: var(--t-subhead);
+  font-weight: 700;
+}
+
+/* CTA peach large rounded rect, dark text. */
+.hp-cta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 64px;
+  padding: 0 var(--s5);
+  border: 0;
+  border-radius: 24px;
+  background: var(--hp-peach);
+  color: var(--hp-ink);
+  font-family: var(--font);
+  font-size: var(--t-title3);
+  font-weight: 700;
+  cursor: pointer;
 }

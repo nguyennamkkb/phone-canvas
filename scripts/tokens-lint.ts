@@ -26,6 +26,7 @@ import { fileURLToPath } from 'node:url'
 
 import { filterByScreen, parseScreenFilter, printHelpIfRequested, reportNoScreenMatch } from './screen-filter.ts'
 import { scanProjects } from './scan-projects.ts'
+import { styleDefsOf } from './screen-style.ts'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -127,7 +128,11 @@ async function main() {
   for (const screen of screens) {
     const html = screen.html
     const pid = screen.projectId
-    const known = projectNames.get(pid) ?? names
+    // per-screen <style> blocks (recipe screen-style.md): definitions the
+    // screen carries itself join the known set — usage below stays unchanged.
+    const known = new Set([...(projectNames.get(pid) ?? names), ...styleDefsOf(html)])
+    // the chrome-selector guard lives in subset-lint (structural); this lint
+    // only teaches the known-set so local defs stop false-positiving.
     const projectAssets = new Set(registry.assets[pid] ?? [])
     const seen = new Set()
 

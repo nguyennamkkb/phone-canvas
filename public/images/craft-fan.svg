@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 400" width="390" height="400" role="img" aria-label="Fanned doc cards with calendar">
+  <defs>
+    <filter id="cf-shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#0b1e5b" flood-opacity="0.22"/>
+    </filter>
+    <clipPath id="cf-back"><rect x="120" y="60" width="238" height="280" rx="22"/></clipPath>
+  </defs>
+  <!-- Back card drawn first: Recipe Ideas, tilted right, light shadow. -->
+  <g transform="rotate(7 245 200)" filter="url(#cf-shadow)">
+    <rect x="120" y="60" width="238" height="280" rx="22" fill="#ffffff"/>
+    <g clip-path="url(#cf-back)">
+      <text x="140" y="100" font-family="-apple-system, sans-serif" font-size="21" font-weight="800" fill="#101418">Recipe Ideas</text>
+      <circle cx="150" cy="120" r="10" fill="#e8a33d"/>
+      <circle cx="150" cy="118" r="4" fill="#101418"/>
+      <text x="165" y="125" font-family="-apple-system, sans-serif" font-size="13" fill="#6b7280">Shared by Sydney</text>
+      <line x1="140" y1="140" x2="338" y2="140" stroke="#e5e7eb" stroke-width="1"/>
+      <text x="140" y="162" font-family="-apple-system, sans-serif" font-size="12" fill="#101418">• Crumbled chips and chives on an</text>
+      <text x="152" y="178" font-family="-apple-system, sans-serif" font-size="12" fill="#101418">omelette with creme cheese</text>
+      <text x="140" y="198" font-family="-apple-system, sans-serif" font-size="12" fill="#101418">• Grilled cheese sandwich with</text>
+      <text x="140" y="214" font-family="-apple-system, sans-serif" font-size="12" fill="#101418">cheese sauce</text>
+      <text x="140" y="234" font-family="-apple-system, sans-serif" font-size="12" fill="#101418">• Pasta with cherry tomato, salt</text>
+      <text x="140" y="254" font-family="-apple-system, sans-serif" font-size="12" fill="#101418">• Mushroom risotto</text>
+    </g>
+  </g>
+  <!-- Calendar chip drawn over back card, tilted slightly left, light shadow. -->
+  <g transform="rotate(-8 62 155)" filter="url(#cf-shadow)">
+    <rect x="30" y="123" width="64" height="64" rx="12" fill="#ffffff"/>
+    <path d="M30,135 a12,12 0 0 1 12,-12 h40 a12,12 0 0 1 12,12 v10 h-64 Z" fill="#f0433a"/>
+    <text x="62" y="142" text-anchor="middle" font-family="-apple-system, sans-serif" font-size="13" font-style="italic" font-weight="700" fill="#ffffff">June</text>
+    <text x="62" y="170" text-anchor="middle" font-family="-apple-system, sans-serif" font-size="24" font-weight="800" fill="#101418">16</text>
+  </g>
+  <!-- Front card drawn last (top): Daily To-Do, tilted left, light shadow. -->
+  <g transform="rotate(-5 180 320)" filter="url(#cf-shadow)">
+    <rect x="30" y="240" width="260" height="176" rx="22" fill="#ffffff"/>
+    <text x="50" y="272" font-family="-apple-system, sans-serif" font-size="21" font-weight="800" fill="#101418">Daily To-Do</text>
+    <rect x="50" y="284" width="22" height="22" rx="7" fill="#2f7cf6"/>
+    <path d="M55,295 l4,4 l7,-8" stroke="#ffffff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="79" y="300" font-family="-apple-system, sans-serif" font-size="12" fill="#101418">Take Carmy out for a walk</text>
+    <rect x="50" y="312" width="22" height="22" rx="7" fill="none" stroke="#c3c7ce" stroke-width="1.5"/>
+    <text x="79" y="328" font-family="-apple-system, sans-serif" font-size="12" fill="#101418">Pick up packages at post office</text>
+    <rect x="50" y="340" width="22" height="22" rx="7" fill="none" stroke="#c3c7ce" stroke-width="1.5"/>
+    <text x="79" y="356" font-family="-apple-system, sans-serif" font-size="12" fill="#101418">Buy groceries</text>
+    <rect x="50" y="368" width="22" height="22" rx="7" fill="none" stroke="#c3c7ce" stroke-width="1.5"/>
+    <text x="79" y="384" font-family="-apple-system, sans-serif" font-size="12" fill="#101418">Book hotel in Byron</text>
+  </g>
+</svg>

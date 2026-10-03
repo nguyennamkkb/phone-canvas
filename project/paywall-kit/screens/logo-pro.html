@@ -1,46 +1,50 @@
 <!-- pc {"title":"Get Pro Access","lightStatusBar":true} -->
 <div class="screen" style="background-color: var(--lp-bg)">
-  <div class="body" style="padding: 0; gap: 0">
+  <div class="body-fixed" style="padding: var(--s4); gap: var(--s2)">
+    <!-- Logo grid: rows 1-2 vibrant, row 3 dimmed behind title (reference overlay).
+         Honest abstraction (declared): flat badge shapes + reference names kept. -->
     <div class="lp-grid" aria-hidden="true">
-      <div class="row" style="gap: var(--s2)">
+      <div class="row" style="gap: var(--s1)">
         <div class="lp-cell"><div class="lp-badge lp-b-gold"></div><span>JACK PUB</span></div>
         <div class="lp-cell"><div class="lp-badge lp-b-green"></div><span>Aurora Clinic</span></div>
         <div class="lp-cell"><div class="lp-badge lp-b-red"></div><span>Hero Cafe</span></div>
       </div>
-      <div class="row" style="gap: var(--s2)">
+      <div class="row" style="gap: var(--s1)">
         <div class="lp-cell"><div class="lp-badge lp-b-green"></div><span>Allice's Garden</span></div>
         <div class="lp-cell"><div class="lp-badge lp-b-gold"></div><span>BURGER</span></div>
         <div class="lp-cell"><div class="lp-badge lp-b-red"></div><span>JACK PUB</span></div>
       </div>
-      <div class="row" style="gap: var(--s2)">
+      <div class="row is-dim" style="gap: var(--s1)">
         <div class="lp-cell"><div class="lp-badge lp-b-gold"></div><span>JACK PUB</span></div>
         <div class="lp-cell"><div class="lp-badge lp-b-green"></div><span>Dreamy Cones</span></div>
         <div class="lp-cell"><div class="lp-badge lp-b-red"></div><span>BURGER</span></div>
       </div>
     </div>
 
-    <div class="col" style="gap: var(--s3); padding: 0 var(--s4) var(--s4)">
+    <div class="col" style="gap: var(--s1); margin-top: -56px">
       <div class="lp-title">Get Pro Access</div>
-      <div class="t-title3" style="color: var(--lp-sub)">Go beyond basics with PRO</div>
+      <div class="t-headline" style="color: var(--lp-sub)">Go beyond basics with PRO</div>
+    </div>
+    <div class="col" style="gap: var(--s1)">
       <div class="lp-feat">
-        <span class="icon icon-sm" data-symbol="sparkles"></span>
+        <span class="icon icon-sm lp-glyph" data-symbol="sparkles"></span>
         <div class="t-headline" style="color: var(--lp-label)">Unlimited Logo Generation</div>
       </div>
       <div class="lp-feat">
-        <span class="icon icon-sm" data-symbol="lock"></span>
+        <span class="icon icon-sm lp-glyph" data-symbol="lock"></span>
         <div class="t-headline" style="color: var(--lp-label)">Unlock All Styles</div>
       </div>
       <div class="lp-feat">
-        <span class="icon icon-sm" data-symbol="photo"></span>
+        <span class="icon icon-sm lp-glyph" data-symbol="photo"></span>
         <div class="t-headline" style="color: var(--lp-label)">Create Mockup Images</div>
       </div>
       <div class="lp-feat">
-        <span class="icon icon-sm" data-symbol="crop"></span>
+        <span class="icon icon-sm lp-glyph" data-symbol="crop"></span>
         <div class="t-headline" style="color: var(--lp-label)">Try Logo with AR</div>
       </div>
     </div>
 
-    <div class="col" style="gap: var(--s3)">
+    <div class="col" style="gap: var(--s1)">
       <div class="lp-pill is-best">
         <span class="lp-off">91% OFF</span>
         <div class="lp-hit" role="radio" aria-checked="true" aria-label="Yearly" tabindex="0">

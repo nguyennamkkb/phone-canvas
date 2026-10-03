@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 220" width="390" height="220" role="img" aria-label="Smiling sunrise over mountains">
+  <!-- yellow sky -->
+  <rect x="0" y="0" width="390" height="220" fill="#ffc61a"/>
+  <!-- pale clouds -->
+  <g fill="#ffe27a">
+    <ellipse cx="60" cy="70" rx="42" ry="16"/>
+    <ellipse cx="95" cy="62" rx="30" ry="13"/>
+    <ellipse cx="330" cy="80" rx="36" ry="14"/>
+    <ellipse cx="300" cy="72" rx="22" ry="10"/>
+  </g>
+  <!-- outer glow ring -->
+  <circle cx="195" cy="150" r="118" fill="#ffe14d"/>
+  <!-- white inner ring -->
+  <circle cx="195" cy="150" r="92" fill="#ffffff"/>
+  <!-- orange sun disc with face -->
+  <circle cx="195" cy="150" r="70" fill="#ff5a1f"/>
+  <circle cx="195" cy="150" r="70" fill="#ff7a1a" opacity="0.45"/>
+  <!-- closed-eye smile face -->
+  <g stroke="#3a1c00" stroke-width="5" stroke-linecap="round" fill="none">
+    <path d="M168 118 q9 10 19 0"/>
+    <path d="M203 118 q9 10 19 0"/>
+    <path d="M165 132 q30 20 60 0"/>
+  </g>
+  <!-- white sparkle on sun -->
+  <path d="M258 128 l4 9 9 4 -9 4 -4 9 -4 -9 -9 -4 9 -4 z" fill="#ffffff"/>
+  <!-- orange mountains left/right -->
+  <path d="M0 130 L45 92 L85 128 L130 100 L170 132 L170 220 L0 220 z" fill="#ff7a1a"/>
+  <path d="M220 132 L265 98 L310 130 L350 104 L390 134 L390 220 L220 220 z" fill="#ff7a1a"/>
+  <path d="M0 130 L45 92 L85 128 L130 100 L170 132 L170 150 L0 150 z" fill="#f25c05" opacity="0.55"/>
+  <path d="M220 132 L265 98 L310 130 L350 104 L390 134 L390 150 L220 150 z" fill="#f25c05" opacity="0.55"/>
+  <!-- sun reflection under disc -->
+  <ellipse cx="195" cy="172" rx="52" ry="14" fill="#ffb800"/>
+  <!-- white cloud band at bottom -->
+  <path d="M0 168 q25 -14 52 -6 q18 -12 40 -4 q24 -10 46 -2 q22 -10 44 -2 q24 -10 48 -2 q22 -8 44 -2 q24 -8 46 -2 q22 -8 40 -2 q20 -4 30 6 L390 220 L0 220 z" fill="#ffffff"/>
+</svg>
