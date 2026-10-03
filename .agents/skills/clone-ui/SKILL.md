@@ -1,522 +1,248 @@
 ---
 name: clone-ui
-description: Reverse-engineer a reference UI screenshot into a structured temporary spec, then implement a faithful responsive HTML/CSS recreation. Use this skill whenever the task is to clone, recreate, reproduce, or translate a UI screenshot into HTML.
+description: Read a UI screenshot (app/web screenshot, paywall, onboarding, mockup, Mobbin, Dribbble...) then break it into components and recreate it faithfully with HTML/CSS + inline SVG. Use this skill whenever the user shares a UI image and wants to clone, reproduce, redraw, rebuild it, "make it look like the image", convert a design to HTML, or asks about the spacing/colors/fonts/icons of a UI image, even when they do not explicitly say "clone". The skill forces component-by-component work with a spec card and a dedicated check loop per component, instead of building the whole screen at once.
 ---
 
-# Clone UI Skill
+# UI Clone: from image to HTML, one component at a time
 
-## Purpose
+## Why this process exists
 
-Recreate a reference UI faithfully by separating **analysis** from **implementation**.
+Models are very good at recognizing "what this is" in an image but poor at measuring absolute pixels. Building a whole screen in one pass produces a "looks-ish" result: wrong spacing, wrong font sizes, misaligned icons, different line breaks. Three principles fix that:
 
-Core rule:
+1. **Measure by ratio, not by pixels.** Every size is computed as a % of screen width and then converted, because ratios can be estimated from an image fairly accurately by eye.
+2. **Each component is an independent unit.** It has a spec card, is built separately, checked separately, and locked before moving to the next component. A mistake is localized immediately, and fixing it cannot break what is already right.
+3. **Write it down first, code second.** Text content, colors, and sizes must live in the spec card. Code is just transcription of that card.
 
-> **Do not jump from screenshot → code.**
-> First inspect and spec the screenshot, save a temporary UI spec, then design/implement from that spec, then visually verify.
+## Required inputs
 
-The goal is not to measure every pixel. The goal is to recover the **layout logic, hierarchy, visual language, and constraints** that make the reference look the way it does.
+- UI image(s) (one or more).
+- **Device type** (iPhone, Android, iPad, web desktop). If the user does not say, infer it from the image (frame ratio, status bar style, system font) and state the assumption in one line.
 
----
+Do not discuss frames or viewports. The build environment is already set up; only the device type is needed for unit conversion.
 
-## Workflow
+Conversion table by device:
 
-```text
-REFERENCE SCREENSHOT
-        ↓
-1. Inspect
-        ↓
-2. Decompose
-        ↓
-3. Infer layout
-        ↓
-4. Extract visual system
-        ↓
-5. Write temporary UI spec
-        ↓
-6. Implement HTML/CSS
-        ↓
-7. Render screenshot
-        ↓
-8. Compare + patch
-        ↓
-FINAL UI
+| Device | Logical width (CSS px) | Common image scale |
+|---|---|---|
+| iPhone | 390 (or 393, 375 for small phones) | @3x |
+| Android | 360 to 412 | @2.6 to @3.5 |
+| iPad | 820 | @2 |
+| Web desktop | 1440 | @1 |
+
+`scale = image width / logical width`. Every measurement on the image divided by `scale` gives CSS px.
+
+Only build the app's own interface. Skip the system status bar (time, signal, battery), the home indicator, and any annotation strips or watermarks added by the image source (e.g. "curated by Mobbin").
+
+## Overall process
+
+```
+PHASE A. ANALYZE (no code yet)
+  A1 Zone map  →  A2 Inventory  →  A3 Tokens  →  A4 Component tree
+
+PHASE B. BUILD COMPONENT BY COMPONENT (loop, smallest to largest)
+  per component: Spec card → Build alone → Self-check → Lock
+
+PHASE C. ASSEMBLE AND COMPARE
+  C1 Assemble in flow  →  C2 Ratio table  →  C3 Fix one error type at a time
 ```
 
-Never skip directly from step 1 to step 6 unless the UI is trivial.
-
----
-
-# 1. Inspect the Screenshot
-
-Read the screen from **outside → inside**.
-
-Identify:
-
-- canvas / aspect ratio
-- device type or likely viewport
-- safe areas and system UI
-- major visual regions
-- primary content area
-- CTA/action area
-- decorative areas
-
-Do not start by listing individual icons.
-
-### Output mindset
-
-```text
-What are the large blocks?
-Where does the eye go first?
-What is fixed, what flows?
-What is the main action?
-What establishes the visual identity?
-```
+Do not move to Phase B before Phase A is done.
 
 ---
 
-# 2. Decompose Into Visual Regions
+## PHASE A. Analyze
 
-Break the screen into a small number of meaningful sections.
+### A1. Zone map
 
-Typical structure:
+Split the image top-down into large zones. For each zone record: background (color, gradient, image), centered or left-aligned, in the scroll flow or fixed (bottom CTA, corner close button), and roughly what % of height it occupies.
 
-```text
-Screen
-├── Background
-├── Header
-├── Hero
-├── Main Content
-├── Controls / Cards
-├── CTA
-└── Footer
+### A2. Inventory
+
+List every visible element, one line each with: type, text content **copied verbatim character by character** (including punctuation, currency symbols, dates, emoji), relative position, state (selected, dimmed, ticked).
+
+Do a second pass just to catch easy-to-miss items: small footer links (Restore purchase), pagination dots, close button, faint dividers, shadows, hairline borders, overlapping elements.
+
+With multiple images, mark components repeated across images (timeline, CTA button, toggle). Build once, parameterize content.
+
+### A3. Tokens
+
+Lock these before coding; every later value comes from here:
+
+- **Colors:** background, primary text, secondary text, accent, button color, icon color. For gradients record both end colors and direction. Colors are estimated by visual feel, so mark them "approx" and use one value per role.
+- **Typography:** closest font family (system: SF/Roboto; geometric: Poppins, Outfit, DM Sans; serif if slabbed). Per text level: size, weight, line-height, letter-spacing. Large headlines are usually tightened (slightly negative).
+- **Shapes:** radius (buttons are usually very round, near-pill), shadow, border.
+- **Spacing scale:** fold every distance into multiples of 4 or 8.
+
+### A4. Component tree
+
+Arrange the inventory into a small-to-large tree and number the build order:
+
+```
+Level 1 (leaves):  icon, text, badge, dots, divider
+Level 2 (joined):  button, pill/toggle, timeline row, card
+Level 3 (blocks):  header/hero, timeline list, price table, bottom CTA bar
+Level 4 (screen):  assemble the blocks
 ```
 
-For each region identify:
-
-- approximate bounds
-- alignment
-- spacing relationship to neighboring regions
-- whether it participates in normal flow
-- whether it overlays another element
-
-Prefer **semantic regions**, not tiny fragments.
-
-### Rule
-
-If two elements clearly belong to one visual block, spec the block first and its important children second.
+Build from level 1 up. This is the Phase B order.
 
 ---
 
-# 3. Recover the Layout Logic
+## PHASE B. Build one component at a time
 
-Do not copy pixel positions blindly.
+For **each** component, run exactly four steps.
 
-Infer the constraints that most likely produced the screenshot.
+### B1. Spec card (written before coding)
 
-Look for:
+Fill in this card for the component. Any box not yet known gets "estimated" plus the basis.
 
-- horizontal page padding
-- max-width containers
-- vertical rhythm
-- stacks and gaps
-- centered content
-- equal-width columns
-- flex/grid relationships
-- sticky/fixed elements
-- overlays
-- bottom anchoring
-- scrollable content
-
-Ask:
-
-```text
-Is this element positioned by:
-- flow?
-- flex?
-- grid?
-- container constraints?
-- absolute positioning?
+```
+ID:              e.g. timeline-row
+Type:            text | button | icon | illustration | card | layout...
+Content:         verbatim
+Position:        bbox as % of screen width / % of screen height (x, y, w, h)
+Size:            w × h in CSS px (scale already divided)
+Alignment:       against which anchor (screen left edge, parent icon center...)
+Colors:          from tokens
+Typography:      size / weight / line-height / letter-spacing / line count
+Shape:           radius, shadow, border
+State:           default / selected / dimmed
+Build technique: CSS | SVG-icon | SVG-illustration | placeholder
+Easy to get wrong: e.g. "line break after 'reminder that your'"
 ```
 
-### Default preference
+### B2. Build alone
 
-```text
-flow > flex/grid > absolute
-```
+Build that component by itself, on a flat background, at its real width in the screen. No dependency on other components. Use values from the spec card and tokens, no new values.
 
-Use absolute positioning only where the visual relationship genuinely requires it, such as decorative overlays or floating badges.
+### B3. Self-check with a fixed list
+
+Do not check by "looks fine" feeling. Answer each question yes/no:
+
+1. Is the text verbatim?
+2. Do line count and break positions match the image?
+3. Does the component w:h ratio match the image (within 5%)?
+4. Does the distance from the component edge to its anchor match?
+5. Do color, radius, shadow match the tokens?
+6. Is the state (selected, dimmed, ticked) correct?
+
+Any "no" gets fixed right here, then re-checked. If a render tool is available, screenshot the build and place it next to a crop of the source image region.
+
+### B4. Lock
+
+Write "locked" and do not touch this component again unless Phase C points at a specific defect. Only then move to the next component.
 
 ---
 
-# 4. Extract the Visual System
+## Measuring from an image
 
-Capture the visual decisions that matter most.
+Applies when filling in the spec card.
 
-## Typography
-
-Estimate:
-
-- font family/category
-- hierarchy
-- size
-- weight
-- line height
-- alignment
-- line wrapping behavior
-
-Do not over-focus on exact font metrics when the family is unknown.
-
-## Color
-
-Identify:
-
-- page background
-- surface colors
-- primary text
-- secondary text
-- accent
-- borders
-- gradients
-
-## Shape
-
-Identify:
-
-- card radius
-- button radius
-- border thickness
-- pill vs rectangular controls
-- icon shape language
-
-## Effects
-
-Identify:
-
-- shadow
-- blur
-- opacity
-- glow
-- gradient
-- stroke
-
-## Assets
-
-Classify visible graphics as:
-
-```text
-CSS shape
-SVG/icon
-raster asset
-illustration/logo
-system UI
-```
-
-Do not reproduce complex artwork with unnecessary CSS.
+- **Reference anchor:** screen width = 100%. Measure everything in % then multiply by the logical width. Example: a button 88% wide on a 390 screen is about 343px.
+- **Font size:** measure the distance between two consecutive lines (baseline to baseline), divide by scale for line-height; font size is usually line-height divided by 1.2 to 1.5. Cross-check with cap height (cap-height ≈ 0.7 × font size). For large headlines, compare the text line width against screen width to lock the size.
+- **Line breaks:** the best evidence of a text block's width. If the image breaks after word X, set `max-width` so the next word does not fit. For headlines, use `<br>` or a narrower `max-width` to force the exact break.
+- **Common iPhone reference values:** CTA button height 50 to 56, screen side margin 16 to 24, action icon 24, minimum touch target 44, icon inside a circle about 45 to 55% of the circle diameter.
+- **Alignment:** find shared axes. Example: the centers of timeline circles sit on one vertical line, the left edges of text blocks on another. Build with one shared value, never eyeball each one.
+- **Even spacing:** if three rows look equally spaced, use one value for all three.
 
 ---
 
-# 5. Identify Information Hierarchy
+## Decision table: CSS or SVG
 
-This is more important than tiny spacing.
+| Element | Use | Reason |
+|---|---|---|
+| All text runs | HTML text | Text in SVG scales poorly, hard to select |
+| Button, pill, toggle, card, divider | CSS | Radius, shadow, states easy to tweak |
+| Gradient, drop shadow | CSS | |
+| Vertical timeline bar, progress bar | CSS (gradient div) | It is a rounded rectangle |
+| Tilted card, layered stack | CSS `transform: rotate` | Keeps inner text as HTML |
+| Pagination dots, single dots | CSS | |
+| Small simple icons (lock, bell, star, X, check, arrow) | **Inline SVG** | Need crisp strokes and curves |
+| Mascot, character illustration (sun, globe) | **Inline SVG** | Many layered shapes |
+| Decorative curved background (mountains, clouds, waves, curved header bottom) | **Inline SVG** as background layer | Needs paths |
+| Scattered texture (confetti, stars, dots) | **Inline SVG** | Many small shapes, free positions |
+| Brand logo | Simple approx SVG or color block + letter | Do not over-detail |
+| Real photos, product shots | Same-size placeholder in dominant color | Cannot be drawn in SVG |
 
-Determine:
+### Where SVG sits in the screen
 
-1. What is the primary visual focus?
-2. What is the secondary explanation?
-3. What is interactive?
-4. What is supporting/trust content?
-5. What is decorative?
+- **Icon:** in normal flow, inside the parent element (usually a circle centered with flex). Icon size and color come from the spec, color uses `currentColor`.
+- **Illustration and decor:** a separate layer, `position: absolute` inside the hero block, positioned by % of that block, under the text (low `z-index`). Text and buttons always on top.
+- **Background transition curve:** SVG at the hero block bottom, colored like the content background below to form a seamless curved edge.
+- **Confetti and texture:** one SVG covering the block, each shape placed by viewBox coordinates. Keep sparse, never covering text.
 
-Example:
+### How to draw one SVG
 
-```text
-Primary:
-Hero headline + CTA
+1. Fix the illustration region bounding box; the width/height ratio sets the `viewBox`.
+2. Decompose back to front (background → halo ring → body → face details → highlight → decorations).
+3. Reduce each layer to basic shapes (`circle`, `ellipse`, `rect`, simple `path`). Use `path` only for free curves.
+4. Record center coordinates and radii as % of the bounding box before writing.
+5. Colors from tokens. One flat color or one two-stop gradient per layer, no extra effects.
+6. Place at the right position and compare scale against the source image immediately (at B3), not at the end.
 
-Secondary:
-Supporting copy / cards
-
-Supporting:
-Trust / rating / metadata
-
-Decorative:
-Gradient / particles / illustration accents
-```
-
-The implementation should preserve this hierarchy.
-
----
-
-# 6. Write a Temporary UI Spec
-
-Before coding, create a temporary spec file.
-
-Recommended name:
-
-```text
-ui-spec.json
-```
-
-Keep it concise but useful.
-
-Example:
-
-```json
-{
-  "screen": {
-    "type": "paywall",
-    "viewport": "mobile"
-  },
-  "layout": {
-    "pagePadding": 32,
-    "sectionGap": 24,
-    "contentFlow": "vertical"
-  },
-  "regions": [
-    {
-      "id": "header",
-      "role": "intro",
-      "layout": "flow",
-      "alignment": "left"
-    },
-    {
-      "id": "main-card",
-      "role": "primary-content",
-      "layout": "flow"
-    },
-    {
-      "id": "cta",
-      "role": "primary-action",
-      "layout": "bottom"
-    }
-  ],
-  "visual": {
-    "background": "purple-to-white gradient",
-    "cardRadius": "large",
-    "buttonStyle": "pill",
-    "contrast": "high"
-  }
-}
-```
-
-### Spec should answer
-
-```text
-WHAT exists?
-WHERE is it?
-HOW is it laid out?
-WHAT is visually important?
-WHAT constraints should implementation preserve?
-```
-
-It should not become a giant pixel dump.
+Detail level: stop when the shape is recognizable at its real display size. Skip details smaller than a few px.
 
 ---
 
-# 7. Move From Spec to Design
+## Per-component notes
 
-After the temporary UI spec is complete, use it as the source of truth for the recreation.
+Use as extra hints for the "Easy to get wrong" box in the spec card.
 
-The next stage is to **design/rebuild the interface**, not to spend time documenting implementation details.
-
-The spec should guide:
-
-- hierarchy
-- composition
-- component placement
-- spacing relationships
-- typography hierarchy
-- color relationships
-- visual emphasis
-- asset placement
-- responsive intent
-
-Do not reinterpret the design unless the reference itself is ambiguous.
+- **CTA button:** height, radius (pill or medium), shadow or border or neither, text color, text weight. A bottom-fixed button sits outside the scroll region with bottom padding.
+- **Toggle / segmented control:** track background, selected part color and position, padding between track and selection, unselected text dimmer.
+- **Vertical timeline:** circle centers aligned; connector runs between circles and often gradients or recolors near the end; bold title over dimmer description; even gaps between steps. Connector sits under circles (z-index), never crossing through them.
+- **Icon in a circle:** circle diameter, icon size, circle background, icon color.
+- **Tilted card:** rotation angle, shadow, stacking order, part hidden by another card.
+- **Illustrated hero header:** block height, background, curved bottom edge, close button position vs edge.
+- **Pagination dots:** active dot usually longer or bolder.
+- **Price plan / package:** big bold price, small dim sub text, currency symbol and unit (/month, /year) verbatim.
+- **Secondary links (Restore purchase, Terms):** small size, link color, centered or following the main column.
 
 ---
 
-# 8. Responsive Intent
+## PHASE C. Assemble and compare
 
-Treat the screenshot as evidence of a design system, not as a fixed coordinate map.
+### C1. Assemble in flow
 
-Infer how the composition should behave when the viewport changes:
+Assemble locked components per the zone map. Order: background and blocks → in-flow sections (flex/grid, no `position: absolute` for the main layout) → fixed bottom block → illustration and decor layers. Reuse spacing from tokens instead of eyeballing.
 
-- what remains anchored
-- what expands or contracts
-- what wraps
-- what stays centered
-- what moves with the content
-- what belongs to the safe area
-- what is decorative versus structural
+### C2. Comparison ratio table
 
-Capture these decisions in the temporary spec.
+Pick about 8 to 12 landmarks (headline, CTA button, first and last icons, last text baseline, close button, illustration). For each record `x / width` and `y / height` in the source image and in the build, then compare. Under 1.5% off is a pass. If a screenshot tool is available, place the build next to the source image.
 
----
+### C3. Fix one error type at a time
 
-# 9. Visual Verification
+Each round fixes **one** error type only, in this order:
 
-After the interface is recreated, compare the result against the reference.
+1. Layout: block positions and sizes
+2. Typography: font size, weight, line breaks
+3. Colors and gradients
+4. Radius, shadow, border
+5. SVG: position, scale, detail
 
-Check in this order:
-
-```text
-1. Overall composition
-2. Major region positions
-3. Component proportions
-4. Information hierarchy
-5. Typography scale and wrapping
-6. Spacing rhythm
-7. Colors and gradients
-8. Shapes and visual effects
-9. Asset scale and placement
-10. Minor details
-```
-
-Fix structural differences before cosmetic differences.
+A defect in a locked component unlocks exactly that component, fixed per its spec card, re-checked with B3, re-locked. Stop when within a few px of the source image.
 
 ---
 
-# 10. Temporary Review
+## Common mistakes
 
-When the recreation is not close enough, create or update:
+- Building the whole screen in one pass then comparing, so errors pile onto errors.
+- Guessing text instead of copying verbatim (wrong dates, prices, missing punctuation).
+- Placing each element with made-up numbers instead of the spacing scale and shared axes.
+- Ignoring the source image's line breaks.
+- Using SVG for text or for layout.
+- Over-detailing the illustration while the basics (buttons, text) are less accurate.
+- Adding elements not in the image (borders, shadows, extra sections).
+- Changing already-correct values on every fix round.
 
-```text
-visual-review.md
-```
+## How to report when done
 
-Keep the review focused on meaningful differences.
+Reply briefly: one assumption line (device, closest font chosen), the list of components with significant estimates (if any), and the final product. Do not paste the intermediate tables unless the user asks.
 
-Example:
+## Prohibitions
 
-```text
-# Visual Review
-
-## Composition
-- Hero occupies too much vertical space.
-
-## Hierarchy
-- Primary CTA does not have enough visual emphasis.
-
-## Geometry
-- Main card is too narrow.
-
-## Typography
-- Heading wraps differently from the reference.
-
-## Visual
-- Background gradient transition is too low.
-
-## Assets
-- Illustration has too little visual weight.
-```
-
-The review should explain:
-
-```text
-what is different
-→ why it likely matters
-→ what part of the design should change
-```
-
----
-
-# What NOT To Do
-
-## Don't
-
-- jump directly from screenshot to final design
-- turn the screenshot into a giant list of pixel coordinates
-- over-focus on tiny measurements before understanding composition
-- invent hidden functionality
-- redesign the interface while trying to clone it
-- treat one screenshot size as the complete responsive specification
-- spend time documenting low-value implementation details
-
-## Do
-
-- analyze from large regions to smaller elements
-- preserve information hierarchy
-- infer relationships and constraints
-- identify the visual language
-- separate structural elements from decorative elements
-- create a temporary spec before reconstruction
-- visually compare the recreation with the reference
-- refine the largest mismatches first
-
----
-
-# Decision Rules
-
-### WHEN the screenshot is complex
-DO divide it into a small number of meaningful visual regions before reconstruction.
-
-### WHEN several elements clearly belong together
-DO model them as one visual component with important children.
-
-### WHEN a relationship is obvious
-DO describe the relationship, not just the coordinates.
-
-Example:
-
-```text
-CTA:
-- aligned with page content
-- visually dominant
-- anchored near the bottom action zone
-```
-
-rather than only:
-
-```text
-CTA:
-- x = ...
-- y = ...
-```
-
-### WHEN an exact asset is unavailable
-DO identify it as an asset dependency and preserve its intended visual role, scale, and prominence.
-
-### WHEN text wraps differently
-DO investigate available width, typography hierarchy, and layout constraints.
-
-### WHEN the result feels "correct" but does not look like the reference
-DO revisit composition, hierarchy, geometry, and visual language before touching minor details.
-
-### WHEN multiple screenshots belong to the same product
-DO identify recurring patterns and extract shared design tokens/components into the design system.
-
----
-
-# Minimal Quality Gate
-
-Before considering the clone complete:
-
-```text
-[ ] Major regions match the reference
-[ ] Composition and hierarchy are preserved
-[ ] Important spacing relationships are consistent
-[ ] Typography hierarchy is believable
-[ ] Major colors/gradients are close
-[ ] Shapes and visual language are consistent
-[ ] Important assets are correctly identified and placed
-[ ] Responsive intent is documented
-[ ] The recreation has been visually compared with the reference
-[ ] The largest mismatches have been corrected
-```
-
-# Principle
-
-A good UI clone is not a screenshot converted into coordinates.
-
-It is:
-
-```text
-visual evidence
-→ layout model
-→ temporary UI specification
-→ implementation
-→ rendered evidence
-→ correction
-```
-
-Recover the **design logic** first. Then reproduce the pixels that matter.
+- No code before Phase A is done.
+- No building a component without a spec card.
+- No moving to a new component before the current one passes B3.
+- No color or spacing values outside the locked tokens and scale.
+- No building the system status bar, home indicator, or image-source watermarks.
