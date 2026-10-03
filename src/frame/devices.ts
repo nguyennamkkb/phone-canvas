@@ -132,7 +132,9 @@ export const DEVICES: Device[] = [
     width: 198,
     height: 242,
     bezel: 8,
-    radius: 24,
+    // r=52.5pt from the Series 9 (45mm) sim framebuffer mask
+    // (396×484px @2x, corner span 105.12px → see devices.test.ts note)
+    radius: 52.5,
     safeTop: 0,
     safeBottom: 0,
     island: 'none',

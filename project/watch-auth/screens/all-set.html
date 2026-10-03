@@ -1,0 +1,41 @@
+<!-- pc {"title":"All Set","deviceId":"watch-45","lightStatusBar":true} -->
+<style>
+.wa-done {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--r-full);
+  background: var(--wa-mint);
+  color: var(--wa-ink);
+}
+.wa-ok {
+  font-family: var(--font);
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: -0.4px;
+  color: var(--wa-label);
+  text-align: center;
+}
+.wa-hold {
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  font-weight: 400;
+  line-height: 18px;
+  color: var(--wa-dim);
+  text-align: center;
+}
+</style>
+<div class="screen" style="background-color: var(--wa-bg); padding: var(--s3) var(--s4); gap: var(--s1)">
+  <div class="col" style="flex: 1 1 auto; min-height: 0; gap: var(--s2); align-items: center; justify-content: center">
+    <div class="wa-done" aria-label="Done">
+      <span class="icon" data-symbol="checkmark" style="width: 24px; height: 24px"></span>
+    </div>
+    <div class="wa-ok">You&rsquo;re all set!</div>
+  </div>
+  <div class="wa-hold">Hold tight while we prepare everything for you.</div>
+</div>
