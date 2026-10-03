@@ -336,12 +336,14 @@
   margin-left: auto;
 }
 
-/* 019 clean chrome: actions are bare text rows on the canvas — no card.
-   In-flow column (018 geometry kept): first child of .phone-node flex-column,
-   free Y axis so placement X is untouched; outside the iframe so pickAt in
-   inspect mode is never blocked; one action per full-width line. */
+/* 027 hover/selected reveal: actions hidden by default (top row only), shown
+   on node hover (mouse) OR while selected (touch/click path — no hover there).
+   display:none keeps it simple: reveal only adds rows below, nothing under the
+   cursor shifts, so no flicker and no animation needed. Selected uses a class
+   on the label root because the label precedes .phone in DOM (no sibling
+   selector possible). 019 clean chrome + 018 in-flow geometry unchanged. */
 .phone-label-actions {
-  display: flex;
+  display: none;
   flex-direction: column;
   align-items: stretch;
   gap: 2px;
@@ -353,6 +355,11 @@
 }
 
 /* full-id copy: hết ellipsis ở 390px, ellipsis chỉ khi hẹp hơn (widget 169px) */
+.phone-node:hover .phone-label-actions,
+.phone-label.is-selected .phone-label-actions {
+  display: flex;
+}
+
 .phone-label-actions .phone-id {
   max-width: 100%;
 }

@@ -137,7 +137,7 @@ function PhoneNodeInner({ id, data }: NodeProps) {
   return (
     <div className={`phone-node${mode === 'inspect' ? ' is-inspect' : ''}`}>
       <div
-        className="phone-label"
+        className={`phone-label${selected ? ' is-selected' : ''}`}
         onDoubleClick={(e) => {
           // focus 100% từ label (3.3) — không đụng iframe nên không xung đột drag
           e.stopPropagation()
