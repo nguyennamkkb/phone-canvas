@@ -1,0 +1,52 @@
+<!-- pc {"title":"Battery","deviceId":"widget-small"} -->
+<style>
+.wg-bt-top {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s1);
+}
+.wg-bt-pct {
+  font-family: var(--font);
+  font-size: var(--t-large);
+  font-weight: 800;
+  line-height: 38px;
+  letter-spacing: -0.5px;
+  color: var(--wg-ink);
+}
+.wg-bt-bars {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: var(--s1);
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.wg-bt-bar {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  border-radius: 6px;
+}
+.wg-bt-sub {
+  font-family: var(--font);
+  font-size: var(--t-subhead);
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--wg-sub);
+}
+</style>
+<div class="screen" style="background-color: var(--wg-card); padding: var(--s3) var(--s4); gap: var(--s1); justify-content: center">
+  <div class="wg-bt-top">
+    <span class="icon" data-symbol="bolt.fill" style="color: var(--wg-route); width: 22px; height: 22px"></span>
+    <span class="wg-bt-pct">57%</span>
+  </div>
+  <div class="wg-bt-bars" style="height: 56px">
+    <span class="wg-bt-bar" style="height: 100%; background: var(--wg-route)"></span>
+    <span class="wg-bt-bar" style="height: 100%; background: var(--wg-route)"></span>
+    <span class="wg-bt-bar" style="height: 42%; background: var(--wg-route)"></span>
+    <span class="wg-bt-bar" style="height: 100%; background: var(--wg-share-soft)"></span>
+    <span class="wg-bt-bar" style="height: 100%; background: var(--wg-share-soft)"></span>
+  </div>
+  <span class="wg-bt-sub">~ 5hours</span>
+</div>

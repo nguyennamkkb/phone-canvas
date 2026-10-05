@@ -1,0 +1,120 @@
+<!-- pc {"title":"Calculator","deviceId":"watch-45","lightStatusBar":true} -->
+<style>
+.wl-back {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: 32px;
+  color: var(--wl-ink);
+}
+.wl-expr {
+  font-family: var(--font);
+  font-size: var(--t-subhead);
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: 0;
+  color: var(--wl-ink);
+  text-align: center;
+  white-space: nowrap;
+}
+.wl-key {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: var(--touch-min);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.wl-cap {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-md);
+  background: var(--wl-key);
+  color: var(--wl-ink);
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 600;
+}
+.wl-cap.is-op {
+  background: var(--wl-purple);
+  color: var(--wl-card);
+}
+.wl-cap.is-clear {
+  background: var(--wl-yellow);
+  color: var(--wl-ink);
+}
+.wl-cap.is-gray {
+  background: var(--wl-gray);
+  color: var(--wl-card);
+}
+.wl-dots {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+}
+.wl-dot {
+  flex: 0 0 auto;
+  width: 4px;
+  height: 4px;
+  border-radius: var(--r-full);
+  background: var(--wl-dots);
+}
+.wl-dot.is-on {
+  background: var(--wl-ink);
+}
+</style>
+<div class="screen" style="background-color: var(--wl-card); padding: var(--s1) var(--s2); gap: 0">
+  <div class="row" style="gap: var(--s1); align-items: center">
+    <span class="wl-back" aria-hidden="true">
+      <span class="icon icon-xs" data-symbol="chevron.left"></span>
+    </span>
+    <div class="wl-expr" style="flex: 1 1 auto; min-width: 0">1321 &times; 23 + 12</div>
+    <span style="flex: 0 0 auto; width: var(--touch-min); height: 32px" aria-hidden="true"></span>
+  </div>
+  <div class="col" style="flex: 1 1 auto; min-height: 0; gap: var(--s1); justify-content: center">
+    <div class="row" style="gap: 0">
+      <button class="wl-key" aria-label="7"><span class="wl-cap">7</span></button>
+      <button class="wl-key" aria-label="8"><span class="wl-cap">8</span></button>
+      <button class="wl-key" aria-label="9"><span class="wl-cap">9</span></button>
+      <button class="wl-key" aria-label="Clear"><span class="wl-cap is-clear">C</span></button>
+    </div>
+    <div class="row" style="gap: 0">
+      <button class="wl-key" aria-label="4"><span class="wl-cap">4</span></button>
+      <button class="wl-key" aria-label="5"><span class="wl-cap">5</span></button>
+      <button class="wl-key" aria-label="6"><span class="wl-cap">6</span></button>
+      <button class="wl-key" aria-label="Divide"><span class="wl-cap is-op">&divide;</span></button>
+    </div>
+    <div class="row" style="gap: 0">
+      <button class="wl-key" aria-label="1"><span class="wl-cap">1</span></button>
+      <button class="wl-key" aria-label="2"><span class="wl-cap">2</span></button>
+      <button class="wl-key" aria-label="3"><span class="wl-cap">3</span></button>
+      <button class="wl-key" aria-label="Multiply"><span class="wl-cap is-op">&times;</span></button>
+    </div>
+    <div class="row" style="gap: 0">
+      <button class="wl-key" aria-label="0"><span class="wl-cap">0</span></button>
+      <button class="wl-key" aria-label="Decimal point"><span class="wl-cap is-op">.</span></button>
+      <button class="wl-key" aria-label="Plus"><span class="wl-cap is-op">+</span></button>
+      <button class="wl-key" aria-label="Minus"><span class="wl-cap is-gray">&minus;</span></button>
+    </div>
+  </div>
+  <div class="wl-dots" aria-hidden="true">
+    <span class="wl-dot is-on"></span>
+    <span class="wl-dot"></span>
+    <span class="wl-dot"></span>
+  </div>
+</div>

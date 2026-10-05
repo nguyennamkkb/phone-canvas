@@ -1,0 +1,116 @@
+<!-- pc {"title":"Navigation","deviceId":"widget-medium"} -->
+<style>
+.wg-nd-back {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  color: var(--wg-card);
+}
+.wg-nd-dist {
+  font-family: var(--font);
+  font-size: 44px;
+  font-weight: 800;
+  line-height: 48px;
+  letter-spacing: -1px;
+  color: var(--wg-card);
+  white-space: nowrap;
+}
+.wg-nd-unit {
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 600;
+  line-height: 22px;
+  color: var(--wg-card);
+}
+/* Ring reuses the 076 conic grammar (disc + night inner); here the inner
+   carries stacked 64/km text instead of a glyph. Decorative, declared. */
+.wg-nd-ring {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--r-full);
+  background: conic-gradient(var(--wg-card) 0 82%, var(--wg-dim-circle) 82% 100%);
+  color: var(--wg-card);
+}
+.wg-nd-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-full);
+  background: var(--wg-night);
+  gap: 0;
+}
+.wg-nd-64 {
+  font-family: var(--font);
+  font-size: var(--t-subhead);
+  font-weight: 700;
+  line-height: 18px;
+  color: var(--wg-card);
+}
+.wg-nd-km {
+  font-family: var(--font);
+  font-size: var(--t-caption);
+  font-weight: 400;
+  line-height: 14px;
+  color: var(--wg-card);
+}
+.wg-nd-lab {
+  font-family: var(--font);
+  font-size: var(--t-caption);
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--wg-night-sub);
+  white-space: nowrap;
+}
+.wg-nd-val {
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 700;
+  line-height: 22px;
+  color: var(--wg-card);
+  white-space: nowrap;
+}
+</style>
+<div class="screen" style="background-color: var(--wg-night); padding: var(--s3); gap: var(--s2); justify-content: center">
+  <div class="row" style="gap: var(--s1); align-items: center">
+    <span class="wg-nd-back" aria-hidden="true">
+      <span class="icon icon-sm" data-symbol="arrow.left"></span>
+    </span>
+    <div class="row" style="gap: 2px; align-items: baseline; flex: 1 1 auto; min-width: 0">
+      <span class="wg-nd-dist">300</span>
+      <span class="wg-nd-unit">m</span>
+    </div>
+    <span class="wg-nd-ring" role="img" aria-label="64 kilometers remaining">
+      <span class="wg-nd-inner" aria-hidden="true">
+        <span class="wg-nd-64">64</span>
+        <span class="wg-nd-km">km</span>
+      </span>
+    </span>
+  </div>
+  <div class="row" style="gap: var(--s2); align-items: flex-start">
+    <div class="col" style="gap: 0; flex: 1 1 auto; min-width: 0">
+      <span class="wg-nd-lab">ETA</span>
+      <span class="wg-nd-val">10:21</span>
+    </div>
+    <div class="col" style="gap: 0; flex: 1 1 auto; min-width: 0">
+      <span class="wg-nd-lab">Time left</span>
+      <span class="wg-nd-val">18.4 km/h</span>
+    </div>
+    <div class="col" style="gap: 0; flex: 1 1 auto; min-width: 0">
+      <span class="wg-nd-lab">Distance left</span>
+      <span class="wg-nd-val">134 kcal</span>
+    </div>
+  </div>
+</div>

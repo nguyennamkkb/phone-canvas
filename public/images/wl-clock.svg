@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150" width="150" height="150" role="img" aria-label="Analog clock at about 6:59">
+  <!-- light dial disc -->
+  <circle cx="75" cy="75" r="70" fill="#f4f4f6"/>
+  <!-- XII/IX/III/VI numerals (art text, part of the dial graphic) -->
+  <g font-family="-apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif" font-size="13" font-weight="600" fill="#1b1a22" text-anchor="middle">
+    <text x="75" y="30">XII</text>
+    <text x="20" y="80">IX</text>
+    <text x="130" y="80">III</text>
+    <text x="75" y="132">VI</text>
+  </g>
+  <!-- hands, angles measured from the board crop by ray-cast (center 198,318):
+       minute 0deg/12:00 len~198px (tip row 120, clear of XII), hour 211deg/07:02
+       len~112px, second 302deg/10:04 len~193px. Scaled to the 150 grid
+       (minute 42, hour 24, second 41). Read time about 6:59. -->
+  <line x1="75" y1="75" x2="75" y2="33" stroke="#1b1a22" stroke-width="5" stroke-linecap="round"/>
+  <line x1="75" y1="75" x2="62" y2="96" stroke="#1b1a22" stroke-width="5" stroke-linecap="round"/>
+  <line x1="75" y1="75" x2="40" y2="52" stroke="#ff3b30" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="75" cy="75" r="4" fill="#ff3b30"/>
+</svg>

@@ -1,0 +1,98 @@
+<!-- pc {"title":"Settings","deviceId":"watch-45"} -->
+<style>
+.wl-st-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: var(--s1) var(--s2);
+  border: 0;
+  border-radius: var(--r-md);
+  background: var(--wl-key);
+  gap: var(--s2);
+}
+.wl-st-ico {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--wl-yellow);
+  color: var(--wl-card);
+}
+.wl-st-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--wl-ink);
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+  white-space: nowrap;
+}
+.wl-st-dots {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+}
+.wl-st-dot {
+  flex: 0 0 auto;
+  width: 4px;
+  height: 4px;
+  border-radius: var(--r-full);
+  background: var(--wl-dots);
+}
+.wl-st-dot.is-on {
+  background: var(--wl-ink);
+}
+</style>
+<div class="screen" style="background-color: var(--wl-card); padding: var(--s1) var(--s3); gap: var(--s1)">
+  <div class="row" style="gap: 0; align-items: center; justify-content: space-between">
+    <span class="icon icon-xs" data-symbol="chevron.left" style="color: var(--wl-ink)"></span>
+    <span class="t-headline" style="color: var(--wl-ink)">Settings</span>
+    <span class="icon icon-xs" data-symbol="ellipsis" style="color: var(--wl-glyph-dim)"></span>
+  </div>
+  <div class="col" style="gap: var(--s1); flex: 1 1 auto; min-height: 0; justify-content: center">
+
+    <div class="wl-st-row">
+      <span class="wl-st-ico">
+        <span class="icon icon-xs" data-symbol="bell.fill"></span>
+      </span>
+      <span class="wl-st-label">Notifications</span>
+      <span class="icon icon-xs" data-symbol="ellipsis" style="color: var(--wl-glyph-dim)"></span>
+    </div>
+    <div class="wl-st-row">
+      <span class="wl-st-ico">
+        <span class="icon icon-xs" data-symbol="microphone"></span>
+      </span>
+      <span class="wl-st-label">Voice Assistant</span>
+      <span class="icon icon-xs" data-symbol="ellipsis" style="color: var(--wl-glyph-dim)"></span>
+    </div>
+    <div class="wl-st-row">
+      <span class="wl-st-ico">
+        <span class="icon icon-xs" data-symbol="dollarsign.circle"></span>
+      </span>
+      <span class="wl-st-label">Wallet</span>
+      <span class="icon icon-xs" data-symbol="ellipsis" style="color: var(--wl-glyph-dim)"></span>
+    </div>
+    <div class="wl-st-row">
+      <span class="wl-st-ico">
+        <span class="icon icon-xs" data-symbol="envelope.fill"></span>
+      </span>
+      <span class="wl-st-label">Mail</span>
+      <span class="icon icon-xs" data-symbol="ellipsis" style="color: var(--wl-glyph-dim)"></span>
+    </div>
+  </div>
+  <div class="wl-st-dots" aria-hidden="true">
+    <span class="wl-st-dot is-on"></span>
+    <span class="wl-st-dot"></span>
+    <span class="wl-st-dot"></span>
+    <span class="wl-st-dot"></span>
+    <span class="wl-st-dot"></span>
+  </div>
+</div>

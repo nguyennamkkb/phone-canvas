@@ -1,0 +1,119 @@
+<!-- pc {"title":"Recorder","deviceId":"widget-small"} -->
+<style>
+.wg-au-head {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+}
+.wg-au-title {
+  font-family: var(--font);
+  font-size: var(--t-subhead);
+  font-weight: 600;
+  line-height: 20px;
+  color: var(--wg-card);
+  white-space: nowrap;
+}
+.wg-au-date {
+  font-family: var(--font);
+  font-size: var(--t-caption);
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--wg-night-sub);
+  white-space: nowrap;
+}
+.wg-au-share {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-full);
+  background: transparent;
+  color: var(--wg-card);
+}
+/* Waveform: real div bars with real heights (dashboard recipe) — eyeballed
+   from the board crop: tall attack at left, low mids, red cursor near right.
+   Decorative, declared. */
+.wg-au-wave {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.wg-au-bar {
+  flex: 0 0 auto;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--wg-card);
+}
+.wg-au-bar.is-cursor {
+  width: 3px;
+  align-self: stretch;
+  background: var(--wg-habit);
+}
+.wg-au-time {
+  font-family: var(--font);
+  font-size: var(--t-subhead);
+  font-weight: 600;
+  line-height: 20px;
+  color: var(--wg-card);
+  white-space: nowrap;
+}
+/* Static pause visual (display widget, no input) — 44pt circle. */
+.wg-au-pause {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border-radius: var(--r-full);
+  background: var(--wg-habit);
+  color: var(--wg-card);
+}
+</style>
+<div class="screen" style="background-color: var(--wg-night); padding: var(--s3); gap: var(--s1)">
+  <div class="wg-au-head">
+    <div class="col" style="gap: 0; flex: 1 1 auto; min-width: 0">
+      <div class="wg-au-title">New Audio</div>
+      <div class="wg-au-date">12.8.24</div>
+    </div>
+    <span class="wg-au-share" aria-hidden="true">
+      <span class="icon icon-xs" data-symbol="slider.horizontal.3"></span>
+    </span>
+  </div>
+  <div class="wg-au-wave" aria-hidden="true">
+    <span class="wg-au-bar" style="height: 10px"></span>
+    <span class="wg-au-bar" style="height: 18px"></span>
+    <span class="wg-au-bar" style="height: 8px"></span>
+    <span class="wg-au-bar" style="height: 22px"></span>
+    <span class="wg-au-bar" style="height: 12px"></span>
+    <span class="wg-au-bar" style="height: 26px"></span>
+    <span class="wg-au-bar" style="height: 10px"></span>
+    <span class="wg-au-bar" style="height: 16px"></span>
+    <span class="wg-au-bar" style="height: 8px"></span>
+    <span class="wg-au-bar" style="height: 20px"></span>
+    <span class="wg-au-bar" style="height: 12px"></span>
+    <span class="wg-au-bar" style="height: 24px"></span>
+    <span class="wg-au-bar" style="height: 10px"></span>
+    <span class="wg-au-bar" style="height: 18px"></span>
+    <span class="wg-au-bar" style="height: 14px"></span>
+    <span class="wg-au-bar is-cursor"></span>
+    <span class="wg-au-bar" style="height: 8px; opacity: 0.35"></span>
+    <span class="wg-au-bar" style="height: 12px; opacity: 0.35"></span>
+    <span class="wg-au-bar" style="height: 6px; opacity: 0.35"></span>
+  </div>
+  <div class="row" style="gap: 0; align-items: center">
+    <div class="wg-au-time" style="flex: 1 1 auto; min-width: 0">01:12:25</div>
+    <span class="wg-au-pause" role="img" aria-label="Paused">
+      <span class="icon icon-xs" data-symbol="pause.fill"></span>
+    </span>
+  </div>
+</div>

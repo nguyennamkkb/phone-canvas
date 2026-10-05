@@ -1,0 +1,125 @@
+<!-- pc {"title":"Contact","deviceId":"watch-45","lightStatusBar":true} -->
+<style>
+.wl-ca-back {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: 32px;
+  color: var(--wl-card);
+}
+.wl-ca-more {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: 32px;
+  color: var(--wl-card);
+}
+/* Honest placeholder: no photo in collage crop at build size — initials
+   disc on lighter-purple, declared in handback. */
+.wl-ca-disc {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--r-lg);
+  background: var(--wl-disc);
+  color: var(--wl-card);
+  font-family: var(--font);
+  font-size: var(--t-title2);
+  font-weight: 700;
+}
+.wl-ca-name {
+  font-family: var(--font);
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: -0.4px;
+  color: var(--wl-card);
+  text-align: center;
+}
+.wl-ca-num {
+  font-family: var(--font);
+  font-size: var(--t-subhead);
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--wl-dim);
+  text-align: center;
+}
+.wl-ca-act {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+}
+.wl-ca-call {
+  border-radius: var(--r-full);
+  background: var(--wl-yellow);
+  color: var(--wl-ink);
+}
+.wl-ca-mail {
+  border-radius: var(--r-md);
+  background: var(--wl-pill);
+  color: var(--wl-card);
+}
+.wl-ca-dots {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+}
+.wl-ca-dot {
+  flex: 0 0 auto;
+  width: 4px;
+  height: 4px;
+  border-radius: var(--r-full);
+  background: var(--wl-pill);
+}
+.wl-ca-dot.is-on {
+  background: var(--wl-card);
+}
+</style>
+<div class="screen" style="background-color: var(--wl-canvas); padding: var(--s1) var(--s3); gap: 0">
+  <div class="row" style="gap: 0; align-items: center">
+    <span class="wl-ca-back" aria-hidden="true">
+      <span class="icon icon-xs" data-symbol="chevron.left"></span>
+    </span>
+    <span style="flex: 1 1 auto; min-width: 0" aria-hidden="true"></span>
+    <span class="wl-ca-more" aria-hidden="true">
+      <span class="icon icon-xs" data-symbol="ellipsis"></span>
+    </span>
+  </div>
+  <div class="col" style="flex: 1 1 auto; min-height: 0; gap: var(--s1); align-items: center; justify-content: center">
+    <div class="wl-ca-disc" aria-label="Allan Simmon">AS</div>
+    <div class="wl-ca-name">Allan Simmon</div>
+    <div class="wl-ca-num">+49 1273 12837</div>
+    <div class="row" style="gap: var(--s3); justify-content: center; margin-top: var(--s1)">
+      <button class="wl-ca-act wl-ca-call" aria-label="Call">
+        <span class="icon icon-xs" data-symbol="phone.fill"></span>
+      </button>
+      <button class="wl-ca-act wl-ca-mail" aria-label="Mail">
+        <span class="icon icon-xs" data-symbol="envelope.fill"></span>
+      </button>
+    </div>
+  </div>
+  <div class="wl-ca-dots" aria-hidden="true">
+    <span class="wl-ca-dot is-on"></span>
+    <span class="wl-ca-dot"></span>
+    <span class="wl-ca-dot"></span>
+  </div>
+</div>

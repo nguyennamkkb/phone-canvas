@@ -1,0 +1,83 @@
+<!-- pc {"title":"Time","deviceId":"watch-45","lightStatusBar":true} -->
+<style>
+.wl-ta-back {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: 32px;
+  color: var(--wl-ink);
+}
+.wl-ta-title {
+  font-family: var(--font);
+  font-size: var(--t-subhead);
+  font-weight: 700;
+  line-height: 20px;
+  color: var(--wl-ink);
+  text-align: center;
+  white-space: nowrap;
+}
+.wl-ta-more {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: 32px;
+  color: var(--wl-ink);
+}
+/* Subset-honest dial (see handback): the ONLY absolute-position context on
+   this screen is .ring (composite-graphic lane, ZStack+offset in SwiftUI).
+   Ring + ticks + numerals + 3 hands all live in img.art time-dial.svg with
+   baked hand angles measured from the crop (12:00 / 04:20 / 07:38);
+   read time ~04:20. No transform anywhere. */
+.wl-ta-dial {
+  --ring-size: 150px;
+}
+.wl-ta-dialimg {
+  width: 150px;
+  height: 150px;
+}
+.wl-ta-dots {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+}
+.wl-ta-dot {
+  flex: 0 0 auto;
+  width: 4px;
+  height: 4px;
+  border-radius: var(--r-full);
+  background: var(--wl-dots);
+}
+.wl-ta-dot.is-on {
+  background: var(--wl-ink);
+}
+</style>
+<div class="screen" style="background-color: var(--wl-card); padding: var(--s1) var(--s2); gap: 0">
+  <div class="row" style="gap: 0; align-items: center">
+    <span class="wl-ta-back" aria-hidden="true">
+      <span class="icon icon-xs" data-symbol="chevron.left"></span>
+    </span>
+    <div class="wl-ta-title" style="flex: 1 1 auto; min-width: 0">Time</div>
+    <span class="wl-ta-more" aria-hidden="true">
+      <span class="icon icon-xs" data-symbol="ellipsis"></span>
+    </span>
+  </div>
+  <div class="col" style="flex: 1 1 auto; min-height: 0; align-items: center; justify-content: center">
+    <div class="ring wl-ta-dial" role="img" aria-label="Analog time, about 4:20">
+      <img class="art wl-ta-dialimg" src="/images/time-dial.svg" width="150" height="150" alt="Analog dial at about 4:20">
+    </div>
+  </div>
+  <div class="wl-ta-dots" aria-hidden="true">
+    <span class="wl-ta-dot is-on"></span>
+    <span class="wl-ta-dot"></span>
+    <span class="wl-ta-dot"></span>
+    <span class="wl-ta-dot"></span>
+  </div>
+</div>

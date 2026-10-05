@@ -1,0 +1,141 @@
+<!-- pc {"title":"November","deviceId":"watch-45","lightStatusBar":true} -->
+<style>
+.wl-nv-back {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: 32px;
+  color: var(--wl-ink);
+}
+.wl-nv-title {
+  font-family: var(--font);
+  font-size: var(--t-subhead);
+  font-weight: 700;
+  line-height: 20px;
+  color: var(--wl-ink);
+  text-align: center;
+  white-space: nowrap;
+}
+.wl-nv-next {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: 32px;
+  color: var(--wl-ink);
+}
+.wl-nv-grid {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  justify-content: center;
+  gap: 2px;
+}
+.wl-nv-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+}
+/* Days are display-only (no per-day action): spans keep the audit's
+   interactive floor for the real controls (header chevrons). */
+.wl-nv-day {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 22px;
+  font-family: var(--font);
+  font-size: var(--t-caption);
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--wl-ink);
+}
+.wl-nv-day.is-hi {
+  border-radius: var(--r-full);
+  background: var(--wl-yellow);
+  color: var(--wl-ink);
+  font-weight: 700;
+}
+.wl-nv-day.is-range {
+  background: var(--wl-purple);
+  color: var(--wl-card);
+  font-weight: 600;
+}
+.wl-nv-day.is-range-first {
+  border-radius: var(--r-full) 0 0 var(--r-full);
+}
+.wl-nv-day.is-range-mid {
+  border-radius: 0;
+}
+.wl-nv-day.is-range-last {
+  border-radius: 0 var(--r-full) var(--r-full) 0;
+}
+.wl-nv-day.is-dot {
+  border-radius: var(--r-full);
+  background: var(--wl-yellow);
+  color: var(--wl-ink);
+  font-weight: 700;
+}
+</style>
+<div class="screen" style="background-color: var(--wl-card); padding: var(--s1) var(--s2); gap: 0">
+  <div class="row" style="gap: 0; align-items: center">
+    <span class="wl-nv-back" aria-hidden="true">
+      <span class="icon icon-xs" data-symbol="chevron.left"></span>
+    </span>
+    <div class="wl-nv-title" style="flex: 1 1 auto; min-width: 0">November</div>
+    <span class="wl-nv-next" aria-hidden="true">
+      <span class="icon icon-xs" data-symbol="chevron.right"></span>
+    </span>
+  </div>
+  <div class="wl-nv-grid" aria-label="November days">
+    <div class="wl-nv-row">
+      <span class="wl-nv-day">1</span>
+      <span class="wl-nv-day is-hi">2</span>
+      <span class="wl-nv-day is-hi">3</span>
+      <span class="wl-nv-day">4</span>
+      <span class="wl-nv-day">5</span>
+      <span class="wl-nv-day">6</span>
+    </div>
+    <div class="wl-nv-row">
+      <span class="wl-nv-day">7</span>
+      <span class="wl-nv-day">8</span>
+      <span class="wl-nv-day">9</span>
+      <span class="wl-nv-day">10</span>
+      <span class="wl-nv-day">11</span>
+      <span class="wl-nv-day">12</span>
+    </div>
+    <div class="wl-nv-row">
+      <span class="wl-nv-day">13</span>
+      <span class="wl-nv-day">14</span>
+      <span class="wl-nv-day is-range is-range-first">15</span>
+      <span class="wl-nv-day is-range is-range-mid">16</span>
+      <span class="wl-nv-day is-range is-range-mid">17</span>
+      <span class="wl-nv-day is-range is-range-last">18</span>
+    </div>
+    <div class="wl-nv-row">
+      <span class="wl-nv-day">19</span>
+      <span class="wl-nv-day">20</span>
+      <span class="wl-nv-day">21</span>
+      <span class="wl-nv-day">22</span>
+      <span class="wl-nv-day">23</span>
+      <span class="wl-nv-day">24</span>
+    </div>
+    <div class="wl-nv-row">
+      <span class="wl-nv-day">25</span>
+      <span class="wl-nv-day">26</span>
+      <span class="wl-nv-day">27</span>
+      <span class="wl-nv-day">28</span>
+      <span class="wl-nv-day is-dot">29</span>
+      <span class="wl-nv-day">30</span>
+    </div>
+  </div>
+</div>

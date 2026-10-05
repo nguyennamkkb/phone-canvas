@@ -1,0 +1,66 @@
+<!-- pc {"title":"Countdown","deviceId":"watch-45","lightStatusBar":true} -->
+<style>
+.wl-cd-cap {
+  color: var(--wl-dim);
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  font-weight: 400;
+  line-height: 18px;
+  text-align: center;
+}
+.wl-cd-digits {
+  color: var(--wl-card);
+  font-family: var(--font);
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 40px;
+  letter-spacing: 0.5px;
+  text-align: center;
+  white-space: nowrap;
+}
+.wl-cd-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-md);
+  cursor: pointer;
+}
+.wl-cd-pause {
+  background: var(--wl-yellow);
+  color: var(--wl-card);
+}
+.wl-cd-reset {
+  background: var(--wl-pill);
+  color: var(--wl-card);
+}
+</style>
+<div class="screen" style="background-color: var(--wl-canvas); padding: var(--s1) var(--s3); gap: var(--s1)">
+  <div class="col" style="gap: 0">
+    <div class="row" style="gap: 0; justify-content: space-between; align-items: center">
+      <div class="row" style="gap: 0; align-items: center; min-width: var(--touch-min); min-height: var(--touch-min)">
+        <span class="icon icon-xs" data-symbol="chevron.left" style="color: var(--wl-card)"></span>
+      </div>
+      <div class="row" style="gap: 0; align-items: center; justify-content: flex-end; min-width: var(--touch-min); min-height: var(--touch-min)">
+        <span class="icon icon-xs" data-symbol="ellipsis" style="color: var(--wl-dim)"></span>
+      </div>
+    </div>
+  </div>
+  <div class="col" style="gap: var(--s1); flex: 1 1 auto; min-height: 0; align-items: center; justify-content: flex-start; padding-top: var(--s1)">
+    <div class="wl-cd-cap">Countdown 10min</div>
+    <div class="wl-cd-digits">04:32,21</div>
+  </div>
+  <div class="row" style="gap: var(--s3); justify-content: center; align-items: center">
+    <button class="wl-cd-btn wl-cd-pause" aria-label="Pause">
+      <span class="icon icon-sm" data-symbol="pause.fill"></span>
+    </button>
+    <button class="wl-cd-btn wl-cd-reset" aria-label="Reset">
+      <span class="icon icon-sm" data-symbol="arrow.triangle.2.circlepath"></span>
+    </button>
+  </div>
+</div>

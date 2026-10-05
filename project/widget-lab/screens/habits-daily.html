@@ -1,0 +1,65 @@
+<!-- pc {"title":"Habits","deviceId":"widget-small"} -->
+<style>
+.wg-ha-eyebrow {
+  font-family: var(--font);
+  font-size: var(--t-caption);
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--wg-night-sub);
+}
+.wg-ha-title {
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 700;
+  line-height: 22px;
+  letter-spacing: -0.4px;
+  color: var(--wg-card);
+}
+.wg-ha-left {
+  font-family: var(--font);
+  font-size: var(--t-subhead);
+  font-weight: 600;
+  line-height: 20px;
+  color: var(--wg-habit);
+}
+/* Sibling ring solution (scratch-watch/activity.html): a conic-gradient disc
+   with a smaller night disc inside → thin arc ring, no SVG, no transform.
+   Badge = feather glyph centered on the dim disc. Decorative, declared. */
+.wg-ha-badge {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--r-full);
+  background: conic-gradient(var(--wg-habit) 0 28%, var(--wg-dim-circle) 28% 100%);
+  color: var(--wg-card);
+}
+.wg-ha-inner {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-full);
+  background: var(--wg-night);
+}
+</style>
+<div class="screen" style="background-color: var(--wg-night); padding: var(--s3); gap: 0">
+  <div class="col" style="gap: 0; flex: 1 1 auto; min-height: 0">
+    <span class="wg-ha-eyebrow">Habits</span>
+    <div class="wg-ha-title">Daily Writing</div>
+    <div class="wg-ha-left">10m left</div>
+  </div>
+  <div class="row" style="justify-content: flex-end">
+    <span class="wg-ha-badge" role="img" aria-label="Writing progress ring">
+      <span class="wg-ha-inner" aria-hidden="true">
+        <span class="icon icon-sm" data-symbol="feather"></span>
+      </span>
+    </span>
+  </div>
+</div>

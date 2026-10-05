@@ -1,0 +1,40 @@
+/* Widget Lab — white WiFi toggle (approx from widget board crop). */
+:root {
+  --wg-ink: #1b1a22;
+  --wg-thumb: #e33229;
+  --wg-thumb-deep: #7a1f1f;
+  --wg-track: rgba(27, 26, 34, 0.12);
+  --wg-spotify: #1db954;
+  --wg-habit: #ff5a36;
+  --wg-dim-circle: rgba(255, 255, 255, 0.12);
+  --wg-sub: rgba(27, 26, 34, 0.6);
+  --wg-card: #ffffff;
+  --wg-wifi: #1e8bff;
+  --wg-wifi-soft: rgba(30, 139, 255, 0.14);
+  --wg-share-soft: rgba(27, 26, 34, 0.06);
+  --wg-on: #34c759;
+  --wg-night: #1c1c1e;
+  --wg-night-sub: rgba(255, 255, 255, 0.55);
+  --wg-route: #ff3b30;
+  --wg-plane: #64d2ff;
+}
+
+:root[data-theme='dark'] {
+  --wg-ink: #1b1a22;
+  --wg-thumb: #e33229;
+  --wg-thumb-deep: #7a1f1f;
+  --wg-track: rgba(27, 26, 34, 0.12);
+  --wg-spotify: #1db954;
+  --wg-habit: #ff5a36;
+  --wg-dim-circle: rgba(255, 255, 255, 0.12);
+  --wg-sub: rgba(27, 26, 34, 0.6);
+  --wg-card: #ffffff;
+  --wg-wifi: #1e8bff;
+  --wg-wifi-soft: rgba(30, 139, 255, 0.14);
+  --wg-share-soft: rgba(27, 26, 34, 0.06);
+  --wg-on: #34c759;
+  --wg-night: #1c1c1e;
+  --wg-night-sub: rgba(255, 255, 255, 0.55);
+  --wg-route: #ff3b30;
+  --wg-plane: #64d2ff;
+}

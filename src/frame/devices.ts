@@ -163,6 +163,18 @@ export const DEVICES: Device[] = [
     safeBottom: 0,
     island: 'none',
   },
+  {
+    id: 'widget-large',
+    form: 'widget',
+    name: 'Widget Large · 360×379',
+    width: 360,
+    height: 379,
+    bezel: 8,
+    radius: 22,
+    safeTop: 0,
+    safeBottom: 0,
+    island: 'none',
+  },
 ]
 
 export const DEFAULT_DEVICE_ID = 'reference'

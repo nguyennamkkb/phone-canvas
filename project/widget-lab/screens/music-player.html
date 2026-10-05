@@ -1,0 +1,138 @@
+<!-- pc {"title":"Music","deviceId":"widget-medium"} -->
+<style>
+/* Honest approx: flat red thumb with dark mark — no photo, declared. */
+.wg-mp-thumb {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-md);
+  background: var(--wg-thumb);
+  color: var(--wg-thumb-deep);
+  overflow: hidden;
+}
+.wg-mp-mark {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 14px;
+  border-radius: var(--r-full);
+  background: var(--wg-thumb-deep);
+}
+.wg-mp-song {
+  font-family: var(--font);
+  font-size: var(--t-subhead);
+  font-weight: 700;
+  line-height: 20px;
+  letter-spacing: -0.2px;
+  color: var(--wg-ink);
+  white-space: nowrap;
+}
+.wg-mp-artist {
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  font-weight: 400;
+  line-height: 18px;
+  color: var(--wg-sub);
+  white-space: nowrap;
+}
+.wg-mp-disc {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-full);
+  background: var(--wg-spotify);
+  color: var(--wg-card);
+}
+.wg-mp-t {
+  font-family: var(--font);
+  font-size: var(--t-caption);
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--wg-sub);
+}
+/* Static progress visual: dark fill + knob at ~12%, declared. */
+.wg-mp-track {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--wg-track);
+}
+.wg-mp-fill {
+  flex: 0 0 auto;
+  width: 12%;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--wg-ink);
+}
+.wg-mp-knob {
+  flex: 0 0 auto;
+  width: 9px;
+  height: 9px;
+  border-radius: var(--r-full);
+  background: var(--wg-ink);
+  margin-left: -4px;
+}
+/* Controls are static visuals (display widget, no input) — spans, 44pt. */
+.wg-mp-ctl {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  min-width: 0;
+  height: var(--touch-min);
+  color: var(--wg-ink);
+}
+</style>
+<div class="screen" style="background-color: var(--wg-card); padding: var(--s3); gap: var(--s2)">
+  <div class="row" style="gap: var(--s2); align-items: center">
+    <span class="wg-mp-thumb" role="img" aria-label="Album art approx">
+      <span class="wg-mp-mark" aria-hidden="true"></span>
+    </span>
+    <div class="col" style="gap: 0; flex: 1 1 auto; min-width: 0">
+      <div class="wg-mp-song">Love On The Brain</div>
+      <div class="wg-mp-artist">Rihanna</div>
+    </div>
+    <span class="wg-mp-disc" aria-hidden="true">
+      <span class="icon icon-xs" data-symbol="disc"></span>
+    </span>
+  </div>
+  <div class="col" style="gap: var(--s1)">
+    <div class="row" style="gap: var(--s2); align-items: center">
+      <span class="wg-mp-t">0:18</span>
+      <span class="wg-mp-track" role="img" aria-label="Progress 12 percent">
+        <span class="wg-mp-fill" aria-hidden="true"></span>
+        <span class="wg-mp-knob" aria-hidden="true"></span>
+      </span>
+      <span class="wg-mp-t">-2:24</span>
+    </div>
+    <div class="row" style="gap: 0; align-items: center">
+      <span class="wg-mp-ctl" role="img" aria-label="Shuffle">
+        <span class="icon icon-xs" data-symbol="shuffle"></span>
+      </span>
+      <span class="wg-mp-ctl" role="img" aria-label="Previous">
+        <span class="icon icon-xs" data-symbol="backward.fill"></span>
+      </span>
+      <span class="wg-mp-ctl" role="img" aria-label="Pause">
+        <span class="icon icon-sm" data-symbol="pause.fill"></span>
+      </span>
+      <span class="wg-mp-ctl" role="img" aria-label="Next">
+        <span class="icon icon-xs" data-symbol="forward.fill"></span>
+      </span>
+      <span class="wg-mp-ctl" role="img" aria-label="Repeat">
+        <span class="icon icon-xs" data-symbol="repeat"></span>
+      </span>
+    </div>
+  </div>
+</div>

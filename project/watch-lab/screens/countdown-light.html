@@ -1,0 +1,72 @@
+<!-- pc {"title":"Countdown Light","deviceId":"watch-45"} -->
+<style>
+.wl-cl-cap {
+  color: var(--wl-glyph-dim);
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  font-weight: 400;
+  line-height: 18px;
+  text-align: center;
+}
+.wl-cl-digits {
+  color: var(--wl-ink);
+  font-family: var(--font);
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 40px;
+  letter-spacing: 0.5px;
+  text-align: center;
+  white-space: nowrap;
+}
+.wl-cl-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-md);
+  cursor: pointer;
+}
+.wl-cl-play {
+  background: var(--wl-yellow);
+  color: var(--wl-card);
+}
+.wl-cl-stop {
+  background: var(--wl-purple);
+}
+.wl-cl-square {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  background: var(--wl-card);
+}
+</style>
+<div class="screen" style="background-color: var(--wl-card); padding: var(--s1) var(--s3); gap: var(--s1)">
+  <div class="col" style="gap: 0">
+    <div class="row" style="gap: 0; justify-content: space-between; align-items: center">
+      <div class="row" style="gap: 0; align-items: center; min-width: var(--touch-min); min-height: var(--touch-min)">
+        <span class="icon icon-xs" data-symbol="chevron.left" style="color: var(--wl-ink)"></span>
+      </div>
+      <div class="row" style="gap: 0; align-items: center; justify-content: flex-end; min-width: var(--touch-min); min-height: var(--touch-min)">
+        <span class="icon icon-xs" data-symbol="ellipsis" style="color: var(--wl-glyph-dim)"></span>
+      </div>
+    </div>
+  </div>
+  <div class="col" style="gap: var(--s1); flex: 1 1 auto; min-height: 0; align-items: center; justify-content: flex-start; padding-top: var(--s1)">
+    <div class="wl-cl-cap">Countdown 10:00</div>
+    <div class="wl-cl-digits">05:15,38</div>
+  </div>
+  <div class="row" style="gap: var(--s3); justify-content: center; align-items: center">
+    <button class="wl-cl-btn wl-cl-play" aria-label="Play">
+      <span class="icon icon-sm" data-symbol="play.fill"></span>
+    </button>
+    <button class="wl-cl-btn wl-cl-stop" aria-label="Stop">
+      <span class="wl-cl-square" aria-hidden="true"></span>
+    </button>
+  </div>
+</div>

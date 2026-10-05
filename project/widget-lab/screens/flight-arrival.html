@@ -1,0 +1,106 @@
+<!-- pc {"title":"Arrival","deviceId":"widget-small"} -->
+<style>
+.wg-ar-eyebrow {
+  font-family: var(--font);
+  font-size: var(--t-caption);
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--wg-night-sub);
+}
+.wg-ar-big {
+  font-family: var(--font);
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 30px;
+  letter-spacing: -0.5px;
+  color: var(--wg-card);
+}
+.wg-ar-time {
+  font-family: var(--font);
+  font-size: var(--t-caption);
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--wg-night-sub);
+  white-space: nowrap;
+}
+.wg-ar-code {
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 700;
+  line-height: 22px;
+  color: var(--wg-card);
+  white-space: nowrap;
+}
+.wg-ar-city {
+  font-family: var(--font);
+  font-size: var(--t-caption);
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--wg-night-sub);
+  white-space: nowrap;
+}
+.wg-ar-mid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  gap: 0;
+  color: var(--wg-plane);
+}
+/* Route connector: dotted vertical path (CSS, not SVG — a bordered box) with
+   a red dot at the plane stop. Decorative, declared. */
+.wg-ar-path {
+  flex: 0 0 auto;
+  width: 0;
+  height: 28px;
+  border-left: 2px dotted var(--wg-night-sub);
+}
+.wg-ar-stop {
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-full);
+  background: var(--wg-route);
+}
+.wg-ar-bar {
+  display: flex;
+  flex-direction: row;
+  flex: 0 0 auto;
+  height: 8px;
+  background: transparent;
+  overflow: hidden;
+  margin: 0 calc(-1 * var(--s2));
+}
+.wg-ar-fill {
+  flex: 0 0 auto;
+  width: 62%;
+  background: var(--wg-route);
+}
+</style>
+<div class="screen" style="background-color: var(--wg-night); padding: var(--s2) var(--s2) 0; gap: var(--s1)">
+  <div class="col" style="gap: 0">
+    <span class="wg-ar-eyebrow">Arrival in</span>
+    <div class="wg-ar-big">53min</div>
+  </div>
+  <div class="row" style="gap: var(--s1); align-items: flex-start; flex: 1 1 auto; min-height: 0">
+    <div class="col" style="gap: 0; flex: 1 1 auto; min-width: 0">
+      <span class="wg-ar-time">14:30</span>
+      <span class="wg-ar-code">LHR</span>
+      <span class="wg-ar-city">London</span>
+    </div>
+    <div class="wg-ar-mid" aria-hidden="true">
+      <span class="icon icon-xs" data-symbol="plane"></span>
+      <span class="wg-ar-path"></span>
+      <span class="wg-ar-stop"></span>
+    </div>
+    <div class="col" style="gap: 0; flex: 1 1 auto; min-width: 0; align-items: flex-end">
+      <span class="wg-ar-time">16:30</span>
+      <span class="wg-ar-code">LHR</span>
+      <span class="wg-ar-city">Istanbul</span>
+    </div>
+  </div>
+  <div class="wg-ar-bar" aria-hidden="true">
+    <span class="wg-ar-fill"></span>
+  </div>
+</div>

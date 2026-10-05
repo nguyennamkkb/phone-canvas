@@ -1,0 +1,88 @@
+<!-- pc {"title":"WiFi","deviceId":"widget-small"} -->
+<style>
+.wg-top {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+}
+.wg-wifi {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-full);
+  background: var(--wg-wifi);
+  color: var(--wg-card);
+}
+.wg-share {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-full);
+  background: var(--wg-share-soft);
+  color: var(--wg-ink);
+}
+.wg-name {
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 700;
+  line-height: 22px;
+  letter-spacing: -0.4px;
+  color: var(--wg-ink);
+}
+.wg-sub {
+  font-family: var(--font);
+  font-size: var(--t-caption);
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--wg-sub);
+  white-space: nowrap;
+}
+/* Static ON visual: track + knob are spans, not controls — widgets take no
+   input (recipes/widget.md). role="switch" carries the state. */
+.wg-toggle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 0 0 auto;
+  width: 47px;
+  height: 28px;
+  padding: 0 2px 0 0;
+  border-radius: var(--r-full);
+  background: var(--wg-on);
+  justify-content: flex-end;
+}
+.wg-knob {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--r-full);
+  background: var(--wg-card);
+}
+</style>
+<div class="screen" style="background-color: var(--wg-card); padding: var(--s2); gap: var(--s1); justify-content: center">
+  <div class="wg-top">
+    <span class="wg-wifi" aria-hidden="true">
+      <span class="icon icon-sm" data-symbol="wifi"></span>
+    </span>
+    <span style="flex: 1 1 auto; min-width: 0" aria-hidden="true"></span>
+    <span class="wg-share" aria-hidden="true">
+      <span class="icon icon-xs" data-symbol="arrow.up.right"></span>
+    </span>
+  </div>
+  <div class="wg-name">WiFi</div>
+  <div class="row" style="gap: 0; align-items: center">
+    <div class="wg-sub" style="flex: 1 1 auto; min-width: 0">On &middot; kawsar&rsquo;s_wifi</div>
+    <span class="wg-toggle" role="switch" aria-checked="true" aria-label="WiFi on">
+      <span class="wg-knob" aria-hidden="true"></span>
+    </span>
+  </div>
+</div>

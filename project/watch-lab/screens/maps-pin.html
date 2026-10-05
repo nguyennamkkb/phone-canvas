@@ -1,0 +1,92 @@
+<!-- pc {"title":"Maps","deviceId":"watch-45","lightStatusBar":true} -->
+<style>
+.wl-mp-back {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: 32px;
+  color: var(--wl-card);
+}
+.wl-mp-title {
+  font-family: var(--font);
+  font-size: var(--t-subhead);
+  font-weight: 600;
+  line-height: 20px;
+  color: var(--wl-card);
+  text-align: center;
+  white-space: nowrap;
+}
+.wl-mp-more {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: 32px;
+  color: var(--wl-card);
+}
+/* Map is one img.art graphic (decorative, non-functional); Search rides
+   below it in flow — no overlay, no absolute. */
+.wl-mp-map {
+  width: 100%;
+  height: 150px;
+}
+.wl-mp-search {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: var(--touch-min);
+  border: 0;
+  border-radius: var(--r-md);
+  background: var(--wl-yellow);
+  color: var(--wl-ink);
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 600;
+  cursor: pointer;
+}
+.wl-mp-dots {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+}
+.wl-mp-dot {
+  flex: 0 0 auto;
+  width: 4px;
+  height: 4px;
+  border-radius: var(--r-full);
+  background: var(--wl-pill);
+}
+.wl-mp-dot.is-on {
+  background: var(--wl-card);
+}
+</style>
+<div class="screen" style="background-color: var(--wl-canvas); padding: var(--s1) var(--s3); gap: 0">
+  <div class="row" style="gap: 0; align-items: center">
+    <span class="wl-mp-back" aria-hidden="true">
+      <span class="icon icon-xs" data-symbol="chevron.left"></span>
+    </span>
+    <div class="wl-mp-title" style="flex: 1 1 auto; min-width: 0">Maps</div>
+    <span class="wl-mp-more" aria-hidden="true">
+      <span class="icon icon-xs" data-symbol="ellipsis"></span>
+    </span>
+  </div>
+  <div class="col" style="flex: 1 1 auto; min-height: 0; gap: var(--s2); justify-content: center">
+    <img class="art wl-mp-map" src="/images/wl-map.svg" width="174" height="150" alt="Abstract map with your location pin">
+    <button class="wl-mp-search">Search</button>
+  </div>
+  <div class="wl-mp-dots" aria-hidden="true">
+    <span class="wl-mp-dot is-on"></span>
+    <span class="wl-mp-dot"></span>
+    <span class="wl-mp-dot"></span>
+    <span class="wl-mp-dot"></span>
+  </div>
+</div>

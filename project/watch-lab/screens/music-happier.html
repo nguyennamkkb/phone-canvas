@@ -1,0 +1,141 @@
+<!-- pc {"title":"Now Playing","deviceId":"watch-45","lightStatusBar":true} -->
+<style>
+.wl-mu-back {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: 32px;
+  color: var(--wl-ink);
+}
+.wl-mu-more {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: 32px;
+  color: var(--wl-ink);
+}
+/* Honest approx: yellow art block with abstract dark mark — declared, no
+   trademark redraw. */
+.wl-mu-art {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 72px;
+  height: 72px;
+  border-radius: var(--r-lg);
+  background: var(--wl-yellow);
+  color: var(--wl-ink);
+  gap: 2px;
+}
+.wl-mu-art-top {
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 14px;
+  letter-spacing: 0.5px;
+}
+.wl-mu-art-mark {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 12px;
+  border-radius: var(--r-full);
+  background: var(--wl-ink);
+}
+.wl-mu-title {
+  font-family: var(--font);
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: -0.4px;
+  color: var(--wl-ink);
+  text-align: center;
+}
+.wl-mu-artist {
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  font-weight: 400;
+  line-height: 18px;
+  color: var(--wl-glyph-dim);
+  text-align: center;
+  white-space: nowrap;
+}
+.wl-mu-ctl {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--wl-ink);
+  cursor: pointer;
+}
+.wl-mu-pause {
+  border-radius: var(--r-full);
+  background: var(--wl-yellow);
+}
+.wl-mu-dots {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+}
+.wl-mu-dot {
+  flex: 0 0 auto;
+  width: 4px;
+  height: 4px;
+  border-radius: var(--r-full);
+  background: var(--wl-dots);
+}
+.wl-mu-dot.is-on {
+  background: var(--wl-ink);
+}
+</style>
+<div class="screen" style="background-color: var(--wl-card); padding: var(--s1) var(--s2); gap: 0">
+  <div class="row" style="gap: 0; align-items: center">
+    <span class="wl-mu-back" aria-hidden="true">
+      <span class="icon icon-xs" data-symbol="chevron.left"></span>
+    </span>
+    <span style="flex: 1 1 auto; min-width: 0" aria-hidden="true"></span>
+    <span class="wl-mu-more" aria-hidden="true">
+      <span class="icon icon-xs" data-symbol="ellipsis"></span>
+    </span>
+  </div>
+  <div class="col" style="flex: 1 1 auto; min-height: 0; gap: var(--s1); align-items: center; justify-content: center">
+    <div class="wl-mu-art" aria-label="Album art approx">
+      <span class="wl-mu-art-top" aria-hidden="true">HAPPIER</span>
+      <span class="wl-mu-art-mark" aria-hidden="true"></span>
+    </div>
+    <div class="wl-mu-title">Happier</div>
+    <div class="wl-mu-artist">Marshmallow, Bastille</div>
+    <div class="row" style="gap: var(--s2); justify-content: center; align-items: center; margin-top: var(--s1)">
+      <button class="wl-mu-ctl" aria-label="Previous">
+        <span class="icon icon-sm" data-symbol="backward.fill"></span>
+      </button>
+      <button class="wl-mu-ctl wl-mu-pause" aria-label="Pause">
+        <span class="icon icon-sm" data-symbol="pause.fill"></span>
+      </button>
+      <button class="wl-mu-ctl" aria-label="Next">
+        <span class="icon icon-sm" data-symbol="forward.fill"></span>
+      </button>
+    </div>
+  </div>
+  <div class="wl-mu-dots" aria-hidden="true">
+    <span class="wl-mu-dot is-on"></span>
+    <span class="wl-mu-dot"></span>
+    <span class="wl-mu-dot"></span>
+    <span class="wl-mu-dot"></span>
+  </div>
+</div>

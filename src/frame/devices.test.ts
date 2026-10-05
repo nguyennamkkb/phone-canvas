@@ -35,6 +35,18 @@ describe('devices', () => {
     expect(getDevice('watch-45')).toMatchObject({ width: 198, height: 242, radius: 52.5 })
   })
 
+  it('declares the large widget at the true systemLarge size', () => {
+    // Source: Apple widget-gallery artwork shipped in-repo
+    // (.agents/skills/apple-design-widget/assets/widget-{small,medium,large}.png
+    // at 428 x 428 / 788 x 428 / 788 x 786 px): medium and large share the
+    // 788px full width and small/medium share the 428px height row, so with
+    // medium pinned at the repo's 360x169pt, large = 360 x 169*786/428 = 379pt
+    // — the iOS systemLarge family (full width x tall square; HIG widgets:
+    // systemSmall/Medium/Large/XL). Export proof: 720x758px @2x = 360x379pt.
+    expect(getDevice('widget-large')).toMatchObject({ width: 360, height: 379, form: 'widget' })
+    expect(isKnownDevice('widget-large')).toBe(true)
+  })
+
   it('declares the foldable Duo pair at their point sizes', () => {
     expect(getDevice('duo-cover')).toMatchObject({ width: 466, height: 678 })
     expect(getDevice('duo-inner')).toMatchObject({ width: 890, height: 626 })
