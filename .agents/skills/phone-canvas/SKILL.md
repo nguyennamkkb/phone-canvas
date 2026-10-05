@@ -25,9 +25,15 @@ then pay for.
 1. **Inspect** — read the project's own `project/<id>/tokens.css` (its design
    system — see `recipes/design-tokens.md`), the region contract in
    `openspec/specs/screen-regions` (bands + who owns each; numbers in
-   `src/screens/tokens.css` vars, sizes in `src/frame/devices.ts`,
+   `src/screens/core.css` vars, sizes in `src/frame/devices.ts`,
    migration notes in `docs/upgrade-core/02_PLATFORM_RULES.md` +
    `03_REGION_SYSTEM.md`), and two or three existing screens. A new screen joins a design system; it does not invent one.
+   Design guidance has an order too: a new screen in an existing product reads
+   `mobile-ui-style-engine` first (Design DNA); number audits read the Apple /
+   fundamentals skills; a reference image goes through `clone-ui` first. Where
+   any of them conflicts with the board subset, `references/design-skills.md`
+   wins.
+
 2. **Model** — before any markup, write down: purpose, primary action, primary
    information, persistent controls, what scrolls. If you cannot name the
    primary action, you do not understand the screen yet.
@@ -51,10 +57,11 @@ then pay for.
 
 | | |
 |---|---|
-| `openspec/specs/screen-regions` + `src/screens/tokens.css` + `src/frame/devices.ts` (repo; migration notes `docs/upgrade-core/02_PLATFORM_RULES.md`, `03_REGION_SYSTEM.md`) | **The region contract.** Which band every screen owes, who owns it (shell vs author), the shared region classes, and every fixed measure. Read before authoring anything. |
+| `openspec/specs/screen-regions` + `src/screens/core.css` + `palettes.css` + `vocab.css` + `src/frame/devices.ts` (repo; migration notes `docs/upgrade-core/02_PLATFORM_RULES.md`, `03_REGION_SYSTEM.md`) | **The region contract.** Which band every screen owes, who owns it (shell vs author), the shared region classes, and every fixed measure. Read before authoring anything. |
 | `references/tooling.md` | Commands, the board's modes, the icon pipeline, the generator. |
 | `references/failure-modes.md` | The silent failures. An icon that vanished, a column that widened, a spec that lied. |
 | `references/spec-to-swiftui.md` | What the panel reports and the SwiftUI it maps to. |
+| `references/design-skills.md` | Adapter from the generic design skills to the board subset (what to write instead) + reading order. Wins on conflict. |
 | `recipes/*.md` | Screen archetypes: onboarding, list, dashboard. |
 
 ## Project workflows
@@ -184,7 +191,7 @@ Use the live board to confirm observable behavior:
    bar width by balancing both sides (`flex: 1` each, overlong titles get an
    ellipsis), auto-wraps bare `back`/`right` content into touch-floor buttons
    (never the title, never anything already containing a control), and floors
-   the band at the spec minimum (`--navbar-min-h` in `src/screens/tokens.css`; the value lives in `openspec/specs/screen-regions/`).
+   the band at the spec minimum (`--navbar-min-h` in `src/screens/core.css`; the value lives in `openspec/specs/screen-regions/`).
 7. **The frame is fixed and the body scrolls.** `.device` is exactly the device
    height, so a screen has exactly ONE vertical scroller: `.body` for content
    taller than the frame, `.body-fixed` for a page that fits. A `.body-fixed`

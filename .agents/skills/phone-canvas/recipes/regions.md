@@ -3,7 +3,7 @@
 This is a **pointer, not a copy**. The numbers and the full map live in
 `openspec/specs/screen-regions` (migration notes in
 `docs/upgrade-core/02_PLATFORM_RULES.md` + `03_REGION_SYSTEM.md`; spacing
-vars in `src/screens/tokens.css`, sizes in `src/frame/devices.ts`); if the
+vars in `src/screens/core.css`, sizes in `src/frame/devices.ts`); if the
 two ever disagree, the spec wins. Read it before authoring a screen, and let
 `npm run gate` tell you when you drifted.
 
@@ -65,7 +65,7 @@ truncates with an ellipsis instead of sliding under a button.
   touch-floor `.shell-nav-btn` — write a plain `<span data-slot="right">…</span>`
   and it still taps. Anything already a button (or containing one) and the
   `title` slot are never wrapped.
-* The band floor is the spec minimum (`--navbar-min-h` in `src/screens/tokens.css`;
+* The band floor is the spec minimum (`--navbar-min-h` in `src/screens/core.css`;
   the value lives in `openspec/specs/screen-regions/`), so a touch-floor
   control never sticks out of it — a collapsed band used to break
   the measured audit.

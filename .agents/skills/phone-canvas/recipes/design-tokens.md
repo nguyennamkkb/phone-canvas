@@ -73,7 +73,7 @@ default. Scales have no mode and are never duplicated in the dark block.
 ## Hard rules
 
 1. Screens name semantic tokens. Palette names in markup are a smell.
-2. Never edit `src/screens/tokens.css` for an app color — that file is shared
+2. Never edit `src/screens/core.css` / `palettes.css` / `vocab.css` for an app color — those files are shared
    fallback (spacing, type, iOS system colors), not your system.
 3. The token list is flat. No `--p-` primitive tier, no aliases of aliases;
    the file is short enough to read whole.

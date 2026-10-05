@@ -6,6 +6,10 @@ description: Design high-quality mobile app UI/UX screens, flows, and components
 # Mobile App UI/UX Design Skill
 
 This skill guides the creation of professional, polished mobile app interfaces that follow proven design principles used by top-tier apps like Airbnb, Duolingo, Spotify, Revolut, and Phantom.
+> **Board override:** in a phone-canvas repo (board with `project/*/screens/*.html`),
+> `phone-canvas/references/design-skills.md` wins on every conflict — Tailwind/Lucide/Recharts/emoji/fixed-375px
+> do not apply there. Read the adapter before generating screens.
+
 
 ## Core Philosophy
 

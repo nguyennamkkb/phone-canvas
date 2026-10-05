@@ -2,7 +2,7 @@
 
 This is a **pointer, not a copy**. The numbers live in
 `openspec/specs/screen-regions` (`tablet` section; vars in
-`src/screens/tokens.css`) and the requirement in the `screen-regions` spec
+`src/screens/core.css`) and the requirement in the `screen-regions` spec
 ("Tablet — sidebar + split, thu gọn được về tab bar"). If they disagree with
 this file, they win.
 

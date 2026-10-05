@@ -124,7 +124,9 @@ project/<project>/screens/<name>.html    the screens — the file IS the entry
 src/projects/derive.ts        one rule set for both readers: validates ids, headers
 src/projects/registry.ts      browser reader (import.meta.glob over project/)
 scripts/scan-projects.ts      Node reader: the same deriveRegistry, off disk
-src/screens/tokens.css       spacing, colour, type, and the component vocabulary
+src/screens/core.css         spacing, region metrics, type (layer 1 of 3)
+src/screens/palettes.css      colour palettes (layer 2 of 3)
+src/screens/vocab.css         component vocabulary (layer 3 of 3)
 src/screens/icons.css        base .icon rules (hand-written)
 src/screens/icon-set.css     GENERATED — do not edit
 src/projects/storage.ts      localStorage keys, board snapshot v4, trash, state-file marker
