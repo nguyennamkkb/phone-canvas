@@ -441,3 +441,28 @@
   --icon: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Crect%20x%3D%2217%22%20y%3D%225%22%20width%3D%223%22%20height%3D%2214%22%20rx%3D%221%22%20fill%3D%22%23000%22%2F%3E%3Cpath%20d%3D%22M4%205v14l10.5-7z%22%20fill%3D%22%23000%22%2F%3E%3C%2Fsvg%3E');
   --icon-src: '/icons/forward-fill.svg';
 }
+
+.icon[data-symbol='expand'] {
+  --icon: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%3E%3Cg%20stroke%3D%22currentColor%22%20stroke-width%3D%221.9%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M9%204.5H4.5V9M15%204.5h4.5V9M9%2019.5H4.5V15M15%2019.5h4.5V15%22%20%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+  --icon-src: '/icons/expand.svg';
+}
+
+.icon[data-symbol='crown'] {
+  --icon: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%3E%3Cg%20stroke%3D%22currentColor%22%20stroke-width%3D%221.9%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%209.5%206.2%205l3.4%202.6L12%204.4l2.4%203.2L17.8%205%2020%209.5l-1.6%208.3a1%201%200%200%201-1%20.8H6.6a1%201%200%200%201-1-.8L4%209.5Z%22%20%2F%3E%3Cpath%20d%3D%22M8.5%2013.2h.01M12%2013.2h.01M15.5%2013.2h.01%22%20stroke-width%3D%222.4%22%20%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+  --icon-src: '/icons/crown.svg';
+}
+
+.icon[data-symbol='robot'] {
+  --icon: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%3E%3Cg%20stroke%3D%22currentColor%22%20stroke-width%3D%221.9%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%226%22%20y%3D%228.5%22%20width%3D%2212%22%20height%3D%229%22%20rx%3D%222.5%22%20%2F%3E%3Cpath%20d%3D%22M12%208.5V5.8M9%205.8h6%22%20%2F%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%224%22%20r%3D%221%22%20fill%3D%22currentColor%22%20stroke%3D%22none%22%20%2F%3E%3Cpath%20d%3D%22M3.5%2011v3M20.5%2011v3%22%20%2F%3E%3Cpath%20d%3D%22M9.5%2013h.01M14.5%2013h.01%22%20stroke-width%3D%222.4%22%20%2F%3E%3Cpath%20d%3D%22M9.8%2015.4h4.4%22%20%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+  --icon-src: '/icons/robot.svg';
+}
+
+.icon[data-symbol='compass'] {
+  --icon: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%3E%3Cg%20stroke%3D%22currentColor%22%20stroke-width%3D%221.9%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%228.6%22%20%2F%3E%3Cpath%20d%3D%22m15.5%208.5-2%205-5%202%202-5%205-2Z%22%20%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+  --icon-src: '/icons/compass.svg';
+}
+
+.icon[data-symbol='flag'] {
+  --icon: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%3E%3Cg%20stroke%3D%22currentColor%22%20stroke-width%3D%221.9%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M5.5%2021.5v-17%22%20%2F%3E%3Cpath%20d%3D%22M5.5%205.2c3-2%205.5%202%209%200v8.6c-3.5%202-6-2-9%200%22%20%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+  --icon-src: '/icons/flag.svg';
+}

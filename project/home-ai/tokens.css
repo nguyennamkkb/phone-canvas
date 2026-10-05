@@ -1,0 +1,33 @@
+/* Home AI — dark-first palette (approx, measured off reference shots).
+   Nen nau den, the nau, nut vang gold, chu kem. Don mode duy nhat nen
+   khong co khoi dark (quy uoc dark-first cua lint:tokens). */
+:root {
+  --bg: #140905;
+  --bg-grouped: #140905;
+  --bg-elevated: #261c1a;
+  --card: #261c1a;
+  --label: #faf3e8;
+  --label-2: rgba(250, 243, 232, 0.6);
+  --label-3: rgba(250, 243, 232, 0.35);
+  --hairline: rgba(250, 243, 232, 0.14);
+  --scrim: rgba(10, 6, 4, 0.55);
+  --gold: #fcd54d;
+  --gold-ink: #241a08;
+  --accent: #fcd54d;
+  --clay: #b3a193;
+  --hairline: rgba(250, 243, 232, 0.14);
+  /* Corner language (home-ai): alias core scale.
+     card = noi dung, media = thumbnail, pill = --r-full. */
+  --corner-card: var(--r-lg);
+  --corner-media: var(--r-md);
+}
+
+.screen {
+  color: var(--label);
+}
+
+/* Nen toi: nut vien trong suot can chu sang + vien sang. */
+.nav-round.is-hollow {
+  color: var(--label);
+  border-color: var(--hairline);
+}

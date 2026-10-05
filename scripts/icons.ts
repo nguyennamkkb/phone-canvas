@@ -120,6 +120,11 @@ const SYMBOLS: Record<string, string> = {
   'pause.fill': 'pause-fill.svg',
   'backward.fill': 'backward-fill.svg',
   'forward.fill': 'forward-fill.svg',
+  expand: 'expand.svg',
+  crown: 'crown.svg',
+  robot: 'robot.svg',
+  compass: 'compass.svg',
+  flag: 'flag.svg',
 }
 
 /** Tighten the markup, then percent-encode it so it is safe inside url("…") */
