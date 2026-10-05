@@ -70,5 +70,5 @@ radius 16).
 - **The illustration is usually the one thing you cannot reproduce.** If you draw
   a stand-in, keep the box, the origin and the visual weight, and say in your
   final response that the artwork is a placeholder.
-- Height should land on 844. If it does not, the copy or the band is too tall —
+- Height should land on the reference device height (`src/frame/devices.ts`). If it does not, the copy or the band is too tall —
   measure, do not shrink the headline to make it fit.

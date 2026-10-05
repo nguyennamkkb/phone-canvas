@@ -96,10 +96,12 @@ async function main(): Promise<void> {
   }
 
   // 1. the shared vocabulary: a governed class must clear the touch floor
-  const globalCss = await readFile(path.join(ROOT, 'src/screens/tokens.css'), 'utf8')
+  // (the classes live in vocab.css since the token-layers split; core.css
+  // holds the --touch-min scale they are measured against).
+  const globalCss = await readFile(path.join(ROOT, 'src/screens/vocab.css'), 'utf8')
   const floor = touchFloorViolations(globalCss, TOUCH_MIN, GUARANTEED_BY)
   for (const v of floor) {
-    console.error(`error  src/screens/tokens.css:${v.line}  [${v.code}] ${v.message}`)
+    console.error(`error  src/screens/vocab.css:${v.line}  [${v.code}] ${v.message}`)
   }
   violations += floor.length
 

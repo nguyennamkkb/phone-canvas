@@ -2,7 +2,7 @@
 
 This is a **pointer, not a copy**. The numbers live in
 `openspec/specs/screen-regions` (Tham chiếu vùng Widget) and the sizes in
-`src/frame/devices.ts` (`widget-small` 169×169, `widget-medium` 360×169).
+`src/frame/devices.ts` (`widget-small`, `widget-medium`).
 If they disagree with this file, they win.
 
 ## The one rule
@@ -22,7 +22,7 @@ npm run screen -- add --project <id> --name <name> --title "..." --device widget
 
 `--device` records `deviceId` in the `<!-- pc -->` header and picks the widget
 template (glance stack). A family is added only when a widget proves the two
-insufficient — small first, like `reference` 390 does for phone.
+insufficient — small first, like `reference` does for phone.
 
 ## Shape
 
@@ -35,7 +35,7 @@ insufficient — small first, like `reference` 390 does for phone.
 </div>
 ```
 
-- Lề 16 pt (`--s4`), đồng tâm với bo của container.
+- Lề `--s4` (the spec gutter — see `openspec/specs/screen-regions`), đồng tâm với bo của container.
 - Dynamic Type Large → AX5 must not break the fit — short strings only.
 - A project that draws widgets needs its own `tokens.css` layer (the global
   set does not define product colors like `--cta`); the gate names the
@@ -45,7 +45,7 @@ insufficient — small first, like `reference` 390 does for phone.
 
 - Static tier skips the undeclared-region edge check on `form: widget`;
   subset, tokens and components still apply.
-- Measured tier: every interactive rect ≥ 44 × 44 (prefer no controls at
+- Measured tier: every interactive rect ≥ 44 × 44 (prefer no controls at <!-- lint-docs: keep -->
   all — widgets open the app, they do not take input), zero scrollers
   allowed, no overflow. `export -- --device widget-small|widget-medium`
   renders at native size.

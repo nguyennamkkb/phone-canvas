@@ -1,6 +1,8 @@
-import { describe, expect, it } from 'vitest'
-import { composeScreenDoc, screenBgOf } from './compose'
+import { describe, expect, it, vi } from 'vitest'
+import { activeTabOf, composeScreenDoc, screenBgOf } from './compose'
+import * as legacy from './compose.legacy'
 import { DEVICES, getDevice } from '../frame/devices'
+import { SCREENS, componentMap } from '../projects/registry'
 
 const device = DEVICES[0]
 
@@ -369,5 +371,144 @@ describe('ensureNavButton (nav slot auto-wrap)', () => {
     )
     expect(html).not.toContain('shell-nav-btn')
     expect(html).toContain('<div class="nav-slot-right"><div data-slot="right" class="row">')
+  })
+})
+
+describe('composeScreenDoc · parse5 parser (core-hardening §2)', () => {
+  const compose = (html: string) => composeScreenDoc({ html, device, stylesheets: [] })
+  const driftPoints = (fn: () => void): string[] => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    try {
+      fn()
+      return warn.mock.calls.map((args) => String(args[0]))
+    } finally {
+      warn.mockRestore()
+    }
+  }
+
+  it('lifts unquoted attributes, keeping the author bytes verbatim', () => {
+    const Moral = driftPoints(() => {
+      const html = compose(
+        '<div class=screen><div class=body></div><span data-slot=title class=nav-title>Hi</span></div>',
+      )
+      expect(html).toContain(
+        '<div class="nav-slot-title"><span data-slot=title class=nav-title>Hi</span></div>',
+      )
+    })
+    expect(Moral).toEqual([])
+  })
+
+  it('reads `>` inside a quoted value as text, not markup', () => {
+    const Moral = driftPoints(() => {
+      const html = compose(
+        '<div class="screen"><div class="body"></div><span data-slot="title" title="a>b">T</span></div>',
+      )
+      expect(html).toContain('<div class="nav-slot-title"><span data-slot="title" title="a>b">T</span></div>')
+    })
+    expect(Moral).toEqual([])
+  })
+
+  it('lifts nested same-tag elements as one outer unit', () => {
+    const Moral = driftPoints(() => {
+      const html = compose(
+        '<div class="screen"><div class="body"></div><div data-slot="title"><div class="inner">deep</div></div></div>',
+      )
+      expect(html).toContain(
+        '<div class="nav-slot-title"><div data-slot="title"><div class="inner">deep</div></div></div>',
+      )
+    })
+    expect(Moral).toEqual([])
+  })
+
+  it('ignores a slot-looking element inside a comment (legacy lifted the ghost)', () => {
+    const commented =
+      '<div class="screen"><div class="body"></div><!-- <span data-slot="title">Ghost</span> -->' +
+      '<span data-slot="title">Real</span></div>'
+    expect(legacy.takeAttributed(commented, 'data-slot').items).toHaveLength(2)
+    const Moral = driftPoints(() => {
+      const html = compose(commented)
+      // the comment stays verbatim in the viewport body — it is simply not a
+      // slot, so the nav band must only carry the real element
+      const nav = html.slice(html.indexOf('<nav class="region-nav"'), html.indexOf('</nav>'))
+      expect(nav).toContain('>Real<')
+      expect(nav).not.toContain('Ghost')
+    })
+    expect(Moral.some((w) => w.includes('data-slot:screen'))).toBe(true)
+  })
+
+  it('keeps an unclosed non-void carrier instead of dropping its slot', () => {
+    const html =
+      '<div class="screen"><div class="body"></div>' +
+      '<svg viewBox="0 0 10 10"><path data-slot="right" d="M0 0h10"></svg>' +
+      '<span data-slot="title">T</span></div>'
+    // `<path>` is not a void tag: the regex hunted a `</path>` that never
+    // comes and silently dropped the slot
+    expect(legacy.takeAttributed(html, 'data-slot').items).toHaveLength(1)
+    const Moral = driftPoints(() => {
+      const doc = compose(html)
+      expect(doc).toContain('<div class="nav-slot-right"><button type="button" class="shell-nav-btn">')
+      expect(doc).toContain('<path data-slot="right" d="M0 0h10">')
+    })
+    expect(Moral.some((w) => w.includes('data-slot:screen'))).toBe(true)
+  })
+
+  it('reads data-tab-active off .screen, not out of a comment', () => {
+    const html =
+      '<!-- data-tab-active="ghost" -->' +
+      '<div class="screen" data-tab-active="diary"><div class="body"></div>' +
+      '<button data-tab="diary" class="tab">Diary</button></div>'
+    expect(activeTabOf(html)).toBe('diary')
+    const Moral = driftPoints(() => {
+      expect(activeTabOf(html)).toBe('diary')
+    })
+    expect(Moral.some((w) => w.includes('activeTabOf'))).toBe(true)
+  })
+
+  it('derives tab labels without comment markup', () => {
+    const Moral = driftPoints(() => {
+      const html = compose(
+        '<div class="screen" data-tab-active="a"><div class="body"></div>' +
+          '<button data-tab="a" class="tab">A<!-- <div> --></button>' +
+          '<button data-tab="b" class="tab">B</button></div>',
+      )
+      // the comment rides along verbatim inside the lifted tab — but the
+      // derived label must read the DOM text, not the comment markup
+      const firstTab = html.slice(html.indexOf('<nav class="region-tabs"'), html.indexOf('</nav>'))
+      const label = /<button[^>]*aria-label="([^"]*)"/.exec(firstTab)?.[1]
+      expect(label).toBe('A, tab 1 trên 2')
+    })
+    expect(Moral.some((w) => w.includes('decorateTabs'))).toBe(true)
+  })
+
+  it('finds the .screen root however its class is quoted', () => {
+    expect(screenBgOf("<div class='screen' style='background-color: #000'>x</div>")).toEqual({
+      style: 'background-color: #000;',
+      isDark: true,
+    })
+    expect(screenBgOf('<div class=screen style="background-color: #000">x</div>').isDark).toBe(true)
+    const Moral = driftPoints(() => {
+      screenBgOf("<div class='screen' style='background-color: #000'>x</div>")
+    })
+    expect(Moral.some((w) => w.includes('screenBgOf'))).toBe(true)
+  })
+})
+
+describe('composeScreenDoc · byte-identical on every current screen', () => {
+  it('composes all registered screens with zero parser drift', () => {
+    expect(SCREENS.length).toBeGreaterThan(0)
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    try {
+      for (const screen of SCREENS) {
+        composeScreenDoc({
+          html: screen.html,
+          device,
+          stylesheets: [],
+          components: componentMap(screen.projectId),
+        })
+      }
+      expect(warn).not.toHaveBeenCalled()
+    } finally {
+      warn.mockRestore()
+    }
   })
 })

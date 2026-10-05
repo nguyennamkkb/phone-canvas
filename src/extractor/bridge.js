@@ -72,6 +72,8 @@
 
   function post(msg) {
     msg.pc = true
+    // wire version: the parent drops anything else with a visible counter
+    msg.v = 1
     msg.nodeId = nodeId
     msg.token = token
     try {

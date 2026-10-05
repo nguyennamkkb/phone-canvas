@@ -1,5 +1,10 @@
-import globalCss from '../screens/tokens.css?raw'
+import coreCss from '../screens/core.css?raw'
+import palettesCss from '../screens/palettes.css?raw'
+import vocabCss from '../screens/vocab.css?raw'
 import { tokensCssFor } from '../projects/registry'
+
+/** the pre-split tokens.css, concatenated in cascade order: core → palettes → vocab */
+const globalCss = [coreCss, palettesCss, vocabCss].join('\n')
 
 /**
  * Design tokens as data — parsed from the same css files the iframes load,

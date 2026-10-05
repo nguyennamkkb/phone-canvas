@@ -1,12 +1,14 @@
+import * as parse5 from 'parse5'
 import type { Device } from '../frame/devices'
 import { expandComponents } from '../components/expand.ts'
+import * as legacy from './compose.legacy.ts'
 
 /**
  * Compose a self-contained document for one phone screen.
  *
- * Pure and dependency-free on purpose: the app feeds it CSS/JS it imported with
- * `?raw`, and `scripts/export.ts` feeds it the same files read off disk. There
- * is exactly one definition of what a screen document is.
+ * Pure on purpose (parse5 is the only dependency): the app feeds it CSS/JS it
+ * imported with `?raw`, and `scripts/export.ts` feeds it the same files read
+ * off disk. There is exactly one definition of what a screen document is.
  *
  * The document is always the device's natural size, so 1 CSS px === 1 pt and
  * every measured number is directly usable as a SwiftUI point value.
@@ -173,11 +175,68 @@ export type ScreenBg = {
   isDark: boolean
 }
 
-const ROOT_TAG_RE = /<[^>]*class="[^"]*\bscreen\b[^"]*"[^>]*>/i
+/**
+ * Real-DOM reads: every locator below walks a parse5 tree and slices the
+ * ORIGINAL source by `sourceCodeLocation` offsets, so extraction never
+ * re-serializes and valid screens stay byte-identical to the regex era.
+ * Tag-level ops (`splitOpenTag`/`withAttr`/`withClass`) stay string-based on
+ * purpose: parse5 has no single-tag primitive, and re-serializing an opening
+ * tag would normalize quoting and break that byte identity.
+ */
+type LocatedNode = {
+  nodeName: string
+  tagName?: string
+  attrs?: Array<{ name: string; value: string }>
+  value?: string
+  childNodes?: LocatedNode[]
+  sourceCodeLocation?: { startOffset?: number; endOffset?: number }
+}
 
-function styleOf(tag: string): string {
-  const m = /style\s*=\s*"([^"]*)"/i.exec(tag) ?? /style\s*=\s*'([^']*)'/i.exec(tag)
-  return m?.[1] ?? ''
+function fragmentOf(html: string): LocatedNode[] {
+  // Unchecked cast: parse5's own types model sourceCodeLocation loosely, and
+  // every offset below is guarded before use — the shape above is all we read.
+  const frag = parse5.parseFragment(html, { sourceCodeLocationInfo: true }) as unknown as {
+    childNodes?: LocatedNode[]
+  }
+  return frag.childNodes ?? []
+}
+
+function* walkElements(nodes: LocatedNode[] | undefined): Generator<LocatedNode> {
+  if (!nodes) return
+  for (const node of nodes) {
+    if (node.tagName) yield node
+    yield* walkElements(node.childNodes)
+  }
+}
+
+function attrOf(el: LocatedNode, name: string): string | null {
+  const found = el.attrs?.find((a) => a.name.toLowerCase() === name)
+  return found ? found.value : null
+}
+
+/** first `.screen` element in document order — the destination `activeTabOf`/`screenBgOf` read */
+function screenRootOf(html: string): LocatedNode | null {
+  for (const el of walkElements(fragmentOf(html))) {
+    if ((attrOf(el, 'class') ?? '').split(/\s+/).includes('screen')) return el
+  }
+  return null
+}
+
+/**
+ * The legacy cross-check (core-hardening §2.2): the parse5 result always wins,
+ * but a disagreement with the regex era is never silent. Guarded so the
+ * comparison itself can never break a compose.
+ */
+function warnIfDrifted(point: string, current: unknown, legacyValue: () => unknown): void {
+  try {
+    if (JSON.stringify(legacyValue()) !== JSON.stringify(current)) {
+      console.warn(
+        `[compose] parser drift at ${point}: legacy regex and parse5 disagree — keeping the parse5 result`,
+      )
+    }
+  } catch {
+    console.warn(`[compose] legacy cross-check failed at ${point} — keeping the parse5 result`)
+  }
 }
 
 /** split `a: b; c: d` without choking on `url(...;...)` or gradients */
@@ -238,13 +297,12 @@ function luminanceOf(color: string): number | null {
   return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b)
 }
 
-export function screenBgOf(html: string): ScreenBg {
+/** shared tail: longhand declarations → device style (both parsers agree here) */
+function bgFromStyle(style: string): ScreenBg {
   const none: ScreenBg = { style: '', isDark: false }
-  const tag = ROOT_TAG_RE.exec(html)?.[0]
-  if (!tag) return none
   let color = ''
   let image = ''
-  for (const [prop, value] of declarations(styleOf(tag))) {
+  for (const [prop, value] of declarations(style)) {
     if (prop === 'background-color') color = value
     else if (prop === 'background-image') image = unquoteUrl(value)
   }
@@ -268,30 +326,30 @@ export function screenBgOf(html: string): ScreenBg {
   return { style: parts.join('; ') + ';', isDark: lum !== null && lum < 0.35 }
 }
 
+export function screenBgOf(html: string): ScreenBg {
+  // parse5 knows the real root: any quoting, any attribute order, and the
+  // regex-era blind spots (single-quoted or unquoted `class=screen`) included
+  const current = bgFromStyle(attrOf(screenRootOf(html) ?? { nodeName: '' }, 'style') ?? '')
+  warnIfDrifted('screenBgOf', current, () => {
+    const tag = /<[^>]*class="[^"]*\bscreen\b[^"]*"[^>]*>/i.exec(html)?.[0]
+    if (!tag) return { style: '', isDark: false }
+    const m = /style\s*=\s*"([^"]*)"/i.exec(tag) ?? /style\s*=\s*'([^']*)'/i.exec(tag)
+    return bgFromStyle(m?.[1] ?? '')
+  })
+  return current
+}
+
 /** the order the shell lays the nav slots out in, regardless of author order */
 const NAV_SLOT_ORDER = ['back', 'title', 'right'] as const
 
-const VOID_TAGS = new Set([
-  'img', 'input', 'br', 'hr', 'source', 'track', 'wbr', 'area', 'base', 'col',
-  'embed', 'link', 'meta', 'param',
-])
-
 /** end index (exclusive) of the element whose opening tag starts at `openIndex` */
 function matchElementEnd(src: string, openIndex: number): number | null {
-  const open = /^<([a-zA-Z][a-zA-Z0-9-]*)\b([^>]*)>/.exec(src.slice(openIndex))
-  if (!open) return null
-  const name = (open[1] ?? '').toLowerCase()
-  if (/\/\s*$/.test(open[2] ?? '') || VOID_TAGS.has(name)) return openIndex + open[0].length
-  const tagRe = new RegExp(`<(/?)${name}\\b([^>]*)>`, 'gi')
-  tagRe.lastIndex = openIndex + open[0].length
-  let depth = 1
-  let m: RegExpExecArray | null
-  while ((m = tagRe.exec(src)) !== null) {
-    if (/\/\s*$/.test(m[2] ?? '')) continue
-    if (m[1] === '/') {
-      depth -= 1
-      if (depth === 0) return m.index + m[0].length
-    } else depth += 1
+  // parse5 knows void elements, implied closes and case folding, so `>` inside
+  // a quoted attribute or a comment containing `<div>` can no longer mislead us
+  for (const el of walkElements(fragmentOf(src))) {
+    if (el.sourceCodeLocation?.startOffset === openIndex) {
+      return el.sourceCodeLocation.endOffset ?? null
+    }
   }
   return null
 }
@@ -305,26 +363,33 @@ function matchElementEnd(src: string, openIndex: number): number | null {
 function takeAttributed(
   html: string,
   attr: string,
+  point = attr,
 ): { items: Array<{ outer: string; value: string }>; rest: string } {
-  // the value is optional: `data-tab` is a valid boolean attribute, so the
-  // regex accepts `attr`, `attr="v"`, `attr='v'` and `attr=v`, and refuses a
-  // longer name (`data-tabs`) via the trailing boundary.
-  const re = new RegExp(
-    `<([a-zA-Z][a-zA-Z0-9-]*)\\b[^>]*\\b${attr}\\b(?![\\w-])(?:\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+)))?[^>]*>`,
-    'g',
-  )
+  // One tree walk collects the attributed opens in document order (offsets
+  // slice the original source, so `outer`/`rest` stay verbatim — including any
+  // quoting the author used); ends resolve through `matchElementEnd`, the way
+  // the regex's `lastIndex = end` jump used to swallow nested carriers.
+  const key = attr.toLowerCase()
+  const opens: Array<{ start: number; value: string }> = []
+  const visit = (nodes: LocatedNode[] | undefined): void => {
+    for (const node of nodes ?? []) {
+      if (node.tagName) {
+        const value = attrOf(node, key)
+        const start = node.sourceCodeLocation?.startOffset
+        if (value !== null && start !== undefined) opens.push({ start, value })
+      }
+      visit(node.childNodes)
+    }
+  }
+  visit(fragmentOf(html))
   const spans: Array<{ start: number; end: number; value: string; outer: string }> = []
-  let m: RegExpExecArray | null
-  while ((m = re.exec(html)) !== null) {
-    const end = matchElementEnd(html, m.index)
+  let takenUntil = 0
+  for (const open of opens) {
+    if (open.start < takenUntil) continue
+    const end = matchElementEnd(html, open.start)
     if (end === null) continue
-    spans.push({
-      start: m.index,
-      end,
-      value: m[2] ?? m[3] ?? m[4] ?? '',
-      outer: html.slice(m.index, end),
-    })
-    re.lastIndex = end
+    spans.push({ start: open.start, end, value: open.value, outer: html.slice(open.start, end) })
+    takenUntil = end
   }
   let rest = ''
   let last = 0
@@ -333,7 +398,9 @@ function takeAttributed(
     last = span.end
   }
   rest += html.slice(last)
-  return { items: spans.map(({ outer, value }) => ({ outer, value })), rest }
+  const lifted = { items: spans.map(({ outer, value }) => ({ outer, value })), rest }
+  warnIfDrifted(point, lifted, () => legacy.takeAttributed(html, attr))
+  return lifted
 }
 
 /**
@@ -382,10 +449,17 @@ function splitOpenTag(outer: string): { open: string; close: string } {
 
 /** the visible text of an element: tags stripped, whitespace collapsed */
 function textOf(html: string): string {
-  return html
-    .replace(/<[^>]*>/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
+  // A real tree walk: comments (even ones containing `<div>`) contribute no
+  // text, and entities decode the way the browser reads them.
+  const parts: string[] = []
+  const visit = (nodes: LocatedNode[] | undefined): void => {
+    for (const node of nodes ?? []) {
+      if (node.nodeName === '#text') parts.push(node.value ?? '')
+      else if (node.nodeName !== '#comment') visit(node.childNodes)
+    }
+  }
+  visit(fragmentOf(html))
+  return parts.join(' ').replace(/\s+/g, ' ').trim()
 }
 
 /** set an attribute on an opening tag, replacing any earlier one; null removes */
@@ -399,9 +473,11 @@ function withAttr(open: string, name: string, value: string | null): string {
 
 /** add or remove one class on an opening tag, leaving the rest alone */
 function withClass(open: string, cls: string, on: boolean): string {
-  const m = /\sclass\s*=\s*("([^"]*)"|'([^']*)')/i.exec(open)
+  // Quoted or unquoted: the regex era only saw quotes, so `class=is-active`
+  // used to slip through and grow a second `class` attribute.
+  const m = /\sclass\s*=\s*("([^"]*)"|'([^']*)'|([^\s>]+))/i.exec(open)
   if (!m) return on ? withAttr(open, 'class', cls) : open
-  const names = (m[2] ?? m[3] ?? '')
+  const names = (m[2] ?? m[3] ?? m[4] ?? '')
     .split(/\s+/)
     .filter(Boolean)
     .filter((c) => c !== cls)
@@ -411,8 +487,27 @@ function withClass(open: string, cls: string, on: boolean): string {
 
 /** the destination the screen says is open, declared on the `.screen` root */
 export function activeTabOf(html: string): string | null {
-  const m = /\bdata-tab-active\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i.exec(html)
-  return m ? (m[1] ?? m[2] ?? m[3] ?? null) : null
+  const root = screenRootOf(html)
+  const onRoot = root ? attrOf(root, 'data-tab-active') : null
+  const current = onRoot ?? firstAttrFallback(html, root !== null)
+  warnIfDrifted('activeTabOf', current, () => {
+    const m = /\bdata-tab-active\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i.exec(html)
+    return m ? (m[1] ?? m[2] ?? m[3] ?? null) : null
+  })
+  return current
+}
+
+/**
+ * Fallback when there is no `.screen` root: the first `data-tab-active`
+ * carrier in document order. Split out so the no-root branch stays readable.
+ */
+function firstAttrFallback(html: string, hasRoot: boolean): string | null {
+  if (hasRoot) return null
+  for (const el of walkElements(fragmentOf(html))) {
+    const value = attrOf(el, 'data-tab-active')
+    if (value !== null) return value
+  }
+  return null
 }
 
 /**
@@ -423,7 +518,7 @@ export function activeTabOf(html: string): string | null {
  */
 function decorateTabs(items: Array<{ outer: string; value: string }>, active: string | null): string[] {
   const total = items.length
-  return items.map((item, index) => {
+  const decorated = items.map((item, index) => {
     const slug = slotNames(item.value)[0] ?? ''
     const name = textOf(item.outer) || slug
     const { open, close } = splitOpenTag(item.outer)
@@ -433,11 +528,24 @@ function decorateTabs(items: Array<{ outer: string; value: string }>, active: st
     tag = withAttr(tag, 'aria-label', `${name}, tab ${index + 1} trên ${total}`)
     return tag + close
   })
+  warnIfDrifted('decorateTabs', decorated, () =>
+    items.map((item, index) => {
+      const slug = slotNames(item.value)[0] ?? ''
+      const name = legacy.textOf(item.outer) || slug
+      const { open, close } = legacy.splitOpenTag(item.outer)
+      const isActive = active !== null && slug === active
+      let tag = legacy.withClass(open, 'is-active', isActive)
+      tag = legacy.withAttr(tag, 'aria-current', isActive ? 'page' : null)
+      tag = legacy.withAttr(tag, 'aria-label', `${name}, tab ${index + 1} trên ${total}`)
+      return tag + close
+    }),
+  )
+  return decorated
 }
 
 /** every `data-slot` element in `html`, grouped by the slots it names */
-function liftNav(html: string): { slots: Map<string, string[]>; rest: string } {
-  const { items, rest } = takeAttributed(html, 'data-slot')
+function liftNav(html: string, point: string): { slots: Map<string, string[]>; rest: string } {
+  const { items, rest } = takeAttributed(html, 'data-slot', point)
   const slots = new Map<string, string[]>()
   for (const item of items) {
     for (const name of slotNames(item.value)) {
@@ -477,11 +585,11 @@ export function composeScreenDoc(options: ComposeOptions): string {
     // fill what the screen left open. Lifting first is also what makes "empty
     // slot wins" work: `<span data-slot="title"></span>` is a deliberate blank,
     // and an element the screen already removed cannot be overwritten.
-    const ownNav = liftNav(html)
-    const ownTabs = takeAttributed(ownNav.rest, 'data-tab')
+    const ownNav = liftNav(html, 'data-slot:screen')
+    const ownTabs = takeAttributed(ownNav.rest, 'data-tab', 'data-tab:screen')
     const expanded = components ? expandComponents(ownTabs.rest, components).html : ownTabs.rest
-    const defNav = liftNav(expanded)
-    const defTabs = takeAttributed(defNav.rest, 'data-tab')
+    const defNav = liftNav(expanded, 'data-slot:defaults')
+    const defTabs = takeAttributed(defNav.rest, 'data-tab', 'data-tab:defaults')
     body = defTabs.rest
 
     // Ba div luôn đủ mặt: div rỗng làm đối trọng flex:1 để title giữa tâm

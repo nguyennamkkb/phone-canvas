@@ -1,144 +1,22 @@
 /* ============================================================================
- * tokens.css — the WHOLE styling vocabulary for a screen.
+ * vocab.css — layer 3 of 3: the component vocabulary.
  *
- * This file is injected into every screen iframe before the screen markup.
- * Anything NOT expressible with these tokens + the layout primitives below is
- * out of the supported subset and will not map cleanly to SwiftUI.
- *
- * Allowed:   flex layout, padding, gap, width/height, background, border,
- *            border-radius, box-shadow, opacity, typography, overflow:auto,
- *            backdrop-filter (glass utilities ONLY — see § iOS 26 system).
- * Banned:    grid, float, transform, position:absolute (except as a full-bleed
- *            layer inside a relative parent), clip-path, filter(), JS layout.
- *
- * Why backdrop-filter is allowed only there: it runs in the compositing
- * stage, after layout — getBoundingClientRect / bridge sizes are bit-identical
- * with it on or off (proven in scripts/export/export.test.ts, "glass …").
- * So glass may float chrome (navbar, tabbar, sheets) but MUST never place
- * content: no glass-as-positioning, no glass on measured content.
+ * Every class rule from the pre-split tokens.css, in the original order:
+ * element reset, .screen/.body bands, layout primitives (.row/.col/…),
+ * screen regions, shell-owned bands, the component vocabulary
+ * (.card/.btn/.chip/…), composite graphics, text styles. Rules reference
+ * the core/palette layers via var(--*), so this file defines no hue or
+ * scale of its own (except positioning-context scopes like --ring-size
+ * and the .app-mood theme override, kept exactly where they were).
+ * Allowed/banned subset and mapping notes from the original header apply
+ * unchanged: flex layout only, backdrop-filter on floating chrome only,
+ * absolute positioning inside composite graphics only.
  * ========================================================================== */
 
 *,
 *::before,
 *::after {
   box-sizing: border-box;
-}
-
-:root {
-  /* ---- spacing scale (4pt grid) ---- */
-  --s1: 4px;
-  --s2: 8px;
-  --s3: 12px;
-  --s4: 16px;
-  --s5: 20px;
-  --s6: 24px;
-  --s8: 32px;
-  --s10: 40px;
-
-  /* ---- fixed band widths (Apple dimensions, not spacing) ---- */
-  --sidebar-w: 280px;   /* iPad leading sidebar: fits icon + label, collapsible */
-
-  /* ---- radii (iOS 26: larger continuous read; sm/md/full untouched) ---- */
-  --r-sm: 8px;
-  --r-md: 12px;
-  --r-lg: 20px;
-  --r-xl: 28px;
-  --r-full: 999px;
-
-  /* ---- region metrics (docs/screen-regions.md is the source) ----
-     Every fixed number that belongs to a screen REGION is named here, so
-     there is one place to change a band and one grep to prove there is no
-     stray literal left. 44 pt is Apple's minimum hit region, 68 pt is the
-     tab bar height, 16 pt is the standard content gutter. */
-  --touch-min: 44px;      /* minimum hit region, both axes */
-  --navbar-min-h: 44px;   /* navbar band floor */
-  --tabbar-h: 68px;       /* tab bar / dock band height */
-  --rail-w: 44px;         /* Duo vertical rail width (fixed, height flexible) */
-  --gutter: var(--s4);    /* standard content margin, 16 pt */
-  --avatar-size: 44px;    /* .avatar, not a hit target — sized like one */
-  --t-score-lh: 68px;     /* .t-score leading, paired with its 64 px size */
-
-  /* ---- colors (iOS system) ---- */
-  --bg: #ffffff;
-  --bg-grouped: #f2f2f7;
-  --bg-elevated: #ffffff;
-  --label: #000000;
-  --label-2: rgba(60, 60, 67, 0.6);
-  --label-3: rgba(60, 60, 67, 0.3);
-  --separator: rgba(60, 60, 67, 0.21);
-  --fill: rgba(120, 120, 128, 0.12);
-  --accent: #007aff;
-  --accent-soft: rgba(0, 122, 255, 0.12);
-  --danger: #ff3b30;
-  --success: #34c759;
-  --warning: #ff9500;
-
-  /* ---- brand ---- */
-  --brand: #f2c81c;
-
-  /* ---- health palette ---- */
-  --cream: #f6f1e7;
-  --ink: #1a1a1a;
-  --olive: #93a85e;
-  --blossom: #f2b4d8;
-  --sky: #afcbf2;
-  --muted: #8b8577;
-  --alert: #c8452b;
-  --line: rgba(26, 26, 26, 0.18);
-  --track: #e9e2d4;
-
-  /* ---- learning palette ---- */
-  --violet: #8b5cf6;
-  --violet-deep: #7c4ddb;
-  --violet-tint: #ede0fa;
-  --blue-tint: #d6e9f8;
-  --peach-tint: #fae7d6;
-  --lavender: #e8dff5;
-  --mist: #eff2ef;
-  --slate: #6b7280;
-  --bolt: #facc15;
-
-  /* ---- moodtracker palette ----
-     Freud reference (bb5b…): near-white warm ground, near-black warm ink,
-     olive-green positive, tangerine negative, periwinkle journal,
-     butter-yellow neutral, stone text. */
-  --paper: #faf8f5;
-  --card: #ffffff;
-  --espresso: #2b1d16;
-  --clay: #8a7a6e;
-  --hairline: rgba(43, 29, 22, 0.12);
-  --sage: #9db06c;
-  --sage-deep: #7c9448;
-  --sage-soft: #e3ead0;
-  --ember: #f47f42;
-  --ember-soft: #fde3d2;
-  --lilac: #9d8ff0;
-  --lilac-soft: #e3defa;
-  --sun: #e7c65a;
-  --sun-soft: #f7ecc8;
-  --mood-1: #d6543f;
-  --mood-2: #f47f42;
-  --mood-3: #e7c65a;
-  --mood-4: #9db06c;
-  --mood-5: #7c9448;
-
-  /* both are system fonts on macOS and iOS — nothing loads over the network,
-     and SwiftUI reaches them with .custom("MarkerFelt-Thin", size:) */
-  --font-hand: 'Bradley Hand', 'Marker Felt', 'Segoe Script', cursive;
-
-  /* ---- typography (iOS text styles) ---- */
-  --font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
-    'Helvetica Neue', system-ui, sans-serif;
-  --t-large: 34px;
-  --t-title1: 28px;
-  --t-title2: 22px;
-  --t-title3: 20px;
-  --t-headline: 17px;
-  --t-body: 17px;
-  --t-callout: 16px;
-  --t-subhead: 15px;
-  --t-footnote: 13px;
-  --t-caption: 12px;
 }
 
 html,

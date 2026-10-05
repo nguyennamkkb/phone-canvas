@@ -40,14 +40,36 @@ export type GoldenStatus = {
   label: string
 }
 
-type GoldenLike = { sha256: string; width: number; height: number }
+type GoldenLike = { sha256: string; width: number; height: number; phash?: string }
 
 type ManifestLike = { records?: Record<string, GoldenLike | undefined> } | null | undefined
+
+/**
+ * Max Hamming distance between two dHashes that still counts as the same
+ * render. Mirrors GOLDEN_PHASH_THRESHOLD in scripts/export/golden.ts (kept
+ * as a literal here so this browser-side module never imports node code).
+ */
+export const GOLDEN_BADGE_PHASH_THRESHOLD = 4
+
+/** Hamming distance between two dHash hex strings. */
+export function badgePhashDistance(a: string, b: string): number {
+  let xor = BigInt(`0x${a}`) ^ BigInt(`0x${b}`)
+  let distance = 0
+  while (xor) {
+    distance += Number(xor & 1n)
+    xor >>= 1n
+  }
+  return distance
+}
 
 /**
  * Golden-vs-current from a manifest-shaped object. Reads only — a missing or
  * corrupt manifest is "missing" (badge shows "chưa có"), never an error, so
  * the board renders identically with zero goldens on disk.
+ *
+ * sha256 byte-exact wins first; when both sides carry a perceptual hash, a
+ * Hamming distance within threshold still reads as a match (same commit,
+ * different OS font/AA) instead of a false "lệch".
  */
 export function goldenStatusFor(
   manifest: ManifestLike | unknown,
@@ -67,5 +89,14 @@ export function goldenStatusFor(
     return { state: 'missing', label: 'chưa có golden' }
   }
   if (record.sha256 === current.sha256) return { state: 'match', label: 'khớp golden' }
+  if (typeof record.phash === 'string' && record.phash.length > 0 && typeof current.phash === 'string' && current.phash.length > 0) {
+    try {
+      if (badgePhashDistance(record.phash, current.phash) <= GOLDEN_BADGE_PHASH_THRESHOLD) {
+        return { state: 'match', label: 'khớp golden' }
+      }
+    } catch {
+      // malformed hash hex falls through to mismatch below
+    }
+  }
   return { state: 'mismatch', label: 'lệch golden' }
 }

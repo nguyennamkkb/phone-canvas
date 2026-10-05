@@ -6,7 +6,9 @@ import { fileURLToPath } from 'node:url'
 const here = dirname(fileURLToPath(import.meta.url))
 const cssOf = (rel: string): string => readFileSync(join(here, rel), 'utf8')
 
-vi.mock('../screens/tokens.css?raw', () => ({ default: cssOf('../screens/tokens.css') }))
+vi.mock('../screens/core.css?raw', () => ({ default: cssOf('../screens/core.css') }))
+vi.mock('../screens/palettes.css?raw', () => ({ default: cssOf('../screens/palettes.css') }))
+vi.mock('../screens/vocab.css?raw', () => ({ default: cssOf('../screens/vocab.css') }))
 
 const { tokenNameForColor, tokensOf } = await import('./tokens')
 

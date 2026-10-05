@@ -58,8 +58,8 @@ is rows under a header.
 
 - **`.body` is the scroll region** and it is the *only* thing that scrolls. The
   nav and tab bands are built by the shell, outside `.body`.
-- **The frame is the device height; the list scrolls inside it.** Do not cut
-  rows to fit 844 — let `.body` scroll. `.body-fixed` is only for a page that
+- **The frame is the device height (sizes in `src/frame/devices.ts`); the list scrolls inside it.** Do not cut
+  rows to fit — let `.body` scroll. `.body-fixed` is only for a page that
   actually fits; one that overflows fails `audit:regions`.
 - **Variable content, fixed geometry.** Titles up to two lines, times always the
   same width. If a row's trailing element changes width, the layout breathes in

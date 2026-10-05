@@ -2,15 +2,15 @@
 
 This is a **pointer, not a copy**. The numbers live in
 `openspec/specs/screen-regions` (Tham chiếu vùng Watch) and the sizes in
-`src/frame/devices.ts` (`watch-45` = 45mm · 198×242 pt, the single
-reference). If they disagree with this file, they win.
+`src/frame/devices.ts` (`watch-45`, the single reference).
+If they disagree with this file, they win.
 
 ## The one rule
 
 One face = one idea, glanceable. No scrolling, no text entry, no tab bar:
 a top bar, one hero metric, one bottom-bar action. Watch chrome is
 **author-owned** — the static edge check stays silent on `form: watch` by
-design, and the measured audit still guards 44 pt targets and overflow.
+design, and the measured audit still guards touch-floor targets and overflow.
 
 ## Scaffolding
 
@@ -21,7 +21,7 @@ npm run screen -- add --project <id> --name <name> --title "..." --device watch-
 `--device watch-45` records `deviceId` in the `<!-- pc -->` header and picks
 the watch template (top bar + metric + action). A second size is added only
 when a face proves the reference insufficient — one reference keeps the
-export/audit matrix small, mirroring what `reference` 390 does for phone.
+export/audit matrix small, mirroring what `reference` does for phone.
 
 ## Shape
 
@@ -40,14 +40,14 @@ export/audit matrix small, mirroring what `reference` 390 does for phone.
 </div>
 ```
 
-- Lề ngang 16 pt (`--s4`) vì mép cong ăn nội dung; lề dọc 12 pt (`--s3`).
-- The action fills the bottom bar at full width, ≥ 44 pt tall.
-- Everything must fit 242 pt: nothing scrolls, so an overflowing face is a
+- Lề ngang `--s4` vì mép cong ăn nội dung; lề dọc `--s3` (gutter values in `openspec/specs/screen-regions`).
+- The action fills the bottom bar at full width, meeting the touch floor (`openspec/specs/screen-regions`).
+- Everything must fit the watch height (sizes in `src/frame/devices.ts`): nothing scrolls, so an overflowing face is a
   content bug the audit reports, not a hidden scrollbar.
 
 ## What the gate checks
 
 - Static tier skips the undeclared-region edge check on `form: watch`;
   subset, tokens and components still apply.
-- Measured tier: every interactive rect ≥ 44 × 44, zero scrollers allowed,
-  no overflow. `export -- --device watch-45` renders at 198 pt.
+- Measured tier: every interactive rect ≥ 44 × 44, zero scrollers allowed, <!-- lint-docs: keep -->
+  no overflow. `export -- --device watch-45` renders at the watch width (sizes in `src/frame/devices.ts`).

@@ -9,7 +9,8 @@ import {
 } from 'react'
 import type { ReactNode } from 'react'
 import { buildSpec } from '../spec/infer'
-import type { RawNode, SpecNode } from '../spec/types'
+import type { SpecNode } from '../spec/types'
+import { shouldAccept, shouldCountDrop } from './route'
 
 export type Selection = { nodeId: string; specId: string }
 
@@ -20,6 +21,8 @@ type InspectorValue = {
   sizes: Record<string, number>
   /** full content height per canvas node (frame + overflow), same source */
   contentSizes: Record<string, number>
+  /** malformed bridge payloads dropped per canvas node (visible in the panel) */
+  dropped: Record<string, number>
   selection: Selection | null
   select: (sel: Selection | null) => void
   registerFrame: (nodeId: string, el: HTMLIFrameElement | null, token: string) => void
@@ -33,23 +36,13 @@ type InspectorValue = {
 
 const InspectorContext = createContext<InspectorValue | null>(null)
 
-type Incoming = {
-  pc?: boolean
-  type?: string
-  nodeId?: string
-  token?: string
-  id?: string | null
-  value?: number
-  content?: number
-  nodes?: RawNode[]
-}
-
 type FrameEntry = { el: HTMLIFrameElement; token: string }
 
 export function InspectorProvider({ children }: { children: ReactNode }) {
   const [specs, setSpecs] = useState<Record<string, SpecNode[]>>({})
   const [sizes, setSizes] = useState<Record<string, number>>({})
   const [contentSizes, setContentSizes] = useState<Record<string, number>>({})
+  const [dropped, setDropped] = useState<Record<string, number>>({})
   const [selection, setSelection] = useState<Selection | null>(null)
   const frames = useRef(new Map<string, FrameEntry>())
 
@@ -63,25 +56,36 @@ export function InspectorProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     function onMessage(event: MessageEvent) {
-      const data = event.data as Incoming | null
-      if (!data || data.pc !== true || typeof data.nodeId !== 'string') return
-
-      // a sandboxed iframe has an opaque origin and its WindowProxy is not a
-      // stable identity, so the per-node token is what actually routes this
-      const entry = frames.current.get(data.nodeId)
-      if (!entry || entry.token !== data.token) return
-
-      if (data.type === 'spec' && Array.isArray(data.nodes)) {
-        const spec = buildSpec(data.nodes)
-        setSpecs((prev) => ({ ...prev, [data.nodeId as string]: spec }))
-      } else if (data.type === 'height') {
-        const h = typeof data.value === 'number' ? Math.round(data.value) : 0
-        if (h > 0) {
-          setSizes((prev) => (prev[data.nodeId as string] === h ? prev : { ...prev, [data.nodeId as string]: h }))
+      const data: unknown = event.data
+      const nodeId =
+        typeof data === 'object' && data !== null && 'nodeId' in data && typeof data.nodeId === 'string'
+          ? data.nodeId
+          : undefined
+      const entry = nodeId !== undefined ? frames.current.get(nodeId) : undefined
+      if (!shouldAccept(entry, data, event.origin)) {
+        // Malformed but authenticated: count it so the panel reports "chưa
+        // đọc được DOM" instead of hanging on loading. Strangers (foreign
+        // origin, unknown frame, token mismatch) stay fully ignored.
+        if (nodeId !== undefined && shouldCountDrop(entry, data, event.origin)) {
+          setDropped((prev) => ({ ...prev, [nodeId]: (prev[nodeId] ?? 0) + 1 }))
         }
-        const c = typeof data.content === 'number' ? Math.round(data.content) : 0
+        return
+      }
+
+      // From here `data` is a versioned BridgeMessage from a registered frame.
+      // A sandboxed iframe has an opaque origin and its WindowProxy is not a
+      // stable identity, so the per-node token is what actually routes this.
+      if (data.type === 'spec') {
+        const spec = buildSpec(data.nodes)
+        setSpecs((prev) => ({ ...prev, [data.nodeId]: spec }))
+      } else if (data.type === 'height') {
+        const h = Math.round(data.value)
+        if (h > 0) {
+          setSizes((prev) => (prev[data.nodeId] === h ? prev : { ...prev, [data.nodeId]: h }))
+        }
+        const c = Math.round(data.content)
         if (c > 0) {
-          setContentSizes((prev) => (prev[data.nodeId as string] === c ? prev : { ...prev, [data.nodeId as string]: c }))
+          setContentSizes((prev) => (prev[data.nodeId] === c ? prev : { ...prev, [data.nodeId]: c }))
         }
       } else if (data.type === 'select') {
         setSelection(data.id ? { nodeId: data.nodeId, specId: data.id } : null)
@@ -156,8 +160,8 @@ export function InspectorProvider({ children }: { children: ReactNode }) {
   )
 
   const value = useMemo<InspectorValue>(
-    () => ({ specs, sizes, contentSizes, selection, select, registerFrame, requestRecapture, ancestry, childrenOf, selected }),
-    [specs, sizes, contentSizes, selection, select, registerFrame, requestRecapture, ancestry, childrenOf, selected],
+    () => ({ specs, sizes, contentSizes, dropped, selection, select, registerFrame, requestRecapture, ancestry, childrenOf, selected }),
+    [specs, sizes, contentSizes, dropped, selection, select, registerFrame, requestRecapture, ancestry, childrenOf, selected],
   )
 
   return <InspectorContext.Provider value={value}>{children}</InspectorContext.Provider>

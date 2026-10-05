@@ -219,8 +219,9 @@ The exporter is the fastest objective check and it needs no dev server:
 npm run export -- --screen <id> --out /tmp/check --scale 2
 ```
 
-It prints the real pixel size of each file. 390×844 means the screen fits the
-reference device exactly; anything else is a content-driven height and should be
+It prints the real pixel size of each file. A size matching the reference
+device exactly (sizes in `src/frame/devices.ts`) means the screen fits;
+anything else is a content-driven height and should be
 a decision, not a surprise.
 
 To measure geometry rather than eyeball it, decode the PNG (PIL is available)

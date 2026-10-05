@@ -122,10 +122,10 @@ measured correctly.
 
 **Symptom.** `npm run export` produces a PNG that is not the height you intended.
 
-**Meaning.** The frame is content-driven. `844` means it fits the reference
-device exactly; anything over means the content is taller than the device and the
-frame grew. Sometimes that is correct (a long list should be tall). Often it
-means 40 points of padding you did not intend.
+**Meaning.** The frame is content-driven. A frame matching the reference
+device exactly (sizes in `src/frame/devices.ts`) means it fits; anything over
+means the content is taller than the device and the frame grew. Sometimes that
+is correct (a long list should be tall). Often it means 40 points of padding you did not intend.
 
 **Method.** Do not adjust by eye. Export, read the PNG's height from the
 exporter's own output, change one section, export again. Two rounds is normal.
@@ -169,7 +169,7 @@ gone, which is what removed this whole failure class.)
 
 ## 11. An expanded node that still cuts its content
 
-**Symptom.** The node label shows the content height (e.g. `390 × 863`) but
+**Symptom.** The node label shows the content height but
 the bottom of the screen is cut off and `.body` still scrolls.
 
 **Cause (two stacked).** Growing the iframe is not enough — the document

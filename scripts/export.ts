@@ -43,7 +43,7 @@ import {
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const SCREENS_DIR = path.join(ROOT, 'src/screens')
 const PUBLIC_DIR = path.join(ROOT, 'public')
-const STYLESHEETS = ['tokens.css', 'icons.css', 'icon-set.css']
+const STYLESHEETS = ['core.css', 'palettes.css', 'vocab.css', 'icons.css', 'icon-set.css']
 
 function fail(message: string): never {
   console.error(`export: ${message}`)

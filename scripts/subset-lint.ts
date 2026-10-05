@@ -80,7 +80,11 @@ async function main() {
     errors += 1
   }
 
-  const global = await readFile(path.join(ROOT, 'src/screens/tokens.css'), 'utf8')
+  const global = (
+    await Promise.all(
+      ['core.css', 'palettes.css', 'vocab.css'].map((n) => readFile(path.join(ROOT, 'src/screens', n), 'utf8')),
+    )
+  ).join('\n')
   const names = new Set()
   for (const m of global.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(DEF_RE)) names.add(`--${m[1]}`)
   const perProject = new Map()

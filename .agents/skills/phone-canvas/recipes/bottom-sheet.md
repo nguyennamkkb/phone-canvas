@@ -81,7 +81,7 @@ detail preview, a short form, a filter panel.
   `#999`; black chrome is ~5.3:1 there and white is ~1.8:1. `lightStatusBar` in
   the manifest is for genuinely dark screens, not for sheets.
 - **Size follows content.** Action sheets are short, form sheets are tall. If a
-  sheet lands on 844 by accident rather than by content, you probably padded it
+  sheet lands on the full frame height by accident rather than by content (frame height in `src/frame/devices.ts`), you probably padded it
   to fit rather than designing it.
 - **A sheet is a screen too.** It gets the full loop: lint, export, look, hand
   off. The spec for an `.action-row` is as much a deliverable as any other row.

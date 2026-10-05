@@ -37,7 +37,7 @@ export function SpecPanel({
   onFocusScreen,
   onClosePanel,
 }: SpecPanelProps) {
-  const { specs, selection, select, selected, requestRecapture } = useInspector()
+  const { specs, selection, select, selected, requestRecapture, dropped } = useInspector()
   const { tokenTheme } = useBoardSettings()
   const found = nodes.find((n) => n.id === selectedNodeId) ?? null
   // the token table is reference, never a spec target
@@ -48,6 +48,9 @@ export function SpecPanel({
   const firstNodeId = nodes.length > 0 ? nodes[0]?.id ?? null : null
 
   const hasSpec = specList.length > 0
+  // dropped bridge payloads for this node (bridge-schema): visible instead of
+  // an endless "Đang đọc DOM…" when the bridge ships malformed messages
+  const droppedCount = node ? (dropped[node.id] ?? 0) : 0
   // spec timeout (2.3): a node mounted but silent is stuck, not loading
   const [timedOutIds, setTimedOutIds] = useState<Record<string, boolean>>({})
   const nodeTimedOut = node ? timedOutIds[node.id] === true : false
@@ -146,6 +149,10 @@ export function SpecPanel({
               Thử đọc lại
             </button>
           </div>
+        )}
+
+        {node && droppedCount > 0 && (
+          <p className="empty">Đã bỏ {droppedCount} message lỗi từ bridge (sai schema).</p>
         )}
 
         {hasSpec && node && (

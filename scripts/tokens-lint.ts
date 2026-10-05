@@ -1,19 +1,33 @@
 #!/usr/bin/env node
 // @ts-nocheck — small zero-dep cli, checked by running it, not by tsc
 /**
- * Token lint (v3 gate): screens may only name defined tokens.
+ * Token lint (v3 gate + token-layers): screens may only name defined tokens,
+ * must use a token where one exists, and dual-mode projects must twin colors.
  *
  *   npm run lint:tokens
- *   npm run lint:tokens -- --screen <id>   (only that screen; same pattern as region-audit/export)
+ *   npm run lint:tokens -- --screen <id>   (only that screen; dark-twin then
+ *          checks just that screen's project — same screen-filter pattern)
  *
  * Rules:
  *   error  var(--x) with no definition in the global or project tokens.css
  *          (the --sage-wash class of bug: resolves to guaranteed-invalid)
  *   error  nền .screen root sai: thiếu fallback, ảnh ngoài dự án, hoặc asset
  *          không tồn tại trong project/<id>/assets/
- *   warn   hardcoded hex/rgba colors in screen markup (prefer a token)
+ *   error  no-literal: a hardcoded color/spacing/radius in a screen <style>
+ *          block or style="" attribute whose value has an equivalent token
+ *          (reports file:line + the var(--*) to use instead)
+ *   error  dark-twin: a project :root color token with no twin in a
+ *          :root[data-theme='dark'] block (dark would silently show light)
+ *   warn   hardcoded hex/rgba colors in screen markup with NO token
+ *          equivalent (prefer a token; nothing to suggest)
  *   warn   screen names a global-only color (tier rule: give the project
  *          its own semantic alias instead of borrowing the shared palette)
+ *
+ * The pure rule helpers (parseModeVars, tokenColorName, noLiteralViolations,
+ * darkTwinViolations) are exported for scripts/tokens-lint.test.ts. Color
+ * matching mirrors tokenNameForColor in src/tokens/tokens.ts (tuple match,
+ * project names first) but is reimplemented here: that module uses Vite
+ * `?raw` imports, which this node CLI cannot load.
  *
  * Discovery comes from scripts/scan-projects.ts — the same registry the board
  * and the exporter read, so a lint can never see a different project tree.
@@ -29,6 +43,9 @@ import { scanProjects } from './scan-projects.ts'
 import { styleDefsOf } from './screen-style.ts'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
+
+/** global layers in cascade order (core → palettes → vocab), replacing tokens.css */
+const GLOBAL_LAYERS = ['core.css', 'palettes.css', 'vocab.css']
 
 const VAR_RE = /var\(\s*(--[a-z0-9-]+)/g
 const DEF_RE = /--([a-z0-9-]+)\s*:\s*[^;{}]+;/g
@@ -75,10 +92,230 @@ function rootBackgroundOf(html) {
   }
 }
 
-const HELP = `
-Token lint: screens may only name defined tokens.
+/* ---------------------------------- token-layers rules (exported for tests) -- */
 
-  --screen <id>   only check that screen (default: all screens)
+/** spacing scale values with the token to use instead of the literal */
+export const SPACING_PX = { 4: '--s1', 8: '--s2', 12: '--s3', 16: '--s4', 20: '--s5', 24: '--s6', 32: '--s8', 40: '--s10' }
+
+/** radius scale values with the token to use instead of the literal */
+export const RADIUS_PX = { 8: '--r-sm', 12: '--r-md', 20: '--r-lg', 28: '--r-xl', 999: '--r-full' }
+
+const COLOR_PROPS = {
+  color: true,
+  'background-color': true,
+  'border-color': true,
+  'border-top-color': true,
+  'border-right-color': true,
+  'border-bottom-color': true,
+  'border-left-color': true,
+  'outline-color': true,
+  fill: true,
+  stroke: true,
+}
+const SPACING_PROPS = {
+  padding: true,
+  'padding-top': true,
+  'padding-right': true,
+  'padding-bottom': true,
+  'padding-left': true,
+  margin: true,
+  'margin-top': true,
+  'margin-right': true,
+  'margin-bottom': true,
+  'margin-left': true,
+  gap: true,
+  'row-gap': true,
+  'column-gap': true,
+}
+const RADIUS_PROPS = {
+  'border-radius': true,
+  'border-top-left-radius': true,
+  'border-top-right-radius': true,
+  'border-bottom-right-radius': true,
+  'border-bottom-left-radius': true,
+}
+
+/** `projectId:--token` → why no dark twin is intended (kept small; prefer twins) */
+export const DARK_TWIN_ALLOWLIST = {
+  'scratch-widget:--separator':
+    'mirrors the global iOS separator byte-for-byte, and the global layers carry no dark twin either — dark falls back to the same value board-wide',
+}
+
+/**
+ * Split a tokens file into light vars, dark-override vars, and own-twins.
+ * Reads EVERY :root[data-theme='dark'] block (including scoped dark rules
+ * like `:root[data-theme='dark'] .app-mood`); a `:root, :root[data-theme]`
+ * combined rule counts as both. `light` holds everything outside a dark
+ * selector (mirroring how whole-file var scans feed tokensOf upstream);
+ * `rootLight` holds only :root-level tokens, which is what the dark-twin
+ * rule judges — scoped element vars (.screen/…) never participate in
+ * :root dark switching. Each entry carries its file line for file:line errors.
+ */
+export function parseModeVars(css) {
+  const flat = css.replace(/\/\*[\s\S]*?\*\//g, (s) => ' '.repeat(s.length))
+  const light = new Map()
+  const rootLight = new Map()
+  const dark = new Map()
+  const ownTwin = new Set()
+  const ruleRe = /([^{}]+)\{([^{}]*)\}/g
+  let r
+  while ((r = ruleRe.exec(flat)) !== null) {
+    const parts = r[1].split(',')
+    const hasDark = parts.some((p) => p.includes('data-theme'))
+    const hasPlainRoot = parts.some((p) => p.includes(':root') && !p.includes('data-theme'))
+    const varRe = /--([a-z0-9-]+)\s*:\s*([^;{}]+);/g
+    let m
+    while ((m = varRe.exec(r[2])) !== null) {
+      const name = `--${m[1]}`
+      const entry = { value: m[2].trim(), line: lineOf(flat, r.index + r[1].length + 1 + m.index) }
+      if (hasDark && hasPlainRoot) {
+        light.set(name, entry)
+        rootLight.set(name, entry)
+        dark.set(name, entry)
+        ownTwin.add(name)
+      } else if (hasDark) {
+        dark.set(name, entry)
+      } else {
+        light.set(name, entry)
+        if (hasPlainRoot) rootLight.set(name, entry)
+      }
+    }
+  }
+  return { light, rootLight, dark, ownTwin }
+}
+
+/** Normalize a css color to an rgba tuple (mirrors toRgba in src/tokens/tokens.ts). */
+export function toRgbaToken(value) {
+  const v = value.trim().toLowerCase()
+  if (v === 'transparent') return [0, 0, 0, 0]
+  const hex = /^#([0-9a-f]{3}|[0-9a-f]{6})$/.exec(v)
+  if (hex?.[1]) {
+    const h = hex[1].length === 3 ? hex[1].split('').map((c) => c + c).join('') : hex[1]
+    return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16), 1]
+  }
+  const m = /^rgba?\(([^)]+)\)$/.exec(v)
+  if (!m?.[1]) return null
+  const parts = m[1].split(/[,\s/]+/).filter(Boolean).map(Number)
+  if (parts.length < 3 || parts.slice(0, 3).some((x) => !Number.isFinite(x))) return null
+  const a = parts.length > 3 && Number.isFinite(parts[3]) ? parts[3] : 1
+  return [Math.round(parts[0]), Math.round(parts[1]), Math.round(parts[2]), a]
+}
+
+/**
+ * First token name whose light value matches a literal color, or null.
+ * `entries` is [[name, value]] in tokensOf precedence (project names first,
+ * then global-only) so project aliases win ties the same way the board does.
+ */
+export function tokenColorName(entries, raw) {
+  const target = toRgbaToken(raw)
+  if (!target) return null
+  for (const [name, value] of entries) {
+    const candidate = toRgbaToken(value)
+    if (
+      candidate &&
+      candidate[0] === target[0] &&
+      candidate[1] === target[1] &&
+      candidate[2] === target[2] &&
+      Math.abs(candidate[3] - target[3]) < 0.01
+    ) {
+      return name
+    }
+  }
+  return null
+}
+
+const LITERAL_COLOR_RE = /#[0-9a-fA-F]{3,8}\b|rgba?\([^)]*\)/g
+const PX_RE = /(-?\d+(?:\.\d+)?)px\b/g
+
+/**
+ * Hardcoded color/spacing/radius literals in a screen that have an equivalent
+ * token. Scans <style> blocks and style="" attributes (comments blanked so
+ * offsets still map to file lines); declarations already on var()/calc() and
+ * custom-property definitions (--x: …) are usages-neutral and skipped.
+ * Returns {line, message} with the var(--*) fix hint in the message.
+ */
+export function noLiteralViolations(html, file, entries) {
+  const out = []
+  const regions = []
+  let m
+  const styleRe = /<style[^>]*>([\s\S]*?)<\/style>/gi
+  while ((m = styleRe.exec(html)) !== null) regions.push({ start: m.index + m[0].indexOf(m[1]), css: m[1] })
+  const attrRe = /\sstyle\s*=\s*("([^"]*)"|'([^']*)')/gi
+  while ((m = attrRe.exec(html)) !== null) {
+    const body = m[2] ?? m[3]
+    regions.push({ start: m.index + m[0].indexOf(body), css: body })
+  }
+  const declRe = /([a-z-]+)\s*:\s*([^;{}]+);?/gi
+  for (const region of regions) {
+    const clean = region.css.replace(/\/\*[\s\S]*?\*\//g, (s) => ' '.repeat(s.length))
+    declRe.lastIndex = 0
+    let d
+    while ((d = declRe.exec(clean)) !== null) {
+      const prop = d[1].toLowerCase()
+      if (prop.startsWith('--')) continue
+      const value = d[2].trim()
+      if (!value || value.includes('var(') || value.includes('calc(')) continue
+      const line = lineOf(html, region.start + d.index)
+      if (Object.hasOwn(COLOR_PROPS, prop) || (prop === 'background' && isColorValue(value))) {
+        LITERAL_COLOR_RE.lastIndex = 0
+        const lit = LITERAL_COLOR_RE.exec(value)?.[0]
+        if (lit && !/^(transparent|currentcolor|inherit)$/i.test(lit)) {
+          const token = tokenColorName(entries, lit)
+          if (token) out.push({ line, message: `${file}:${line}  màu cứng ${lit} — dùng var(${token})` })
+        }
+      } else if (Object.hasOwn(SPACING_PROPS, prop)) {
+        PX_RE.lastIndex = 0
+        let p
+        while ((p = PX_RE.exec(value)) !== null) {
+          const n = Number(p[1])
+          if (n > 0 && Number.isInteger(n) && Object.hasOwn(SPACING_PX, n)) {
+            out.push({ line, message: `${file}:${line}  ${prop} cứng ${p[0]} — dùng var(${SPACING_PX[n]})` })
+            break
+          }
+        }
+      } else if (Object.hasOwn(RADIUS_PROPS, prop)) {
+        PX_RE.lastIndex = 0
+        let p
+        while ((p = PX_RE.exec(value)) !== null) {
+          const n = Number(p[1])
+          if (n > 0 && Number.isInteger(n) && Object.hasOwn(RADIUS_PX, n)) {
+            out.push({ line, message: `${file}:${line}  ${prop} cứng ${p[0]} — dùng var(${RADIUS_PX[n]})` })
+            break
+          }
+        }
+      }
+    }
+  }
+  return out
+}
+
+/**
+ * Project :root color tokens with no dark twin. Projects with no dark block
+ * at all render identical values in both modes (dark-first / single-mode by
+ * convention), so there is nothing to fall back silently — only dual-mode
+ * projects are judged. Scoped element vars (.screen/…) are outside the rule:
+ * they never participate in :root dark switching.
+ */
+export function darkTwinViolations(projectId, css) {
+  const { rootLight, dark, ownTwin } = parseModeVars(css)
+  if (dark.size === 0) return []
+  const out = []
+  for (const [name, entry] of rootLight) {
+    if (!isColorValue(entry.value)) continue
+    if (dark.has(name) || ownTwin.has(name)) continue
+    if (DARK_TWIN_ALLOWLIST[`${projectId}:${name}`]) continue
+    out.push({
+      line: entry.line,
+      message: `project/${projectId}/tokens.css:${entry.line}  ${name} thiếu dark twin — thêm vào :root[data-theme='dark']`,
+    })
+  }
+  return out
+}
+
+const HELP = `
+Token lint: screens may only name defined tokens; literals with a token equivalent fail; dual-mode projects must twin colors.
+
+  --screen <id>   only check that screen (dark-twin checks just its project)
   --help          print this message
 
 Examples
@@ -95,8 +332,12 @@ async function main() {
   let warns = 0
   for (const error of registryErrors) console.error(`error  ${error.file}  ${error.message}`)
 
-  // tokens defined globally, then per project (project wins / owns its aliases)
-  const global = await readFile(path.join(ROOT, 'src/screens/tokens.css'), 'utf8')
+  // tokens defined globally (layered files, cascade order), then per project
+  // (project wins / owns its aliases)
+  const global = (
+    await Promise.all(GLOBAL_LAYERS.map((n) => readFile(path.join(ROOT, 'src/screens', n), 'utf8')))
+  ).join('\n')
+  const globalModes = parseModeVars(global)
   const names = new Set()
   const globalColors = new Set()
   for (const m of global.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(DEF_RE)) {
@@ -106,10 +347,14 @@ async function main() {
 
   const projectNames = new Map()
   const projectOwnsColor = new Map()
+  const projectModes = new Map()
+  const projectEntries = new Map()
   for (const project of registry.projects) {
     const set = new Set(names)
     const own = new Set()
     const css = registry.tokens[project.id]
+    const modes = parseModeVars(css ?? '')
+    projectModes.set(project.id, modes)
     if (css) {
       for (const m of css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(DEF_RE)) {
         set.add(`--${m[1]}`)
@@ -118,6 +363,18 @@ async function main() {
     }
     projectNames.set(project.id, set)
     projectOwnsColor.set(project.id, own)
+    // merged [[name, light-value]] in tokensOf precedence: project names
+    // first, then global-only — so hints name the project alias on ties.
+    const values = new Map()
+    for (const [n, e] of globalModes.light) values.set(n, e.value)
+    for (const [n, e] of modes.light) values.set(n, e.value)
+    projectEntries.set(
+      project.id,
+      [...modes.light.keys(), ...[...globalModes.light.keys()].filter((n) => !modes.light.has(n))].map((n) => [
+        n,
+        values.get(n),
+      ]),
+    )
   }
 
   const sharedImages = new Set(await readdir(path.join(ROOT, 'public/images')).catch(() => []))
@@ -153,12 +410,22 @@ async function main() {
       }
     }
 
-    const hard = new Set()
-    for (const mm of html.matchAll(HEX_RE)) hard.add(mm[0].toLowerCase())
-    for (const mm of html.matchAll(RGBA_RE)) hard.add('rgba(…)')
-    if (hard.size > 0) {
-      console.warn(`warn   ${screen.file}  màu cứng: ${[...hard].slice(0, 5).join(', ')}${hard.size > 5 ? '…' : ''}`)
-      warns += 1
+    // no-literal: hardcoded values with a token equivalent are errors with a
+    // fix hint; leftovers without one keep the historical warning.
+    const entries = projectEntries.get(pid) ?? []
+    const literals = noLiteralViolations(html, screen.file, entries)
+    for (const v of literals) {
+      console.error(`error  ${v.message}`)
+      errors += 1
+    }
+    if (literals.length === 0) {
+      const hard = new Set()
+      for (const mm of html.matchAll(HEX_RE)) hard.add(mm[0].toLowerCase())
+      for (const mm of html.matchAll(RGBA_RE)) hard.add('rgba(…)')
+      if (hard.size > 0) {
+        console.warn(`warn   ${screen.file}  màu cứng: ${[...hard].slice(0, 5).join(', ')}${hard.size > 5 ? '…' : ''}`)
+        warns += 1
+      }
     }
 
     // optional screen background values (recipe screen-background): the root
@@ -226,11 +493,29 @@ async function main() {
     }
   }
 
+  // dark-twin: every :root color token of a dual-mode project needs its twin.
+  // --screen narrows this to that screen's project; without it every project.
+  const twinProjects = only
+    ? [...new Set(screens.map((s) => s.projectId))]
+    : registry.projects.map((p) => p.id)
+  for (const pid of twinProjects) {
+    const css = registry.tokens[pid]
+    if (!css) continue
+    for (const v of darkTwinViolations(pid, css)) {
+      console.error(`error  ${v.message}`)
+      errors += 1
+    }
+  }
+
   console.log(`\n${errors} lỗi, ${warns} cảnh báo`)
   if (errors > 0) process.exit(1)
 }
 
-main().catch((error) => {
-  console.error(`lint:tokens: ${error instanceof Error ? error.message : String(error)}`)
-  process.exit(1)
-})
+// Importable by scripts/tokens-lint.test.ts without running the CLI: only
+// auto-run when invoked as `node scripts/tokens-lint.ts` (argv[1] is the file).
+if ((process.argv[1] ?? '').endsWith('tokens-lint.ts')) {
+  main().catch((error) => {
+    console.error(`lint:tokens: ${error instanceof Error ? error.message : String(error)}`)
+    process.exit(1)
+  })
+}

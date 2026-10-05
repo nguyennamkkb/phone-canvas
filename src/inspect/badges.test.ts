@@ -75,4 +75,34 @@ describe('goldenStatusFor', () => {
   it('never throws on a corrupt manifest (missing, not error)', () => {
     expect(goldenStatusFor('garbage' as never, 'today', rec).state).toBe('missing')
   })
+
+  it('matches on perceptual hash within threshold even when sha256 differs', () => {
+    const stored = { ...rec, sha256: 'os-a-bytes', phash: 'ffffffffffffffff' }
+    // one bit flipped: AA-level noise, still khớp
+    const current = { ...rec, sha256: 'os-b-bytes', phash: 'ffffffffffffff7f' }
+    const r = goldenStatusFor({ records: { today: stored } }, 'today', current)
+    expect(r.state).toBe('match')
+    expect(r.label).toBe('khớp golden')
+  })
+
+  it('mismatches when the perceptual distance exceeds the threshold', () => {
+    const stored = { ...rec, sha256: 'before', phash: '0000000000000000' }
+    const current = { ...rec, sha256: 'after', phash: 'ffffffffffffffff' }
+    const r = goldenStatusFor({ records: { today: stored } }, 'today', current)
+    expect(r.state).toBe('mismatch')
+    expect(r.label).toBe('lệch golden')
+  })
+
+  it('falls back to sha256-only verdict when either side has no phash', () => {
+    const stored = { ...rec, sha256: 'before', phash: 'ffffffffffffffff' }
+    const noPhash = { ...rec, sha256: 'after' }
+    expect(goldenStatusFor({ records: { today: stored } }, 'today', noPhash).state).toBe('mismatch')
+    expect(goldenStatusFor({ records: { today: noPhash } }, 'today', { ...rec, sha256: 'other', phash: 'ffffffffffffffff' }).state).toBe('mismatch')
+  })
+
+  it('treats malformed phash hex as mismatch, never throws', () => {
+    const stored = { ...rec, sha256: 'before', phash: 'not-hex!!' }
+    const current = { ...rec, sha256: 'after', phash: 'ffffffffffffffff' }
+    expect(goldenStatusFor({ records: { today: stored } }, 'today', current).state).toBe('mismatch')
+  })
 })

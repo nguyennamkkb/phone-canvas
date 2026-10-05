@@ -1,0 +1,79 @@
+/* ============================================================================
+ * palettes.css — layer 2 of 3: every hue in the system.
+ *
+ * iOS system colors, then the brand, health, learning and moodtracker
+ * palettes. Same cascade contract as core.css (core → palettes → vocab →
+ * icons → project override): names/values byte-identical to the pre-split
+ * tokens.css, only the definition location changed. The empty
+ * :root[data-theme='dark'] block keeps the splitModes shape; global
+ * palettes carry no dark values today.
+ * ========================================================================== */
+
+:root {
+  /* ---- colors (iOS system) ---- */
+  --bg: #ffffff;
+  --bg-grouped: #f2f2f7;
+  --bg-elevated: #ffffff;
+  --label: #000000;
+  --label-2: rgba(60, 60, 67, 0.6);
+  --label-3: rgba(60, 60, 67, 0.3);
+  --separator: rgba(60, 60, 67, 0.21);
+  --fill: rgba(120, 120, 128, 0.12);
+  --accent: #007aff;
+  --accent-soft: rgba(0, 122, 255, 0.12);
+  --danger: #ff3b30;
+  --success: #34c759;
+  --warning: #ff9500;
+
+  /* ---- brand ---- */
+  --brand: #f2c81c;
+
+  /* ---- health palette ---- */
+  --cream: #f6f1e7;
+  --ink: #1a1a1a;
+  --olive: #93a85e;
+  --blossom: #f2b4d8;
+  --sky: #afcbf2;
+  --muted: #8b8577;
+  --alert: #c8452b;
+  --line: rgba(26, 26, 26, 0.18);
+  --track: #e9e2d4;
+
+  /* ---- learning palette ---- */
+  --violet: #8b5cf6;
+  --violet-deep: #7c4ddb;
+  --violet-tint: #ede0fa;
+  --blue-tint: #d6e9f8;
+  --peach-tint: #fae7d6;
+  --lavender: #e8dff5;
+  --mist: #eff2ef;
+  --slate: #6b7280;
+  --bolt: #facc15;
+
+  /* ---- moodtracker palette ----
+     Freud reference (bb5b…): near-white warm ground, near-black warm ink,
+     olive-green positive, tangerine negative, periwinkle journal,
+     butter-yellow neutral, stone text. */
+  --paper: #faf8f5;
+  --card: #ffffff;
+  --espresso: #2b1d16;
+  --clay: #8a7a6e;
+  --hairline: rgba(43, 29, 22, 0.12);
+  --sage: #9db06c;
+  --sage-deep: #7c9448;
+  --sage-soft: #e3ead0;
+  --ember: #f47f42;
+  --ember-soft: #fde3d2;
+  --lilac: #9d8ff0;
+  --lilac-soft: #e3defa;
+  --sun: #e7c65a;
+  --sun-soft: #f7ecc8;
+  --mood-1: #d6543f;
+  --mood-2: #f47f42;
+  --mood-3: #e7c65a;
+  --mood-4: #9db06c;
+  --mood-5: #7c9448;
+}
+:root[data-theme='dark'] {
+  /* no global dark values: project/<id>/tokens.css owns dark twins */
+}

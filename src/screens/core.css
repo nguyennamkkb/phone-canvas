@@ -1,0 +1,72 @@
+/* ============================================================================
+ * core.css — layer 1 of 3: scales with no hue.
+ *
+ * Spacing scale (s-prefixed sizes), fixed band widths, radii, region metrics
+ * (--touch-min/--navbar-min-h/--tabbar-h/--rail-w/--gutter, plus the
+ * avatar/score companions), and the type scale (font and t- sizes).
+ *
+ * Cascade contract (see stylesheetsFor in src/extractor/assets.ts):
+ *   core → palettes → vocab → icons → project override.
+ * Every --name and value below is byte-identical to the pre-split
+ * tokens.css; only the definition location changed, so screens change
+ * zero lines. The :root[data-theme='dark'] block keeps the shape
+ * splitModes (src/tokens/tokens.ts) expects; the global layers carry no
+ * dark values today — dark switching lives in project/<id>/tokens.css.
+ * ========================================================================== */
+
+:root {
+  /* ---- spacing scale (4pt grid) ---- */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 20px;
+  --s6: 24px;
+  --s8: 32px;
+  --s10: 40px;
+
+  /* ---- fixed band widths (Apple dimensions, not spacing) ---- */
+  --sidebar-w: 280px;   /* iPad leading sidebar: fits icon + label, collapsible */
+
+  /* ---- radii (iOS 26: larger continuous read; sm/md/full untouched) ---- */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --r-full: 999px;
+
+  /* ---- region metrics (docs/screen-regions.md is the source) ----
+     Every fixed number that belongs to a screen REGION is named here, so
+     there is one place to change a band and one grep to prove there is no
+     stray literal left. 44 pt is Apple's minimum hit region, 68 pt is the
+     tab bar height, 16 pt is the standard content gutter. */
+  --touch-min: 44px;      /* minimum hit region, both axes */
+  --navbar-min-h: 44px;   /* navbar band floor */
+  --tabbar-h: 68px;       /* tab bar / dock band height */
+  --rail-w: 44px;         /* Duo vertical rail width (fixed, height flexible) */
+  --gutter: var(--s4);    /* standard content margin, 16 pt */
+  --avatar-size: 44px;    /* .avatar, not a hit target — sized like one */
+  --t-score-lh: 68px;     /* .t-score leading, paired with its 64 px size */
+
+
+  /* both are system fonts on macOS and iOS — nothing loads over the network,
+     and SwiftUI reaches them with .custom("MarkerFelt-Thin", size:) */
+  --font-hand: 'Bradley Hand', 'Marker Felt', 'Segoe Script', cursive;
+
+  /* ---- typography (iOS text styles) ---- */
+  --font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
+    'Helvetica Neue', system-ui, sans-serif;
+  --t-large: 34px;
+  --t-title1: 28px;
+  --t-title2: 22px;
+  --t-title3: 20px;
+  --t-headline: 17px;
+  --t-body: 17px;
+  --t-callout: 16px;
+  --t-subhead: 15px;
+  --t-footnote: 13px;
+  --t-caption: 12px;
+}
+:root[data-theme='dark'] {
+  /* no global dark values: project/<id>/tokens.css owns dark twins */
+}

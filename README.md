@@ -66,7 +66,10 @@ npm run export:icons -- --project calo-ai            # that project's glyphs →
 
 Zero dependencies. A screen is real HTML, so something has to lay it out — the
 script drives the Chrome already on your machine (or `$CHROME_PATH`) over the
-DevTools protocol. Nothing to install, no dev server, no build step.
+DevTools protocol, falling back to the Playwright-pinned Chromium
+(`chromium-1243` in the ms-playwright cache) on machines with no Chrome —
+every run logs which source it used (`[chrome] source=…`). Nothing to install,
+no dev server, no build step.
 
 What you get is **the screen**: the device width, the status bar, the home
 indicator, and the exact pixels the panel measures. The iPhone chassis on the
@@ -75,7 +78,7 @@ decoration, and it would be a lie in a handoff. The measurement bridge is left
 out too, so an export carries no `data-pc-*` attributes and no hover overlay.
 
 The default export is **the device frame**, exactly `device.height × scale` —
-390×844 at 2x on the reference device. A longer screen scrolls inside its own
+the reference device (sizes in `src/frame/devices.ts`) at 2x. A longer screen
 `.body`, so the frame is what the phone actually shows. Pass `--full` to capture
 the whole page instead (the pre-v2 behaviour); the file then keeps a `-full`
 suffix (`home-full@2x.png`) so frame and full-page never overwrite each other.
@@ -84,9 +87,12 @@ an expand toggle that shows the whole screen at once.
 
 `--all-devices` renders every screen at every width in `DEVICES` (shorthand
 for `--device all`). `--golden` additionally writes versioned PNGs plus a
-sha256 record per render into the golden store — `project/<id>/goldens/` for
-a single `--project`, else `goldens/` (`goldens.json` manifest; the hash covers
-PNG bytes only, so an identical re-run keeps the same hash). Both flags are
+sha256 + perceptual-hash (dHash) record per render into the golden store —
+`project/<id>/goldens/` for a single `--project`, else `goldens/`
+(`goldens.json` manifest; the hash covers PNG bytes only, so an identical
+re-run keeps the same hash). The badge compares byte-exact first, then falls
+back to the perceptual distance (Hamming ≤ 4 still reads as `khớp`), so the
+same commit stays green across OS font/AA differences. Both flags are
 off by default and plain exports never touch the store.
 
 Both the app and the script call `src/extractor/compose.ts`, so an export cannot
@@ -144,16 +150,16 @@ decoration.
 
 5. **Screens are fluid across widths.** Write every screen with token classes
    (`col`, `row`, `paper-card`, `var(--s*)`) and no hardcoded px tied to one
-   device width — the same file renders at 390pt and 820pt, only spacing out.
-   A layout that differs fundamentally by form factor (e.g. iPad list+detail)
-   is a separate screen (`new-screen -- --device ipad-11` scaffolds one, and
+   device width — the same file renders at phone and tablet widths (sizes in
+   `src/frame/devices.ts`), only spacing out. A layout that differs fundamentally
+   by form factor (e.g. iPad list+detail) is a separate screen (`new-screen -- --device ipad-11` scaffolds one, and
    its header `deviceId` opens fresh boards at that width) — never `if-device`
    branches inside one HTML file.
 
 Invariants 3 and 5 are the region contract in practice: which band every screen
 owes, and who owns it. The full map — phone, Duo cover/inner/fold, tablet, plus
 the Watch and Widget reference tables — is in
-[`docs/screen-regions.md`](docs/screen-regions.md), and it is enforced by
+[`openspec/specs/screen-regions/`](openspec/specs/screen-regions/), and it is enforced by
 `npm run lint:regions` (static) and `npm run audit:regions` (measured).
 
 ---
@@ -165,29 +171,35 @@ the OS bands *and* the nav/tab bands. You never draw a status bar, home
 indicator, navbar or tab bar; `compose.ts` places them. What you declare is the
 band's **content** (phone) or an arrangement (iPad/Duo):
 
-| Form factor | You declare | Số đo |
-|---|---|---|
-| phone | nav content (`data-slot="back\|title\|right"`) + tab buttons (`data-tab`) + a `.body` / `.body-fixed` content band | nav ≥ 44 pt · tab bar 68 pt · 3–5 destination, icon + nhãn |
-| Duo cover | `.split` + `.pane`, and a trailing `.rail` (`.rail-tools` above, `.rail-tabs` bottom-aligned) | rail rộng cố định 44 pt; **không** tab ngang |
-| Duo inner | `.split` + `.pane-lead` / `.pane-trail`; mỗi pane giữ control của nó trên cạnh ngoài của pane | 1:2 khi mở phẳng |
-| Duo fold | hai `.pane` bằng nhau; nếp gập là vùng cấm | 50/50, không control nào trên dải chia |
-| tablet | `.sidebar` + `.split` 2–3 cột | sidebar ≥ 4 vùng; 1 tiêu đề trên split |
+| Form factor | You declare |
+|---|---|
+| phone | nav content (`data-slot="back\|title\|right"`) + tab buttons (`data-tab`) + a `.body` / `.body-fixed` content band |
+| Duo cover | `.split` + `.pane`, and a trailing `.rail` (`.rail-tools` above, `.rail-tabs` bottom-aligned, no horizontal tab bar) |
+| Duo inner | `.split` + `.pane-lead` / `.pane-trail`; mỗi pane giữ control của nó trên cạnh ngoài của pane |
+| Duo fold | hai `.pane` bằng nhau; nếp gập là vùng cấm, không control nào trên dải chia |
+| tablet | `.sidebar` + `.split` nhiều cột; một tiêu đề duy nhất trên split |
+
+Measures for every row — band heights, the touch floor, gutters, split ratios,
+destination ranges — live in
+[`openspec/specs/screen-regions/`](openspec/specs/screen-regions/); the table
+above states structure only.
 
 Only the **phone** bands are shell-owned today; the Duo/tablet arrangements stay
 author-owned until that form factor ships. The nav band is built inside
 `.viewport` but outside the scrolling `.screen`, so it stays put while the
 content scrolls — and the spec panel can still measure its controls.
 
-Content uses a 16 pt gutter on the 4/8 pt grid, and **every interactive element
-renders ≥ 44 × 44 pt**. The full map, the per-form-factor reasoning, and the
-Watch / Widget reference tables are in
-[`docs/screen-regions.md`](docs/screen-regions.md).
+Content uses the spec gutter on the 4/8 pt grid, and every interactive element
+meets the touch floor in
+[`openspec/specs/screen-regions/`](openspec/specs/screen-regions/) — which also
+holds the per-form-factor reasoning and the Watch / Widget reference tables.
 
 Two tiers enforce it, and both fail `npm run gate`:
 
 ```bash
 npm run lint:regions    # from the text: shell-owned band, unknown slot, nav/tab anatomy, device px, touch floor
-npm run audit:regions   # from the real layout in Chrome: 44 pt rects, one scroller, overflow, shell bands, 50/50 fold, background seam
+npm run lint:regions-docs  # docs link openspec/specs/screen-regions/, never restate its numbers
+npm run audit:regions   # from the real layout in Chrome: 44 pt rects, one scroller, overflow, shell bands, 50/50 fold, background seam <!-- lint-docs: keep -->
 
 Every lint also takes `--screen <id>` to check one screen while building
 (`npm run lint:regions -- --screen today`) — same pattern as `export`/`audit`.
@@ -195,7 +207,7 @@ Without the flag the behavior is unchanged (all screens).
 ```
 
 The measured tier is the one that earns its keep: it caught a split that
-declared 1:2 and painted 41:59, a tab item that was 38 pt inside a 68 pt bar,
+declared 1:2 and painted 41:59, a tab item that was 38 pt inside a 68 pt bar, <!-- lint-docs: keep -->
 and a 58 pt button squashed to 39 pt once the frame stopped growing. None is
 visible by eye.
 
@@ -392,7 +404,7 @@ Checked against a running instance, not assumed:
 - element tree, spec table, `Copy JSON`
 - both frame styles, `fitView`, pan/zoom
 - export: 9/9 screen × device combinations, exact pixel sizes
-  (390×992 @1x, 780×1984 @2x, 1125×2001 @3x), content-driven height, no
+  (content-driven height preserved across 1x/2x/3x scales), no
   scaffolding in the output
 - assets resolve in both a sandboxed srcdoc preview and an export: masked icons
   tint from `currentColor` (`Image(systemName: "magnifyingglass")`, tint
@@ -409,7 +421,7 @@ flows as edges, and persistence — the board is in-memory.
 ## Next
 
 1. **Authoring loop** — prompt → screen → export → critique → patch, with the
-   lint from `docs/screen-regions.md` gating each round.
+   lint from `openspec/specs/screen-regions/` gating each round.
 2. **Design tokens as data** — lift `tokens.css` into a token file the panel can
    report against ("`#007AFF` = `--accent`"), instead of raw hex.
 3. **Per-element notes** — the spec becomes a handoff document, not a readout.

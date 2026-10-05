@@ -19,10 +19,10 @@ npm run screen -- add --project <id> --name <name> --title "..." --device ipad-1
 ```
 
 `--device ipad-11` records `deviceId` in the `<!-- pc -->` header so fresh
-boards open at 820 pt. A layout that differs fundamentally from the phone
-version is a **separate screen** (invariant #5) — never `if-device` branches
-in one file. Only spacing changes → keep one fluid file (token classes,
-unitless flex).
+boards open at the tablet width (sizes in `src/frame/devices.ts`). A layout
+that differs fundamentally from the phone version is a **separate screen**
+(invariant #5) — never `if-device` branches in one file. Only spacing
+changes → keep one fluid file (token classes, unitless flex).
 
 ## Shape
 
@@ -41,8 +41,8 @@ unitless flex).
 </div>
 ```
 
-- Sidebar is for **4+** peer destinations (2–3 → segmented/tab bar instead);
-  exactly **one** title sits above the split; the detail pane is never empty
+- Sidebar is for a group of peer destinations (two or three → segmented/tab bar instead);
+  exactly one title sits above the split; the detail pane is never empty
   without a placeholder.
 - The sidebar collapses (keeps selection, never hidden by default) and never
   holds important info or actions at its bottom.
@@ -51,9 +51,9 @@ unitless flex).
 ## What the gate checks
 
 - Static tier skips body-band rules outside `form: phone`; nav/tab anatomy,
-  slot values and the 44 pt floor still apply.
+  slot values and the 44 pt floor still apply. <!-- lint-docs: keep -->
 - Measured tier: sidebar/split geometry, one scroller at most, bands outside
-  it. A collapsed band that lets a 44 pt control stick out fails — same lesson
+  it. A collapsed band that lets a 44 pt control stick out fails — same lesson <!-- lint-docs: keep -->
   as the phone nav floor.
-- `export -- --device ipad-11` renders at 820 pt; `--device` always keeps the
+- `export -- --device ipad-11` renders at the tablet width (sizes in `src/frame/devices.ts`); `--device` always keeps the
   `-<device>` filename suffix so phone and tablet shots never overwrite.

@@ -27,7 +27,7 @@ let tokens: string
 let rules: CssRule[]
 
 beforeAll(async () => {
-  tokens = await readFile(new URL('../src/screens/tokens.css', import.meta.url), 'utf8')
+  tokens = await readFile(new URL('../src/screens/vocab.css', import.meta.url), 'utf8')
   rules = rulesOf(tokens)
 })
 

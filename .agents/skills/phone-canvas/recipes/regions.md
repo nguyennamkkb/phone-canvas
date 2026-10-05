@@ -29,7 +29,7 @@ So a screen declares slot content (phone) or an arrangement (iPad/Duo):
 | phone | `data-slot="back\|title\|right"`, `data-tab="<slug>"` on the tab buttons, `data-tab-active="<slug>"` on `.screen` | `.region-nav` / `.region-tabs`, or the v1 names `.navbar` / `.tabbar` / `.navbar-float` / `.tabbar-float` / `.dock` |
 | Duo cover | `.split` + `.pane`, and a trailing `.rail` (`.rail-tools` above, `.rail-tabs` bottom-aligned) | a horizontal tab bar |
 | Duo inner / fold | `.split` + `.pane` (`.pane-lead` / `.pane-trail` open, plain `.pane` ×2 folded) | one edge carrying both panes' controls |
-| tablet | `.sidebar` + `.split` | a sidebar with 2–3 items, a second title above the split |
+| tablet | `.sidebar` + `.split` | a small sidebar, a second title above the split |
 
 ## Writing one
 
@@ -62,11 +62,12 @@ a side is missing or wider than the other. A title that still overflows
 truncates with an ellipsis instead of sliding under a button.
 
 * Bare text/icons in `back`/`right` are auto-wrapped by `compose.ts` into a
-  44 pt `.shell-nav-btn` — write a plain `<span data-slot="right">…</span>`
+  touch-floor `.shell-nav-btn` — write a plain `<span data-slot="right">…</span>`
   and it still taps. Anything already a button (or containing one) and the
   `title` slot are never wrapped.
-* The band floor is 44 pt (`--navbar-min-h: 44px` in `src/screens/tokens.css`),
-  so a 44 pt control never sticks out of it — a collapsed band used to break
+* The band floor is the spec minimum (`--navbar-min-h` in `src/screens/tokens.css`;
+  the value lives in `openspec/specs/screen-regions/`), so a touch-floor
+  control never sticks out of it — a collapsed band used to break
   the measured audit.
 * Modal chrome comes from `components/app-nav.html`: a visible `pill-ghost`
   **Hủy** button plus an overridable `title` slot. Do not restyle it per
@@ -99,7 +100,7 @@ one file, not every screen.
   missing or wrong open destination (`region-tab-active-*`), a destination list
   with two sources (`region-tab-source`), a screen without exactly one content
   band (`region-body-missing` / `-many` / `-escaped`), nav SLOT anatomy
-  (≤ 3 actions, one-line title, back on a push), tab bar 3–5 and labelled, a
+  (≤ 3 actions, one-line title, back on a push), tab bar 3–5 and labelled, a <!-- lint-docs: keep -->
   horizontal tab bar on a cover, px tied to one device, a governed class under
   the touch floor, an `off` switch with no reason. The same rules run over
   `project/*/components/*.html`, because chrome content lives in components too.
@@ -107,8 +108,9 @@ one file, not every screen.
   each and sit outside `.viewport`, `.device` paints what `.screen` paints,
   exactly one scroller with the bands outside it, the bands are in the right
   order around the content (`.region-order`), `.body-fixed` that fits, every
-  interactive rect is ≥ 44 × 44, a folded split is 50/50 with nothing on the
+  interactive rect is ≥ 44 × 44, a folded split is 50/50 with nothing on the <!-- lint-docs: keep -->
   crease.
+* `region-docs-lint` — these docs state no bare numbers (44 pt, 68 pt, 16 pt, 44 × 44, 50/50, 1:2, 3–5): link `openspec/specs/screen-regions/` (sizes: `src/frame/devices.ts`) instead. <!-- lint-docs: keep -->
 
 Escape hatches, both of which must be justified in writing:
 
@@ -124,7 +126,7 @@ Escape hatches, both of which must be justified in writing:
   `--bg` on the scope that uses it, plus a dark twin.
 * **Zero flex basis lies about the painted ratio.** `flex: 1 1 0` distributes
   space *inside* the box, so a pane's padding lands outside it and a nominal
-  1:2 paints as 35:65. A percentage basis is a border-box size and stays true.
+  split paints lopsided. A percentage basis is a border-box size and stays true.
 * **A shrinking child squashes, it does not overflow.** The frame is height-fixed,
   so `.body` / `.body-fixed` set `flex-shrink: 0` on their children. A fixed-height
   `.btn` measured 39 pt (not 58) before that rule — the touch floor caught it.

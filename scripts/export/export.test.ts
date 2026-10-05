@@ -1,6 +1,51 @@
 import { describe, expect, it } from 'vitest'
-import { findChrome } from './chrome.ts'
+import { existsSync } from 'node:fs'
+import { PLAYWRIGHT_CHROMIUM_VERSION, findChrome, playwrightChromiumPath, resolveChrome } from './chrome.ts'
 import { exportFileName, parseArgs } from './cli.ts'
+
+describe('chrome resolution ($CHROME_PATH → local → Playwright pinned)', () => {
+  it('pins one Playwright Chromium version for CI', () => {
+    expect(PLAYWRIGHT_CHROMIUM_VERSION).toBe('chromium-1243')
+  })
+
+  it('resolves the machine Chrome as source=local on this dev box', () => {
+    const previous = process.env.CHROME_PATH
+    delete process.env.CHROME_PATH
+    try {
+      const resolved = resolveChrome()
+      expect(resolved.source).toBe('local')
+      expect(existsSync(resolved.path)).toBe(true)
+      expect(findChrome()).toBe(resolved.path)
+    } finally {
+      if (previous !== undefined) process.env.CHROME_PATH = previous
+    }
+  })
+
+  it('treats the Playwright cache binary as an explicit $CHROME_PATH (source=env)', () => {
+    const pinned = playwrightChromiumPath()
+    expect(pinned).not.toBeNull()
+    expect(existsSync(pinned as string)).toBe(true)
+    const previous = process.env.CHROME_PATH
+    process.env.CHROME_PATH = pinned as string
+    try {
+      expect(resolveChrome()).toEqual({ path: pinned, source: 'env' })
+    } finally {
+      if (previous !== undefined) process.env.CHROME_PATH = previous
+      else delete process.env.CHROME_PATH
+    }
+  })
+
+  it('throws on a wrong $CHROME_PATH instead of silently falling through', () => {
+    const previous = process.env.CHROME_PATH
+    process.env.CHROME_PATH = '/nonexistent-chrome-binary'
+    try {
+      expect(() => resolveChrome()).toThrow('$CHROME_PATH')
+    } finally {
+      if (previous !== undefined) process.env.CHROME_PATH = previous
+      else delete process.env.CHROME_PATH
+    }
+  })
+})
 
 describe('export cli', () => {
   it('parses screen/device/scale/out flags', () => {
@@ -74,7 +119,7 @@ describe('export smoke (needs Chrome)', () => {
     const root = path.resolve(__dirname, '..', '..')
     const device = getDevice('reference')
     const shared = await Promise.all(
-      ['tokens.css', 'icons.css', 'icon-set.css'].map((n) =>
+      ['core.css', 'palettes.css', 'vocab.css', 'icons.css', 'icon-set.css'].map((n) =>
         readFile(path.join(root, 'src/screens', n), 'utf8'),
       ),
     )
@@ -204,7 +249,7 @@ describe('export smoke (needs Chrome)', () => {
     const root = path.resolve(__dirname, '..', '..')
     const device = getDevice('reference')
     const shared = await Promise.all(
-      ['tokens.css', 'icons.css', 'icon-set.css'].map((n) =>
+      ['core.css', 'palettes.css', 'vocab.css', 'icons.css', 'icon-set.css'].map((n) =>
         readFile(path.join(root, 'src/screens', n), 'utf8'),
       ),
     )
@@ -271,7 +316,7 @@ describe('export smoke (needs Chrome)', () => {
     const device = getDevice('ipad-11')
     expect(device.width).toBe(820)
     const shared = await Promise.all(
-      ['tokens.css', 'icons.css', 'icon-set.css'].map((n) =>
+      ['core.css', 'palettes.css', 'vocab.css', 'icons.css', 'icon-set.css'].map((n) =>
         readFile(path.join(root, 'src/screens', n), 'utf8'),
       ),
     )

@@ -51,7 +51,7 @@ then pay for.
 
 | | |
 |---|---|
-| `openspec/specs/screen-regions` + `src/screens/tokens.css` + `src/frame/devices.ts` (repo; migration notes `docs/upgrade-core/02_PLATFORM_RULES.md`, `03_REGION_SYSTEM.md`) | **The region contract.** Which band every screen owes, who owns it (shell vs author), the shared region classes, and the 44 pt / 16 pt / 68 pt numbers. Read before authoring anything. |
+| `openspec/specs/screen-regions` + `src/screens/tokens.css` + `src/frame/devices.ts` (repo; migration notes `docs/upgrade-core/02_PLATFORM_RULES.md`, `03_REGION_SYSTEM.md`) | **The region contract.** Which band every screen owes, who owns it (shell vs author), the shared region classes, and every fixed measure. Read before authoring anything. |
 | `references/tooling.md` | Commands, the board's modes, the icon pipeline, the generator. |
 | `references/failure-modes.md` | The silent failures. An icon that vanished, a column that widened, a spec that lied. |
 | `references/spec-to-swiftui.md` | What the panel reports and the SwiftUI it maps to. |
@@ -102,12 +102,12 @@ npm run screen -- gate          # tsc --noEmit + npm run lint
 - Every command prints files changed + boards/trash touched; via `screen --`
   the gate (tsc + lint) runs automatically after.
 - iPad: `new-screen -- --device ipad-11` scaffolds a 2-column template and
-  records `deviceId` in the manifest so fresh boards open it at 820pt.
+  records `deviceId` in the manifest so fresh boards open it at the tablet width.
   Write screens fluid (token classes, no px per width); a fundamentally
   different tablet layout is a separate screen, never `if-device` in one file.
-- Devices (sizes in `src/frame/devices.ts`, rules in `openspec/specs/screen-regions`): `reference` 390 (default), `iphone-16-pro`
-  402, `iphone-se` 375, `ipad-11` 820, `ipad-mini` 744, `duo-cover` 466,
-  `duo-inner` 890 landscape. Each device declares a `form` (phone / tablet /
+- Devices (sizes in `src/frame/devices.ts`, rules in `openspec/specs/screen-regions`): `reference` (default), `iphone-16-pro`,
+  `iphone-se`, `ipad-11`, `ipad-mini`, `duo-cover`,
+  `duo-inner` landscape. Each device declares a `form` (phone / tablet /
   cover / inner) shown as a chip on the board label — phone is chipless.
   A node follows its manifest `deviceId`, overridable per-node in the panel's
   **Thiết bị** dropdown; export renders whatever `--device` it is given
@@ -182,9 +182,9 @@ Use the live board to confirm observable behavior:
    (`data-tab="home"`), and the screen names the open one once with
    `data-tab-active="home"` on `.screen`. The shell centres the title on the
    bar width by balancing both sides (`flex: 1` each, overlong titles get an
-   ellipsis), auto-wraps bare `back`/`right` content into 44 pt buttons
+   ellipsis), auto-wraps bare `back`/`right` content into touch-floor buttons
    (never the title, never anything already containing a control), and floors
-   the band at 44 pt (`--navbar-min-h: 44px` in `src/screens/tokens.css`).
+   the band at the spec minimum (`--navbar-min-h` in `src/screens/tokens.css`; the value lives in `openspec/specs/screen-regions/`).
 7. **The frame is fixed and the body scrolls.** `.device` is exactly the device
    height, so a screen has exactly ONE vertical scroller: `.body` for content
    taller than the frame, `.body-fixed` for a page that fits. A `.body-fixed`

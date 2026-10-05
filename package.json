@@ -15,6 +15,7 @@
     "lint:subset": "node --disable-warning=ExperimentalWarning scripts/subset-lint.ts",
     "lint:components": "node --disable-warning=ExperimentalWarning scripts/components-lint.ts",
     "lint:regions": "node --disable-warning=ExperimentalWarning scripts/region-lint.ts",
+    "lint:regions-docs": "node --disable-warning=ExperimentalWarning scripts/region-docs-lint.ts",
     "audit:regions": "node --disable-warning=ExperimentalWarning scripts/region-audit.ts",
     "new-screen": "node --disable-warning=ExperimentalWarning scripts/new-screen.ts",
     "rename-screen": "node --disable-warning=ExperimentalWarning scripts/rename-screen.ts",
@@ -22,7 +23,7 @@
     "project": "node --disable-warning=ExperimentalWarning scripts/project.ts",
     "scan:projects": "node --disable-warning=ExperimentalWarning scripts/scan-projects.ts",
     "test": "vitest run",
-    "lint": "npm run typecheck && npm run lint:tokens && npm run lint:subset && npm run lint:components && npm run lint:regions",
+    "lint": "npm run typecheck && npm run lint:tokens && npm run lint:subset && npm run lint:components && npm run lint:regions && npm run lint:regions-docs",
     "gate": "npm run lint && npm run audit:regions && npm test",
     "delete-screen": "node --disable-warning=ExperimentalWarning scripts/delete-screen.ts"
   },
@@ -32,6 +33,7 @@
   "type": "module",
   "dependencies": {
     "@xyflow/react": "^12.11.6",
+    "parse5": "^8.0.1",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   },
