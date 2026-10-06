@@ -137,7 +137,7 @@ const RADIUS_PROPS = {
 
 /** `projectId:--token` → why no dark twin is intended (kept small; prefer twins) */
 export const DARK_TWIN_ALLOWLIST = {
-  'scratch-widget:--separator':
+  'widget-lab:--separator':
     'mirrors the global iOS separator byte-for-byte, and the global layers carry no dark twin either — dark falls back to the same value board-wide',
 }
 

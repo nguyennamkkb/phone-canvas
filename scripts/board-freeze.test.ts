@@ -35,8 +35,8 @@ describe('board freeze writer', () => {
   })
 
   it('x positions never overlap: each node starts past the previous right edge', async () => {
-    // frank-sound mixes widths? use two smallest real projects for coverage
-    for (const projectId of ['scratch-widget', 'scratch-watch']) {
+    // use two smallest real projects for coverage
+    for (const projectId of ['widget-lab', 'watch-lab']) {
       const dir = mkdtempSync(join(tmpdir(), 'freeze-rt-'))
       void dir
       const file = await writeBoardFreeze(projectId, { root: process.cwd(), outDir: tmpdir() })
@@ -58,8 +58,8 @@ describe('board.json is ignored by the registry', () => {
   it('a stray board.json does not break scanProjects', async () => {
     const { errors } = await scanProjects()
     expect(errors).toEqual([])
-    const probe = join(process.cwd(), 'project/scratch-widget/board.json')
-    await writeFile(probe, JSON.stringify({ v: 1, projectId: 'scratch-widget', exportedAt: 1, nodes: [] }))
+    const probe = join(process.cwd(), 'project/widget-lab/board.json')
+    await writeFile(probe, JSON.stringify({ v: 1, projectId: 'widget-lab', exportedAt: 1, nodes: [] }))
     try {
       const res = await scanProjects()
       expect(res.errors).toEqual([])

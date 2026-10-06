@@ -38,3 +38,19 @@
   --wg-route: #ff3b30;
   --wg-plane: #64d2ff;
 }
+
+/* Port từ scratch-widget (gộp lab): token chung cho các màn battery/calendar/forecast/today. */
+:root {
+  --cta: #007aff;
+  --track: rgba(120, 120, 128, 0.12);
+  --separator: rgba(60, 60, 67, 0.21);
+}
+
+:root[data-theme='dark'] {
+  --cta: #0a84ff;
+  --track: rgba(120, 120, 128, 0.24);
+}
+
+.screen {
+  --faint: rgba(60, 60, 67, 0.5);
+}

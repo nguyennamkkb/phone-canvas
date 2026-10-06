@@ -37,3 +37,14 @@
   --wl-accent: #ffc93c;
   --wl-accent-ink: #3b2a8f;
 }
+
+/* Port từ scratch-watch (gộp lab): token chung cho các màn activity/heart/timer/weather. */
+:root {
+  --cta: #007aff;
+  --track: rgba(120, 120, 128, 0.12);
+}
+
+:root[data-theme='dark'] {
+  --cta: #0a84ff;
+  --track: rgba(120, 120, 128, 0.24);
+}

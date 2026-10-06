@@ -126,7 +126,7 @@ describe('darkTwinViolations', () => {
 
   it('honors the allowlist for documented exceptions', () => {
     const css = `:root {\n  --separator: rgba(60, 60, 67, 0.21);\n}\n:root[data-theme='dark'] {\n  --bg: #000;\n}\n`
-    expect(darkTwinViolations('scratch-widget', css)).toEqual([])
+    expect(darkTwinViolations('widget-lab', css)).toEqual([])
     expect(darkTwinViolations('other', css)).toHaveLength(1)
   })
 })

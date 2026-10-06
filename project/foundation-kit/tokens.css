@@ -1,7 +1,0 @@
-/* Foundation Kit — lop semantic cho bo component chuan Apple.
-   Kit dung truc tiep token he thong iOS tu src/screens/tokens.css
-   (spacing --s*, radius --r*, type --t-*, mau --bg/--label/--accent…).
-   --faint la alias noi bo duy nhat: mau mo cho chevron/trailing. */
-.screen {
-  --faint: var(--label-3);
-}
