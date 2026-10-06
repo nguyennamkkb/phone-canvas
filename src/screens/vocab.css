@@ -377,13 +377,18 @@ figure {
 .region-tabs {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-around;
   flex: 0 0 auto;
   height: var(--tabbar-h);
-  padding-top: var(--s2);
-  border-top: 1px solid var(--separator);
-  background: var(--bg-elevated);
+  margin: 0 var(--s4) calc(var(--safe-bottom) + var(--s2));
+  padding: var(--s1) var(--s2);
+  border: 1px solid rgba(60, 60, 67, 0.12);
+  border-radius: var(--r-full);
+  background: transparent;
+  backdrop-filter: blur(24px) saturate(1.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
 .col {
@@ -437,7 +442,7 @@ figure {
   gap: 2px;
   flex: 1 1 0;
   min-height: var(--touch-min);
-  padding-bottom: var(--s1);
+  padding: var(--s1) var(--s2);
   border: 0;
   background: transparent;
   color: var(--label-3);
@@ -449,6 +454,8 @@ figure {
 }
 
 .tab.is-active {
+  background: var(--fill);
+  border-radius: var(--r-full);
   color: var(--accent);
 }
 
@@ -1691,7 +1698,7 @@ figure {
   padding: 0 var(--s4);
   border: 1px solid rgba(60, 60, 67, 0.12);
   border-radius: var(--r-full);
-  background: rgba(255, 255, 255, 0.75);
+  background: transparent;
   backdrop-filter: blur(24px) saturate(1.6);
   -webkit-backdrop-filter: blur(24px) saturate(1.6);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
