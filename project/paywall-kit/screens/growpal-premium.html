@@ -1,0 +1,261 @@
+<!-- pc {"title":"GrowPal Premium","lightStatusBar":false} -->
+<style>
+  /* This document is sandboxed per screen. The root background token is needed
+     so shell-owned safe areas inherit the same pastel canvas as the paywall. */
+  :root {
+    --gp-paper: #fbf8ff;
+    --bg: var(--gp-paper);
+  }
+  .growpal-premium {
+    --gp-ink: #132150;
+    --gp-sub: #69718f;
+    --gp-blue: #72a4e8;
+    --gp-blue-deep: #5a8fd8;
+    --gp-blue-soft: #d7ebff;
+    --gp-pink: #d875aa;
+    --gp-green: #39c56f;
+    --gp-mint: #eff9f2;
+    --gp-surface: #ffffff;
+    --gp-line: #e5e4ec;
+    --gp-gold: #ed9d2d;
+    --gp-hero-h: 206px;
+    --gp-plan-h: 144px;
+    --gp-cta-h: 52px;
+  }
+  .growpal-premium .growpal-close {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: var(--touch-min);
+    height: var(--touch-min);
+    border: 0;
+    border-radius: var(--r-full);
+    background: transparent;
+    color: var(--gp-sub);
+  }
+  .growpal-premium .growpal-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    width: 100%;
+  }
+  .growpal-premium .growpal-hero {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: var(--gp-hero-h);
+  }
+  .growpal-premium .growpal-hero .art {
+    width: 100%;
+    height: var(--gp-hero-h);
+  }
+  .growpal-premium .growpal-title {
+    color: var(--gp-ink);
+    font-family: var(--font);
+    font-size: var(--t-title2);
+    font-weight: 800;
+    letter-spacing: -0.4px;
+    line-height: 26px;
+    text-align: center;
+  }
+  .growpal-premium .growpal-title-accent { color: var(--gp-blue); }
+  .growpal-premium .growpal-accolade {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: var(--s2);
+    color: var(--gp-ink);
+  }
+  .growpal-premium .growpal-laurel {
+    color: var(--gp-gold);
+    font-size: var(--t-title2);
+    font-weight: 700;
+  }
+  .growpal-premium .growpal-store {
+    color: var(--gp-ink);
+    font-family: var(--font);
+    font-size: var(--t-footnote);
+    font-weight: 700;
+    line-height: 16px;
+    text-align: center;
+  }
+  .growpal-premium .growpal-store strong {
+    display: block;
+    font-size: var(--t-title3);
+    letter-spacing: -0.2px;
+    line-height: 22px;
+  }
+  .growpal-premium .growpal-plans {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: var(--s3);
+    width: 100%;
+  }
+  .growpal-premium .growpal-plan {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1 1 0;
+    min-width: 0;
+    height: var(--gp-plan-h);
+    padding: var(--s3);
+    border: 1px solid var(--gp-line);
+    border-radius: var(--r-lg);
+    background: var(--gp-surface);
+    box-shadow: 0 5px 14px rgba(53, 67, 113, 0.09);
+    color: var(--gp-ink);
+    text-align: left;
+  }
+  .growpal-premium .growpal-plan.is-selected {
+    border-color: var(--gp-blue);
+    box-shadow: 0 0 0 2px var(--gp-blue-soft), 0 5px 14px rgba(53, 67, 113, 0.09);
+  }
+  .growpal-premium .growpal-plan-head {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--s1);
+    width: 100%;
+  }
+  .growpal-premium .growpal-plan-name {
+    color: var(--gp-ink);
+    font-family: var(--font);
+    font-size: var(--t-headline);
+    font-weight: 800;
+    line-height: 20px;
+  }
+  .growpal-premium .growpal-discount {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    min-height: 20px;
+    padding: 0 var(--s1);
+    border-radius: var(--r-sm);
+    background: var(--gp-green);
+    color: var(--gp-surface);
+    font-family: var(--font);
+    font-size: var(--t-caption);
+    font-weight: 700;
+    line-height: 14px;
+  }
+  .growpal-premium .growpal-family {
+    color: var(--gp-sub);
+    font-family: var(--font);
+    font-size: var(--t-caption);
+    line-height: 14px;
+  }
+  .growpal-premium .growpal-price {
+    color: var(--gp-blue-deep);
+    font-family: var(--font);
+    font-size: var(--t-subhead);
+    font-weight: 700;
+    line-height: 18px;
+  }
+  .growpal-premium .growpal-original {
+    color: var(--gp-sub);
+    font-family: var(--font);
+    font-size: var(--t-caption);
+    line-height: 14px;
+    text-decoration: line-through;
+  }
+  .growpal-premium .growpal-benefits-title {
+    color: var(--gp-ink);
+    font-family: var(--font);
+    font-size: var(--t-title3);
+    font-weight: 800;
+    line-height: 24px;
+    text-align: center;
+  }
+  .growpal-premium .growpal-benefit {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--s2);
+    width: 100%;
+    min-height: var(--touch-min);
+    padding: 0 var(--s3);
+    border-radius: var(--r-lg);
+    background: var(--gp-mint);
+    color: var(--gp-ink);
+  }
+  .growpal-premium .growpal-benefit .icon { color: var(--gp-blue); }
+  .growpal-premium .growpal-price-note {
+    color: var(--gp-sub);
+    font-family: var(--font);
+    font-size: var(--t-footnote);
+    line-height: 16px;
+    text-align: center;
+  }
+  .growpal-premium .growpal-continue {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: var(--gp-cta-h);
+    border: 0;
+    border-radius: var(--r-full);
+    background-color: var(--gp-blue);
+    box-shadow: 0 6px 12px rgba(77, 130, 210, 0.25);
+    color: var(--gp-surface);
+    font-family: var(--font);
+    font-size: var(--t-headline);
+    font-weight: 700;
+  }
+</style>
+<div class="screen growpal-premium" style="background-color: var(--gp-paper)">
+  <div class="body-fixed" style="padding: var(--s2) var(--s4) var(--s3); gap: var(--s2)">
+    <div class="growpal-stage">
+      <button class="growpal-close" aria-label="Close premium offer">
+        <span class="icon icon-sm" data-symbol="xmark"></span>
+      </button>
+      <div class="growpal-hero">
+        <img class="art" src="/images/growpal-orbit.svg" width="320" height="230" alt="GrowPalOrbit" />
+      </div>
+    </div>
+
+    <div class="growpal-title">Supercharge your health<br />with <span class="growpal-title-accent">GrowPal Premium</span></div>
+
+    <div class="growpal-accolade">
+      <span class="growpal-laurel" aria-hidden="true">‹</span>
+      <div class="growpal-store">App Store<strong>Editors’ Choice</strong></div>
+      <span class="growpal-laurel" aria-hidden="true">›</span>
+    </div>
+
+    <div class="growpal-plans" role="radiogroup" aria-label="Premium plans">
+      <button class="growpal-plan is-selected" role="radio" aria-checked="true" aria-label="Annual plan" tabindex="0">
+        <div class="growpal-plan-head">
+          <span class="growpal-plan-name">Annual</span>
+          <span class="growpal-discount">20% OFF</span>
+        </div>
+        <span class="growpal-family">Family sharing</span>
+        <span class="spacer"></span>
+        <span class="growpal-price">$39.99/yr</span>
+        <span class="growpal-original">$49.99/yr</span>
+      </button>
+      <button class="growpal-plan" role="radio" aria-checked="false" aria-label="Monthly plan" tabindex="0">
+        <div class="growpal-plan-head"><span class="growpal-plan-name">Monthly</span></div>
+        <span class="growpal-family">Family sharing</span>
+        <span class="spacer"></span>
+        <span class="growpal-price">$7.99/mo</span>
+        <span class="growpal-family">Billed monthly</span>
+      </button>
+    </div>
+
+    <div class="growpal-benefits-title">10+ Pro Features Included</div>
+    <div class="growpal-benefit">
+      <span class="icon icon-sm" data-symbol="heart"></span>
+      <span class="t-subhead">Unlock all health &amp; fitness habits</span>
+    </div>
+
+    <div class="growpal-price-note">$39.99 per year, only $3.33/mo<br />Cancel anytime</div>
+    <button class="growpal-continue">Continue</button>
+  </div>
+</div>
