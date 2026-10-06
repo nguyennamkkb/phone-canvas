@@ -1,4 +1,5 @@
 import { memo, useEffect, useMemo, useRef, useState } from 'react'
+import { X } from 'lucide-react'
 import { labelCopyText } from './nodeLabel'
 import type { Node, NodeProps } from '@xyflow/react'
 import { Handle, Position } from '@xyflow/react'
@@ -11,6 +12,9 @@ import { useBoardSettings } from './BoardContext'
 import { useInspector } from '../inspect/InspectorContext'
 import { goldenStatusFor } from '../inspect/badges'
 import { InlineConfirm } from './InlineConfirm'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 
 export type PhoneNodeData = {
   screenId: string
@@ -135,9 +139,10 @@ function PhoneNodeInner({ id, data }: NodeProps) {
   }
 
   return (
-    <div className={`phone-node${mode === 'inspect' ? ' is-inspect' : ''}`}>
+    <div className={`phone-node group${mode === 'inspect' ? ' is-inspect' : ''}`}>
       <div
-        className={`phone-label${selected ? ' is-selected' : ''}`}
+        className={cn('flex flex-col items-stretch gap-1')}
+        data-state={selected ? 'on' : 'off'}
         onDoubleClick={(e) => {
           // focus 100% từ label (3.3) — không đụng iframe nên không xung đột drag
           e.stopPropagation()
@@ -148,24 +153,24 @@ function PhoneNodeInner({ id, data }: NodeProps) {
         {/* 018 hàng dọc luôn mở: dòng 1 định danh + các dòng action full-width,
             in-flow column trên frame (trục Y tự do, không chạm placement X);
             ngoài iframe nên không chặn pickAt; ellipsis chỉ ở dòng id */}
-        <div className="phone-label-top">
-          <span className="phone-label-title">{screen?.title ?? d.screenId}</span>
-          <span className="phone-label-size">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="text-[13px] font-semibold leading-tight">{screen?.title ?? d.screenId}</span>
+          <Badge variant="outline">
             {device.width} × {Math.round(contentH)}
-          </span>
-          <span
-            className={`golden-badge is-${golden.state}`}
+          </Badge>
+          <Badge
+            variant={golden.state === 'match' ? 'default' : golden.state === 'mismatch' ? 'destructive' : 'secondary'}
             title={`Golden: ${golden.label} (read-only — chạy export --golden để tạo) — ${d.screenId}`}
           >
             {golden.state === 'match' ? '●' : golden.state === 'mismatch' ? '●' : '○'}
-          </span>
+          </Badge>
           {formChipText && (
-            <span
-              className={`phone-form is-${form}`}
+            <Badge
+              variant="secondary"
               title={`Form-factor: ${device.name} — đổi ở dropdown Thiết bị trong panel`}
             >
               {formChipText}
-            </span>
+            </Badge>
           )}
           {/* 021: delete lives on the first row, right-aligned — no extra line. */}
           {deleteConfirmId === id ? (
@@ -176,24 +181,29 @@ function PhoneNodeInner({ id, data }: NodeProps) {
             />
           ) : (
             onRequestDelete && (
-              <button
+              <Button
                 type="button"
-                className="phone-delete"
+                variant="ghost"
+                size="icon"
+                className="ml-auto"
                 title="Xóa màn hình khỏi board (Delete)"
+                aria-label="Xóa màn hình khỏi board (Delete)"
                 onClick={(e) => {
                   e.stopPropagation()
                   onRequestDelete(id)
                 }}
               >
-                ×
-              </button>
+                <X />
+              </Button>
             )
           )}
         </div>
-        <div className="phone-label-actions" onClick={(e) => e.stopPropagation()}>
-          <button
+        <div className={cn('flex-col items-stretch gap-1', selected ? 'flex' : 'hidden group-hover:flex')} onClick={(e) => e.stopPropagation()}>
+          <Button
             type="button"
-            className="phone-id"
+            variant="ghost"
+            size="sm"
+            className="h-auto justify-start px-1 py-0.5 text-xs font-normal"
             title={screen ? `${projectId ?? '?'}/${screen.id} · ${screen.file} (click để chép id)` : 'click để chép id'}
             onClick={(e) => {
               e.stopPropagation()
@@ -203,14 +213,16 @@ function PhoneNodeInner({ id, data }: NodeProps) {
               })
             }}
           >
-            {copiedId ? 'Đã chép' : idLabel}
-          </button>
-          <span className="phone-golden-text" title={`Golden: ${golden.label} (read-only — chạy export --golden để tạo)`}>
+            <span className="truncate">{copiedId ? 'Đã chép' : idLabel}</span>
+          </Button>
+          <span className="px-1 text-xs text-muted-foreground" title={`Golden: ${golden.label} (read-only — chạy export --golden để tạo)`}>
             {golden.state === 'match' ? '● khớp golden' : golden.state === 'mismatch' ? '● lệch golden' : '○ chưa có golden'}
           </span>
-          <button
+          <Button
             type="button"
-            className="phone-expand"
+            variant="link"
+            size="sm"
+            className="h-auto justify-start px-1 py-0.5"
             title={expanded ? 'Thu về khung thiết bị' : 'Mở rộng xem hết nội dung'}
             onClick={(e) => {
               e.stopPropagation()
@@ -218,14 +230,14 @@ function PhoneNodeInner({ id, data }: NodeProps) {
             }}
           >
             {expanded ? '⤡ Thu về' : '⤢ Mở rộng'}
-          </button>
+          </Button>
           {!isKnownDevice(d.deviceId) && (
-            <span
-              className="phone-device-warn"
+            <Badge
+              variant="destructive"
               title={`Thiết bị “${d.deviceId}” không tồn tại — đang hiển thị ở Reference`}
             >
               ⚠ device lạ
-            </span>
+            </Badge>
           )}
         </div>
       </div>

@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import { Check, Copy } from 'lucide-react'
 import { draftSize, promoteCss } from '../../tokens/store'
 import type { TokenDraft } from '../../tokens/store'
 import { swiftUITokens } from '../../tokens/swiftui'
+import { Button } from '@/components/ui/button'
 
 export type DraftActionsProps = {
   projectId: string
@@ -23,9 +25,10 @@ export function TokenDraftActions({ projectId, projectTitle, draft, onClear }: D
   }
 
   return (
-    <div className="token-actions">
-      <button
+    <div className="token-actions flex flex-wrap gap-2">
+      <Button
         type="button"
+        size="sm"
         className="token-btn"
         disabled={nDraft === 0}
         title={
@@ -35,20 +38,31 @@ export function TokenDraftActions({ projectId, projectTitle, draft, onClear }: D
         }
         onClick={() => copyText(promoteCss(draft), 'css')}
       >
+        {copied === 'css' ? <Check /> : <Copy />}
         {copied === 'css' ? 'Đã chép!' : `Copy CSS${nDraft > 0 ? ` (${nDraft})` : ''}`}
-      </button>
-      <button
+      </Button>
+      <Button
         type="button"
+        size="sm"
+        variant="outline"
         className="token-btn"
         title="Chép extension SwiftUI (Color + Spacing) của project này"
         onClick={() => copyText(swiftUITokens(projectId, projectTitle), 'swift')}
       >
+        {copied === 'swift' ? <Check /> : <Copy />}
         {copied === 'swift' ? 'Đã chép!' : 'SwiftUI'}
-      </button>
+      </Button>
       {nDraft > 0 && (
-        <button type="button" className="token-btn is-danger" onClick={onClear} title="Xóa mọi nháp, về lại file">
+        <Button
+          type="button"
+          size="sm"
+          variant="destructive"
+          className="token-btn is-danger"
+          onClick={onClear}
+          title="Xóa mọi nháp, về lại file"
+        >
           Bỏ nháp
-        </button>
+        </Button>
       )}
     </div>
   )

@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+/* shadcn theme cho app-chrome. Màu đi qua --chrome-* sẵn có (shell.css)
+   nên dark mode theo data-theme trên .app hoạt động mà không đổi logic.
+   Iframe màn hình device dựng stylesheet riêng (stylesheetsFor) nên
+   preflight/utilities ở đây KHÔNG BAO GIỜ lọt vào số đo DOM. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+@theme inline {
+  --color-background: var(--chrome-bg);
+  --color-foreground: var(--chrome-text);
+  --color-card: var(--chrome-surface);
+  --color-card-foreground: var(--chrome-text);
+  --color-popover: var(--chrome-surface);
+  --color-popover-foreground: var(--chrome-text);
+  --color-primary: #007aff;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: var(--chrome-surface-2);
+  --color-secondary-foreground: var(--chrome-text-2);
+  --color-muted: var(--chrome-raised);
+  --color-muted-foreground: var(--chrome-muted);
+  --color-accent: var(--chrome-raised);
+  --color-accent-foreground: var(--chrome-text);
+  --color-destructive: #dc2626;
+  --color-destructive-foreground: #ffffff;
+  --color-border: var(--chrome-border);
+  --color-input: var(--chrome-input-border);
+  --color-ring: #007aff;
+  --radius-lg: 0.75rem;
+  --radius-md: 0.625rem;
+  --radius-sm: 0.5rem;
+}

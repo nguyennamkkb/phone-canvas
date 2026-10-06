@@ -33,6 +33,8 @@ import type { TrashEntry } from '../projects/storage'
 import { missingScreenIds } from './reconcile'
 import { TrashDialog } from './TrashDialog'
 import { ErrorBoundary } from '../shell/ErrorBoundary'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 
 const COLUMN_GAP = 120
 
@@ -544,17 +546,25 @@ function BoardViewInner({
       <ReactFlowProvider key={project.id}>
         <ErrorBoundary
       fallback={(retry) => (
-        <div className="board-error" role="alert">
-          <div className="board-empty-title">Board gặp lỗi</div>
-          <p>
-            Giao diện bảng vẽ vừa vấp. Bố cục đã lưu của bạn vẫn còn trong bộ nhớ trình duyệt.
-          </p>
-          <button type="button" className="dash-btn" onClick={retry}>
-            Thử mở lại board
-          </button>{' '}
-          <button type="button" className="ghost" onClick={onBack}>
-            Về Dashboard
-          </button>
+        <div className="absolute inset-0 z-10 flex items-center justify-center p-6" role="alert">
+          <Card className="max-w-md">
+            <CardHeader>
+              <CardTitle>Board gặp lỗi</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Giao diện bảng vẽ vừa vấp. Bố cục đã lưu của bạn vẫn còn trong bộ nhớ trình duyệt.
+              </p>
+            </CardContent>
+            <CardFooter className="gap-2">
+              <Button type="button" onClick={retry}>
+                Thử mở lại board
+              </Button>
+              <Button type="button" variant="ghost" onClick={onBack}>
+                Về Dashboard
+              </Button>
+            </CardFooter>
+          </Card>
         </div>
       )}
     >

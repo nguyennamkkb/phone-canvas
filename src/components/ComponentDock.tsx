@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { ChevronDown } from 'lucide-react'
 import bridgeJs from '../extractor/bridge.js?raw'
 import { composeScreenDoc } from '../extractor/compose'
 import { componentsFor, stylesheetsFor } from '../extractor/assets'
@@ -13,16 +14,17 @@ import type { ThemeMode } from '../tokens/tokens'
 import { componentsOf } from './index'
 import type { ComponentDef } from './index'
 import { componentUsage } from './usage'
-
-/**
- * Component catalog (component-system): every component of a project, with a
- * live preview rendered through the same compose/bridge pipeline a screen uses,
- * its usage in screens, and its SwiftUI spec.
- *
- * Preview iframes render at the real device width and are scaled down with a
- * CSS transform — the same "camera" the board uses — so the measured numbers
- * stay in points and match a screen exactly.
- */
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { cn } from '@/lib/utils'
 
 /** scale a fixed-width stage down to the container width (never up) */
 function useFitScale(width: number) {
@@ -186,38 +188,51 @@ export function ComponentDock({ projectId, theme }: ComponentDockProps) {
   }
 
   return (
-    <div className="component-catalog">
-      <div className="component-preview-bar">
-        <span className="field-key">Preview</span>
-        <select
-          value={previewDevice}
-          onChange={(e) => pickPreviewDevice(e.target.value)}
-          title="Chiều rộng preview component"
-        >
-          {DEVICES.map((d) => (
-            <option key={d.id} value={d.id}>
-              {d.name}
-            </option>
-          ))}
-        </select>
+    <div className="component-catalog flex flex-col gap-2">
+      <div className="component-preview-bar flex items-center gap-2">
+        <span className="field-key text-xs text-muted-foreground">Preview</span>
+        <Select value={previewDevice} onValueChange={pickPreviewDevice}>
+          <SelectTrigger className="h-8 w-44" title="Chiều rộng preview component">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {DEVICES.map((d) => (
+              <SelectItem key={d.id} value={d.id}>
+                {d.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       {components.map((c) => {
         const open = openId === c.id
         const u = useById.get(c.id)
+        const used = !!u && u.count > 0
         return (
-          <div className={`component-item${open ? ' is-open' : ''}`} key={c.id}>
-            <button
-              type="button"
-              className="component-row"
-              onClick={() => setOpenId(open ? null : c.id)}
-              title={u && u.screens.length > 0 ? `dùng ở: ${u.screens.join(', ')}` : 'chưa màn nào dùng'}
-            >
-              <span className="component-name">{c.title}</span>
-              <code className="component-id">{c.id}</code>
-              <span className="component-use">{u && u.count > 0 ? `${u.count} chỗ` : 'chưa dùng'}</span>
-            </button>
-            {open && <ComponentPreview projectId={projectId} component={c} theme={theme} deviceId={previewDevice} />}
-          </div>
+          <Card key={c.id} className={cn('component-item py-0', open && 'is-open')}>
+            <Collapsible open={open} onOpenChange={(v) => setOpenId(v ? c.id : null)}>
+              <CardHeader className="p-0">
+                <CollapsibleTrigger
+                  className="component-row flex w-full items-center gap-2 rounded-md p-2 text-left hover:bg-accent"
+                  title={u && u.screens.length > 0 ? `dùng ở: ${u.screens.join(', ')}` : 'chưa màn nào dùng'}
+                >
+                  <ChevronDown
+                    className={cn('h-4 w-4 shrink-0 transition-transform', !open && '-rotate-90')}
+                  />
+                  <span className="component-name min-w-0 flex-1 truncate text-sm font-medium">{c.title}</span>
+                  <code className="component-id shrink-0 font-mono text-xs text-muted-foreground">{c.id}</code>
+                  <Badge variant="secondary" className="component-use shrink-0">
+                    {used ? `${u.count} chỗ` : 'chưa dùng'}
+                  </Badge>
+                </CollapsibleTrigger>
+              </CardHeader>
+              <CollapsibleContent>
+                <CardContent className="px-2 pb-2">
+                  <ComponentPreview projectId={projectId} component={c} theme={theme} deviceId={previewDevice} />
+                </CardContent>
+              </CollapsibleContent>
+            </Collapsible>
+          </Card>
         )
       })}
     </div>

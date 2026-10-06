@@ -9,6 +9,7 @@ import { SpecDetail } from './spec-detail/SpecDetail'
 import { ElementTree } from './element-tree/ElementTree'
 import { NodePicker } from './node-picker/NodePicker'
 import { copyPayloadFor, copyPayloadText } from './copy-json/copyJson'
+import { Button } from '@/components/ui/button'
 
 export type SpecPanelProps = {
   nodes: BoardNode[]
@@ -79,36 +80,45 @@ export function SpecPanel({
 
   return (
     <aside className="panel">
-      <header className="panel-head">
+      <header className="panel-head flex items-center justify-between gap-2">
         <h2>
           Thông số <span className="muted">SwiftUI</span>
         </h2>
-        <span style={{ display: 'flex', gap: 8 }}>
-          <button type="button" className="ghost panel-close" onClick={onClosePanel} title="Đóng panel">
-            Đóng ✕
-          </button>
-          <button
+        <span className="flex items-center gap-2">
+          <Button
             type="button"
+            variant="ghost"
+            size="sm"
+            className="ghost panel-close"
+            onClick={onClosePanel}
+            title="Đóng panel"
+          >
+            Đóng ✕
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
             className="ghost"
             onClick={copySpec}
             disabled={!hasSpec}
             title={copyReason || 'Chép spec ra clipboard'}
           >
             Copy JSON
-          </button>
+          </Button>
         </span>
       </header>
 
-      <div className="panel-body">
+      <div className="panel-body flex flex-col gap-2">
         {!node && (
-          <div className="empty">
+          <div className="empty flex flex-col items-start gap-2">
             <p>
               Click một màn hình trên bảng để xem thông số SwiftUI của nó.
             </p>
             {firstNodeId ? (
-              <button type="button" className="ghost" onClick={() => onFocusScreen(firstNodeId)}>
+              <Button type="button" variant="ghost" size="sm" className="ghost" onClick={() => onFocusScreen(firstNodeId)}>
                 Focus màn đầu
-              </button>
+              </Button>
             ) : (
               <p>Thêm một màn vào board trước (ô + Màn hình).</p>
             )}
@@ -133,13 +143,15 @@ export function SpecPanel({
         )}
 
         {node && !hasSpec && nodeTimedOut && (
-          <div className="empty">
+          <div className="empty flex flex-col items-start gap-2">
             <p>
               Không đọc được DOM của màn này sau 8 giây — iframe có thể bị chặn hoặc bridge
               chưa chạy. (Copy JSON chờ đọc xong.)
             </p>
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="sm"
               className="ghost"
               onClick={() => {
                 setTimedOutIds((prev) => ({ ...prev, [node.id]: false }))
@@ -147,7 +159,7 @@ export function SpecPanel({
               }}
             >
               Thử đọc lại
-            </button>
+            </Button>
           </div>
         )}
 

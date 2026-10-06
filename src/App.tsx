@@ -6,6 +6,8 @@ import { useHashRoute } from './shell/useHashRoute'
 import { InspectorProvider } from './inspect/InspectorContext'
 import { useUiTheme } from './tokens/store'
 import type { Project } from './projects/projects'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   allProjects,
   clearBoard,
@@ -124,14 +126,22 @@ export function App() {
       {unknownProject ? (
         <div className="app app-dashboard">
           <div className="dash">
-            <div className="board-empty is-static">
-              <div className="board-empty-title">Không tìm thấy dự án “{unknownProject}”</div>
-              <p>
-                Liên kết này trỏ tới một board không còn tồn tại (đã xóa hoặc sai id).
-              </p>
-              <button type="button" className="dash-btn" onClick={closeProject}>
-                Về Dashboard
-              </button>
+            <div className="mx-auto my-[72px] max-w-md">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Không tìm thấy dự án “{unknownProject}”</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    Liên kết này trỏ tới một board không còn tồn tại (đã xóa hoặc sai id).
+                  </p>
+                </CardContent>
+                <CardFooter>
+                  <Button type="button" onClick={closeProject}>
+                    Về Dashboard
+                  </Button>
+                </CardFooter>
+              </Card>
             </div>
           </div>
         </div>
@@ -140,15 +150,25 @@ export function App() {
           fallback={(retry) => (
             <div className="app app-dashboard">
               <div className="dash">
-                <div className="board-empty is-static" role="alert">
-                  <div className="board-empty-title">Board gặp lỗi</div>
-                  <p>Bố cục đã lưu của bạn vẫn còn trong bộ nhớ trình duyệt.</p>
-                  <button type="button" className="dash-btn" onClick={retry}>
-                    Thử mở lại board
-                  </button>{' '}
-                  <button type="button" className="ghost" onClick={closeProject}>
-                    Về Dashboard
-                  </button>
+                <div className="mx-auto my-[72px] max-w-md" role="alert">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Board gặp lỗi</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground">
+                        Bố cục đã lưu của bạn vẫn còn trong bộ nhớ trình duyệt.
+                      </p>
+                    </CardContent>
+                    <CardFooter className="gap-2">
+                      <Button type="button" onClick={retry}>
+                        Thử mở lại board
+                      </Button>
+                      <Button type="button" variant="ghost" onClick={closeProject}>
+                        Về Dashboard
+                      </Button>
+                    </CardFooter>
+                  </Card>
                 </div>
               </div>
             </div>

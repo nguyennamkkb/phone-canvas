@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { Button } from '@/components/ui/button'
 
 export type InlineConfirmProps = {
   /** dòng hỏi ngắn, ví dụ "Xóa màn này? File HTML giữ nguyên." */
@@ -28,19 +29,19 @@ export function InlineConfirm({
 
   return (
     <span
-      className="inline-confirm"
       role="alertdialog"
       aria-label={message}
+      className="inline-flex flex-wrap items-center gap-2"
       onClick={(e) => e.stopPropagation()}
       onDoubleClick={(e) => e.stopPropagation()}
     >
-      <span className="inline-confirm-msg">{message}</span>
-      <button type="button" className="inline-confirm-yes" onClick={onConfirm}>
+      <span className="text-sm">{message}</span>
+      <Button type="button" size="sm" variant="destructive" onClick={onConfirm}>
         {confirmLabel}
-      </button>
-      <button type="button" className="inline-confirm-no" onClick={onCancel}>
+      </Button>
+      <Button type="button" size="sm" variant="outline" onClick={onCancel}>
         {cancelLabel}
-      </button>
+      </Button>
     </span>
   )
 }

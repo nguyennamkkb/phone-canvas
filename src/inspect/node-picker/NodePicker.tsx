@@ -2,6 +2,14 @@ import { DEVICES } from '../../frame/devices'
 import { SCREENS } from '../../screens'
 import type { PhoneNodeData } from '../../canvas/PhoneNode'
 import { InlineConfirm } from '../../canvas/InlineConfirm'
+import { Button } from '@/components/ui/button'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 export type NodePickerProps = {
   nodeId: string
@@ -29,23 +37,33 @@ export function NodePicker({
     <div className="section node-picker">
       <div className="picker-row">
         <span className="field-key">Màn hình</span>
-        <select value={screenId} onChange={(e) => onPatchNode(nodeId, { screenId: e.target.value })}>
-          {SCREENS.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.title}
-            </option>
-          ))}
-        </select>
+        <Select value={screenId} onValueChange={(v) => onPatchNode(nodeId, { screenId: v })}>
+          <SelectTrigger aria-label="Màn hình">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {SCREENS.map((s) => (
+              <SelectItem key={s.id} value={s.id}>
+                {s.title}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       <div className="picker-row">
         <span className="field-key">Thiết bị</span>
-        <select value={deviceId} onChange={(e) => onPatchNode(nodeId, { deviceId: e.target.value })}>
-          {DEVICES.map((d) => (
-            <option key={d.id} value={d.id}>
-              {d.name}
-            </option>
-          ))}
-        </select>
+        <Select value={deviceId} onValueChange={(v) => onPatchNode(nodeId, { deviceId: v })}>
+          <SelectTrigger aria-label="Thiết bị">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {DEVICES.map((d) => (
+              <SelectItem key={d.id} value={d.id}>
+                {d.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       <div className="picker-row">
         <span className="field-key">Màn này</span>
@@ -56,14 +74,15 @@ export function NodePicker({
             onCancel={onCancelDelete}
           />
         ) : (
-          <button
+          <Button
             type="button"
-            className="ghost danger"
+            variant="ghost"
+            className="ghost danger text-destructive hover:text-destructive"
             onClick={() => onRequestDelete(nodeId)}
             title="Xóa màn hình khỏi board (Delete)"
           >
             Xóa khỏi board
-          </button>
+          </Button>
         )}
       </div>
     </div>

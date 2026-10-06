@@ -1,6 +1,10 @@
 import { useMemo, useState } from 'react'
 import type { Selection } from '../InspectorContext'
 import type { SpecNode } from '../../spec/types'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { cn } from '@/lib/utils'
 
 export type ElementTreeProps = {
   specList: SpecNode[]
@@ -32,37 +36,40 @@ export function ElementTree({ specList, selection, nodeId, onPick }: ElementTree
       <h4>
         Cây phần tử <span className="muted">({visible.length}/{specList.length})</span>
       </h4>
-      <input
+      <Input
         className="tree-filter"
         placeholder="Lọc: Text, 390×844…"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         aria-label="Lọc cây phần tử"
       />
-      <div className="tree">
-        {visible.map((s) => {
-          const active = selection !== null && selection.nodeId === nodeId && selection.specId === s.id
-          return (
-            <button
-              type="button"
-              key={s.id}
-              className={`tree-row${active ? ' is-active' : ''}`}
-              style={{ paddingLeft: 8 + s.depth * 11 }}
-              onClick={() => onPick({ nodeId, specId: s.id })}
-              title={s.label}
-            >
-              <span className={`dot role-${s.role.toLowerCase()}`} />
-              <span className="tree-label">{s.label}</span>
-              <span className="tree-size">
-                {Math.round(s.box.w)}×{Math.round(s.box.h)}
-              </span>
-            </button>
-          )
-        })}
-        {visible.length === 0 && (
-          <p className="empty">Không khớp “{query}” — xóa lọc để xem toàn cây.</p>
-        )}
-      </div>
+      <ScrollArea className="max-h-[300px]">
+        <div className="tree">
+          {visible.map((s) => {
+            const active = selection !== null && selection.nodeId === nodeId && selection.specId === s.id
+            return (
+              <Button
+                type="button"
+                key={s.id}
+                variant="ghost"
+                className={cn('tree-row h-auto w-full justify-start font-normal', active && 'is-active bg-accent')}
+                style={{ paddingLeft: 8 + s.depth * 11 }}
+                onClick={() => onPick({ nodeId, specId: s.id })}
+                title={s.label}
+              >
+                <span className={`dot role-${s.role.toLowerCase()}`} />
+                <span className="tree-label">{s.label}</span>
+                <span className="tree-size">
+                  {Math.round(s.box.w)}×{Math.round(s.box.h)}
+                </span>
+              </Button>
+            )
+          })}
+          {visible.length === 0 && (
+            <p className="empty">Không khớp “{query}” — xóa lọc để xem toàn cây.</p>
+          )}
+        </div>
+      </ScrollArea>
     </div>
   )
 }

@@ -1,10 +1,13 @@
 import { cp, readdir } from 'node:fs/promises'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitest/config'
 import type { Plugin, PreviewServer, ViteDevServer } from 'vite'
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 import { generateIconSet } from './scripts/icons.ts'
 import { scanProjects } from './scripts/scan-projects.ts'
+const rootDir = path.dirname(fileURLToPath(import.meta.url))
 
 /**
  * Icons are inlined into `icon-set.css` by a generator, so a glyph added to
@@ -159,7 +162,8 @@ function noStore(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [iconSet(), registryGuard(), registryGuardDev(), projectAssets(), noStore(), react()],
+  plugins: [iconSet(), registryGuard(), registryGuardDev(), projectAssets(), noStore(), tailwindcss(), react()],
+  resolve: { alias: { '@': path.resolve(rootDir, 'src') } },
   server: { port: 5273 },
   // Probe projects (zz-*) write real files under project/ so the scaffold CLI
   // is tested through what it WROTE, not through a mock. Two probe suites in

@@ -227,7 +227,7 @@
 /* board-layout: inspector thành overlay khi board hẹp — 1100px thay vì 900px,
    vì 384px panel + chrome trình duyệt đã chèn canvas từ ~1170px */
 @media (max-width: 1100px) {
-  .app > .panel {
+  .board-main > .panel {
     position: fixed;
     top: 0;
     right: 0;
@@ -244,7 +244,7 @@
 }
 
 /* desktop: the toolbar toggle owns panel visibility, not a header button */
-.app > .panel .panel-close {
+.board-main > .panel .panel-close {
   display: none;
 }
 

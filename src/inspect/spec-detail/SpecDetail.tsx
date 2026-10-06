@@ -1,5 +1,7 @@
 import type { SpecNode } from '../../spec/types'
 import { ownerOf, type OwnerKind } from '../badges'
+import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
 
 const px = (v: number) => (Number.isInteger(v) ? String(v) : v.toFixed(2))
 
@@ -17,9 +19,9 @@ function edgesLabel(e: { top: number; right: number; bottom: number; left: numbe
 export function Field({ label, value, mono = true }: { label: string; value: string; mono?: boolean }) {
   if (!value || value === '—') return null
   return (
-    <div className="field">
-      <span className="field-key">{label}</span>
-      <span className={mono ? 'field-val mono' : 'field-val'} title={value}>
+    <div className="field flex items-baseline justify-between gap-2">
+      <span className="field-key shrink-0 font-mono text-xs">{label}</span>
+      <span className={cn('field-val min-w-0 flex-1 truncate text-right', mono && 'mono font-mono')} title={value}>
         {value}
       </span>
     </div>
@@ -45,9 +47,13 @@ const OWNER_LABEL: Record<OwnerKind, string> = {
 export function OwnerBadge({ node }: { node: SpecNode }) {
   const owner = ownerOf(node, {})
   return (
-    <span className={`owner-badge is-${owner}`} title={`Band sở hữu: ${OWNER_LABEL[owner]} (read-only)`}>
+    <Badge
+      variant={owner === 'content' ? 'secondary' : 'outline'}
+      className={`owner-badge is-${owner}`}
+      title={`Band sở hữu: ${OWNER_LABEL[owner]} (read-only)`}
+    >
       {OWNER_LABEL[owner]}
-    </span>
+    </Badge>
   )
 }
 
@@ -64,17 +70,17 @@ export function SpecDetail({ node, lookup }: { node: SpecNode; lookup: (raw: str
 
   return (
     <div className="detail">
-      <div className="detail-head">
-        <span className="detail-tag">{node.tag}</span>
-        <code className="detail-shape">{node.swiftUiShape}</code>
+      <div className="detail-head flex flex-wrap items-center gap-2">
+        <span className="detail-tag font-mono">{node.tag}</span>
+        <code className="detail-shape font-mono">{node.swiftUiShape}</code>
         <OwnerBadge node={node} />
       </div>
 
       {node.role === 'Block' && (
-        <p className="warn">
+        <Badge variant="destructive" className="warn whitespace-normal text-left">
           Phần tử này dùng layout ngoài subset (không phải flex). Sẽ không map được sang
           SwiftUI — nên sửa HTML về flex.
-        </p>
+        </Badge>
       )}
 
       {node.image && (
@@ -93,27 +99,27 @@ export function SpecDetail({ node, lookup }: { node: SpecNode; lookup: (raw: str
             }
           />
           {node.image.kind === 'inline' && (
-            <p className="warn">
+            <Badge variant="outline" className="warn whitespace-normal text-left">
               Là &lt;svg&gt; viết thẳng trong HTML nên không có tên. Dùng
               &lt;span class=&quot;icon&quot; data-symbol=&quot;…&quot;&gt; để spec nói được tên SF
               Symbol.
-            </p>
+            </Badge>
           )}
           {node.image.externalMask && (
-            <p className="warn">
+            <Badge variant="destructive" className="warn whitespace-normal text-left">
               Mask trỏ tới URL thay vì data URI. Iframe sandbox có origin opaque nên fetch này bị
               chặn, và mask tải thất bại thì bị coi là transparent black — icon sẽ biến mất chứ
               không báo lỗi. Thêm glyph vào <code>scripts/icons.ts</code> rồi chạy{' '}
               <code>npm run icons</code>.
-            </p>
+            </Badge>
           )}
           {node.image.unmappedSymbol && (
-            <p className="warn">
+            <Badge variant="outline" className="warn whitespace-normal text-left">
               <code>data-symbol=&quot;{node.image.symbol}&quot;</code> không có trong bộ đã sinh —
               mask không được áp, nên phần tử tô kín nền và hiện ra thành một ô vuông đặc. Thêm
               glyph vào <code>SYMBOLS</code> trong <code>scripts/icons.ts</code> rồi chạy{' '}
               <code>npm run icons</code>.
-            </p>
+            </Badge>
           )}
         </div>
       )}

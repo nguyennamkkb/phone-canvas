@@ -10,6 +10,7 @@ import {
   useReactFlow,
 } from '@xyflow/react'
 import type { Edge, NodeTypes, OnConnect, OnEdgesChange, OnNodesChange } from '@xyflow/react'
+import { ArrowLeft, Check, ChevronsLeft, ChevronsRight, Link2, Maximize2, MoreHorizontal, Plus, Trash2 } from 'lucide-react'
 import { PhoneNode } from './PhoneNode'
 import type { BoardNode } from './TokenNode'
 import type { BoardSettings } from './BoardContext'
@@ -17,7 +18,27 @@ import type { CanvasMode, FrameStyle } from './BoardContext'
 import { useInspector } from '../inspect/InspectorContext'
 import { SCREEN_BY_ID, SCREENS } from '../screens'
 import { hrefFor } from '../shell/useHashRoute'
-
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 const nodeTypes = { phone: PhoneNode } as unknown as NodeTypes
 
 export type BoardProps = {
@@ -105,8 +126,7 @@ export function Board({
   const [showAllScreens, setShowAllScreens] = useState(false)
   const scopedIds = projectScreenIds.length > 0 ? projectScreenIds : SCREENS.map((s) => s.id)
   const [copiedLink, setCopiedLink] = useState(false)
-  // toolbar compaction (board-layout): nhóm phụ gộp vào ⋯ khi board-wrap hẹp.
-  // Đo wrapper chứ không đo window — bật/tắt panel đổi ngang canvas mà window không đổi.
+  // toolbar compaction: nhóm phụ gộp vào ⋯ khi topbar hẹp (đo chính topbar).
   const wrapRef = useRef<HTMLDivElement>(null)
   const [toolbarCompact, setToolbarCompact] = useState(false)
 
@@ -261,130 +281,145 @@ export function Board({
   }, [focusedNodeId, mode, onModeChange, stepFocus, exitFocusToFit])
 
   return (
-    <div className="app" data-theme={tokenTheme}>
-      {dock}
-      <div className="board-wrap" ref={wrapRef}>
-      <div className={toolbarCompact ? 'toolbar is-compact' : 'toolbar'}>
-        <div className="toolbar-group">
-          <button type="button" className="tool tool-back" onClick={onBack} title="Về Dashboard">
-            ←
-          </button>
-          <span className="toolbar-project" title={`${screenCount} màn hình`}>
+    <div className="app app-board" data-theme={tokenTheme}>
+      <div ref={wrapRef} className={cn('topbar relative z-10 flex flex-wrap items-center gap-2 px-3 py-2')}>
+        <div className="flex items-center gap-1.5">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button type="button" variant="ghost" size="icon" onClick={onBack} title="Về Dashboard" aria-label="Về Dashboard">
+                <ArrowLeft />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Về Dashboard</TooltipContent>
+          </Tooltip>
+          <span className="text-[13px] font-semibold tracking-tight" title={`${screenCount} màn hình`}>
             {projectTitle}
           </span>
-          <button
-            type="button"
-            className="tool tool-icon tool-link"
-            onClick={copyBoardLink}
-            title="Chép link board"
-          >
-            {copiedLink ? '✓' : '⧉'}
-          </button>
-          {copiedLink && <span className="toolbar-copied">Đã chép</span>}
-          <span className="toolbar-count">{screenCount}</span>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={copyBoardLink}
+                title="Chép link board"
+                aria-label="Chép link board"
+              >
+                {copiedLink ? <Check /> : <Link2 />}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Chép link board</TooltipContent>
+          </Tooltip>
+          {copiedLink && <Badge variant="secondary">Đã chép</Badge>}
+          <Badge variant="secondary">{screenCount}</Badge>
         </div>
 
-        <span className="toolbar-sep" />
+        <Separator orientation="vertical" className="h-5" />
 
-        <div className="segmented">
-          <button
+        <div role="group" aria-label="Chế độ" className="flex items-center gap-0.5 rounded-md border border-border bg-muted/40 p-0.5">
+          <Button
             type="button"
-            className={mode === 'move' ? 'is-on' : ''}
+            variant={mode === 'move' ? 'secondary' : 'ghost'}
+            size="sm"
+            data-state={mode === 'move' ? 'on' : 'off'}
+            aria-pressed={mode === 'move'}
             onClick={() => onModeChange('move')}
           >
             Di chuyển
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            className={mode === 'inspect' ? 'is-on' : ''}
+            variant={mode === 'inspect' ? 'secondary' : 'ghost'}
+            size="sm"
+            data-state={mode === 'inspect' ? 'on' : 'off'}
+            aria-pressed={mode === 'inspect'}
             onClick={() => onModeChange('inspect')}
           >
             Đo đạc
-          </button>
+          </Button>
         </div>
 
-        <div className="toolbar-optional">
-        <div className="segmented">
-          <button
+        {!toolbarCompact && (
+        <div className="contents">
+        <div role="group" aria-label="Kiểu khung" className="flex items-center gap-0.5 rounded-md border border-border bg-muted/40 p-0.5">
+          <Button
             type="button"
-            className={frameStyle === 'plain' ? 'is-on' : ''}
+            variant={frameStyle === 'plain' ? 'secondary' : 'ghost'}
+            size="sm"
+            data-state={frameStyle === 'plain' ? 'on' : 'off'}
+            aria-pressed={frameStyle === 'plain'}
             onClick={() => onFrameStyleChange('plain')}
           >
             Khung đơn giản
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            className={frameStyle === 'device' ? 'is-on' : ''}
+            variant={frameStyle === 'device' ? 'secondary' : 'ghost'}
+            size="sm"
+            data-state={frameStyle === 'device' ? 'on' : 'off'}
+            aria-pressed={frameStyle === 'device'}
             onClick={() => onFrameStyleChange('device')}
           >
             Khung máy
-          </button>
+          </Button>
         </div>
 
-        <div className="segmented" title="Chế độ màu của cả board (sáng/tối theo project tokens.css)">
-          <button
+        <div role="group" aria-label="Chế độ màu" title="Chế độ màu của cả board (sáng/tối theo project tokens.css)" className="flex items-center gap-0.5 rounded-md border border-border bg-muted/40 p-0.5">
+          <Button
             type="button"
-            className={tokenTheme === 'light' ? 'is-on' : ''}
+            variant={tokenTheme === 'light' ? 'secondary' : 'ghost'}
+            size="sm"
+            data-state={tokenTheme === 'light' ? 'on' : 'off'}
+            aria-pressed={tokenTheme === 'light'}
             onClick={() => onTokenThemeChange?.('light')}
           >
             Sáng
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            className={tokenTheme === 'dark' ? 'is-on' : ''}
+            variant={tokenTheme === 'dark' ? 'secondary' : 'ghost'}
+            size="sm"
+            data-state={tokenTheme === 'dark' ? 'on' : 'off'}
+            aria-pressed={tokenTheme === 'dark'}
             onClick={() => onTokenThemeChange?.('dark')}
           >
             Tối
-          </button>
+          </Button>
         </div>
         </div>
-        <details className="toolbar-more">
-          <summary className="tool tool-icon" title="Tùy chọn thêm">
-            ⋯
-          </summary>
-          <div className="toolbar-more-body">
-            <div className="segmented">
-              <button
-                type="button"
-                className={frameStyle === 'plain' ? 'is-on' : ''}
-                onClick={() => onFrameStyleChange('plain')}
-              >
-                Khung đơn giản
-              </button>
-              <button
-                type="button"
-                className={frameStyle === 'device' ? 'is-on' : ''}
-                onClick={() => onFrameStyleChange('device')}
-              >
-                Khung máy
-              </button>
-            </div>
-            <div className="segmented" title="Chế độ màu của cả board (sáng/tối theo project tokens.css)">
-              <button
-                type="button"
-                className={tokenTheme === 'light' ? 'is-on' : ''}
-                onClick={() => onTokenThemeChange?.('light')}
-              >
-                Sáng
-              </button>
-              <button
-                type="button"
-                className={tokenTheme === 'dark' ? 'is-on' : ''}
-                onClick={() => onTokenThemeChange?.('dark')}
-              >
-                Tối
-              </button>
-            </div>
-          </div>
-        </details>
+        )}
+        {toolbarCompact && (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button type="button" variant="ghost" size="icon" title="Tùy chọn thêm" aria-label="Tùy chọn thêm">
+              <MoreHorizontal />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            <DropdownMenuLabel>Kiểu khung</DropdownMenuLabel>
+            <DropdownMenuItem data-state={frameStyle === 'plain' ? 'on' : 'off'} onSelect={() => onFrameStyleChange('plain')}>
+              Khung đơn giản
+            </DropdownMenuItem>
+            <DropdownMenuItem data-state={frameStyle === 'device' ? 'on' : 'off'} onSelect={() => onFrameStyleChange('device')}>
+              Khung máy
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel>Chế độ màu</DropdownMenuLabel>
+            <DropdownMenuItem data-state={tokenTheme === 'light' ? 'on' : 'off'} onSelect={() => onTokenThemeChange?.('light')}>
+              Sáng
+            </DropdownMenuItem>
+            <DropdownMenuItem data-state={tokenTheme === 'dark' ? 'on' : 'off'} onSelect={() => onTokenThemeChange?.('dark')}>
+              Tối
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        )}
 
-        <span className="toolbar-sep" />
+        <Separator orientation="vertical" className="h-5" />
 
-        <select
-          className="tool tool-select tool-select-compact"
+        <Select
           value={pick}
-          onChange={(e) => {
-            const id = e.target.value
+          onValueChange={(id) => {
             if (id === '__all') {
               setShowAllScreens(true)
               setPick('')
@@ -396,82 +431,117 @@ export function Board({
               setPick('')
             }
           }}
-          title="Thêm màn hình cụ thể"
         >
-          <option value="">+ Màn hình</option>
-          {showAllScreens ? (
-            <>
-              <option value="__project">Chỉ màn của project…</option>
-              {SCREENS.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.title}
-                </option>
-              ))}
-            </>
-          ) : (
-            <>
-              {scopedIds.map((sid) => {
-                const s = SCREEN_BY_ID.get(sid)
-                return s ? (
-                  <option key={s.id} value={s.id}>
+          <SelectTrigger className="h-8 w-auto text-xs" title="Thêm màn hình cụ thể" aria-label="Thêm màn hình cụ thể">
+            <SelectValue placeholder="+ Màn hình" />
+          </SelectTrigger>
+          <SelectContent>
+            {showAllScreens ? (
+              <>
+                <SelectItem value="__project">Chỉ màn của project…</SelectItem>
+                {SCREENS.map((s) => (
+                  <SelectItem key={s.id} value={s.id}>
                     {s.title}
-                  </option>
-                ) : null
-              })}
-              <option value="__all">Tất cả {SCREENS.length} màn…</option>
-            </>
-          )}
-        </select>
-        <button
+                  </SelectItem>
+                ))}
+              </>
+            ) : (
+              <>
+                {scopedIds.map((sid) => {
+                  const s = SCREEN_BY_ID.get(sid)
+                  return s ? (
+                    <SelectItem key={s.id} value={s.id}>
+                      {s.title}
+                    </SelectItem>
+                  ) : null
+                })}
+                <SelectItem value="__all">Tất cả {SCREENS.length} màn…</SelectItem>
+              </>
+            )}
+          </SelectContent>
+        </Select>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={() => onAddScreen()}
+              disabled={SCREENS.length === 0}
+              title="Thêm màn tiếp theo của dự án"
+              aria-label="Thêm màn tiếp theo của dự án"
+            >
+              <Plus />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Thêm màn tiếp theo của dự án</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button type="button" variant="ghost" size="icon" onClick={handleFit} title="Vừa khung (F)" aria-label="Vừa khung (F)">
+              <Maximize2 />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Vừa khung (F)</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={onOpenTrash}
+              title={trashCount > 0 ? `Thùng rác (${trashCount} màn)` : 'Thùng rác (trống)'}
+              aria-label={trashCount > 0 ? `Thùng rác (${trashCount} màn)` : 'Thùng rác (trống)'}
+            >
+              <Trash2 />
+              {trashCount > 0 && <Badge variant="secondary">{trashCount}</Badge>}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>{trashCount > 0 ? `Thùng rác (${trashCount} màn)` : 'Thùng rác (trống)'}</TooltipContent>
+        </Tooltip>
+        <Button
           type="button"
-          className="tool"
-          onClick={() => onAddScreen()}
-          disabled={SCREENS.length === 0}
-          title="Thêm màn tiếp theo của dự án"
-        >
-          +
-        </button>
-        <button type="button" className="tool tool-icon" onClick={handleFit} title="Vừa khung (F)">
-          ⤢
-        </button>
-        <button
-          type="button"
-          className="tool tool-icon"
-          onClick={onOpenTrash}
-          title={trashCount > 0 ? `Thùng rác (${trashCount} màn)` : 'Thùng rác (trống)'}
-        >
-          🗑{trashCount > 0 && <span className="toolbar-count">{trashCount}</span>}
-        </button>
-        <button
-          type="button"
-          className="tool"
+          variant="ghost"
+          size="sm"
           onClick={onExportState}
           title="Xuất trạng thái board ra file board.json"
         >
           Xuất
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
-          className="tool"
+          variant="ghost"
+          size="sm"
           onClick={onImportState}
           title="Nhập trạng thái từ file board.json"
         >
           Nhập
-        </button>
+        </Button>
 
-        <span className="toolbar-sep" />
+        <Separator orientation="vertical" className="h-5" />
 
-        <button
-          type="button"
-          className="tool tool-icon"
-          onClick={onTogglePanel}
-          title={panelVisible ? 'Ẩn panel (Cmd/Ctrl+.)' : 'Hiện panel (Cmd/Ctrl+.)'}
-        >
-          {panelVisible ? '→' : '←'}
-        </button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={onTogglePanel}
+              title={panelVisible ? 'Ẩn panel (Cmd/Ctrl+.)' : 'Hiện panel (Cmd/Ctrl+.)'}
+              aria-label={panelVisible ? 'Ẩn panel (Cmd/Ctrl+.)' : 'Hiện panel (Cmd/Ctrl+.)'}
+            >
+              {panelVisible ? <ChevronsRight /> : <ChevronsLeft />}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>{panelVisible ? 'Ẩn panel (Cmd/Ctrl+.)' : 'Hiện panel (Cmd/Ctrl+.)'}</TooltipContent>
+        </Tooltip>
       </div>
 
-      <div className="board">
+      <div className="board-main">
+        {dock}
+        <div className="board-wrap">
+          <div className="board">
       <ReactFlow<BoardNode>
         nodes={nodes}
         edges={edges}
@@ -511,17 +581,23 @@ export function Board({
       </ReactFlow>
 
       {screenCount === 0 && (
-        <div className="board-empty board-empty-overlay">
-          <div className="board-empty-title">Bảng đang trống</div>
-          <p>
-            Chọn một màn trong ô <code>+ Màn hình</code> để thêm vào dự án này, hoặc chạy{' '}
-            <code>npm run new-screen -- --project &lt;dự-án&gt; --name &lt;tên&gt;</code> để dựng
-            màn mới từ mẫu đúng contract.
-          </p>
-          <p className="board-empty-note">
-            Chưa chắc cách dựng? Hỏi agent — skill <code>phone-canvas</code> có sẵn quy trình và
-            các mẫu màn hình.
-          </p>
+        <div className="pointer-events-none absolute left-1/2 top-6 z-10 w-full max-w-md -translate-x-1/2 px-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm">Bảng đang trống</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2 text-xs leading-relaxed text-muted-foreground">
+              <p>
+                Chọn một màn trong ô <code>+ Màn hình</code> để thêm vào dự án này, hoặc chạy{' '}
+                <code>npm run new-screen -- --project &lt;dự-án&gt; --name &lt;tên&gt;</code> để
+                dựng màn mới từ mẫu đúng contract.
+              </p>
+              <p>
+                Chưa chắc cách dựng? Hỏi agent — skill <code>phone-canvas</code> có sẵn quy trình
+                và các mẫu màn hình.
+              </p>
+            </CardContent>
+          </Card>
         </div>
       )}
       {focusedNodeId ? (
@@ -538,14 +614,15 @@ export function Board({
       {undoTitle && (
         <div className={`undo-bar${focusedNodeId || mode === 'inspect' ? ' has-hint' : ''}`} role="status">
           Đã xóa “{undoTitle}”{undoSuffix ?? ' — file HTML giữ nguyên.'}
-          <button type="button" className="undo-btn" onClick={onUndo}>
+          <Button type="button" variant="outline" size="sm" onClick={onUndo}>
             Hoàn tác
-          </button>
+          </Button>
         </div>
       )}
+          </div>
+        </div>
+        {panel}
       </div>
-      </div>
-      {panel}
-  </div>
+    </div>
   )
 }

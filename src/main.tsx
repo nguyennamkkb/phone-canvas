@@ -1,5 +1,6 @@
 import { createRoot } from 'react-dom/client'
 import '@xyflow/react/dist/style.css'
+import './styles/shadcn.css'
 import './styles/shell.css'
 import './styles/board.css'
 import './styles/panel.css'
