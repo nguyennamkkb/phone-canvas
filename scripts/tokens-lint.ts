@@ -290,6 +290,38 @@ export function noLiteralViolations(html, file, entries) {
 }
 
 /**
+ * Leftover hardcoded colors with no token equivalent (the historical warning).
+ * Custom-property definitions (`--x: …`) are definition-sites, not usages, so
+ * matches falling inside one are skipped by span — a literal also used at a
+ * real use-site still reports even when the same value is defined somewhere.
+ */
+export function leftoverHardColors(html: string): string[] {
+  const defSpans: Array<[number, number]> = []
+  DEF_RE.lastIndex = 0
+  let d
+  while ((d = DEF_RE.exec(html)) !== null) defSpans.push([d.index, d.index + d[0].length])
+  const hard: string[] = []
+  const seen = new Set<string>()
+  for (const m of html.matchAll(HEX_RE)) {
+    if (m.index === undefined || defSpans.some(([s, e]) => m.index as number >= s && (m.index as number) < e)) continue
+    const v = m[0].toLowerCase()
+    if (!seen.has(v)) {
+      seen.add(v)
+      hard.push(v)
+    }
+  }
+  for (const m of html.matchAll(RGBA_RE)) {
+    if (m.index === undefined || defSpans.some(([s, e]) => m.index as number >= s && (m.index as number) < e)) continue
+    if (!seen.has('rgba(…)')) {
+      seen.add('rgba(…)')
+      hard.push('rgba(…)')
+    }
+  }
+  return hard
+}
+
+
+/**
  * Project :root color tokens with no dark twin. Projects with no dark block
  * at all render identical values in both modes (dark-first / single-mode by
  * convention), so there is nothing to fall back silently — only dual-mode
@@ -419,11 +451,9 @@ async function main() {
       errors += 1
     }
     if (literals.length === 0) {
-      const hard = new Set()
-      for (const mm of html.matchAll(HEX_RE)) hard.add(mm[0].toLowerCase())
-      for (const mm of html.matchAll(RGBA_RE)) hard.add('rgba(…)')
-      if (hard.size > 0) {
-        console.warn(`warn   ${screen.file}  màu cứng: ${[...hard].slice(0, 5).join(', ')}${hard.size > 5 ? '…' : ''}`)
+      const hard = leftoverHardColors(html)
+      if (hard.length > 0) {
+        console.warn(`warn   ${screen.file}  màu cứng: ${hard.slice(0, 5).join(', ')}${hard.length > 5 ? '…' : ''}`)
         warns += 1
       }
     }

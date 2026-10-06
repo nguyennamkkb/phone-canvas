@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import {
   darkTwinViolations,
+  leftoverHardColors,
   noLiteralViolations,
   parseModeVars,
   tokenColorName,
@@ -83,6 +84,21 @@ describe('noLiteralViolations', () => {
     expect(noLiteralViolations(html, 'f.html', ENTRIES)).toEqual([])
   })
 })
+
+describe('leftoverHardColors', () => {
+  it('ignores definition-sites but still flags the same value at a use-site', () => {
+    const definedOnly = SCREEN(':root { --gp-paper: #fbf8ff; } .a { color: var(--gp-paper); }')
+    expect(leftoverHardColors(definedOnly)).toEqual([])
+    const reused = SCREEN(':root { --gp-paper: #fbf8ff; } .a { color: #fbf8ff; }')
+    expect(leftoverHardColors(reused)).toEqual(['#fbf8ff'])
+  })
+
+  it('flags rgba use-sites while ignoring rgba in definitions', () => {
+    const html = SCREEN(':root { --shadow: 0 5px 14px rgba(53, 67, 113, 0.09); } .a { box-shadow: 0 5px 14px rgba(53, 67, 113, 0.09); }')
+    expect(leftoverHardColors(html)).toEqual(['rgba(…)'])
+  })
+})
+
 
 describe('darkTwinViolations', () => {
   it('fails a light color with no dark twin, naming file:line and the fix', () => {
