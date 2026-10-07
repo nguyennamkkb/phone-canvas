@@ -1,0 +1,99 @@
+<!-- pc {"title":"Journal"} -->
+<div class="screen" data-tab-active="journal" style="background-color: var(--bg); background-image: radial-gradient(circle 110px at 335px 70px, var(--peach-deep) 0%, var(--peach-deep) 55%, transparent 100%); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed">
+  <div class="body">
+    <!-- memory strip: the trailing week as tappable climate dots (FS-013 §3.1) -->
+    <div class="mt-hero">
+      <div class="col" style="gap: 0">
+        <div class="t-caption" style="color: var(--label-2-ground)">12 entries</div>
+        <div class="t-page">Journal</div>
+      </div>
+      <div class="mt-memory">
+        <button class="mt-memory-day" aria-label="Monday, logged">
+          <span class="mood-dot is-calm"></span>
+          <span>M</span>
+        </button>
+        <button class="mt-memory-day" aria-label="Tuesday, logged">
+          <span class="mood-dot is-up"></span>
+          <span>T</span>
+        </button>
+        <button class="mt-memory-day" aria-label="Wednesday, logged">
+          <span class="mood-dot is-up"></span>
+          <span>W</span>
+        </button>
+        <button class="mt-memory-day" aria-label="Thursday, logged">
+          <span class="mood-dot is-low"></span>
+          <span>T</span>
+        </button>
+        <button class="mt-memory-day" aria-label="Friday, logged">
+          <span class="mood-dot is-calm"></span>
+          <span>F</span>
+        </button>
+        <button class="mt-memory-day" aria-label="Saturday, logged">
+          <span class="mood-dot is-up"></span>
+          <span>S</span>
+        </button>
+        <button class="mt-memory-day is-today" aria-label="Today, not logged yet">
+          <span class="mood-dot is-empty"></span>
+          <span>S</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- entry rows: date + mood word, first line, tag chips (FS-013 §3.2) -->
+    <div class="mt-sheet">
+      <button class="mt-card">
+        <div class="row" style="gap: var(--s3)">
+          <span class="mood-dot is-up"></span>
+          <div class="grow col" style="gap: 0">
+            <div class="t-headline">Radiant · Saturday</div>
+            <div class="t-caption" style="color: var(--label-2)">9:12 PM · energy 4</div>
+          </div>
+          <span class="icon icon-xs" data-symbol="chevron.right" style="color: var(--label-2)"></span>
+        </div>
+        <div class="t-body">Evening walk before sunset. Everything felt lighter after.</div>
+        <div class="row" style="gap: var(--s2)">
+          <span class="mt-tag">Walk</span>
+          <span class="mt-tag">Evening</span>
+        </div>
+      </button>
+
+      <button class="mt-card">
+        <div class="row" style="gap: var(--s3)">
+          <span class="mood-dot is-low"></span>
+          <div class="grow col" style="gap: 0">
+            <div class="t-headline">Low · Thursday</div>
+            <div class="t-caption" style="color: var(--label-2)">2:40 PM · energy 2</div>
+          </div>
+          <span class="icon icon-xs" data-symbol="chevron.right" style="color: var(--label-2)"></span>
+        </div>
+        <div class="t-body">Slow afternoon. Skipped lunch and felt it by three.</div>
+        <div class="row" style="gap: var(--s2)">
+          <span class="mt-tag">Work</span>
+          <span class="mt-tag">Sleep</span>
+        </div>
+      </button>
+
+      <button class="mt-card">
+        <div class="row" style="gap: var(--s3)">
+          <span class="mood-dot is-up"></span>
+          <div class="grow col" style="gap: 0">
+            <div class="t-headline">Radiant · Tuesday</div>
+            <div class="t-caption" style="color: var(--label-2)">8:05 AM · energy 5</div>
+          </div>
+          <span class="icon icon-xs" data-symbol="chevron.right" style="color: var(--label-2)"></span>
+        </div>
+        <div class="t-body">Walked before noon — the whole day rode on that one habit.</div>
+        <div class="row" style="gap: var(--s2)">
+          <span class="mt-tag">Walk</span>
+        </div>
+      </button>
+
+      <button class="mt-stone">
+        <span class="icon icon-sm" data-symbol="plus"></span>
+        <span>New entry</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- @component app-tabs -->
+</div>

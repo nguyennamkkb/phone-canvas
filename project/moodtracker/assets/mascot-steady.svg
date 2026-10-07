@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" fill="none">
+  <!-- ground shadow -->
+  <ellipse cx="80" cy="147" rx="27" ry="5" fill="#e8bd8a" opacity="0.5" />
+  <!-- limbs (tucked under the body) -->
+  <path d="M68 132v8M92 132v8" stroke="#c9334e" stroke-width="12" stroke-linecap="round" />
+  <path d="M36 92c-11 2-17 9-18 17" stroke="#c9334e" stroke-width="11" stroke-linecap="round" />
+  <path d="M124 92c11 2 17 9 18 17" stroke="#c9334e" stroke-width="11" stroke-linecap="round" />
+  <!-- wrinkly brain body: base + perimeter lobes -->
+  <ellipse cx="80" cy="88" rx="48" ry="43" fill="#e8445f" />
+  <circle cx="80" cy="39" r="18" fill="#e8445f" />
+  <circle cx="57" cy="45" r="16" fill="#e8445f" />
+  <circle cx="103" cy="45" r="16" fill="#e8445f" />
+  <circle cx="39" cy="60" r="15" fill="#e8445f" />
+  <circle cx="121" cy="60" r="15" fill="#e8445f" />
+  <circle cx="34" cy="73" r="13.5" fill="#e8445f" />
+  <circle cx="126" cy="73" r="13.5" fill="#e8445f" />
+  <!-- brain folds: the wrinkles that make it a brain, not a blob -->
+  <path d="M44 76C46 60 58 50 72 50" stroke="#d84058" stroke-width="4.5" stroke-linecap="round" />
+  <path d="M116 76C114 60 102 50 88 50" stroke="#d84058" stroke-width="4.5" stroke-linecap="round" />
+  <path d="M60 42q-5 9 1 18" stroke="#d84058" stroke-width="4.5" stroke-linecap="round" />
+  <path d="M100 42q5 9-1 18" stroke="#d84058" stroke-width="4.5" stroke-linecap="round" />
+  <path d="M80 50q4 7 0 14" stroke="#d84058" stroke-width="4.5" stroke-linecap="round" />
+  <!-- face -->
+  <ellipse cx="63" cy="83" rx="13.5" ry="15.5" fill="#ffffff" />
+  <ellipse cx="97" cy="83" rx="13.5" ry="15.5" fill="#ffffff" />
+  <circle cx="63" cy="85" r="7.2" fill="#2a2140" />
+  <circle cx="97" cy="85" r="7.2" fill="#2a2140" />
+  <circle cx="66" cy="81" r="2.2" fill="#ffffff" />
+  <circle cx="100" cy="81" r="2.2" fill="#ffffff" />
+  <ellipse cx="49" cy="101" rx="7" ry="4.5" fill="#f9b3c0" opacity="0.9" />
+  <ellipse cx="111" cy="101" rx="7" ry="4.5" fill="#f9b3c0" opacity="0.9" />
+  <!-- open happy smile -->
+  <path d="M62 104A18 15 0 0 0 98 104Z" fill="#2a2140" />
+  <ellipse cx="80" cy="112.5" rx="6.5" ry="4" fill="#f9b3c0" />
+</svg>

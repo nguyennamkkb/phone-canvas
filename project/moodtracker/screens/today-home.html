@@ -1,0 +1,90 @@
+<!-- pc {"title":"Today Home"} -->
+<div class="screen" data-tab-active="today" style="background-color: var(--bg); background-image: radial-gradient(circle 110px at 335px 70px, var(--peach-deep) 0%, var(--peach-deep) 55%, transparent 100%); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed">
+  <div class="body">
+    <!-- hero ground: greeting + the actor (EI-001) on flat peach; the sun
+         wash is the root background layer above, the white sheet below -->
+    <div class="mt-hero">
+      <div class="row" style="align-items: flex-start">
+        <div class="grow col" style="gap: var(--s3); padding-top: var(--s2); align-items: flex-start">
+          <div class="col" style="gap: 0">
+            <div class="t-caption" style="color: var(--label-2-ground)">Good evening</div>
+            <div class="t-page">Hey, Lena</div>
+          </div>
+          <div class="mt-streak">
+            <span class="icon icon-xs" data-symbol="flame" style="color: var(--accent)"></span>
+            <span class="t-headline">6</span>
+          </div>
+        </div>
+        <img class="art" src="/project/moodtracker/assets/mascot-steady.svg" width="150" height="150" alt="MascotSteady" />
+      </div>
+      <button class="mt-stone">Log today</button>
+    </div>
+
+    <!-- evidence sheet: climate strip, then the rail -->
+    <div class="mt-sheet">
+      <div class="mt-card is-tint">
+        <div class="row">
+          <div class="grow t-headline">This week</div>
+          <div class="t-caption" style="color: var(--label-2-ground)">6 of 7 days</div>
+        </div>
+        <div class="mt-climate">
+          <button class="mt-climate-day" aria-label="Monday, steady">
+            <span class="mt-climate-track"><span class="mt-climate-bar" style="height: 70%"></span></span>
+            <span>Mo</span>
+          </button>
+          <button class="mt-climate-day" aria-label="Tuesday, steady">
+            <span class="mt-climate-track"><span class="mt-climate-bar" style="height: 85%"></span></span>
+            <span>Tu</span>
+          </button>
+          <button class="mt-climate-day" aria-label="Wednesday, radiant">
+            <span class="mt-climate-track"><span class="mt-climate-bar is-up" style="height: 100%"></span></span>
+            <span>We</span>
+          </button>
+          <button class="mt-climate-day" aria-label="Thursday, low">
+            <span class="mt-climate-track"><span class="mt-climate-bar is-low" style="height: 45%"></span></span>
+            <span>Th</span>
+          </button>
+          <button class="mt-climate-day" aria-label="Friday, steady">
+            <span class="mt-climate-track"><span class="mt-climate-bar" style="height: 70%"></span></span>
+            <span>Fr</span>
+          </button>
+          <button class="mt-climate-day" aria-label="Saturday, radiant">
+            <span class="mt-climate-track"><span class="mt-climate-bar is-up" style="height: 90%"></span></span>
+            <span>Sa</span>
+          </button>
+          <button class="mt-climate-day is-today" aria-label="Today, not logged yet">
+            <span class="mt-climate-track"><span class="mt-climate-ring"></span></span>
+            <span>Su</span>
+          </button>
+        </div>
+      </div>
+
+      <button class="mt-card">
+        <div class="row" style="gap: var(--s2)">
+          <span class="icon icon-xs" data-symbol="sparkles" style="color: var(--accent)"></span>
+          <span class="grow t-caption" style="color: var(--label-2)">Weekly insight</span>
+          <span class="t-caption" style="color: var(--label-2)">Based on 6 check-ins</span>
+          <span class="icon icon-xs" data-symbol="chevron.right" style="color: var(--label-2)"></span>
+        </div>
+        <div class="t-body">Your mood lifts on days you walk before noon.</div>
+        <div class="row" style="gap: var(--s2)">
+          <span class="t-caption" style="color: var(--label-2)">Seen on</span>
+          <span class="mt-tag">Tue</span>
+          <span class="mt-tag">Thu</span>
+        </div>
+      </button>
+
+      <div class="mt-band">
+        <div class="row" style="gap: var(--s3)">
+          <span class="icon icon-sm" data-symbol="flame" style="color: var(--accent)"></span>
+          <div class="grow col" style="gap: 0">
+            <div class="t-headline">Six days in a row</div>
+            <div class="t-subhead" style="color: var(--label-2-ground)">Your longest streak yet.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- @component app-tabs -->
+</div>

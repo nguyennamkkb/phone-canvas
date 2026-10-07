@@ -1,0 +1,592 @@
+/* MoodTracker — "Warm living-signal editorial" (VD-001, Concept-A Companion Grove).
+   Peach ground, coral actor, white raised cards, pill CTAs, flat surfaces
+   (no materials in MVP — legibility first).
+
+   DEVIATIONS from VD-001, declared here so they are visible at the source:
+   - SF Rounded is not available in the web preview; the system stack stands in
+     and SwiftUI applies .fontDesign(.rounded) at handoff.
+   - The mascot poses are project-drawn approximations of the Kalm reference art.
+   - Chart/graphic coral (#e8445f) is used only for graphics and display text at
+     large sizes — never body text (3.87:1 on white, fails AA). */
+
+/* ---- light: surfaces + text first (semantic), palette after ---- */
+:root {
+  --bg: #fce7ce;               /* peach ground — Today hero, onboarding */
+  --bg-grouped: #f4ebe0;       /* warm inset fill: fields, quiet grouping on white */
+  --surface: #ffffff;          /* raised card */
+  --surface-variant: #f6e3c8;  /* warm tint inside cards (cited chips) */
+  --label: #2a2140;            /* ink */
+  --label-2: #6f6587;          /* secondary on white (5.40:1) */
+  --label-3: rgba(42, 33, 64, 0.32);
+  --label-2-ground: #655868;   /* secondary on peach (5.54:1) */
+  --divider: rgba(42, 33, 64, 0.12);
+  --fill: rgba(42, 33, 64, 0.06);
+  --accent: #c9334e;           /* primary CTA / SOS — white label 5.16:1 */
+  --accent-soft: rgba(201, 51, 78, 0.10);
+  --on-accent: #ffffff;
+  --coral: #e8445f;            /* mascot + chart highs — large/graphic only */
+  --coral-soft: #fbd9de;       /* celebration band tint */
+  --peach-deep: #f6c389;       /* decorative sun wash — soft apricot, tonal with the ground, never a hard disc */
+  --teal: #0e6b66;             /* energy, success, calm data */
+  --teal-soft: #d9ecea;
+  --amber: #c77a1a;            /* charts mid-band (graphic) */
+  --amber-deep: #a85e0e;       /* amber as text on fill */
+  --border: #8e84a8;           /* inputs, focus rings */
+  --error: #c9334e;
+  --success: #0e6b66;
+  --warning: #a85e0e;
+  --shadow: rgba(42, 33, 64, 0.08);
+}
+
+/* ---- dark: every value above, redefined ---- */
+:root[data-theme='dark'] {
+  --bg: #221a38;
+  --bg-grouped: #2d2444;
+  --surface: #2d2444;
+  --surface-variant: #3a2f56;
+  --label: #f6effa;
+  --label-2: #b9b0cc;
+  --label-3: rgba(246, 239, 250, 0.32);
+  --label-2-ground: #b9b0cc;
+  --divider: rgba(246, 239, 250, 0.14);
+  --fill: rgba(246, 239, 250, 0.08);
+  --accent: #ff7a90;
+  --accent-soft: rgba(255, 122, 144, 0.14);
+  --on-accent: #221a38;        /* dark ink on light coral 6.63:1 */
+  --coral: #ff7a90;
+  --coral-soft: #4a2a3e;
+  --peach-deep: #5d3140;
+  --teal: #4cc9c4;
+  --teal-soft: #1d3f4a;
+  --amber: #f2a93b;
+  --amber-deep: #f2a93b;
+  --border: #8e84a8;
+  --error: #ff7a90;
+  --success: #4cc9c4;
+  --warning: #f2a93b;
+  --shadow: rgba(0, 0, 0, 0.4);
+}
+
+/* ---- scales (modeless) ---- */
+:root {
+  --mt-r-card: 28px;   /* radius-lg — cards, sheets, chart cards */
+  --mt-r-inset: 18px;  /* radius-md — fields, inner rows, insight cards */
+}
+
+/* ============================================================================
+ * Component vocabulary — mt-*
+ * ========================================================================== */
+
+/* white raised card — VD §5 elevation 1: no border, shadow separates */
+.mt-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  flex: 0 0 auto;
+  padding: var(--s4);
+  border: 0;
+  border-radius: var(--mt-r-card);
+  background: var(--surface);
+  box-shadow: 0 4px 16px var(--shadow);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+/* tinted nested panel — a card inside the white sheet (the reference's
+   "Mood Tracker" block). No shadow: tone separates, not depth. */
+.mt-card.is-tint {
+  background: var(--surface-variant);
+  box-shadow: none;
+}
+
+/* soft tinted band — celebration / calm focus blocks, no shadow */
+.mt-band {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  flex: 0 0 auto;
+  padding: var(--s4);
+  border-radius: var(--mt-r-card);
+  background: var(--coral-soft);
+}
+
+/* the check-in stone: the one pill CTA on a ground (COMP / CheckinStone) */
+.mt-stone {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  flex: 0 0 auto;
+  width: 100%;
+  min-height: 56px;
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* a stone that cannot act yet (store unavailable) — VD state matrix:
+   disabled = 40% opacity, no shadow */
+.mt-stone.is-disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* streak chip on the ground: flame + count, display-only */
+.mt-streak {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s1);
+  flex: 0 0 auto;
+  height: 36px;
+  padding: 0 var(--s3);
+  border-radius: var(--r-full);
+  background: var(--surface);
+}
+
+/* The hero ground: flat peach carrying the living signal. No decor blobs
+   here — the sun wash lives in the `.screen` root's background-image (the
+   only layer replayed onto `.device`, so it covers the status-bar strip),
+   and the white sheet below draws the second zone. Flat keeps the CTA and
+   the actor crisp against one calm field. */
+.mt-hero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  flex: 0 0 auto;
+  padding: var(--s4) var(--s5);
+}
+
+/* the evidence sheet: white, curved top — the reference's second zone.
+   flex-grow so the white runs from the sheet's top to the bottom of the
+   screen (the flat tab bar continues it to the device edge). */
+.mt-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  flex: 1 0 auto;
+  padding: var(--s5) var(--s5) var(--s8);
+  border-radius: 32px 32px 0 0;
+  background: var(--surface);
+}
+
+/* cards inside a sheet run a tighter rhythm than cards on the ground */
+.mt-sheet .mt-card {
+  gap: var(--s2);
+}
+
+/* The climate strip — VD signature #1 (EI-003): the week's rhythm as
+   continuous rounded bars, not discrete dots. One column per day: a light
+   track capsule, a fill whose height is that day's energy and whose colour
+   is that day's mood. No gridlines; the bars carry the weight. */
+.mt-climate {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 0;
+  flex: 0 0 auto;
+}
+
+.mt-climate-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s2);
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--label-2-ground);
+  font-family: var(--font);
+  font-size: var(--t-caption);
+  line-height: 16px;
+  cursor: pointer;
+}
+
+.mt-climate-track {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+  width: 100%;
+  max-width: 28px;
+  height: 76px;
+  border-radius: var(--r-full);
+  background: var(--fill);
+}
+
+.mt-climate-bar {
+  display: block;
+  width: 100%;
+  border-radius: var(--r-full);
+  background: var(--teal);
+}
+
+/* the mood roles: up days amber, low days coral (VD chart colours) */
+.mt-climate-bar.is-up {
+  background: var(--amber);
+}
+
+.mt-climate-bar.is-low {
+  background: var(--coral);
+}
+
+/* today, still open: an empty column waiting with a ring, no guilt mark */
+.mt-climate-ring {
+  display: block;
+  width: 18px;
+  height: 18px;
+  margin-bottom: var(--s2);
+  border: 3px solid var(--coral);
+  border-radius: var(--r-full);
+}
+
+.mt-climate-day.is-today {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* a taller climate read for the Insights trend card — same vocabulary,
+   longer tracks so the week reads as data, not decoration */
+.mt-climate.is-large .mt-climate-track {
+  max-width: 40px;
+  height: 120px;
+}
+
+/* the memory strip on Journal: seven tappable day dots, each a 44pt target */
+.mt-memory {
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  flex: 0 0 auto;
+}
+
+.mt-memory-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: var(--touch-min);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--label-2-ground);
+  font-family: var(--font);
+  font-size: var(--t-caption);
+  line-height: 16px;
+  cursor: pointer;
+}
+
+.mt-memory-day.is-today {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* memory dots carry the same three climate roles as the bars, so a day
+   reads the same hue on every tab (calm = teal, up = amber, low = coral) */
+.mood-dot.is-calm { background: var(--teal); }
+.mood-dot.is-up { background: var(--amber); }
+.mood-dot.is-low { background: var(--coral); }
+
+/* month cells browse days, so they clear the touch floor as buttons */
+.mt-cal .cal-cell {
+  min-height: var(--touch-min);
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* calendar days carry the same three climate roles as bars and dots,
+   so a date reads the same hue wherever it appears */
+.mt-cal .cal-cell.is-1,
+.mt-cal .cal-cell.is-2 {
+  background: var(--coral);
+  color: #ffffff;
+}
+
+.mt-cal .cal-cell.is-3 {
+  background: var(--teal);
+  color: #ffffff;
+}
+
+.mt-cal .cal-cell.is-4,
+.mt-cal .cal-cell.is-5 {
+  background: var(--amber);
+  color: var(--label);
+}
+
+:root[data-theme='dark'] .mt-cal .cal-cell.is-1,
+:root[data-theme='dark'] .mt-cal .cal-cell.is-2,
+:root[data-theme='dark'] .mt-cal .cal-cell.is-3 {
+  color: var(--label);
+}
+
+/* dark fixes for global vocabulary that assumes a light card:
+   the selected segment would be white-on-white, and the today outline
+   (espresso) sinks into the dark surface */
+:root[data-theme='dark'] .seg.is-on {
+  background: var(--surface-variant);
+  color: var(--label);
+  box-shadow: none;
+}
+
+:root[data-theme='dark'] .mt-cal .cal-cell.is-today {
+  border-color: var(--label);
+  color: var(--label);
+}
+
+/* the calendar card trades padding for cell width: 7 × 44pt cells need
+   308pt + gaps, which only fits when the card pads 12 and rows gap 2 */
+.mt-card.is-cal {
+  padding: var(--s3);
+}
+
+.mt-cal .cal-row {
+  gap: 2px;
+}
+
+/* goal check-off: a 44pt target carrying a 26px ring */
+.mt-check {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.mt-check-ring {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 2px solid var(--border);
+  border-radius: var(--r-full);
+  color: transparent;
+}
+
+.mt-check.is-done .mt-check-ring {
+  border-color: var(--teal);
+  background: var(--teal);
+  color: #ffffff;
+}
+
+/* grouped rows inside one card (Settings, Care plan): plain buttons,
+   dividers separate, last row has none */
+.mt-rows {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+}
+
+.mt-rowline {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  flex: 0 0 auto;
+  min-height: 56px;
+  padding: var(--s2) 0;
+  border: 0;
+  border-bottom: 1px solid var(--divider);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mt-rowline.is-last {
+  border-bottom: 0;
+}
+
+/* bottom-sheet container (Check-in, Export, SOS): the panel that runs to
+   the screen edge over a scrim. Same card geometry, floor-anchored. */
+.mt-sheetpanel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  flex: 0 0 auto;
+  padding: var(--s2) var(--s5) var(--s4);
+  /* the home bar floats over the panel's foot, so the CTA clears it */
+  padding-bottom: calc(var(--s4) + var(--safe-bottom));
+  border-radius: 28px 28px 0 0;
+  background: var(--surface);
+}
+
+/* mood pick: face big enough to read as a face, ringed when chosen */
+.mt-moodcell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s1);
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 64px;
+  padding: var(--s1);
+  border: 3px solid transparent;
+  border-radius: var(--r-lg);
+  background: transparent;
+  color: var(--label-2);
+  font-family: var(--font);
+  font-size: var(--t-caption);
+  line-height: 16px;
+  cursor: pointer;
+}
+
+.mt-moodcell.is-on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--label);
+  font-weight: 600;
+}
+
+/* energy pick: five numbered levels, the chosen one filled */
+.mt-energycell {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: var(--touch-min);
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--fill);
+  color: var(--label);
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mt-energycell.is-on {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+/* note strip: collapsed one-line field with a mic shortcut (FS-011 §3.3) */
+.mt-note {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s2);
+  flex: 0 0 auto;
+  min-height: 48px;
+  padding: 0 var(--s1) 0 var(--s4);
+  border: 0;
+  border-radius: var(--mt-r-inset);
+  background: var(--bg-grouped);
+  color: var(--label-2);
+  font-size: var(--t-subhead);
+  cursor: pointer;
+}
+
+.mt-note-mic {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-full);
+  background: transparent;
+  color: var(--label-2);
+  cursor: pointer;
+}
+
+/* shimmer placeholder — a loading state is skeleton shapes in the card
+   language, never a blank frame (VD §5.9). Static on the board; the SwiftUI
+   side animates the shimmer. */
+.mt-skeleton {
+  display: block;
+  flex: 0 0 auto;
+  border-radius: var(--r-full);
+  background: var(--fill);
+}
+
+.mt-skeleton.is-card {
+  border-radius: var(--mt-r-card);
+}
+
+/* cited-day chip inside an insight card (display-only) */
+.mt-tag {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  height: 28px;
+  padding: 0 var(--s3);
+  border-radius: var(--r-full);
+  background: var(--surface-variant);
+  color: var(--label-2-ground);
+  font-size: var(--t-caption);
+  font-weight: 600;
+  line-height: 16px;
+}
+
+/* quiet chrome: flat, attached, white to the device bottom (VD §5 — no
+   materials in MVP). The shell still builds and positions the band; this
+   only paints it, so the white sheet above flows straight into the bar. */
+.region-tabs {
+  height: calc(var(--tabbar-h) + var(--safe-bottom));
+  margin: 0;
+  padding: var(--s2) var(--s4) var(--safe-bottom);
+  border: 0;
+  border-top: 1px solid var(--divider);
+  border-radius: 0;
+  background: var(--surface);
+  box-shadow: none;
+}
+
+/* one destination in the tab bar (shell decorates is-active) */
+.mt-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 52px;
+  padding: var(--s1) var(--s1);
+  border: 0;
+  border-radius: var(--r-full);
+  background: transparent;
+  color: var(--label-2);
+  font-family: var(--font);
+  font-size: var(--t-caption);
+  font-weight: 500;
+  line-height: 16px;
+  cursor: pointer;
+}
+
+.mt-tab.is-active {
+  color: var(--accent);
+  font-weight: 700;
+}

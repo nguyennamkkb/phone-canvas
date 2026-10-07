@@ -1,5 +1,42 @@
+import { useSyncExternalStore } from 'react'
 import { deriveRegistry } from './derive'
 import type { ComponentDef, DeriveInput, ProjectDef, ScreenDef } from './types'
+
+/**
+ * Live version for dev file sync.
+ *
+ * `import.meta.glob` re-evaluates this module when a file under `project/` is
+ * added/edited/removed, but React state initialized from the registry (board
+ * nodes, project list) would otherwise keep the old snapshot: edits need a
+ * manual reload, deletes linger as zombie nodes. Every evaluation bumps this
+ * version (state on `globalThis` so listeners survive the module swap) and
+ * `useRegistryVersion` re-renders subscribers so the board can prune/add live.
+ */
+type RegistryLive = { version: number; listeners: Set<() => void> }
+
+function registryLive(): RegistryLive {
+  const g = globalThis as unknown as { __pcRegistryLive?: RegistryLive }
+  g.__pcRegistryLive ??= { version: 0, listeners: new Set() }
+  return g.__pcRegistryLive
+}
+
+function subscribeRegistry(onChange: () => void): () => void {
+  const live = registryLive()
+  live.listeners.add(onChange)
+  return () => {
+    live.listeners.delete(onChange)
+  }
+}
+
+/** re-render when screens/components/project.json/tokens change on disk (dev) */
+export function useRegistryVersion(): number {
+  return useSyncExternalStore(
+    subscribeRegistry,
+    () => registryLive().version,
+    () => registryLive().version,
+  )
+}
+
 
 /**
  * The browser reader for the project-folder convention.
@@ -94,4 +131,26 @@ export function tokensCssFor(projectId: string): string | undefined {
 /** asset paths relative to `project/<id>/assets/`, for lint and tooling */
 export function assetsOf(projectId: string): string[] {
   return registry.assets[projectId] ?? []
+}
+
+// Every evaluation (initial load + each HMR re-execution after a project file
+// is added/edited/removed) bumps the live version so mounted boards resync
+// without a page reload. State lives on globalThis so listeners survive the
+// module swap; notify after the maps above are rebuilt.
+{
+  const live = registryLive()
+  live.version += 1
+  for (const notify of [...live.listeners]) notify()
+}
+
+if (import.meta.hot) {
+  // Self-accept: the live sync (prune zombies, place new screens) handles the
+  // update instead of a full page reload, keeping board layout/selection.
+  import.meta.hot.accept()
+  // The dev server (registryGuardDev in vite.config.ts) broadcasts this
+  // whenever anything under project/ changes; invalidate forces this module
+  // (and its globs) to re-evaluate even if Vite's own invalidation missed it.
+  import.meta.hot.on('pc:registry-changed', () => {
+    void import.meta.hot?.invalidate()
+  })
 }

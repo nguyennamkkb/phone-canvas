@@ -1,0 +1,97 @@
+<!-- pc {"title":"Insights"} -->
+<div class="screen" data-tab-active="insights" style="background-color: var(--bg); background-image: radial-gradient(circle 110px at 335px 70px, var(--peach-deep) 0%, var(--peach-deep) 55%, transparent 100%); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed">
+  <div class="body">
+    <div class="mt-hero">
+      <div class="col" style="gap: 0">
+        <div class="t-caption" style="color: var(--label-2-ground)">October · 24 check-ins</div>
+        <div class="t-page">Insights</div>
+      </div>
+    </div>
+
+    <div class="mt-sheet">
+      <!-- range switcher: Week free, Month and Year behind Plus (FS-016 §5) -->
+      <div class="segmented-light">
+        <button class="seg is-on">Week</button>
+        <button class="seg">
+          <span>Month</span>
+          <span class="icon icon-xs" data-symbol="lock"></span>
+        </button>
+        <button class="seg">
+          <span>Year</span>
+          <span class="icon icon-xs" data-symbol="lock"></span>
+        </button>
+      </div>
+
+      <!-- trend strip: the selected range as rounded bars (EI-003) -->
+      <div class="mt-card is-tint">
+        <div class="row">
+          <div class="grow t-headline">This week</div>
+          <div class="t-caption" style="color: var(--label-2-ground)">Steadier than last</div>
+        </div>
+        <div class="mt-climate is-large">
+          <button class="mt-climate-day" aria-label="Monday, steady">
+            <span class="mt-climate-track"><span class="mt-climate-bar" style="height: 70%"></span></span>
+            <span>Mo</span>
+          </button>
+          <button class="mt-climate-day" aria-label="Tuesday, steady">
+            <span class="mt-climate-track"><span class="mt-climate-bar" style="height: 85%"></span></span>
+            <span>Tu</span>
+          </button>
+          <button class="mt-climate-day" aria-label="Wednesday, radiant">
+            <span class="mt-climate-track"><span class="mt-climate-bar is-up" style="height: 100%"></span></span>
+            <span>We</span>
+          </button>
+          <button class="mt-climate-day" aria-label="Thursday, low">
+            <span class="mt-climate-track"><span class="mt-climate-bar is-low" style="height: 45%"></span></span>
+            <span>Th</span>
+          </button>
+          <button class="mt-climate-day" aria-label="Friday, steady">
+            <span class="mt-climate-track"><span class="mt-climate-bar" style="height: 70%"></span></span>
+            <span>Fr</span>
+          </button>
+          <button class="mt-climate-day" aria-label="Saturday, radiant">
+            <span class="mt-climate-track"><span class="mt-climate-bar is-up" style="height: 90%"></span></span>
+            <span>Sa</span>
+          </button>
+          <button class="mt-climate-day is-today" aria-label="Today, not logged yet">
+            <span class="mt-climate-track"><span class="mt-climate-ring"></span></span>
+            <span>Su</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- calendar field: October grid, logged days carry their mood (FS-016 §3.1) -->
+      <div class="mt-card is-cal">
+        <div class="row">
+          <div class="grow t-headline">October</div>
+          <span class="icon icon-xs" data-symbol="chevron.right" style="color: var(--label-2)"></span>
+        </div>
+        <div class="col mt-cal" style="gap: var(--s1)">
+          <div class="cal-row">
+            <span class="cal-head">M</span><span class="cal-head">T</span><span class="cal-head">W</span><span class="cal-head">T</span><span class="cal-head">F</span><span class="cal-head">S</span><span class="cal-head">S</span>
+          </div>
+          <div class="cal-row">
+            <button class="cal-cell is-quiet">29</button><button class="cal-cell is-quiet">30</button><button class="cal-cell is-3">1</button><button class="cal-cell is-4">2</button><button class="cal-cell is-2">3</button><button class="cal-cell is-5">4</button><button class="cal-cell is-3">5</button>
+          </div>
+          <div class="cal-row">
+            <button class="cal-cell is-3">6</button><button class="cal-cell is-3">7</button><button class="cal-cell is-5">8</button><button class="cal-cell is-2">9</button><button class="cal-cell is-3">10</button><button class="cal-cell is-5">11</button><button class="cal-cell is-today">12</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- export entry: CSV/PDF handoff (UC-014) -->
+      <button class="mt-card">
+        <div class="row" style="gap: var(--s3)">
+          <span class="icon icon-sm" data-symbol="download" style="color: var(--accent)"></span>
+          <div class="grow col" style="gap: 0">
+            <div class="t-headline">Export</div>
+            <div class="t-caption" style="color: var(--label-2)">CSV or PDF · Oct 2 – 8</div>
+          </div>
+          <span class="icon icon-xs" data-symbol="chevron.right" style="color: var(--label-2)"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- @component app-tabs -->
+</div>

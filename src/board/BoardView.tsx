@@ -16,7 +16,7 @@ import { DEFAULT_DEVICE_ID, isKnownDevice } from '../frame/devices'
 import { nextSlotX } from './placement'
 import { useInspector } from '../inspect/InspectorContext'
 import { SpecPanel } from '../inspect/SpecPanel'
-import { SCREEN_BY_ID } from '../screens'
+import { SCREEN_BY_ID, useRegistryVersion } from '../screens'
 import type { Project } from '../projects/projects'
 import { resolveScreens } from '../projects/projects'
 import {
@@ -258,6 +258,50 @@ function BoardViewInner({
   useEffect(() => {
     saveBoard(project.id, { nodes, edges, removed, trash })
   }, [project.id, nodes, edges, removed, trash])
+
+  // Live registry sync: a project file added/edited/removed on disk resyncs
+  // the mounted board — prune zombie nodes, drop their edges, place new
+  // screens — without a page reload. Same rules as openingNodes/reconcile,
+  // but deliberately-removed (removed[]) and trashed screens stay off.
+  // `registryVersion` only retriggers this; the maps are read fresh each run.
+  const registryVersion = useRegistryVersion()
+  useEffect(() => {
+    const known = SCREEN_BY_ID
+    const lost = new Set<string>()
+    for (const n of nodes) {
+      if (!known.has(n.data.screenId)) lost.add(n.data.screenId)
+    }
+    for (const t of trash) {
+      if (!known.has(t.screenId)) lost.add(t.screenId)
+    }
+    const keptNodes = lost.size === 0 ? nodes : nodes.filter((n) => known.has(n.data.screenId))
+    const keptTrash = lost.size === 0 ? trash : trash.filter((t) => known.has(t.screenId))
+    const trashedIds = new Set(keptTrash.map((t) => t.screenId))
+    const nextRemoved = [...new Set([...removed, ...lost])].filter((id) => !trashedIds.has(id))
+    const missing = missingScreenIds(
+      resolveScreens(project),
+      [...keptNodes.map((n) => n.data.screenId), ...trashedIds],
+      nextRemoved,
+    )
+    const nextNodes = [...keptNodes]
+    for (const screenId of missing) {
+      const node = makeNode(project.id, screenId, nextSlotX(nextNodes, COLUMN_GAP))
+      if (node) nextNodes.push(node)
+    }
+    const nextEdges = lost.size === 0 ? edges : pruneEdges(nextNodes, edges)
+    if (
+      keptNodes.length !== nodes.length ||
+      nextNodes.length !== keptNodes.length ||
+      keptTrash.length !== trash.length ||
+      nextRemoved.length !== removed.length ||
+      nextEdges.length !== edges.length
+    ) {
+      setNodes(nextNodes)
+      setEdges(nextEdges)
+      setTrash(keptTrash)
+      setRemoved(nextRemoved)
+    }
+  }, [registryVersion, project, nodes, edges, removed, trash])
 
   // xuất/nhập trạng thái — browser không ghi được vào repo nên đi qua file
   const handleExportState = useCallback(() => {

@@ -66,7 +66,11 @@ function lineOf(src, index) {
 }
 
 function isColorValue(value) {
-  return /^#[0-9a-f]{3,8}$/i.test(value) || /^rgba?\(/i.test(value)
+  // DEF_RE captures the trailing `;` in m[0], so a hex definition arrives as
+  // "#6f6587;" and silently fails the anchored test — which made every project
+  // that redefines a global rgba token (e.g. --label-2) as hex look unaliased.
+  const v = value.replace(/;\s*$/, '')
+  return /^#[0-9a-f]{3,8}$/i.test(v) || /^rgba?\(/i.test(v)
 }
 
 /** longhand background declarations off the `.screen` root tag (or null) */

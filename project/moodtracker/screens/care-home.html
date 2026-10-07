@@ -1,0 +1,69 @@
+<!-- pc {"title":"Care"} -->
+<div class="screen" data-tab-active="care" style="background-color: var(--bg); background-image: radial-gradient(circle 110px at 335px 70px, var(--peach-deep) 0%, var(--peach-deep) 55%, transparent 100%); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed">
+  <div class="body">
+    <!-- warmth first: the actor greets before any task (EI-010) -->
+    <div class="mt-hero">
+      <div class="row" style="gap: var(--s3); align-items: center">
+        <img class="art" src="/project/moodtracker/assets/mascot-steady.svg" width="64" height="64" alt="MascotSteady" />
+        <div class="grow col" style="gap: 0">
+          <div class="t-caption" style="color: var(--label-2-ground)">Gentle reminder</div>
+          <div class="t-title2">Rest is progress too</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-sheet">
+      <!-- encouragement feed: newest first, warmth before tasks -->
+      <button class="mt-card">
+        <div class="row" style="gap: var(--s2)">
+          <span class="icon icon-xs" data-symbol="sparkles" style="color: var(--accent)"></span>
+          <span class="grow t-caption" style="color: var(--label-2)">For a low Thursday</span>
+          <span class="icon icon-xs" data-symbol="chevron.right" style="color: var(--label-2)"></span>
+        </div>
+        <div class="t-body">A hard day is data, not a verdict. Tomorrow gets a fresh ring.</div>
+      </button>
+
+      <!-- living plan: active micro-goals with far-apart check and skip -->
+      <div class="mt-card">
+        <div class="row">
+          <div class="grow t-headline">Today's plan</div>
+          <div class="t-caption" style="color: var(--label-2)">1 of 2 done</div>
+        </div>
+        <div class="mt-rows">
+          <div class="row" style="gap: var(--s1); min-height: 56px">
+            <button class="mt-check is-done" aria-label="Walk before noon, done">
+              <span class="mt-check-ring"><span class="icon icon-xs" data-symbol="checkmark"></span></span>
+            </button>
+            <span class="grow t-body">Walk before noon</span>
+          </div>
+          <div class="row" style="gap: var(--s1); min-height: 56px">
+            <button class="mt-check" aria-label="Lights out by 11, mark done">
+              <span class="mt-check-ring"></span>
+            </button>
+            <span class="grow t-body">Lights out by 11</span>
+            <button class="t-subhead" style="min-height: var(--touch-min); padding: 0 var(--s2); border: 0; background: transparent; color: var(--label-2); font: inherit; cursor: pointer">Skip</button>
+          </div>
+          <button class="mt-rowline is-last">
+            <span class="icon icon-sm" data-symbol="plus" style="color: var(--accent)"></span>
+            <span class="grow t-body">New goal</span>
+            <span class="icon icon-xs" data-symbol="chevron.right" style="color: var(--label-2)"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- SOS entry: calm, persistent, one tap — pinned last, no staging fear -->
+      <button class="mt-band" style="border: 0; font: inherit; color: inherit; text-align: left; width: 100%; cursor: pointer">
+        <div class="row" style="gap: var(--s3)">
+          <span class="icon icon-sm" data-symbol="phone.fill" style="color: var(--accent)"></span>
+          <div class="grow col" style="gap: 0">
+            <div class="t-headline">SOS · Crisis resources</div>
+            <div class="t-subhead" style="color: var(--label-2-ground)">Always here, day or night.</div>
+          </div>
+          <span class="icon icon-xs" data-symbol="chevron.right" style="color: var(--accent)"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- @component app-tabs -->
+</div>

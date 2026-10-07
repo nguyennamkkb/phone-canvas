@@ -1,0 +1,21 @@
+<!-- @anatomy name="app-tabs" purpose="Thanh tab 5 destination cua MoodTracker: Today, Journal, Insights, Care, Settings — shell dung band, file nay chi khai danh sach." anatomy="nav.region-tabs (shell) > button.mt-tab[data-tab] × 5, moi nut = icon 24 + label 12" variants="is-active do shell suy ra tu data-tab-active tren .screen — khong tu viet" states="idle (label-2); active (accent + weight 700) — cac state pressed/loading khong bieu dien trong HTML tinh" tokens="--surface --divider --shadow --label-2 --accent --font --t-caption --r-full --s1" regions="band tab do shell dung ngoai vung cuon; khong bao gio nam trong .body" platforms="phone ok; watch/widget khong dung tab bar" interaction="tap destination — doi tab goc, khong push" a11y="moi nut co icon + nhan chu; shell tu them aria-label va aria-current=page cho muc dang mo" examples="dung: 5 data-tab slug on dinh, nhan ngan mot tu; sai: 6 tab, thieu nhan, tu viet is-active hay aria-label" -->
+<button class="mt-tab" data-tab="today">
+  <span class="icon" data-symbol="sun"></span>
+  <span>Today</span>
+</button>
+<button class="mt-tab" data-tab="journal">
+  <span class="icon" data-symbol="book"></span>
+  <span>Journal</span>
+</button>
+<button class="mt-tab" data-tab="insights">
+  <span class="icon" data-symbol="chart.bar"></span>
+  <span>Insights</span>
+</button>
+<button class="mt-tab" data-tab="care">
+  <span class="icon" data-symbol="heart"></span>
+  <span>Care</span>
+</button>
+<button class="mt-tab" data-tab="settings">
+  <span class="icon" data-symbol="gear"></span>
+  <span>Settings</span>
+</button>

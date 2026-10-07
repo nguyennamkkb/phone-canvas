@@ -3,6 +3,7 @@ import { BoardView } from './board/BoardView'
 import { Dashboard } from './projects/Dashboard'
 import { ErrorBoundary } from './shell/ErrorBoundary'
 import { useHashRoute } from './shell/useHashRoute'
+import { useRegistryVersion } from './projects/registry'
 import { InspectorProvider } from './inspect/InspectorContext'
 import { useUiTheme } from './tokens/store'
 import type { Project } from './projects/projects'
@@ -37,7 +38,8 @@ export function App() {
   // app-chrome theme toàn cục (5.1) — board ghi, dashboard đọc
   const [uiTheme, setUiTheme] = useUiTheme()
 
-  const projects = useMemo(() => allProjects(custom), [custom])
+  const registryVersion = useRegistryVersion()
+  const projects = useMemo(() => allProjects(custom), [custom, registryVersion])
   // URL is the source of truth (2.1); unknown ids fall to a not-found view
   const active =
     route.view === 'board' ? (projects.find((p) => p.id === route.projectId) ?? null) : null

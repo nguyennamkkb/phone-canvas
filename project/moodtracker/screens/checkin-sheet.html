@@ -1,0 +1,65 @@
+<!-- pc {"title":"Check-in"} -->
+<div class="screen" style="background-color: var(--surface)">
+  <div class="body-fixed">
+    <div class="scrim"></div>
+    <div class="spacer"></div>
+
+    <div class="mt-sheetpanel">
+      <div class="row" style="justify-content: center">
+        <i class="grabber"></i>
+      </div>
+
+      <div class="sheet-head">
+        <div class="col" style="gap: 0">
+          <div class="t-caption" style="color: var(--label-2)">Sunday, Oct 12</div>
+          <div class="t-section">How are you?</div>
+        </div>
+        <button class="close-btn" aria-label="Close">
+          <span class="icon icon-xs" data-symbol="xmark"></span>
+        </button>
+      </div>
+
+      <!-- mood row: four faces with word labels, no scroll (FS-011 §3.1) -->
+      <div class="row" style="gap: var(--s1)">
+        <button class="mt-moodcell" aria-label="Radiant">
+          <img class="art" src="/project/moodtracker/assets/face-radiant.svg" width="52" height="52" alt="FaceRadiant" />
+          <span>Radiant</span>
+        </button>
+        <button class="mt-moodcell is-on" aria-label="Steady, selected">
+          <img class="art" src="/project/moodtracker/assets/face-steady.svg" width="52" height="52" alt="FaceSteady" />
+          <span>Steady</span>
+        </button>
+        <button class="mt-moodcell" aria-label="Low">
+          <img class="art" src="/project/moodtracker/assets/face-low.svg" width="52" height="52" alt="FaceLow" />
+          <span>Low</span>
+        </button>
+        <button class="mt-moodcell" aria-label="Heavy">
+          <img class="art" src="/project/moodtracker/assets/face-heavy.svg" width="52" height="52" alt="FaceHeavy" />
+          <span>Heavy</span>
+        </button>
+      </div>
+
+      <!-- energy row: five levels, the chosen one filled (FS-011 §3.2) -->
+      <div class="col" style="gap: var(--s2)">
+        <div class="t-caption" style="color: var(--label-2)">Energy</div>
+        <div class="row" style="gap: var(--s2)">
+          <button class="mt-energycell" aria-label="Energy 1">1</button>
+          <button class="mt-energycell" aria-label="Energy 2">2</button>
+          <button class="mt-energycell is-on" aria-label="Energy 3, selected">3</button>
+          <button class="mt-energycell" aria-label="Energy 4">4</button>
+          <button class="mt-energycell" aria-label="Energy 5">5</button>
+        </div>
+      </div>
+
+      <!-- note strip: collapsed one-liner with mic shortcut (FS-011 §3.3) -->
+      <div class="mt-note">
+        <span class="grow">Add a note…</span>
+        <button class="mt-note-mic" aria-label="Dictate note">
+          <span class="icon icon-sm" data-symbol="microphone"></span>
+        </button>
+      </div>
+
+      <button class="mt-stone">Save check-in</button>
+    </div>
+  </div>
+</div>

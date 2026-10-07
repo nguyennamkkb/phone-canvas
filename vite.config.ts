@@ -82,7 +82,12 @@ function registryGuardDev(): Plugin {
 
       const refresh = async (notify: boolean) => {
         errors = (await scanProjects()).errors
-        if (notify && errors.length > 0) {
+        if (!notify) return
+        // Tell open boards to re-read the registry live (registry.ts bumps its
+        // version and prunes/places nodes) instead of waiting for a reload.
+        // Sent even when the registry is broken — fixing the file resyncs too.
+        server.ws.send({ type: 'custom', event: 'pc:registry-changed' })
+        if (errors.length > 0) {
           server.ws.send({ type: 'error', err: { message: format(), stack: '' } })
         }
       }
