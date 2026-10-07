@@ -16,7 +16,7 @@ import { DEFAULT_DEVICE_ID, isKnownDevice } from '../frame/devices'
 import { nextSlotX } from './placement'
 import { useInspector } from '../inspect/InspectorContext'
 import { SpecPanel } from '../inspect/SpecPanel'
-import { SCREEN_BY_ID, SCREENS } from '../screens'
+import { SCREEN_BY_ID } from '../screens'
 import type { Project } from '../projects/projects'
 import { resolveScreens } from '../projects/projects'
 import {
@@ -475,34 +475,6 @@ function BoardViewInner({
     [setNodes],
   )
 
-  const projectScreenIds = useMemo(() => resolveScreens(project), [project])
-
-  const onAddScreen = useCallback(
-    (screenId?: string) => {
-      const id = nextNodeId(project.id)
-      const pool = projectScreenIds.length > 0 ? projectScreenIds : SCREENS.map((s) => s.id)
-      setNodes((ns) => {
-        let sid = screenId
-        if (!sid) {
-          const onBoard = (s: string) => ns.some((n) => n.data.screenId === s)
-          // flow-core 3.1: hết màn thì thôi — không nhân bản lén
-          sid = pool.find((s) => !onBoard(s))
-          if (!sid) return ns
-        }
-        if (!SCREEN_BY_ID.has(sid)) return ns
-        onTrackScreen(project.id, sid)
-        const node: PhoneFlowNode = {
-          id,
-          type: 'phone',
-          position: { x: nextSlotX(ns, COLUMN_GAP), y: 0 },
-          data: { screenId: sid, deviceId: deviceForScreen(sid) },
-        }
-        return [...ns, node]
-      })
-    },
-    [project.id, projectScreenIds, onTrackScreen, setNodes],
-  )
-
   useEffect(() => {
     setDockCollapsed(loadDockCollapsed(project.id))
   }, [project.id])
@@ -581,7 +553,6 @@ function BoardViewInner({
         onSelectNode={setSelectedNodeId}
         onModeChange={setMode}
         onFrameStyleChange={setFrameStyle}
-        onAddScreen={onAddScreen}
         onBack={onBack}
         onTogglePanel={onTogglePanel}
         focusedNodeId={focusedNodeId}
@@ -595,7 +566,6 @@ function BoardViewInner({
         onExportState={handleExportState}
         onImportState={() => importInputRef.current?.click()}
         projectId={project.id}
-        projectScreenIds={projectScreenIds}
         dock={
           <TokenDock
             projectId={project.id}

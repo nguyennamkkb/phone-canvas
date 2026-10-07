@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="260" height="260" viewBox="0 0 260 260">
+  <defs>
+    <clipPath id="clipTodayBase"><circle cx="130" cy="130" r="100"/></clipPath>
+  </defs>
+  <circle cx="130" cy="130" r="112" fill="none" stroke="#DDDDF0" stroke-width="12"/>
+  <g clip-path="url(#clipTodayBase)">
+    <path d="M20,176 q28,-18 56,0 t56,0 t56,0 t56,0 V260 H20 Z" fill="#5F52E5" opacity="0.20"/>
+    <path d="M20,192 q28,-15 56,0 t56,0 t56,0 t56,0 V260 H20 Z" fill="#5F52E5" opacity="0.14"/>
+  </g>
+</svg>

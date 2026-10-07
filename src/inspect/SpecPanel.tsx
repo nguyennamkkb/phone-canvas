@@ -120,7 +120,7 @@ export function SpecPanel({
                 Focus màn đầu
               </Button>
             ) : (
-              <p>Thêm một màn vào board trước (ô + Màn hình).</p>
+              <p>Dựng màn mới bằng <code>npm run new-screen</code> — màn mới tự xuất hiện trên board.</p>
             )}
           </div>
         )}

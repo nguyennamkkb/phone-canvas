@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220" viewBox="0 0 220 220">
+  <defs>
+    <clipPath id="clipDaily"><circle cx="110" cy="110" r="88"/></clipPath>
+  </defs>
+  <circle cx="110" cy="110" r="96" fill="none" stroke="#DDDDF0" stroke-width="14"/>
+  <g clip-path="url(#clipDaily)">
+    <path d="M10,158 q25,-16 50,0 t50,0 t50,0 t50,0 V220 H10 Z" fill="#5F52E5" opacity="0.16"/>
+    <path d="M10,170 q25,-14 50,0 t50,0 t50,0 t50,0 V220 H10 Z" fill="#5F52E5" opacity="0.12"/>
+  </g>
+  <circle cx="110" cy="110" r="96" fill="none" stroke="#5F52E5" stroke-width="14" stroke-linecap="round" stroke-dasharray="536 604" transform="rotate(-60 110 110)"/>
+  <circle cx="93" cy="16" r="11" fill="#5F52E5"/>
+  <circle cx="93" cy="16" r="4.5" fill="#FFFFFF"/>
+</svg>

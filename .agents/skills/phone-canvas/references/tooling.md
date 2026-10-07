@@ -61,7 +61,6 @@ old habits keep working.
 | **Di chuyển** | iframes are inert; drag, pan, zoom. Click a node to point the panel at it. |
 | **Đo đạc** | iframes take pointer events; hover highlights, click selects an element. |
 | **Khung đơn giản / Khung máy** | cosmetic only — never changes a measured number |
-| **+ Màn hình** | clone the next screen onto the board |
 | **⤢ / ⤡** | expand the node to the full content height — the iframe *and* the inner document grow together (an `extraCss` override, `!important` so it beats `CHROME_CSS`), then the bridge re-measures and it converges. If an expanded node still cuts content, see failure mode 11. |
 | **🗑** | open the per-project trash dialog (badge = count) |
 | **Xuất** | download `project-id-board.json` (`{ v: 1, projectId, exportedAt, board }`) |

@@ -1,0 +1,145 @@
+<!-- pc {"title":"Statistics"} -->
+<div class="screen" data-tab-active="statistics" style="background-color: var(--bg)">
+  <button data-slot="back" aria-label="Back" style="min-width: var(--touch-min); min-height: var(--touch-min); background: transparent; border: 0">
+    <span style="display: flex; padding: var(--s2); border: 1px solid var(--control-border); border-radius: var(--r-sm)">
+      <span class="icon icon-sm" data-symbol="chevron.left"></span>
+    </span>
+  </button>
+  <span data-slot="title" class="t-headline">Statistics</span>
+  <button data-slot="right" aria-label="More options" style="min-width: var(--touch-min); min-height: var(--touch-min); background: transparent; border: 0">
+    <span style="display: flex; padding: var(--s2); border: 1px solid var(--control-border); border-radius: var(--r-sm)">
+      <span class="icon icon-sm" data-symbol="ellipsis"></span>
+    </span>
+  </button>
+
+  <div class="body" style="padding: var(--s4); gap: var(--s4)">
+    <div class="row" style="gap: var(--s1); padding: var(--s1); border-radius: var(--r-full); background: var(--surface); border: 1px solid var(--divider); align-items: center">
+      <div class="grow t-subhead" style="text-align: center; padding: var(--s2) 0">Day</div>
+      <div class="grow t-subhead" style="text-align: center; padding: var(--s2) 0; border-radius: var(--r-full); background: var(--accent); color: var(--on-accent)">Week</div>
+      <div class="grow t-subhead" style="text-align: center; padding: var(--s2) 0">Month</div>
+    </div>
+
+    <div class="hy-card-tint">
+      <div class="t-headline">Weekly Completion</div>
+      <div class="row" style="gap: var(--s2)">
+        <div class="col" style="gap: var(--s1); align-items: center; flex: 1 1 0; min-width: 0">
+          <span class="hy-check"><span class="icon icon-xs" data-symbol="checkmark"></span></span>
+          <span class="t-caption" style="color: var(--label-2)">Sun</span>
+        </div>
+        <div class="col" style="gap: var(--s1); align-items: center; flex: 1 1 0; min-width: 0">
+          <span class="hy-check"><span class="icon icon-xs" data-symbol="checkmark"></span></span>
+          <span class="t-caption" style="color: var(--label-2)">Mon</span>
+        </div>
+        <div class="col" style="gap: var(--s1); align-items: center; flex: 1 1 0; min-width: 0">
+          <span class="hy-check"><span class="icon icon-xs" data-symbol="checkmark"></span></span>
+          <span class="t-caption" style="color: var(--label-2)">Tue</span>
+        </div>
+        <div class="col" style="gap: var(--s1); align-items: center; flex: 1 1 0; min-width: 0">
+          <span class="hy-check"><span class="icon icon-xs" data-symbol="checkmark"></span></span>
+          <span class="t-caption" style="color: var(--label-2)">Wed</span>
+        </div>
+        <div class="col" style="gap: var(--s1); align-items: center; flex: 1 1 0; min-width: 0">
+          <span class="hy-check"><span class="icon icon-xs" data-symbol="checkmark"></span></span>
+          <span class="t-caption" style="color: var(--label-2)">Thu</span>
+        </div>
+        <div class="col" style="gap: var(--s1); align-items: center; flex: 1 1 0; min-width: 0">
+          <span class="hy-check" style="background: var(--label); color: var(--bg)"></span>
+          <span class="t-caption" style="color: var(--label-2)">Fri</span>
+        </div>
+        <div class="col" style="gap: var(--s1); align-items: center; flex: 1 1 0; min-width: 0">
+          <span class="hy-check" style="background: var(--divider); color: var(--label-2)"></span>
+          <span class="t-caption" style="color: var(--label-2)">Sat</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hy-card">
+      <div class="row" style="align-items: center">
+        <div class="grow hy-title">Hydration Stats</div>
+        <div class="row" style="gap: var(--s1); align-items: center">
+          <span class="t-caption" style="color: var(--label-2)">This Week</span>
+          <span class="icon icon-xs" data-symbol="chevron.down" style="color: var(--label-2)"></span>
+        </div>
+      </div>
+      <div class="row" style="gap: var(--s2); align-items: stretch">
+        <div class="col" style="gap: 0; justify-content: space-between; padding: var(--s1) 0">
+          <span class="t-caption" style="color: var(--label-2)">100</span>
+          <span class="t-caption" style="color: var(--label-2)">75</span>
+          <span class="t-caption" style="color: var(--label-2)">50</span>
+          <span class="t-caption" style="color: var(--label-2)">25</span>
+          <span class="t-caption" style="color: var(--label-2)">0</span>
+        </div>
+        <div class="grow chart">
+          <div class="chart-col"><div class="bar" style="height: 30%; background: var(--accent)"></div></div>
+          <div class="chart-col"><div class="bar" style="height: 55%; background: var(--accent)"></div></div>
+          <div class="chart-col"><div class="bar" style="height: 95%; background: var(--accent)"></div></div>
+          <div class="chart-col"><div class="bar" style="height: 62%; background: var(--accent)"></div></div>
+          <div class="chart-col"><div class="bar" style="height: 45%; background: var(--accent)"></div></div>
+          <div class="chart-col"><div class="bar" style="height: 78%; background: var(--accent)"></div></div>
+        </div>
+      </div>
+      <div class="chart-labels">
+        <div class="chart-label" style="color: var(--label-2)">Mon</div>
+        <div class="chart-label" style="color: var(--label-2)">Tue</div>
+        <div class="chart-label" style="color: var(--label-2)">Web</div>
+        <div class="chart-label" style="color: var(--label-2)">Thu</div>
+        <div class="chart-label" style="color: var(--label-2)">Fri</div>
+        <div class="chart-label" style="color: var(--label-2)">Sat</div>
+      </div>
+    </div>
+
+    <div class="hy-title">Monthly Progress Summary</div>
+    <div class="row" style="gap: var(--s3)">
+      <div class="grow hy-card">
+        <div class="row" style="gap: var(--s2); align-items: center">
+          <span class="hy-tile" style="width: var(--s8); height: var(--s8)">
+            <span class="icon icon-sm" data-symbol="flame"></span>
+          </span>
+          <div class="col" style="gap: 0">
+            <span class="t-headline">386ml</span>
+            <span class="t-caption" style="color: var(--label-2)">Weekly Average</span>
+          </div>
+        </div>
+        <img class="art" src="/project/hydro/assets/spark.svg" width="300" height="64" alt="Weekly trend sparkline" />
+      </div>
+      <div class="grow hy-card">
+        <div class="row" style="gap: var(--s2); align-items: center">
+          <span class="hy-tile" style="width: var(--s8); height: var(--s8)">
+            <span class="icon icon-sm" data-symbol="heart.fill"></span>
+          </span>
+          <div class="col" style="gap: 0">
+            <span class="t-headline">75%</span>
+            <span class="t-caption" style="color: var(--label-2)">Average Intake</span>
+          </div>
+        </div>
+        <div class="row" style="gap: 3px; align-items: flex-end; height: var(--s10)">
+          <div class="grow" style="height: 40%; border-radius: var(--r-full); background: var(--surface-variant)"></div>
+          <div class="grow" style="height: 65%; border-radius: var(--r-full); background: var(--surface-variant)"></div>
+          <div class="grow" style="height: 50%; border-radius: var(--r-full); background: var(--surface-variant)"></div>
+          <div class="grow" style="height: 80%; border-radius: var(--r-full); background: var(--accent)"></div>
+          <div class="grow" style="height: 58%; border-radius: var(--r-full); background: var(--surface-variant)"></div>
+          <div class="grow" style="height: 72%; border-radius: var(--r-full); background: var(--surface-variant)"></div>
+          <div class="grow" style="height: 46%; border-radius: var(--r-full); background: var(--surface-variant)"></div>
+          <div class="grow" style="height: 62%; border-radius: var(--r-full); background: var(--label)"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="hy-tab" data-tab="home">
+    <span class="icon" data-symbol="house"></span>
+    <span>Home</span>
+  </button>
+  <button class="hy-tab" data-tab="alarm">
+    <span class="icon" data-symbol="clock"></span>
+    <span>Alarm</span>
+  </button>
+  <button class="hy-tab" data-tab="statistics">
+    <span class="icon" data-symbol="chart.bar"></span>
+    <span>Statistics</span>
+  </button>
+  <button class="hy-tab" data-tab="settings">
+    <span class="icon" data-symbol="gear"></span>
+    <span>Settings</span>
+  </button>
+</div>

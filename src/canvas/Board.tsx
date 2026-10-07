@@ -10,13 +10,12 @@ import {
   useReactFlow,
 } from '@xyflow/react'
 import type { Edge, NodeTypes, OnConnect, OnEdgesChange, OnNodesChange } from '@xyflow/react'
-import { ArrowLeft, Check, ChevronsLeft, ChevronsRight, Link2, Maximize2, MoreHorizontal, Plus, Trash2 } from 'lucide-react'
+import { ArrowLeft, Check, ChevronsLeft, ChevronsRight, Link2, Maximize2, MoreHorizontal, Trash2 } from 'lucide-react'
 import { PhoneNode } from './PhoneNode'
 import type { BoardNode } from './TokenNode'
 import type { BoardSettings } from './BoardContext'
 import type { CanvasMode, FrameStyle } from './BoardContext'
 import { useInspector } from '../inspect/InspectorContext'
-import { SCREEN_BY_ID, SCREENS } from '../screens'
 import { hrefFor } from '../shell/useHashRoute'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -24,13 +23,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -58,7 +50,6 @@ export type BoardProps = {
   onSelectNode: (id: string | null) => void
   onModeChange: (mode: CanvasMode) => void
   onFrameStyleChange: (style: FrameStyle) => void
-  onAddScreen: (screenId?: string) => void
   /** flow-core 2.3: double-click dây nối để đặt nhãn component nguồn */
   onEdgeLabel: (edgeId: string) => void
   onBack: () => void
@@ -73,8 +64,6 @@ export type BoardProps = {
   undoSuffix?: string
   onUndo: () => void
   projectId: string
-  /** màn của project hiện tại — dropdown mặc định chỉ liệt kê chừng này (5.3) */
-  projectScreenIds: string[]
   /** thùng rác per-project — badge + dialog (screen-trash) */
   trashCount: number
   onOpenTrash: () => void
@@ -98,7 +87,6 @@ export function Board({
   onModeChange,
   onFrameStyleChange,
   onEdgeLabel,
-  onAddScreen,
   onBack,
   onTogglePanel,
   focusedNodeId,
@@ -108,7 +96,6 @@ export function Board({
   undoTitle,
   onUndo,
   projectId,
-  projectScreenIds,
   trashCount,
   onOpenTrash,
   onExportState,
@@ -121,10 +108,6 @@ export function Board({
   const didFit = useRef(false)
   const mountTime = useRef(Date.now())
   const refitTimer = useRef<number | undefined>(undefined)
-  const [pick, setPick] = useState('')
-  // dropdown thêm-màn (5.3): mặc định màn của project, opt-in mới thấy tất cả
-  const [showAllScreens, setShowAllScreens] = useState(false)
-  const scopedIds = projectScreenIds.length > 0 ? projectScreenIds : SCREENS.map((s) => s.id)
   const [copiedLink, setCopiedLink] = useState(false)
   // toolbar compaction: nhóm phụ gộp vào ⋯ khi topbar hẹp (đo chính topbar).
   const wrapRef = useRef<HTMLDivElement>(null)
@@ -415,67 +398,6 @@ export function Board({
         </DropdownMenu>
         )}
 
-        <Separator orientation="vertical" className="h-5" />
-
-        <Select
-          value={pick}
-          onValueChange={(id) => {
-            if (id === '__all') {
-              setShowAllScreens(true)
-              setPick('')
-            } else if (id === '__project') {
-              setShowAllScreens(false)
-              setPick('')
-            } else if (id) {
-              onAddScreen(id)
-              setPick('')
-            }
-          }}
-        >
-          <SelectTrigger className="h-8 w-auto text-xs" title="Thêm màn hình cụ thể" aria-label="Thêm màn hình cụ thể">
-            <SelectValue placeholder="+ Màn hình" />
-          </SelectTrigger>
-          <SelectContent>
-            {showAllScreens ? (
-              <>
-                <SelectItem value="__project">Chỉ màn của project…</SelectItem>
-                {SCREENS.map((s) => (
-                  <SelectItem key={s.id} value={s.id}>
-                    {s.title}
-                  </SelectItem>
-                ))}
-              </>
-            ) : (
-              <>
-                {scopedIds.map((sid) => {
-                  const s = SCREEN_BY_ID.get(sid)
-                  return s ? (
-                    <SelectItem key={s.id} value={s.id}>
-                      {s.title}
-                    </SelectItem>
-                  ) : null
-                })}
-                <SelectItem value="__all">Tất cả {SCREENS.length} màn…</SelectItem>
-              </>
-            )}
-          </SelectContent>
-        </Select>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => onAddScreen()}
-              disabled={SCREENS.length === 0}
-              title="Thêm màn tiếp theo của dự án"
-              aria-label="Thêm màn tiếp theo của dự án"
-            >
-              <Plus />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Thêm màn tiếp theo của dự án</TooltipContent>
-        </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
             <Button type="button" variant="ghost" size="icon" onClick={handleFit} title="Vừa khung (F)" aria-label="Vừa khung (F)">
@@ -588,9 +510,9 @@ export function Board({
             </CardHeader>
             <CardContent className="space-y-2 text-xs leading-relaxed text-muted-foreground">
               <p>
-                Chọn một màn trong ô <code>+ Màn hình</code> để thêm vào dự án này, hoặc chạy{' '}
+                Chạy{' '}
                 <code>npm run new-screen -- --project &lt;dự-án&gt; --name &lt;tên&gt;</code> để
-                dựng màn mới từ mẫu đúng contract.
+                dựng màn mới từ mẫu đúng contract — màn mới tự xuất hiện trên board.
               </p>
               <p>
                 Chưa chắc cách dựng? Hỏi agent — skill <code>phone-canvas</code> có sẵn quy trình
