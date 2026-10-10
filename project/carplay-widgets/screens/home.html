@@ -1,0 +1,150 @@
+<!-- pc {"title":"Bench"} -->
+<style>
+  /* Bench composition — WF-010 / FS-010 done-state home (the returning-user
+     root). Shared components (WarmCard, PaneWindow + its square tile variant,
+     CarStrip, PrimaryCTA) live in project/carplay-widgets/tokens.css; only this
+     screen's composition sits here, selectors prefixed with the screen id.
+
+     DEVIATION, stated: WF-010 §G sketches a row of tiles plus a "+" cell. A
+     CarPlay widget renders square, so the owned widgets are full-width warm
+     cards each carrying a 1:1 proof tile, and the "+" cell collapses into the
+     single New-sprint CTA directly beneath them — two add affordances would
+     be the same action twice (Hick), and FS-010 §5 makes the CTA the only
+     entry to creation. */
+  /* a live badge rides inside the dark tile: the only bright object on the
+     pane, sage so it reads as state and never as a second CTA */
+  .bench-live {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    padding: var(--s1) var(--s2);
+    border-radius: var(--r-full);
+    background: var(--sage);
+    color: var(--sage-ink);
+    font-size: var(--t-caption);
+    font-weight: 600;
+  }
+  /* The tile's own reading, at Heavy weight. VD-001 displayNum (64) does not
+     fit inside a square tile — it is reserved for the sprint countdown — so a
+     tile steps down one rung of the shared type scale rather than inventing a
+     size or overflowing the proof viewport. */
+  .bench-tile-num {
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -1px;
+    color: var(--pane-ink);
+  }
+  /* quiet store entry: outlined, hairline, no fill — ownership outranks it */
+  .bench-store {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--s3);
+    flex: 0 0 auto;
+    min-height: var(--touch-min);
+    padding: 0 var(--s4);
+    border: 1px solid var(--separator);
+    border-radius: var(--r-md);
+    background: transparent;
+    color: var(--label);
+    font-family: var(--font);
+    cursor: pointer;
+  }
+</style>
+<div class="screen" style="background-color: var(--bg)">
+  <span data-slot="title" class="nav-title">Bench</span>
+  <button class="icon-btn" data-slot="right" aria-label="Settings">
+    <span class="icon icon-sm" data-symbol="gear"></span>
+  </button>
+
+  <div class="body" style="padding: var(--s5); gap: var(--s3)">
+    <!-- CarStrip: place identity before any control (EI-005). The sprint trail
+         merges into the strip zone so the screen keeps its four groups. -->
+    <div class="cp-strip">
+      <div class="row">
+        <span class="cp-mark">
+          <span class="icon icon-lg" data-symbol="car"></span>
+        </span>
+        <div class="grow col" style="gap: 0">
+          <span class="t-headline">Golf</span>
+          <span class="t-footnote" style="color: var(--label-2)">Connected · wired</span>
+        </div>
+        <button class="cp-ghost" aria-label="Switch car">
+          <span>Switch</span>
+          <span class="icon icon-xs" data-symbol="chevron.right"></span>
+        </button>
+      </div>
+      <!-- The sprint trail merges into the strip zone (WF-010 §G keeps the
+           screen at four groups), and the tile count rides with it so the
+           owned widgets open directly under their own identity. -->
+      <div class="row" style="gap: var(--s2); padding-top: var(--s1); border-top: 1px solid var(--separator)">
+        <span class="dot is-filled"></span>
+        <span class="dot is-filled"></span>
+        <span class="dot is-filled"></span>
+        <span class="t-footnote" style="color: var(--label-2)">3 sprints · 3 of 5 tiles</span>
+      </div>
+    </div>
+
+    <!-- Owned widgets (EI-003: warm cards outrank every commercial element).
+         Each card is ≥88pt tall and carries the square tile the car shows. -->
+    <button class="cp-card is-amber is-row" aria-label="Route Weather, live on Golf">
+      <div class="cp-tile">
+        <span class="icon icon-lg" data-symbol="cloud.sun"></span>
+        <span class="t-title1 bench-tile-num">54°</span>
+      </div>
+      <div class="grow col" style="gap: var(--s1)">
+        <span class="t-title3">Route Weather</span>
+        <span class="t-footnote">Golf · synced 2 min ago</span>
+        <div class="row" style="gap: var(--s2)">
+          <span class="bench-live">Live</span>
+          <span class="t-footnote">Tile 1 of 5</span>
+        </div>
+      </div>
+      <span class="icon icon-sm" data-symbol="ellipsis"></span>
+    </button>
+
+    <button class="cp-card is-sage is-row" aria-label="Family Photo, synced to Golf">
+      <div class="cp-tile">
+        <span class="icon icon-lg" data-symbol="photo"></span>
+        <span class="t-subhead" style="font-weight: 600">Sunset</span>
+      </div>
+      <div class="grow col" style="gap: var(--s1)">
+        <span class="t-title3">Family Photo</span>
+        <span class="t-footnote">Golf · updated Tuesday</span>
+        <div class="row" style="gap: var(--s2)">
+          <span class="bench-live">Live</span>
+          <span class="t-footnote">Tile 2 of 5</span>
+        </div>
+      </div>
+      <span class="icon icon-sm" data-symbol="ellipsis"></span>
+    </button>
+
+    <button class="cp-card is-lav is-row" aria-label="Startup Sound, waiting for connection">
+      <div class="cp-tile">
+        <span class="icon icon-lg" data-symbol="speaker.wave.2"></span>
+        <span class="t-subhead" style="font-weight: 600">Chime</span>
+      </div>
+      <div class="grow col" style="gap: var(--s1)">
+        <span class="t-title3">Startup Sound</span>
+        <span class="t-footnote">Waiting for connection</span>
+        <div class="row" style="gap: var(--s2)">
+          <span class="t-footnote">Tile 3 of 5</span>
+        </div>
+      </div>
+      <span class="icon icon-sm" data-symbol="ellipsis"></span>
+    </button>
+
+    <button class="cp-cta">
+      <span class="icon icon-sm" data-symbol="plus"></span>
+      <span>New widget sprint</span>
+    </button>
+
+    <button class="bench-store">
+      <span class="icon icon-sm" data-symbol="crown"></span>
+      <span class="grow t-subhead" style="text-align: left">Packs &amp; Pro</span>
+      <span class="icon icon-sm" data-symbol="chevron.right"></span>
+    </button>
+  </div>
+</div>

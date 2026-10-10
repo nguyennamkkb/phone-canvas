@@ -1,0 +1,380 @@
+/* CarPlayWidgets — VD-001 / Warm Editorial Proof.
+   Source of truth: docs/CarPlayWidgets/Design_Direction.md §5 (token tables,
+   contrast measured there) + references/ref-calendar-editorial.jpg, which
+   contributes VISUAL GRAMMAR ONLY: poster-scale display numerals, the black /
+   outline pill toggle, pastel day-cards, hairline rails, generous whitespace.
+   No calendar behaviour is carried over.
+
+   Deviations, stated rather than silent:
+   • Radii follow VD-001 (8 / 16 / 24 / pill), so the shared --r-md / --r-lg
+     scale values are overridden here — core.css ships 12 / 20.
+   • Warm cards carry their own ink (--amber-ink …) because ink-on-pastel is a
+     different measured colour from ink-on-paper. Dark mode deepens each card
+     surface and promotes its pastel to the ink (VD-001 dark table).
+   • Type is the board's t-* scale, never new sizes: question → --t-large,
+     displayNum → --t-score, cardTitle → --t-title2, tileText → --t-subhead.
+   • The pane window is the only dark object on paper; it carries one soft
+     shadow (y4 / b16 / 24% black) and never glass.
+   • One link colour: ink. Selection is stated with fill + shape, never hue. */
+
+:root {
+  /* ---- surfaces + text (semantic; paper & ink) ---- */
+  --bg: #f7f3ec;
+  --bg-grouped: #efe7da;
+  --label: #211d18;
+  --label-2: #6e6558;
+  --label-3: #a79c8b;
+  --separator: rgba(33, 29, 24, 0.12);
+  --fill: rgba(33, 29, 24, 0.06);
+  --accent: #211d18;
+  --on-accent: #f7f3ec;
+  --error: #a4262c;
+  --success: #1f6b3a;
+  --focus: #2f6bff;
+
+  /* ---- the proof pane (identical surface in both modes) ---- */
+  --pane: #0e0c0a;
+  --pane-ink: #f4eee2;
+  --pane-ink-2: #b7ab97;
+
+  /* ---- warm card palette + the ink measured on each ---- */
+  --amber: #e9be74;
+  --amber-ink: #4a3413;
+  --sage: #c9d4be;
+  --sage-ink: #31402a;
+  --lav: #dcd3e8;
+  --lav-ink: #3b3350;
+  --rose: #ebc2c9;
+  --rose-ink: #5b2e36;
+  --mint: #bee2d6;
+  --mint-ink: #123f36;
+}
+
+:root[data-theme='dark'] {
+  --bg: #161310;
+  --bg-grouped: #221d17;
+  --label: #f4eee2;
+  --label-2: #b7ab97;
+  --label-3: #7c7263;
+  --separator: rgba(244, 238, 226, 0.14);
+  --fill: rgba(244, 238, 226, 0.08);
+  --accent: #f4eee2;
+  --on-accent: #161310;
+  --error: #e89aa0;
+  --success: #8fd0a0;
+  --focus: #8fabff;
+
+  --pane: #0e0c0a;
+  --pane-ink: #f4eee2;
+  --pane-ink-2: #b7ab97;
+
+  /* dark cards: the same family deepened, its pastel promoted to ink */
+  --amber: #241a0c;
+  --amber-ink: #f0c884;
+  --sage: #1e261b;
+  --sage-ink: #c9d4be;
+  --lav: #221e2c;
+  --lav-ink: #dcd3e8;
+  --rose: #2c1d21;
+  --rose-ink: #ebc2c9;
+  --mint: #16241f;
+  --mint-ink: #bee2d6;
+}
+
+:root {
+  /* ---- scales (VD-001: 8 / 16 / 24 / pill) ---- */
+  --r-md: 16px; /* warm cards, question cards */
+  --r-lg: 24px; /* pane window, done-state hero */
+  --cp-tile-size: 88px; /* the square widget tile, side of a 1:1 tile */
+}
+
+/* ============================================================================
+ * Shared component vocabulary — VD-001 registry (Design_Direction §5).
+ * Only components that recur across screens live here; anything a single
+ * screen composes itself stays in that screen's own <style> block.
+ * ========================================================================== */
+
+/* COMP / WarmCard — colour is the elevation: pastel surface, no shadow.
+   Also usable as a <button> (the owned-widget card on the bench), so the UA
+   border and font are cleared here once rather than per screen. */
+.cp-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  flex: 0 0 auto;
+  padding: var(--s4);
+  border: 0;
+  border-radius: var(--r-md);
+  background: var(--bg-grouped);
+  color: var(--label);
+  font-family: var(--font);
+  text-align: left;
+  cursor: pointer;
+}
+.cp-card.is-amber { background: var(--amber); color: var(--amber-ink); }
+.cp-card.is-sage { background: var(--sage); color: var(--sage-ink); }
+.cp-card.is-lav { background: var(--lav); color: var(--lav-ink); }
+.cp-card.is-rose { background: var(--rose); color: var(--rose-ink); }
+.cp-card.is-mint { background: var(--mint); color: var(--mint-ink); }
+
+/* The horizontal WarmCard: a list-shaped card, and the sprint's answer control
+   (the whole card is the button — tap anywhere to answer and advance). */
+.cp-card.is-row {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+}
+/* Selection, the reference's way: the chosen thing is FILLED with ink and the
+   rest are hairline outlines. Never a hue change, never a box drawn around it
+   (VD-001 §16 + border language: hairline only). */
+.cp-card.is-chosen {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.cp-card.is-chosen .cp-mark {
+  background: var(--on-accent);
+  color: var(--accent);
+}
+
+/* COMP / PaneWindow — the honest proof viewport; the only dark object. */
+.cp-pane {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  flex: 0 0 auto;
+  padding: var(--s4);
+  border-radius: var(--r-lg);
+  background: var(--pane);
+  color: var(--pane-ink);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.24);
+}
+
+/* COMP / PaneWindow — square variant. A CarPlay widget renders SQUARE (1:1),
+   never 2:1, so the proof viewport that shows a live tile is square too. The
+   side is a size token and aspect-ratio keeps it square at every width, so no
+   pixel is tied to one device. */
+.cp-tile {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 0 0 auto;
+  width: var(--cp-tile-size);
+  aspect-ratio: 1 / 1;
+  padding: var(--s3);
+  border-radius: var(--r-sm);
+  background: var(--pane);
+  color: var(--pane-ink);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.24);
+}
+
+/* The wide tile: the proof viewport at confirm time, where the tile is the
+   whole point. Still 1:1 — width comes from the pane, so it is fluid. */
+.cp-tile.is-wide {
+  width: 100%;
+  border-radius: var(--r-md);
+}
+
+/* COMP / SprintTrail — the three dots. During the sprint they track position;
+   on the bench they read as sprints completed. Same shape, both meanings. */
+.cp-trail {
+  display: flex;
+  flex-direction: row;
+  gap: var(--s2);
+  flex: 0 0 auto;
+}
+.cp-trail-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-full);
+  background: var(--separator);
+}
+.cp-trail-dot.is-on {
+  width: 22px;
+  background: var(--label);
+}
+
+/* COMP / SprintToggle — the reference's single selection idiom: the chosen pill
+   is filled with ink, the other is a hairline outline. Selection is never
+   carried by hue alone. */
+.cp-toggle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  flex: 0 0 auto;
+  width: 100%;
+  min-height: var(--touch-min);
+  padding: var(--s3) var(--s4);
+  border: 1px solid var(--separator);
+  border-radius: var(--r-full);
+  background: transparent;
+  color: var(--label);
+  font-family: var(--font);
+  font-size: var(--t-body);
+  text-align: left;
+  cursor: pointer;
+}
+.cp-toggle.is-on {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+}
+
+/* COMP / SetupRow — one setup-check item with its pass/fail reading. */
+.cp-setup-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  flex: 0 0 auto;
+  width: 100%;
+  min-height: var(--touch-min);
+  padding: var(--s3) var(--s4);
+  border: 0;
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--label);
+  font-family: var(--font);
+  font-size: var(--t-body);
+  text-align: left;
+  cursor: pointer;
+}
+.cp-setup-mark {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border-radius: var(--r-full);
+}
+.cp-setup-mark.is-ok { background: var(--sage); color: var(--sage-ink); }
+.cp-setup-mark.is-bad { background: var(--error); color: var(--on-accent); }
+
+/* COMP / Banner — inline recovery, never a modal alert (FS-010 §7, §2B). */
+.cp-banner {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  flex: 0 0 auto;
+  padding: var(--s3) var(--s4);
+  border-radius: var(--r-md);
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  text-align: left;
+}
+.cp-banner.is-error { background: var(--error); color: var(--on-accent); }
+.cp-banner.is-quiet { background: var(--fill); color: var(--label-2); }
+
+/* A photo slot. DEVIATION: no user photography ships with this repo, so a photo
+   is drawn as a tinted square with the photo glyph — square, like the tile. */
+.cp-slot {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  min-width: 0;
+  aspect-ratio: 1 / 1;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-md);
+  color: var(--label-2);
+  font-family: var(--font);
+  cursor: pointer;
+}
+.cp-slot.is-sage { background: var(--sage); color: var(--sage-ink); }
+.cp-slot.is-lav { background: var(--lav); color: var(--lav-ink); }
+.cp-slot.is-rose { background: var(--rose); color: var(--rose-ink); }
+.cp-slot.is-mint { background: var(--mint); color: var(--mint-ink); }
+.cp-slot.is-empty {
+  border: 1px dashed var(--separator);
+  background: transparent;
+}
+
+/* COMP / CarStrip — per-car identity precedes every control. */
+.cp-strip {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  flex: 0 0 auto;
+  padding: var(--s4);
+  border-radius: var(--r-md);
+  background: var(--bg-grouped);
+  color: var(--label);
+}
+.cp-mark {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border-radius: var(--r-full);
+  background: var(--sage);
+  color: var(--sage-ink);
+}
+
+/* A quiet outline control — the switcher chevron, never a second CTA. */
+.cp-ghost {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+  flex: 0 0 auto;
+  min-height: var(--touch-min);
+  padding: 0 var(--s4);
+  border: 1px solid var(--separator);
+  border-radius: var(--r-full);
+  background: transparent;
+  color: var(--label);
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Nav back button. The shell only auto-wraps BARE slot content, so a real
+   <button> here keeps the UA default (grey fill, 2px border, ~26pt tall) and
+   fails the 44pt floor. This restores the chrome look at the floor size. */
+.cp-back {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-full);
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+/* COMP / PrimaryCTA — the one black pill on paper. */
+.cp-cta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  flex: 0 0 auto;
+  min-height: 56px;
+  padding: 0 var(--s5);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 600;
+  cursor: pointer;
+}

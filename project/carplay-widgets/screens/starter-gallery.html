@@ -1,0 +1,103 @@
+<!-- pc {"title":"Starter gallery"} -->
+<style>
+  /* WF-004 / FS-004 — starter gallery, the post-sprint browse depth. First run
+     offers THREE curated starters, never the full gallery (F1): a 40-tile grid
+     is the choice-paralysis pattern this product exists to beat.
+     Long-press-to-peek (VD-001 signature) is why the pane sits above the
+     choices: press anything and the pane fills with it. */
+  .sg-lead {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s2);
+    flex: 0 0 auto;
+  }
+  .sg-row {
+    display: flex;
+    flex-direction: row;
+    gap: var(--s3);
+    flex: 0 0 auto;
+  }
+  /* one starter: a square tile, the name under it, the name is the label —
+     never text laid over the artwork (glanceability) */
+  .sg-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--s2);
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--label);
+    font-family: var(--font);
+    font-size: var(--t-footnote);
+    text-align: center;
+    cursor: pointer;
+  }
+</style>
+<div class="screen" style="background-color: var(--bg)">
+  <button class="cp-back" data-slot="back" aria-label="Back">
+    <span class="icon icon-sm" data-symbol="chevron.left"></span>
+  </button>
+  <span data-slot="title" class="nav-title">Gallery</span>
+
+  <div class="body" style="padding: var(--s5); gap: var(--s4)">
+    <div class="sg-lead">
+      <span class="t-large">Three good places to start</span>
+      <span class="t-subhead" style="color: var(--label-2)">
+        Press and hold any tile to fill the pane with it.
+      </span>
+    </div>
+
+    <!-- The pane is the only dark object on paper (EI-002) -->
+    <div class="cp-pane">
+      <div class="row">
+        <span class="grow t-subhead" style="font-weight: 600">Preview</span>
+        <span class="t-caption" style="color: var(--pane-ink-2)">Golf · tile 3 of 5</span>
+      </div>
+      <div class="row" style="gap: var(--s4)">
+        <div class="cp-tile">
+          <span class="icon icon-lg" data-symbol="compass"></span>
+          <span class="t-subhead" style="font-weight: 600">Sunrise</span>
+        </div>
+        <div class="col grow" style="gap: var(--s1)">
+          <span class="t-headline" style="color: var(--pane-ink)">Morning Drive</span>
+          <span class="t-footnote" style="color: var(--pane-ink-2)">First drive of the day</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- The three starters. Tiles stay square at every width. -->
+    <div class="sg-row">
+      <button class="sg-item">
+        <div class="cp-tile is-wide" style="background: var(--amber); color: var(--amber-ink); box-shadow: none">
+          <span class="icon" data-symbol="sun"></span>
+          <span class="t-footnote" style="font-weight: 600">6:12</span>
+        </div>
+        <span>Morning Drive</span>
+      </button>
+      <button class="sg-item">
+        <div class="cp-tile is-wide" style="background: var(--sage); color: var(--sage-ink); box-shadow: none">
+          <span class="icon" data-symbol="leaf.fill"></span>
+          <span class="t-footnote" style="font-weight: 600">Commute</span>
+        </div>
+        <span>Green Drive</span>
+      </button>
+      <button class="sg-item">
+        <div class="cp-tile is-wide" style="background: var(--lav); color: var(--lav-ink); box-shadow: none">
+          <span class="icon" data-symbol="moon"></span>
+          <span class="t-footnote" style="font-weight: 600">22:40</span>
+        </div>
+        <span>Last Call</span>
+      </button>
+    </div>
+
+    <!-- The full gallery is one tap away, for browsers — never the first thing
+         they see -->
+    <button class="cp-ghost">
+      <span>See all 40 templates</span>
+      <span class="icon icon-xs" data-symbol="chevron.right"></span>
+    </button>
+  </div>
+</div>

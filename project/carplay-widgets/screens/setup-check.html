@@ -1,0 +1,95 @@
+<!-- pc {"title":"Setup check"} -->
+<style>
+  /* WF-007 / FS-007 — setup check runs INLINE in the sprint (F2), never as a
+     settings pilgrimage. Three items pass, one fails: the failure owns the
+     surface and carries its own fix (FS-007 §7), and the CTA stays disabled
+     rather than letting the user push a widget that will not appear. */
+  .sc-lead {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s2);
+    flex: 0 0 auto;
+  }
+</style>
+<div class="screen" style="background-color: var(--bg)">
+  <button class="cp-back" data-slot="back" aria-label="Back">
+    <span class="icon icon-sm" data-symbol="chevron.left"></span>
+  </button>
+  <span data-slot="title" class="nav-title">Setup check</span>
+
+  <div class="body" style="padding: var(--s5); gap: var(--s3)">
+    <div class="sc-lead">
+      <span class="t-large">One thing is holding it back</span>
+      <span class="t-subhead" style="color: var(--label-2)">
+        Everything else is ready. Fix this and the widget goes straight out.
+      </span>
+    </div>
+
+    <!-- EI-005: which car, before which control -->
+    <div class="cp-strip">
+      <div class="row">
+        <span class="cp-mark">
+          <span class="icon icon-lg" data-symbol="car"></span>
+        </span>
+        <div class="grow col" style="gap: 0">
+          <span class="t-headline">Golf</span>
+          <span class="t-footnote" style="color: var(--label-2)">Wired · CarPlay 2.2</span>
+        </div>
+        <button class="cp-ghost" aria-label="Switch car">
+          <span>Switch</span>
+          <span class="icon icon-xs" data-symbol="chevron.right"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- COMP / SetupRow: pass/fail per item, in VoiceOver order -->
+    <button class="cp-setup-row">
+      <span class="cp-setup-mark is-ok">
+        <span class="icon icon-sm" data-symbol="checkmark"></span>
+      </span>
+      <span class="grow">Head unit reachable</span>
+      <span class="t-caption" style="color: var(--label-2)">Passed</span>
+    </button>
+
+    <button class="cp-setup-row">
+      <span class="cp-setup-mark is-ok">
+        <span class="icon icon-sm" data-symbol="checkmark"></span>
+      </span>
+      <span class="grow">Signed in with Apple</span>
+      <span class="t-caption" style="color: var(--label-2)">Passed</span>
+    </button>
+
+    <button class="cp-setup-row">
+      <span class="cp-setup-mark is-ok">
+        <span class="icon icon-sm" data-symbol="checkmark"></span>
+      </span>
+      <span class="grow">Widget slot 3 free</span>
+      <span class="t-caption" style="color: var(--label-2)">Passed</span>
+    </button>
+
+    <!-- The failure: it dominates, and it carries the fix -->
+    <button class="cp-setup-row" style="background: var(--fill)">
+      <span class="cp-setup-mark is-bad">
+        <span class="icon icon-sm" data-symbol="xmark"></span>
+      </span>
+      <span class="grow col" style="gap: 0">
+        <span class="t-headline">WidgetKit is off</span>
+        <span class="t-footnote" style="color: var(--label-2)">Turn it on in the car's settings</span>
+      </span>
+      <span class="icon icon-sm" data-symbol="chevron.right"></span>
+    </button>
+
+    <div class="spacer"></div>
+
+    <!-- Disabled with its reason, not greyed out silently -->
+    <div class="cp-banner is-error">
+      <span class="icon icon-sm" data-symbol="info.circle"></span>
+      <span class="grow">The car has not taken it yet. Turn on WidgetKit, then retry.</span>
+    </div>
+
+    <button class="cp-cta btn-block" style="background: var(--label-3)" aria-label="Sync to Golf, disabled until WidgetKit is on">
+      <span class="icon icon-sm" data-symbol="arrow.triangle.2.circlepath"></span>
+      <span>Sync to Golf</span>
+    </button>
+  </div>
+</div>

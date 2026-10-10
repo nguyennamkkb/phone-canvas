@@ -1,0 +1,77 @@
+<!-- pc {"title":"Sprint · Startup sound"} -->
+<style>
+  /* WF-003 / FS-003 + FS-020 — sprint question 3 of 3. Delight Extra F5 lands
+     HERE, inside the sprint (choose-while-you-finish), and it may never gate
+     completion — so "No sound" is a first-class choice, not an opt-out link. */
+  .q3-lead {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s2);
+    flex: 0 0 auto;
+  }
+</style>
+<div class="screen" style="background-color: var(--bg)">
+  <button class="cp-back" data-slot="back" aria-label="Back">
+    <span class="icon icon-sm" data-symbol="chevron.left"></span>
+  </button>
+  <span data-slot="title" class="nav-title">New widget</span>
+
+  <div class="body" style="padding: var(--s5); gap: var(--s3)">
+    <div class="cp-trail">
+      <span class="cp-trail-dot is-on"></span>
+      <span class="cp-trail-dot is-on"></span>
+      <span class="cp-trail-dot is-on"></span>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div class="q3-lead" style="margin-bottom: var(--s2)">
+      <span class="t-large">What should the car play when it starts?</span>
+      <span class="t-subhead" style="color: var(--label-2)">
+        Tap one to hear it. Three seconds, never more.
+      </span>
+    </div>
+
+    <!-- COMP / SprintToggle: chosen = ink filled, others = hairline outline.
+         Selection is fill + weight, never hue alone (VD-001 §16). -->
+    <button class="cp-toggle is-on">
+      <span class="row" style="gap: var(--s3)">
+        <span class="icon" data-symbol="speaker.wave.2"></span>
+        <span>Chime</span>
+      </span>
+      <span class="icon icon-sm" data-symbol="play.fill"></span>
+    </button>
+
+    <button class="cp-toggle">
+      <span class="row" style="gap: var(--s3)">
+        <span class="icon" data-symbol="bolt.fill"></span>
+        <span>Pulse</span>
+      </span>
+      <span class="icon icon-sm" data-symbol="play.fill"></span>
+    </button>
+
+    <button class="cp-toggle">
+      <span class="row" style="gap: var(--s3)">
+        <span class="icon" data-symbol="drop.fill"></span>
+        <span>Rain</span>
+      </span>
+      <span class="icon icon-sm" data-symbol="play.fill"></span>
+    </button>
+
+    <!-- The one allowed to be quiet: silence is a choice, not a failure -->
+    <button class="cp-toggle">
+      <span class="row" style="gap: var(--s3)">
+        <span class="icon" data-symbol="xmark"></span>
+        <span>No sound</span>
+      </span>
+    </button>
+
+    <div class="spacer"></div>
+
+    <!-- Last step of the sprint: the CTA is the whole card's job -->
+    <button class="cp-cta btn-block">
+      <span class="icon icon-sm" data-symbol="checkmark"></span>
+      <span>Build my widget</span>
+    </button>
+  </div>
+</div>

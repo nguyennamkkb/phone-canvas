@@ -1,0 +1,111 @@
+<!-- pc {"title":"Pro paywall"} -->
+<style>
+  /* WF-011 / FS-011 — the paywall at the emotional peak (EI-004): the finished
+     tile and the plan list share the screen. No countdown, no strikethrough,
+     no weekly plan — conversion comes from the proof, not from pressure
+     (F4). Dismissal is always one tap and never blocks the free tier. */
+  .pw-lead {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s2);
+    flex: 0 0 auto;
+  }
+  /* the plan row: chosen = ink filled (the app's single selection idiom) */
+  .pw-plan {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--s3);
+    flex: 0 0 auto;
+    width: 100%;
+    min-height: var(--touch-min);
+    padding: var(--s3) var(--s4);
+    border: 1px solid var(--separator);
+    border-radius: var(--r-md);
+    background: transparent;
+    color: var(--label);
+    font-family: var(--font);
+    text-align: left;
+    cursor: pointer;
+  }
+  .pw-plan.is-on {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  .pw-price {
+    font-size: var(--t-title3);
+    font-weight: 700;
+    letter-spacing: -0.4px;
+  }
+</style>
+<div class="screen" style="background-color: var(--bg)">
+  <!-- the title is this screen's own, so it overrides the component's slot -->
+  <span data-slot="title" class="nav-title">Pro</span>
+  <!-- @component app-nav -->
+
+  <div class="body" style="padding: var(--s5); gap: var(--s3)">
+    <div class="pw-lead">
+      <span class="t-large">Three widgets is the free limit</span>
+      <span class="t-subhead" style="color: var(--label-2)">
+        Pro takes it to five, on every car you pair.
+      </span>
+    </div>
+
+    <!-- The proof sits beside the price: this is the tile that is already
+         living in the car right now. -->
+    <div class="cp-pane">
+      <div class="row" style="gap: var(--s4)">
+        <div class="cp-tile">
+          <span class="icon icon-lg" data-symbol="car"></span>
+          <span class="t-footnote" style="font-weight: 600">18 min</span>
+        </div>
+        <div class="col grow" style="gap: var(--s1)">
+          <span class="t-headline" style="color: var(--pane-ink)">Sunset Commute</span>
+          <span class="t-footnote" style="color: var(--pane-ink-2)">Live on Golf · tile 3</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="pw-plan is-on">
+      <span class="grow col" style="gap: 0">
+        <span class="t-headline">Yearly</span>
+        <span class="t-caption" style="color: var(--on-accent)">Two months free</span>
+      </span>
+      <span class="pw-price">$19.99</span>
+    </button>
+
+    <button class="pw-plan">
+      <span class="grow col" style="gap: 0">
+        <span class="t-headline">Monthly</span>
+        <span class="t-caption" style="color: var(--label-2)">Cancel anytime</span>
+      </span>
+      <span class="pw-price">$2.99</span>
+    </button>
+
+    <div class="col" style="gap: var(--s1); padding: var(--s2) 0">
+      <div class="row" style="gap: var(--s2)">
+        <span class="icon icon-xs" style="color: var(--label-2)" data-symbol="checkmark"></span>
+        <span class="t-footnote" style="color: var(--label-2)">Five tiles on every paired car</span>
+      </div>
+      <div class="row" style="gap: var(--s2)">
+        <span class="icon icon-xs" style="color: var(--label-2)" data-symbol="checkmark"></span>
+        <span class="t-footnote" style="color: var(--label-2)">Seasonal packs, new every month</span>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <button class="cp-cta btn-block">
+      <span>Unlock Pro — $19.99</span>
+    </button>
+
+    <button class="cp-ghost btn-block">
+      <span>Restore purchases</span>
+    </button>
+
+    <span class="t-caption t-secondary" style="text-align: center">
+      Your three widgets keep working either way.
+    </span>
+  </div>
+</div>

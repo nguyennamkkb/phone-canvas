@@ -1,0 +1,74 @@
+<!-- pc {"title":"Sprint · Whose photo"} -->
+<style>
+  /* WF-003 / FS-003 — sprint question 2 of 3. One question, one answer
+     control: the photo grid IS the control, and every cell is square because a
+     CarPlay widget renders square (Design_Direction §5 imagery: 1:1 focal
+     crop, text-over-image never). */
+  .q2-lead {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s2);
+    flex: 0 0 auto;
+  }
+  .q2-grid {
+    display: flex;
+    flex-direction: row;
+    gap: var(--s2);
+    flex: 0 0 auto;
+  }
+</style>
+<div class="screen" style="background-color: var(--bg)">
+  <button class="cp-back" data-slot="back" aria-label="Back">
+    <span class="icon icon-sm" data-symbol="chevron.left"></span>
+  </button>
+  <span data-slot="title" class="nav-title">New widget</span>
+
+  <div class="body" style="padding: var(--s5); gap: var(--s4)">
+    <div class="cp-trail">
+      <span class="cp-trail-dot is-on"></span>
+      <span class="cp-trail-dot is-on"></span>
+      <span class="cp-trail-dot"></span>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div class="q2-lead">
+      <span class="t-large">Whose photo goes on the tile?</span>
+      <span class="t-subhead" style="color: var(--label-2)">
+        Pick one now — you can change it later without redoing the sprint.
+      </span>
+    </div>
+
+    <!-- DEVIATION: the repo ships no user photography, so each photo is drawn
+         as a tinted square with the photo glyph. Square, like the real tile. -->
+    <div class="q2-grid">
+      <button class="cp-slot is-sage" aria-label="Photo, sunset at the lake">
+        <span class="icon icon-lg" data-symbol="photo"></span>
+      </button>
+      <button class="cp-slot is-rose" aria-label="Photo, the kids">
+        <span class="icon icon-lg" data-symbol="photo"></span>
+      </button>
+      <button class="cp-slot is-lav" aria-label="Photo, the mountains">
+        <span class="icon icon-lg" data-symbol="photo"></span>
+      </button>
+    </div>
+
+    <button class="cp-card is-row is-mint">
+      <span class="cp-mark" style="background: var(--mint); color: var(--mint-ink)">
+        <span class="icon icon-lg" data-symbol="plus"></span>
+      </span>
+      <span class="grow col" style="gap: 0">
+        <span class="t-headline">Choose from Photos</span>
+        <span class="t-footnote">Your library stays on this device</span>
+      </span>
+      <span class="icon icon-sm" data-symbol="chevron.right"></span>
+    </button>
+
+    <div class="spacer"></div>
+
+    <div class="cp-banner is-quiet">
+      <span class="icon icon-sm" data-symbol="shield.fill"></span>
+      <span class="grow">Photos never leave your car. Nothing is uploaded.</span>
+    </div>
+  </div>
+</div>

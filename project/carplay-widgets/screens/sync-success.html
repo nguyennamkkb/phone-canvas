@@ -1,0 +1,73 @@
+<!-- pc {"title":"Sync success"} -->
+<style>
+  /* WF-009 / FS-009 — the money-free moment. Outcome first, receipt-shaped
+     detail second, exactly one way onward (Hick). The proof stays on screen:
+     the user is looking at the thing that now lives in their car. */
+  .ss-lead {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--s3);
+    flex: 0 0 auto;
+    padding: var(--s4) 0;
+  }
+</style>
+<div class="screen" style="background-color: var(--bg)">
+  <button class="cp-back" data-slot="back" aria-label="Back">
+    <span class="icon icon-sm" data-symbol="chevron.left"></span>
+  </button>
+  <span data-slot="title" class="nav-title">All set</span>
+
+  <div class="body" style="padding: var(--s5); gap: var(--s3)">
+    <div class="ss-lead">
+      <span class="cp-mark" style="width: 64px; height: 64px; background: var(--sage); color: var(--sage-ink)">
+        <span class="icon icon-lg" data-symbol="checkmark"></span>
+      </span>
+      <span class="t-title1" style="text-align: center">Your Golf has it</span>
+      <span class="t-subhead t-secondary" style="text-align: center">
+        Added as tile 3 of 5, just now.
+      </span>
+    </div>
+
+    <!-- The proof: the square tile the car is actually showing -->
+    <div class="cp-pane">
+      <div class="cp-tile is-wide">
+        <div class="row">
+          <span class="icon icon-lg" data-symbol="car"></span>
+          <span class="grow"></span>
+          <span class="t-caption" style="color: var(--pane-ink-2)">5:42 PM</span>
+        </div>
+        <div class="col" style="gap: 0">
+          <span class="t-score" style="color: var(--pane-ink)">18 min</span>
+          <span class="t-footnote" style="color: var(--pane-ink-2)">Home · via I-95 N</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- What happened, as quiet receipt lines — no celebration theatre -->
+    <div class="col" style="gap: var(--s1); padding: var(--s2) 0">
+      <div class="row">
+        <span class="grow t-footnote" style="color: var(--label-2)">Photo</span>
+        <span class="t-footnote">Sunset at the lake</span>
+      </div>
+      <div class="row">
+        <span class="grow t-footnote" style="color: var(--label-2)">Sound</span>
+        <span class="t-footnote">Chime</span>
+      </div>
+      <div class="row">
+        <span class="grow t-footnote" style="color: var(--label-2)">Synced</span>
+        <span class="t-footnote">Wired · 1.2 s</span>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <button class="cp-cta btn-block">
+      <span>Back to my widgets</span>
+    </button>
+
+    <button class="cp-ghost btn-block">
+      <span>Make another</span>
+    </button>
+  </div>
+</div>

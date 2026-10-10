@@ -1,0 +1,75 @@
+<!-- pc {"title":"Sprint · Which car"} -->
+<style>
+  /* WF-003 / FS-003 — sprint question 1 of 3. The screen exists to make ONE
+     decision, so the question type and the answer controls own the surface and
+     nothing else competes (EI-001): no price, no upsell, no second CTA.
+     Shared pieces (TrailDots, WarmCard.is-row, PrimaryCTA) live in tokens.css. */
+  .q1-lead {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s2);
+    flex: 0 0 auto;
+  }
+</style>
+<div class="screen" style="background-color: var(--bg)">
+  <button class="cp-back" data-slot="back" aria-label="Back">
+    <span class="icon icon-sm" data-symbol="chevron.left"></span>
+  </button>
+  <span data-slot="title" class="nav-title">New widget</span>
+
+  <div class="body" style="padding: var(--s5); gap: var(--s4)">
+    <!-- The sprint trail whispers at the top: position, not progress theatre -->
+    <div class="cp-trail">
+      <span class="cp-trail-dot is-on"></span>
+      <span class="cp-trail-dot"></span>
+      <span class="cp-trail-dot"></span>
+    </div>
+
+    <!-- The decision block sits optically centred: one question, one answer,
+         nothing else competing for the eye (EI-001). -->
+    <div class="spacer"></div>
+
+    <div class="q1-lead">
+      <span class="t-large">Which car are we dressing up?</span>
+      <span class="t-subhead" style="color: var(--label-2)">
+        We check the connection now, so nothing breaks later.
+      </span>
+    </div>
+
+    <!-- Answer controls: the whole card is the button. Tap anywhere to answer
+         and advance — there is no small Next affordance. -->
+    <button class="cp-card is-row is-sage is-chosen">
+      <span class="cp-mark">
+        <span class="icon icon-lg" data-symbol="car"></span>
+      </span>
+      <span class="grow col" style="gap: 0">
+        <span class="t-headline">Golf</span>
+        <span class="t-footnote" style="color: var(--sage-ink)">Paired · wired · 2 tiles used</span>
+      </span>
+      <span class="icon icon-sm" data-symbol="checkmark.fill"></span>
+    </button>
+
+    <button class="cp-card is-row">
+      <span class="cp-mark" style="background: var(--bg-grouped); color: var(--label-2)">
+        <span class="icon icon-lg" data-symbol="car"></span>
+      </span>
+      <span class="grow col" style="gap: 0">
+        <span class="t-headline">Model 3</span>
+        <span class="t-footnote" style="color: var(--label-2)">Paired · wireless · 1 tile used</span>
+      </span>
+    </button>
+
+    <!-- The pair-a-car path, secondary: it exists, it never leads -->
+    <button class="cp-ghost">
+      <span class="icon icon-sm" data-symbol="plus"></span>
+      <span>Pair another car</span>
+    </button>
+
+    <div class="spacer"></div>
+
+    <div class="cp-banner is-quiet">
+      <span class="icon icon-sm" data-symbol="clock"></span>
+      <span class="grow">About 40 seconds left in this sprint.</span>
+    </div>
+  </div>
+</div>

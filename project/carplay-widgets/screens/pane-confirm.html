@@ -1,0 +1,65 @@
+<!-- pc {"title":"Pane preview & confirm"} -->
+<style>
+  /* WF-006 / FS-006 — the honest pane. This is the peak of EI-002: the dark
+     viewport carries the finished tile at full width, and everything else on
+     the screen is caption. A widget cannot be marked live unless it verified
+     here (F2), so the CTA is the confirmation, not a "looks good to me". */
+  .pc-lead {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s2);
+    flex: 0 0 auto;
+  }
+</style>
+<div class="screen" style="background-color: var(--bg)">
+  <button class="cp-back" data-slot="back" aria-label="Back">
+    <span class="icon icon-sm" data-symbol="chevron.left"></span>
+  </button>
+  <span data-slot="title" class="nav-title">Confirm</span>
+
+  <div class="body" style="padding: var(--s5); gap: var(--s3)">
+    <div class="pc-lead">
+      <span class="t-large">This is what your car will show</span>
+      <span class="t-subhead" style="color: var(--label-2)">
+        True size. If it looks right here, it looks right in the car.
+      </span>
+    </div>
+
+    <!-- COMP / PaneWindow, holding the tile at full width. Still 1:1: a CarPlay
+         widget is square, so the viewport is square and the tile fills it. -->
+    <div class="cp-pane">
+      <div class="row">
+        <span class="grow t-caption" style="color: var(--pane-ink-2)">Golf · tile 3 of 5</span>
+        <span class="t-caption" style="color: var(--pane-ink-2)">12% of screen</span>
+      </div>
+      <div class="cp-tile is-wide">
+        <div class="row">
+          <span class="icon icon-lg" data-symbol="car"></span>
+          <span class="grow"></span>
+          <span class="t-caption" style="color: var(--pane-ink-2)">5:42 PM</span>
+        </div>
+        <div class="col" style="gap: 0">
+          <span class="t-score" style="color: var(--pane-ink)">18 min</span>
+          <span class="t-footnote" style="color: var(--pane-ink-2)">Home · via I-95 N</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- What was chosen, as caption under the proof rather than beside it -->
+    <div class="cp-card is-row" style="background: transparent; padding: 0">
+      <span class="icon icon-sm" style="color: var(--label-2)" data-symbol="photo"></span>
+      <span class="grow t-footnote">Sunset at the lake · Chime · Golf</span>
+    </div>
+
+    <div class="spacer"></div>
+
+    <button class="cp-cta btn-block">
+      <span class="icon icon-sm" data-symbol="checkmark"></span>
+      <span>Add to Golf</span>
+    </button>
+
+    <button class="cp-ghost btn-block">
+      <span>Change something</span>
+    </button>
+  </div>
+</div>
