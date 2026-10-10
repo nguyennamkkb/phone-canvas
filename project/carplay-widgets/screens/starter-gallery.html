@@ -42,24 +42,24 @@
   </button>
   <span data-slot="title" class="nav-title">Gallery</span>
 
-  <div class="body" style="padding: var(--s5); gap: var(--s4)">
+  <div class="body cp-body" style="gap: var(--s4)">
     <div class="sg-lead">
-      <span class="t-large">Three good places to start</span>
-      <span class="t-subhead" style="color: var(--label-2)">
-        Press and hold any tile to fill the pane with it.
-      </span>
+      <span class="t-large">Start from a template</span>
+      <span class="t-subhead" style="color: var(--label-2)">Hold any tile to fill the pane.</span>
     </div>
 
-    <!-- The pane is the only dark object on paper (EI-002) -->
+    <!-- The pane is the proof (EI-002): long-press any tile and the pane fills
+         with it, so the choice is made on what the car shows, not on a
+         thumbnail. Kept compact — this screen browses, it does not confirm. -->
     <div class="cp-pane">
       <div class="row">
-        <span class="grow t-subhead" style="font-weight: 600">Preview</span>
+        <span class="grow t-subhead" style="font-weight: 600; color: var(--pane-ink)">Preview · Morning Drive</span>
         <span class="t-caption" style="color: var(--pane-ink-2)">Golf · tile 3 of 5</span>
       </div>
       <div class="row" style="gap: var(--s4)">
         <div class="cp-tile">
           <span class="icon icon-lg" data-symbol="compass"></span>
-          <span class="t-subhead" style="font-weight: 600">Sunrise</span>
+          <span class="t-subhead" style="font-weight: 600">6:12</span>
         </div>
         <div class="col grow" style="gap: var(--s1)">
           <span class="t-headline" style="color: var(--pane-ink)">Morning Drive</span>
@@ -68,7 +68,7 @@
       </div>
     </div>
 
-    <!-- The three starters. Tiles stay square at every width. -->
+    <!-- Six starters, two rows. Every tile is square, like the real one. -->
     <div class="sg-row">
       <button class="sg-item">
         <div class="cp-tile is-wide" style="background: var(--amber); color: var(--amber-ink); box-shadow: none">
@@ -90,6 +90,30 @@
           <span class="t-footnote" style="font-weight: 600">22:40</span>
         </div>
         <span>Last Call</span>
+      </button>
+    </div>
+
+    <div class="sg-row">
+      <button class="sg-item">
+        <div class="cp-tile is-wide" style="background: var(--mint); color: var(--mint-ink); box-shadow: none">
+          <span class="icon" data-symbol="book.fill"></span>
+          <span class="t-footnote" style="font-weight: 600">8:05</span>
+        </div>
+        <span>School Run</span>
+      </button>
+      <button class="sg-item">
+        <div class="cp-tile is-wide" style="background: var(--rose); color: var(--rose-ink); box-shadow: none">
+          <span class="icon" data-symbol="flag"></span>
+          <span class="t-footnote" style="font-weight: 600">I-95</span>
+        </div>
+        <span>Road Trip</span>
+      </button>
+      <button class="sg-item">
+        <div class="cp-tile is-wide" style="background: var(--bg-grouped); color: var(--label-2); box-shadow: none">
+          <span class="icon" data-symbol="flame"></span>
+          <span class="t-footnote" style="font-weight: 600">7:12</span>
+        </div>
+        <span>Sport</span>
       </button>
     </div>
 

@@ -17,23 +17,25 @@
   </button>
   <span data-slot="title" class="nav-title">New widget</span>
 
-  <div class="body" style="padding: var(--s5); gap: var(--s4)">
-    <!-- The sprint trail whispers at the top: position, not progress theatre -->
-    <div class="cp-trail">
-      <span class="cp-trail-dot is-on"></span>
-      <span class="cp-trail-dot"></span>
-      <span class="cp-trail-dot"></span>
-    </div>
-
-    <!-- The decision block sits optically centred: one question, one answer,
-         nothing else competing for the eye (EI-001). -->
+  <div class="body cp-body" style="gap: var(--s3)">
     <div class="spacer"></div>
 
-    <div class="q1-lead">
-      <span class="t-large">Which car are we dressing up?</span>
-      <span class="t-subhead" style="color: var(--label-2)">
-        We check the connection now, so nothing breaks later.
-      </span>
+    <!-- One block, optically centred: the trail whispers directly above the
+         question it belongs to, and the answers sit directly under it. Nothing
+         competes for the eye (EI-001). -->
+    <div class="col" style="gap: var(--s4)">
+      <div class="cp-trail">
+        <span class="cp-trail-dot is-on"></span>
+        <span class="cp-trail-dot"></span>
+        <span class="cp-trail-dot"></span>
+      </div>
+
+      <div class="q1-lead">
+        <span class="t-large">Which car are we dressing up?</span>
+        <span class="t-subhead" style="color: var(--label-2)">
+          We check the connection now, so nothing breaks later.
+        </span>
+      </div>
     </div>
 
     <!-- Answer controls: the whole card is the button. Tap anywhere to answer
@@ -44,7 +46,7 @@
       </span>
       <span class="grow col" style="gap: 0">
         <span class="t-headline">Golf</span>
-        <span class="t-footnote" style="color: var(--sage-ink)">Paired · wired · 2 tiles used</span>
+        <span class="t-footnote">Paired · wired · 2 tiles used</span>
       </span>
       <span class="icon icon-sm" data-symbol="checkmark.fill"></span>
     </button>
@@ -55,7 +57,7 @@
       </span>
       <span class="grow col" style="gap: 0">
         <span class="t-headline">Model 3</span>
-        <span class="t-footnote" style="color: var(--label-2)">Paired · wireless · 1 tile used</span>
+        <span class="t-footnote">Paired · wireless · 1 tile used</span>
       </span>
     </button>
 

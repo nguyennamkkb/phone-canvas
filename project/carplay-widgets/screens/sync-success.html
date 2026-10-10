@@ -18,7 +18,7 @@
   </button>
   <span data-slot="title" class="nav-title">All set</span>
 
-  <div class="body" style="padding: var(--s5); gap: var(--s3)">
+  <div class="body cp-body" style="gap: var(--s3)">
     <div class="ss-lead">
       <span class="cp-mark" style="width: 64px; height: 64px; background: var(--sage); color: var(--sage-ink)">
         <span class="icon icon-lg" data-symbol="checkmark"></span>
@@ -29,17 +29,18 @@
       </span>
     </div>
 
-    <!-- The proof: the square tile the car is actually showing -->
+    <!-- The proof stays on screen: the user is looking at the thing that now
+         lives in their car. Compact, not full width — this screen confirms,
+         it does not preview (that was WF-006). -->
     <div class="cp-pane">
-      <div class="cp-tile is-wide">
-        <div class="row">
+      <div class="row" style="gap: var(--s4)">
+        <div class="cp-tile">
           <span class="icon icon-lg" data-symbol="car"></span>
-          <span class="grow"></span>
-          <span class="t-caption" style="color: var(--pane-ink-2)">5:42 PM</span>
+          <span class="t-footnote" style="font-weight: 600">18 min</span>
         </div>
-        <div class="col" style="gap: 0">
-          <span class="t-score" style="color: var(--pane-ink)">18 min</span>
-          <span class="t-footnote" style="color: var(--pane-ink-2)">Home · via I-95 N</span>
+        <div class="col grow" style="gap: var(--s1)">
+          <span class="t-headline" style="color: var(--pane-ink)">Sunset Commute</span>
+          <span class="t-footnote" style="color: var(--pane-ink-2)">Live on Golf · tile 3</span>
         </div>
       </div>
     </div>

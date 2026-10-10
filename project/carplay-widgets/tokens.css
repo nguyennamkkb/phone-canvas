@@ -94,6 +94,15 @@
  * screen composes itself stays in that screen's own <style> block.
  * ========================================================================== */
 
+/* The app's content band. `.home-indicator` is absolutely positioned OVER the
+   viewport, not below it (src/extractor/compose.ts), so the bottom inset is the
+   author's job: without it the last control lands under the home indicator.
+   Padding, not margin — the band is the scroll region. */
+.cp-body {
+  padding: var(--s5);
+  padding-bottom: calc(var(--s5) + var(--safe-bottom));
+}
+
 /* COMP / WarmCard — colour is the elevation: pastel surface, no shadow.
    Also usable as a <button> (the owned-widget card on the bench), so the UA
    border and font are cleared here once rather than per screen. */
@@ -135,6 +144,10 @@
   background: var(--on-accent);
   color: var(--accent);
 }
+/* The secondary line stays a whisper on every WarmCard — including the chosen
+   one, where the light-mode card ink would be unreadable on ink. */
+.cp-card .t-footnote { color: var(--label-2); }
+.cp-card.is-chosen .t-footnote { color: var(--pane-ink-2); }
 
 /* COMP / PaneWindow — the honest proof viewport; the only dark object. */
 .cp-pane {

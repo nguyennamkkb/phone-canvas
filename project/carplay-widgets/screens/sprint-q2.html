@@ -23,34 +23,36 @@
   </button>
   <span data-slot="title" class="nav-title">New widget</span>
 
-  <div class="body" style="padding: var(--s5); gap: var(--s4)">
-    <div class="cp-trail">
-      <span class="cp-trail-dot is-on"></span>
-      <span class="cp-trail-dot is-on"></span>
-      <span class="cp-trail-dot"></span>
-    </div>
-
+  <div class="body cp-body" style="gap: var(--s4)">
     <div class="spacer"></div>
 
-    <div class="q2-lead">
-      <span class="t-large">Whose photo goes on the tile?</span>
-      <span class="t-subhead" style="color: var(--label-2)">
-        Pick one now — you can change it later without redoing the sprint.
-      </span>
-    </div>
+    <div class="col" style="gap: var(--s4)">
+      <div class="cp-trail">
+        <span class="cp-trail-dot is-on"></span>
+        <span class="cp-trail-dot is-on"></span>
+        <span class="cp-trail-dot"></span>
+      </div>
 
-    <!-- DEVIATION: the repo ships no user photography, so each photo is drawn
-         as a tinted square with the photo glyph. Square, like the real tile. -->
-    <div class="q2-grid">
-      <button class="cp-slot is-sage" aria-label="Photo, sunset at the lake">
-        <span class="icon icon-lg" data-symbol="photo"></span>
-      </button>
-      <button class="cp-slot is-rose" aria-label="Photo, the kids">
-        <span class="icon icon-lg" data-symbol="photo"></span>
-      </button>
-      <button class="cp-slot is-lav" aria-label="Photo, the mountains">
-        <span class="icon icon-lg" data-symbol="photo"></span>
-      </button>
+      <div class="q2-lead">
+        <span class="t-large">Whose photo goes on the tile?</span>
+        <span class="t-subhead" style="color: var(--label-2)">
+          Pick one now — you can change it later without redoing the sprint.
+        </span>
+      </div>
+
+      <!-- DEVIATION: the repo ships no user photography, so each photo is drawn
+           as a tinted square with the photo glyph. Square, like the real tile. -->
+      <div class="q2-grid">
+        <button class="cp-slot is-sage" aria-label="Photo, sunset at the lake">
+          <span class="icon icon-lg" data-symbol="photo"></span>
+        </button>
+        <button class="cp-slot is-rose" aria-label="Photo, the kids">
+          <span class="icon icon-lg" data-symbol="photo"></span>
+        </button>
+        <button class="cp-slot is-lav" aria-label="Photo, the mountains">
+          <span class="icon icon-lg" data-symbol="photo"></span>
+        </button>
+      </div>
     </div>
 
     <button class="cp-card is-row is-mint">

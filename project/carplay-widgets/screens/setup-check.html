@@ -17,12 +17,11 @@
   </button>
   <span data-slot="title" class="nav-title">Setup check</span>
 
-  <div class="body" style="padding: var(--s5); gap: var(--s3)">
+  <div class="body cp-body" style="gap: var(--s3)">
+    <!-- One question, no subtitle: the failing row below already carries the
+         reason and the fix, and a second sentence here would only repeat it. -->
     <div class="sc-lead">
       <span class="t-large">One thing is holding it back</span>
-      <span class="t-subhead" style="color: var(--label-2)">
-        Everything else is ready. Fix this and the widget goes straight out.
-      </span>
     </div>
 
     <!-- EI-005: which car, before which control -->
@@ -87,7 +86,7 @@
       <span class="grow">The car has not taken it yet. Turn on WidgetKit, then retry.</span>
     </div>
 
-    <button class="cp-cta btn-block" style="background: var(--label-3)" aria-label="Sync to Golf, disabled until WidgetKit is on">
+    <button class="cp-ghost btn-block" aria-label="Sync to Golf, disabled until WidgetKit is on">
       <span class="icon icon-sm" data-symbol="arrow.triangle.2.circlepath"></span>
       <span>Sync to Golf</span>
     </button>
