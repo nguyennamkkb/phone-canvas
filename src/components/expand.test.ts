@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { expandComponents } from './expand'
+import { expandComponents, expandErrorSummary } from './expand'
 
 const C = {
   tab: '<nav class="tab">Home</nav>',
@@ -47,5 +47,33 @@ describe('expandComponents', () => {
     deep.c30 = '<b>end</b>'
     const { errors } = expandComponents('<!-- @component c0 -->', deep)
     expect(errors.some((e) => e.kind === 'depth')).toBe(true)
+  })
+})
+
+describe('expandErrorSummary', () => {
+  it('is null when nothing failed, so the node renders no badge', () => {
+    expect(expandErrorSummary([], 'project/paywall-kit/screens/seasonal-sale.html')).toBeNull()
+  })
+
+  it('names the cause and the component id, and the screen file', () => {
+    const summary = expandErrorSummary(
+      [{ kind: 'missing', id: 'app-nav' }],
+      'project/paywall-kit/screens/seasonal-sale.html',
+    )
+    expect(summary?.text).toBe('⚠ thiếu component: app-nav · seasonal-sale.html')
+    expect(summary?.title).toContain('project/paywall-kit/screens/seasonal-sale.html')
+    expect(summary?.title).toContain('thiếu component: app-nav')
+  })
+
+  it('reads every failure, not just the first', () => {
+    const summary = expandErrorSummary(
+      [
+        { kind: 'missing', id: 'app-nav' },
+        { kind: 'cycle', id: 'card' },
+      ],
+      'project/app/screens/home.html',
+    )
+    expect(summary?.text).toContain('thiếu component: app-nav')
+    expect(summary?.text).toContain('component lặp vòng: card')
   })
 })

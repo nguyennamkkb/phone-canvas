@@ -2,9 +2,11 @@
  * board.json freeze writer — `npm run project -- freeze <id>`.
  *
  * Writes `project/<id>/board.json` in the exact `ProjectStateFile` shape
- * (`{v:1, projectId, exportedAt, board:{v:4, nodes, edges, removed, trash}}`)
+ * (`{v:1, projectId, exportedAt, board:{v:5, nodes, edges, removed, trash}}`)
  * that `parseStateFile` in `src/projects/storage.ts` already validates — so
- * the loader needs no new parser, no new semantics.
+ * the loader needs no new parser, no new semantics. The artifact is a SEED for
+ * `seedBoard`, which opens it only when no record exists or the artifact is
+ * newer; the previous artifact is kept as `board.json.bak` before each write.
  *
  * Positions use the SAME rule the board uses (`nextSlotX` over
  * `nodeOuterWidth` from `src/board/placement.ts`, gap 120 = BoardView's
@@ -12,7 +14,7 @@
  * localStorage, reconcile, or flow.
  */
 
-import { mkdir, writeFile } from 'node:fs/promises'
+import { copyFile, mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
 import { scanProjects } from './scan-projects.ts'
@@ -62,10 +64,26 @@ export async function writeBoardFreeze(
     v: 1,
     projectId,
     exportedAt: Date.now(),
-    board: { v: 4, nodes, edges: [], removed: [], trash: [] },
+    board: { v: 5, nodes, edges: [], removed: [], trash: [] },
   }
   const file = resolveBoardPath(projectId, root, options.outDir)
   await mkdir(path.dirname(file), { recursive: true })
+  await backupPrevious(file)
   await writeFile(file, `${JSON.stringify(freeze, null, 2)}\n`)
   return file
+}
+
+/**
+ * Design rollback (5.2): the artifact this run is about to replace survives as
+ * `<file>.bak`, so re-freezing a bad arrangement is one `mv` away from being
+ * undone. Best-effort by contract — a first freeze has nothing to back up and
+ * an unreadable/quota-locked file must never fail the freeze itself, which is
+ * the actual deliverable. Applies to `--out` mode too: same path, same rule.
+ */
+async function backupPrevious(file: string): Promise<void> {
+  try {
+    await copyFile(file, `${file}.bak`)
+  } catch {
+    /* nothing to roll back to — the freeze still goes through */
+  }
 }

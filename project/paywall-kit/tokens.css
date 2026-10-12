@@ -33,34 +33,6 @@
 }
 
 :root[data-theme='dark'] {
-  --accent-lime: #e6fd32;
-  --bg: #0a0618;
-  --fa-blue: #2f7cf6;
-  --fa-blue-deep: #1f5fd0;
-  --fa-blue-ink: #0a2540;
-  --fa-check: #2f7cf6;
-  --fa-life: #f0433a;
-  --fa-life-deep: #e8622a;
-  --fa-mute: #6b7280;
-  --fa-paper: #ffffff;
-  --fa-plan-blue-deep: #4a9bf5;
-  --fa-plan-sub: rgba(255, 255, 255, 0.8);
-  --label: #ffffff;
-  --label-2: rgba(226, 214, 240, 0.78);
-  --pw-arc: #b678e6;
-  --pw-bot: #c37ec6;
-  --pw-deep: #14073a;
-  --pw-card: rgba(255, 255, 255, 0.08);
-  --pw-cta-bg: #ffffff;
-  --pw-cta-ink: #000000;
-  --pw-dot-size: 48px;
-  --pw-hero-h: 210px;
-  --pw-lime-ink: #000000;
-  --pw-magenta: #7a2b98;
-  --pw-marquee-h: 170px;
-  --pw-mid: #2a0e63;
-  --pw-rail: #8a6a45;
-  --pw-top: #01010a;
 }
 
 /* CTA trang vien tron: nen dac + chu den (tuong phan cao tren nen toi).

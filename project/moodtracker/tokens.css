@@ -31,6 +31,7 @@
   --teal-soft: #d9ecea;
   --amber: #c77a1a;            /* charts mid-band (graphic) */
   --amber-deep: #a85e0e;       /* amber as text on fill */
+  --amber-cta: #d4860e;        /* amber CTA button — Booking Konsultasi */
   --border: #8e84a8;           /* inputs, focus rings */
   --error: #c9334e;
   --success: #0e6b66;
@@ -60,7 +61,7 @@
   --teal-soft: #1d3f4a;
   --amber: #f2a93b;
   --amber-deep: #f2a93b;
-  --border: #8e84a8;
+  --amber-cta: #f2a93b;
   --error: #ff7a90;
   --success: #4cc9c4;
   --warning: #f2a93b;

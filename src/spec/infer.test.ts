@@ -58,7 +58,7 @@ function raw(over: Partial<RawNode> & { css?: Record<string, string | number> })
     childCount: 1,
     box: { x: 0, y: 0, w: 100, h: 40 },
     scroll: { x: false, y: false },
-    attrs: { src: '', alt: '', symbol: '', asset: '', iconSrc: '' },
+    attrs: { src: '', alt: '', symbol: '', asset: '', iconSrc: '', class: '' },
     ...over,
     css: { ...baseCss, ...(over.css ?? {}) },
   }
@@ -112,7 +112,7 @@ describe('buildSpec roles', () => {
         tag: 'span',
         childCount: 0,
         css: { maskImage: 'url("data:image/svg+xml,abc")', color: 'rgb(0, 122, 255)' },
-        attrs: { src: '', alt: '', symbol: 'magnifyingglass', asset: '', iconSrc: 'search.svg' },
+        attrs: { src: '', alt: '', symbol: 'magnifyingglass', asset: '', iconSrc: 'search.svg', class: '' },
       }),
     ])
     expect(s.role).toBe('Image')
@@ -127,13 +127,13 @@ describe('buildSpec roles', () => {
         tag: 'span',
         childCount: 0,
         css: { maskImage: 'url("/icons/x.svg")' },
-        attrs: { src: '', alt: '', symbol: 'x', asset: '', iconSrc: '' },
+        attrs: { src: '', alt: '', symbol: 'x', asset: '', iconSrc: '', class: '' },
       }),
       raw({
         id: 'e1',
         tag: 'span',
         childCount: 0,
-        attrs: { src: '', alt: '', symbol: 'nope', asset: '', iconSrc: '' },
+        attrs: { src: '', alt: '', symbol: 'nope', asset: '', iconSrc: '', class: '' },
       }),
     ])
     expect(ext.image?.externalMask).toBe(true)

@@ -4,46 +4,43 @@
  * Locate the component at a point, read its spec, and shoot its region.
  *
  *   npm run locate -- --screen home-today --x 195 --y 640
- *   npm run locate -- --screen home-today --x 195 --y 640 --pad 32 --scale 2 --out /tmp/locate
+ *   npm run locate -- --screen home-today --box 40,300,310,120 --pad-pct 0.1 --ancestors 1
+ *   npm run locate -- --screen home-today --box 0,120,390,300 --children
  *
- * Point (--x/--y) is in points, origin at the top-left of the device screen
- * (status bar included) — the same coordinate space the panel reports in
- * Khung x/y. Output is two files side by side:
+ * Point (--x/--y) and box (--box) are in points, origin at the top-left of the
+ * device screen (status bar included) — the same coordinate space the panel
+ * reports in Khung x/y. Output is two files side by side:
  *
  *   <screen>-locate-<x>x<y>@<scale>x.png   the element's region (pad around it)
  *   <screen>-locate-<x>x<y>.json           Copy-JSON-shaped spec + point + box
  *
- * Zero dependencies: drives the Chrome already on the machine over CDP,
- * composes the document with src/extractor/compose.ts (the same module the
- * app and the exporter use), captures with the real src/extractor/bridge.js,
- * and interprets with src/spec/infer.ts. Nothing here owns a rule.
+ * The pipeline itself lives in scripts/export/element.ts — the same module the
+ * board's dev endpoint calls, so a crop from the CLI and a crop from the board
+ * can never disagree. This file is argument parsing, file naming and printing.
  */
 
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { DEVICES, getDevice } from '../src/frame/devices.ts'
-import { composeScreenDoc } from '../src/extractor/compose.ts'
-import { buildSpec } from '../src/spec/infer.ts'
+import { isKnownDevice } from '../src/frame/devices.ts'
 import { scanProjects } from './scan-projects.ts'
-import { launch, shutdown } from './export/cdp.ts'
-import { startSite } from './export/site.ts'
-import { evaluate, waitForHeight } from './export/render.ts'
-import { sleep } from './export/chrome.ts'
+import { openElementSession } from './export/element.ts'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const SCREENS_DIR = path.join(ROOT, 'src/screens')
-const PUBLIC_DIR = path.join(ROOT, 'public')
-const STYLESHEETS = ['core.css', 'palettes.css', 'vocab.css', 'icons.css', 'icon-set.css']
 
 const HELP = `
 Locate a component by point, read its spec, shoot its region.
 
   --screen <id>   screen id (required). Try --list
-  --x <pt>        point x in points, from the device top-left (required)
-  --y <pt>        point y in points, from the device top-left (required)
+  --x <pt>        point x in points, from the device top-left
+  --y <pt>        point y in points, from the device top-left
+  --box <x,y,w,h> element box in points, alternative to --x/--y (wins)
   --pad <pt>      padding around the element in the shot      (default: 24)
+  --pad-pct <n>   padding as a fraction of the box's larger side (e.g. 0.1);
+                  wins over --pad when given
+  --ancestors <n> ancestor levels to include in the region    (default: 0)
+  --children      one PNG + JSON per direct child, not one region
   --scale <n>     pixel density multiplier                    (default: 2)
   --device <id>   device preset                               (default: reference)
   --theme <mode>  light | dark                                (default: light)
@@ -58,7 +55,21 @@ function fail(message) {
 }
 
 function parse(argv) {
-  const o = { screen: null, x: null, y: null, pad: 24, scale: 2, device: 'reference', theme: 'light', out: 'exports', list: false }
+  const o = {
+    screen: null,
+    x: null,
+    y: null,
+    box: null,
+    pad: 24,
+    padPct: null,
+    ancestors: 0,
+    children: false,
+    scale: 2,
+    device: 'reference',
+    theme: 'light',
+    out: 'exports',
+    list: false,
+  }
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]
     const next = () => {
@@ -74,6 +85,9 @@ function parse(argv) {
       case '--list':
         o.list = true
         break
+      case '--children':
+        o.children = true
+        break
       case '--screen':
         o.screen = next()
         break
@@ -84,10 +98,30 @@ function parse(argv) {
         o[a.slice(2)] = n
         break
       }
+      case '--box': {
+        const parts = next().split(',').map((p) => Number(p.trim()))
+        if (parts.length !== 4 || parts.some((n) => !Number.isFinite(n) || n < 0)) {
+          throw new Error('--box must be x,y,w,h in points (numbers >= 0)')
+        }
+        o.box = { x: parts[0], y: parts[1], w: parts[2], h: parts[3] }
+        break
+      }
       case '--pad': {
         const n = Number(next())
         if (!Number.isFinite(n) || n < 0) throw new Error('--pad must be a number >= 0')
         o.pad = n
+        break
+      }
+      case '--pad-pct': {
+        const n = Number(next())
+        if (!Number.isFinite(n) || n < 0) throw new Error('--pad-pct must be a fraction >= 0 (e.g. 0.1)')
+        o.padPct = n
+        break
+      }
+      case '--ancestors': {
+        const n = Number(next())
+        if (!Number.isInteger(n) || n < 0) throw new Error('--ancestors must be an integer >= 0')
+        o.ancestors = n
         break
       }
       case '--scale': {
@@ -112,19 +146,6 @@ function parse(argv) {
   return o
 }
 
-/** deepest node containing the point; ties break toward the smallest box */
-function hitTest(nodes, x, y) {
-  let best = null
-  for (const n of nodes) {
-    const b = n.box
-    if (x < b.x || x >= b.x + b.w || y < b.y || y >= b.y + b.h) continue
-    if (!best || n.depth > best.depth || (n.depth === best.depth && b.w * b.h < best.box.w * best.box.h)) {
-      best = n
-    }
-  }
-  return best
-}
-
 async function main() {
   let options
   try {
@@ -143,151 +164,71 @@ async function main() {
     if (options.list) return
     fail('--screen is required. Try --list')
   }
-  if (options.x === null || options.y === null) fail('--x and --y are required (points, from the device top-left)')
-  if (!DEVICES.some((d) => d.id === options.device)) fail(`unknown device "${options.device}"`)
+  if (options.box === null && (options.x === null || options.y === null)) {
+    fail('--x and --y are required (points, from the device top-left)')
+  }
+  if (!isKnownDevice(options.device)) fail(`unknown device "${options.device}"`)
   if (options.theme !== 'light' && options.theme !== 'dark') fail('unknown theme (want: light | dark)')
 
   const screen = registry.screens.find((s) => s.id === options.screen)
   if (!screen) fail(`unknown screen "${options.screen}". Try --list`)
 
-  const device = getDevice(options.device)
-  const sharedStyles = await Promise.all(STYLESHEETS.map((n) => readFile(path.join(SCREENS_DIR, n), 'utf8')))
-  const bridgeJs = await readFile(path.join(ROOT, 'src/extractor/bridge.js'), 'utf8')
-  const projectTokens = registry.tokens[screen.projectId] ?? null
-  const components = {}
-  for (const c of registry.components) {
-    if (c.project === screen.projectId) components[c.id] = c.html
+  // --x/--y is a zero-sized box at the point: the module hits the element that
+  // contains it, and the payload's point comes back as exactly those numbers.
+  const box = options.box ?? { x: options.x, y: options.y, w: 0, h: 0 }
+  const input = {
+    screen: screen.id,
+    box,
+    device: options.device,
+    theme: options.theme,
+    padPt: options.pad,
+    padPct: options.padPct,
+    ancestorLevels: options.ancestors,
+    scale: options.scale,
   }
-  const stylesheets = projectTokens ? [...sharedStyles, projectTokens] : sharedStyles
-
-  // bridge included: we need its real capture, not a clean export document.
-  // Its hover overlay stays display:none without input, so the shot is clean.
-  const key = `${screen.id}--${device.id}--${options.theme}`
-  const documents = new Map([
-    [key, composeScreenDoc({
-      html: screen.html,
-      device,
-      stylesheets,
-      bridgeJs,
-      lightStatusBar: screen.lightStatusBar,
-      theme: options.theme,
-      components,
-    })],
-  ])
 
   const outDir = path.resolve(ROOT, options.out)
   await mkdir(outDir, { recursive: true })
 
-  const site = await startSite(documents, PUBLIC_DIR)
-  const browser = await launch()
+  const session = await openElementSession()
   try {
-    const { targetId } = await browser.cdp.send('Target.createTarget', { url: 'about:blank' })
-    const { sessionId } = await browser.cdp.send('Target.attachToTarget', { targetId, flatten: true })
-    browser.cdp.attach(sessionId)
-    try {
-      await browser.cdp.send('Page.enable')
-      await browser.cdp.send('Runtime.enable')
-      await browser.cdp.send('Emulation.setDeviceMetricsOverride', {
-        width: device.width, height: device.height, deviceScaleFactor: 1, mobile: false,
-      })
-      await browser.cdp.send('Page.navigate', { url: `${site.origin}/screen/${key}` })
-      const contentHeight = await waitForHeight(browser.cdp)
-
-      // The bridge posts its spec to window.parent — here the page IS the top
-      // window, so listen for our own message then force one fresh capture.
-      const payload = await evaluate(
-        browser.cdp,
-        `(async () => new Promise((resolve, reject) => {
-          const to = setTimeout(() => reject(new Error('timeout')), 8000);
-          const h = (e) => {
-            const d = e.data;
-            if (d && d.pc === true && d.type === 'spec' && Array.isArray(d.nodes)) {
-              clearTimeout(to);
-              removeEventListener('message', h);
-              resolve({ nodes: d.nodes, device: d.device || null });
-            }
-          };
-          addEventListener('message', h);
-          postMessage({ pc: true, type: 'recapture', token: '' }, '*');
-        }))()`,
-      )
-      const nodes = payload?.nodes ?? []
-      if (nodes.length === 0) fail('bridge captured nothing — the screen produced no layout')
-
-      const raw = hitTest(nodes, options.x, options.y)
-      const specList = buildSpec(nodes)
-      const byId = new Map(specList.map((s) => [s.id, s]))
-      const element = raw ? byId.get(raw.id) ?? null : null
-      const ancestors = []
-      if (element) {
-        let cur = byId.get(element.parent)
-        while (cur) {
-          ancestors.unshift(cur)
-          cur = cur.parent ? byId.get(cur.parent) : undefined
-        }
+    if (options.children) {
+      const result = await session.exportChildren({ ...input, outDir })
+      for (const file of result.files) {
+        console.log(`${path.relative(ROOT, file.png)}  ${path.relative(ROOT, file.json)}`)
       }
-
-      // region = element box + pad (or a pad-sized square around a bare point),
-      // clamped to the document so the clip never exceeds the page
-      const focus = element
-        ? element.box
-        : { x: options.x, y: options.y, w: 0, h: 0 }
-      const clip = {
-        x: Math.max(0, Math.floor(Math.min(focus.x - options.pad, device.width - 1))),
-        y: Math.max(0, Math.floor(Math.min(focus.y - options.pad, contentHeight - 1))),
-        width: 1,
-        height: 1,
-      }
-      clip.width = Math.max(1, Math.floor(Math.min(focus.x + focus.w + options.pad, device.width) - clip.x))
-      clip.height = Math.max(1, Math.floor(Math.min(focus.y + focus.h + options.pad, contentHeight) - clip.y))
-
-      await browser.cdp.send('Emulation.setDeviceMetricsOverride', {
-        width: device.width, height: contentHeight, deviceScaleFactor: options.scale, mobile: false,
-      })
-      await sleep(80)
-      const shot = await browser.cdp.send('Page.captureScreenshot', { format: 'png', clip: { ...clip, scale: 1 } })
-      const png = Buffer.from(shot.data, 'base64')
-
-      const tag = `${screen.id}-locate-${options.x}x${options.y}`
-      const pngFile = path.join(outDir, `${tag}@${options.scale}x.png`)
-      const jsonFile = path.join(outDir, `${tag}.json`)
-      await writeFile(pngFile, png)
-
-      const payload1 = {
-        version: 1,
-        screen: screen.id,
-        device: device.id,
-        theme: options.theme,
-        point: { x: options.x, y: options.y },
-        hit: !!element,
-        selectedElement: element,
-        ancestors: ancestors.map((a) => ({ id: a.id, role: a.role, label: a.label, box: a.box })),
-        candidates: nodes.length,
-        png: path.basename(pngFile),
-        pngClip: clip,
-        pngWidth: png.readUInt32BE(16),
-        pngHeight: png.readUInt32BE(20),
-      }
-      await writeFile(jsonFile, JSON.stringify(payload1, null, 2) + '\n')
-
-      if (element) {
-        console.log(`hit   ${element.role} · ${element.label}`)
-        console.log(`box   ${element.box.x}, ${element.box.y} · ${element.box.w}×${element.box.h} pt`)
-        console.log(`shape ${element.swiftUiShape}`)
-        console.log(`depth ${element.depth} · ${ancestors.length} ancestors · ${nodes.length} nodes captured`)
-      } else {
-        console.log(`miss  no component at ${options.x}, ${options.y} (OS chrome or empty area)`)
-        console.log(`nodes ${nodes.length} captured — nothing contains the point`)
-      }
-      console.log(`${path.relative(ROOT, pngFile)}  ${payload1.pngWidth}×${payload1.pngHeight}`)
-      console.log(path.relative(ROOT, jsonFile))
-    } finally {
-      browser.cdp.attach(null)
-      await browser.cdp.send('Target.closeTarget', { targetId }).catch(() => {})
+      console.log(`children ${result.count} written to ${path.relative(ROOT, outDir)}`)
+      return
     }
+
+    const result = await session.crop(input)
+
+    // the name keeps the point the user asked about, not the element the hit
+    // resolved to — the two differ as soon as a screen is edited
+    const tag = options.box
+      ? `${screen.id}-locate-${box.x}x${box.y}-${box.w}x${box.h}`
+      : `${screen.id}-locate-${options.x}x${options.y}`
+    const pngFile = path.join(outDir, `${tag}@${options.scale}x.png`)
+    const jsonFile = path.join(outDir, `${tag}.json`)
+    await writeFile(pngFile, result.png)
+    // `png` names the file that was actually written, not the module default
+    const payload = { ...result.payload, png: path.basename(pngFile) }
+    await writeFile(jsonFile, JSON.stringify(payload, null, 2) + '\n')
+
+    const spec = payload.selectedElement
+    if (spec) {
+      console.log(`hit   ${spec.role} · ${spec.label}`)
+      console.log(`box   ${spec.box.x}, ${spec.box.y} · ${spec.box.w}×${spec.box.h} pt`)
+      console.log(`shape ${spec.swiftUiShape}`)
+      console.log(`depth ${spec.depth} · ${result.ancestors.length} ancestors · ${payload.candidates} nodes captured`)
+    } else {
+      console.log(`miss  no component at ${box.x + box.w / 2}, ${box.y + box.h / 2} (OS chrome or empty area)`)
+      console.log(`nodes ${payload.candidates} captured — nothing contains the point`)
+    }
+    console.log(`${path.relative(ROOT, pngFile)}  ${payload.pngWidth}×${payload.pngHeight}`)
+    console.log(path.relative(ROOT, jsonFile))
   } finally {
-    await shutdown(browser)
-    await site.close()
+    await session.close()
   }
 }
 

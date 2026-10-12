@@ -2,11 +2,13 @@
 // @ts-nocheck — small zero-dep cli, checked by running it, not by tsc
 /**
  * Token lint (v3 gate + token-layers): screens may only name defined tokens,
- * must use a token where one exists, and dual-mode projects must twin colors.
+ * must use a token where one exists, and dark blocks may override only what
+ * actually changes.
  *
  *   npm run lint:tokens
- *   npm run lint:tokens -- --screen <id>   (only that screen; dark-twin then
- *          checks just that screen's project — same screen-filter pattern)
+ *   npm run lint:tokens -- --screen <id>   (only that screen; the dark-block
+ *          rules then check just that screen's project — same screen-filter
+ *          pattern)
  *
  * Rules:
  *   error  var(--x) with no definition in the global or project tokens.css
@@ -16,15 +18,24 @@
  *   error  no-literal: a hardcoded color/spacing/radius in a screen <style>
  *          block or style="" attribute whose value has an equivalent token
  *          (reports file:line + the var(--*) to use instead)
- *   error  dark-twin: a project :root color token with no twin in a
- *          :root[data-theme='dark'] block (dark would silently show light)
+ *   error  dark-copy: a token redeclared inside :root[data-theme='dark'] with
+ *          a value byte-identical (whitespace-normalised) to the same token
+ *          in :root — dark already inherits it, so the copy is dead weight
+ *          (reports the token + both file lines; fix: xoá khỏi dark, giữ ở
+ *          base). The rule this replaced demanded the opposite — a dark twin
+ *          for EVERY base colour — which is what forced the whole-block
+ *          copy-paste (paywall-kit) in the first place.
+ *   error  dark-orphan: a token declared inside :root[data-theme='dark'] with
+ *          no base :root declaration at all — base is incomplete, so light
+ *          mode silently loses the token (fix: declare it in base and keep
+ *          dark as the override)
  *   warn   hardcoded hex/rgba colors in screen markup with NO token
  *          equivalent (prefer a token; nothing to suggest)
  *   warn   screen names a global-only color (tier rule: give the project
  *          its own semantic alias instead of borrowing the shared palette)
  *
  * The pure rule helpers (parseModeVars, tokenColorName, noLiteralViolations,
- * darkTwinViolations) are exported for scripts/tokens-lint.test.ts. Color
+ * darkBlockViolations) are exported for scripts/tokens-lint.test.ts. Color
  * matching mirrors tokenNameForColor in src/tokens/tokens.ts (tuple match,
  * project names first) but is reimplemented here: that module uses Vite
  * `?raw` imports, which this node CLI cannot load.
@@ -139,21 +150,20 @@ const RADIUS_PROPS = {
   'border-bottom-left-radius': true,
 }
 
-/** `projectId:--token` → why no dark twin is intended (kept small; prefer twins) */
-export const DARK_TWIN_ALLOWLIST = {
-  'widget-lab:--separator':
-    'mirrors the global iOS separator byte-for-byte, and the global layers carry no dark twin either — dark falls back to the same value board-wide',
-}
-
 /**
  * Split a tokens file into light vars, dark-override vars, and own-twins.
  * Reads EVERY :root[data-theme='dark'] block (including scoped dark rules
  * like `:root[data-theme='dark'] .app-mood`); a `:root, :root[data-theme]`
  * combined rule counts as both. `light` holds everything outside a dark
  * selector (mirroring how whole-file var scans feed tokensOf upstream);
- * `rootLight` holds only :root-level tokens, which is what the dark-twin
- * rule judges — scoped element vars (.screen/…) never participate in
- * :root dark switching. Each entry carries its file line for file:line errors.
+ * `rootLight` holds only :root-level tokens, which is the base the dark-block
+ * rules compare against — scoped element vars (.screen/…) never participate
+ * in :root dark switching. `darkRootDecls` keeps every :root-level dark
+ * declaration in file order (the dark map collapses duplicates), tagged
+ * `combined` when the rule also declared it for light: a shared
+ * `:root, :root[data-theme='dark']` rule is one declaration, not a copy, so
+ * the dark-block rules skip those. Each entry carries its file line for
+ * file:line errors.
  */
 export function parseModeVars(css) {
   const flat = css.replace(/\/\*[\s\S]*?\*\//g, (s) => ' '.repeat(s.length))
@@ -161,31 +171,39 @@ export function parseModeVars(css) {
   const rootLight = new Map()
   const dark = new Map()
   const ownTwin = new Set()
+  const darkRootDecls = []
   const ruleRe = /([^{}]+)\{([^{}]*)\}/g
   let r
   while ((r = ruleRe.exec(flat)) !== null) {
     const parts = r[1].split(',')
     const hasDark = parts.some((p) => p.includes('data-theme'))
     const hasPlainRoot = parts.some((p) => p.includes(':root') && !p.includes('data-theme'))
+    const hasDarkRoot = parts.some((p) => /^\s*:root\[data-theme\s*=\s*['"]?[a-z-]+['"]?\]\s*$/i.test(p))
     const varRe = /--([a-z0-9-]+)\s*:\s*([^;{}]+);/g
     let m
     while ((m = varRe.exec(r[2])) !== null) {
       const name = `--${m[1]}`
-      const entry = { value: m[2].trim(), line: lineOf(flat, r.index + r[1].length + 1 + m.index) }
+      // lines are measured on the ORIGINAL css: the comment mask swaps a whole
+      // comment for spaces (newlines inside it included), so offsets survive
+      // but flat has fewer lines — lineOf(flat, …) drifts after any multi-line
+      // comment.
+      const entry = { value: m[2].trim(), line: lineOf(css, r.index + r[1].length + 1 + m.index) }
       if (hasDark && hasPlainRoot) {
         light.set(name, entry)
         rootLight.set(name, entry)
         dark.set(name, entry)
         ownTwin.add(name)
+        if (hasDarkRoot) darkRootDecls.push({ name, ...entry, combined: true })
       } else if (hasDark) {
         dark.set(name, entry)
+        if (hasDarkRoot) darkRootDecls.push({ name, ...entry, combined: false })
       } else {
         light.set(name, entry)
         if (hasPlainRoot) rootLight.set(name, entry)
       }
     }
   }
-  return { light, rootLight, dark, ownTwin }
+  return { light, rootLight, dark, ownTwin, darkRootDecls }
 }
 
 /** Normalize a css color to an rgba tuple (mirrors toRgba in src/tokens/tokens.ts). */
@@ -326,32 +344,52 @@ export function leftoverHardColors(html: string): string[] {
 
 
 /**
- * Project :root color tokens with no dark twin. Projects with no dark block
- * at all render identical values in both modes (dark-first / single-mode by
- * convention), so there is nothing to fall back silently — only dual-mode
- * projects are judged. Scoped element vars (.screen/…) are outside the rule:
- * they never participate in :root dark switching.
+ * Dark-block hygiene for :root[data-theme='dark'] token declarations.
+ *
+ *   dark-copy    the dark value equals the base :root value (byte-identical
+ *                after whitespace normalisation) — :root[data-theme='dark']
+ *                already inherits it, so re-declaring it is dead weight
+ *   dark-orphan  the token has no base :root declaration at all — the base is
+ *                incomplete and light mode silently loses it
+ *
+ * Projects with no dark block are unchanged (no violations). Scoped dark
+ * rules (`:root[data-theme='dark'] .app-mood`) are a different mechanism and
+ * are left alone: they legitimately re-declare tokens for one element. The
+ * `combined` flag keeps `:root, :root[data-theme='dark'] { … }` out of the
+ * copy rule too — one declaration shared by both modes is not a duplicate.
  */
-export function darkTwinViolations(projectId, css) {
-  const { rootLight, dark, ownTwin } = parseModeVars(css)
-  if (dark.size === 0) return []
+export function darkBlockViolations(projectId, css) {
+  const { rootLight, darkRootDecls } = parseModeVars(css)
   const out = []
-  for (const [name, entry] of rootLight) {
-    if (!isColorValue(entry.value)) continue
-    if (dark.has(name) || ownTwin.has(name)) continue
-    if (DARK_TWIN_ALLOWLIST[`${projectId}:${name}`]) continue
-    out.push({
-      line: entry.line,
-      message: `project/${projectId}/tokens.css:${entry.line}  ${name} thiếu dark twin — thêm vào :root[data-theme='dark']`,
-    })
+  for (const decl of darkRootDecls) {
+    if (decl.combined) continue
+    // chrome vars (--icon/--device-*/--safe-*/--status-*) are not design
+    // tokens anywhere else in this lint; keep them out of the dark rules too
+    if (!isTokenVar(decl.name)) continue
+    const base = rootLight.get(decl.name)
+    if (!base) {
+      out.push({
+        line: decl.line,
+        message: `project/${projectId}/tokens.css:${decl.line}  ${decl.name} chỉ có ở dark, thiếu base :root — thêm vào base rồi để dark override`,
+      })
+      continue
+    }
+    // whitespace-only differences are the same value (a reflowed copy is
+    // still a copy); anything else must stay in dark as a real override
+    if (base.value.replace(/\s+/g, ' ').trim() === decl.value.replace(/\s+/g, ' ').trim()) {
+      out.push({
+        line: decl.line,
+        message: `project/${projectId}/tokens.css:${decl.line}  ${decl.name} trùng base :root:${base.line} — xoá khỏi dark, giữ ở base`,
+      })
+    }
   }
   return out
 }
 
 const HELP = `
-Token lint: screens may only name defined tokens; literals with a token equivalent fail; dual-mode projects must twin colors.
+Token lint: screens may only name defined tokens; literals with a token equivalent fail; dark blocks must hold only real overrides.
 
-  --screen <id>   only check that screen (dark-twin checks just its project)
+  --screen <id>   only check that screen (dark-block rules check just its project)
   --help          print this message
 
 Examples
@@ -527,15 +565,17 @@ async function main() {
     }
   }
 
-  // dark-twin: every :root color token of a dual-mode project needs its twin.
-  // --screen narrows this to that screen's project; without it every project.
-  const twinProjects = only
+  // dark-block hygiene: a :root[data-theme='dark'] block may only override
+  // what changes (copies of base are dead weight; tokens missing from base
+  // vanish in light mode). --screen narrows this to that screen's project;
+  // without it every project.
+  const darkProjects = only
     ? [...new Set(screens.map((s) => s.projectId))]
     : registry.projects.map((p) => p.id)
-  for (const pid of twinProjects) {
+  for (const pid of darkProjects) {
     const css = registry.tokens[pid]
     if (!css) continue
-    for (const v of darkTwinViolations(pid, css)) {
+    for (const v of darkBlockViolations(pid, css)) {
       console.error(`error  ${v.message}`)
       errors += 1
     }

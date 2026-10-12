@@ -37,6 +37,8 @@ function usage() {
       '               screens/<slug>.html, with the 11-item @anatomy header prefilled and',
       '               DNA tokens of the template pre-listed (lint:components passes at birth)',
       '  --project  project folder id (see npm run project -- list)',
+      '  --root     tree whose project/ is scanned + written (default: this checkout).',
+      '             Test probes aim it at a tmp dir, so no suite writes under project/',
       '  --name     kebab-case screen id, unique across all screens',
       '  --title    board/panel title',
       '  --kind     chrome shape; the screen is born passing lint:',
@@ -243,6 +245,11 @@ async function main() {
     fail(e instanceof Error ? e.message : String(e))
   }
   const { project, name, title, dark, device } = o
+  // `--root` retargets the project tree ONLY (the scan and the writes): probes
+  // point it at a tmp dir so nothing under the real project/ is created or
+  // deleted while other test workers glob that tree. The CLI's own sources
+  // (devices.ts, templates) stay anchored to this checkout.
+  const root = o.root ? path.resolve(o.root) : ROOT
   if (!project || !title || (!name && !o.component)) {
     usage()
     fail('missing --project, --title and --name (or --component)')
@@ -250,7 +257,7 @@ async function main() {
   // component scaffold: same gate, cheaper default — a component is born
   // with its @anatomy header so lint:components passes at birth.
   if (o.component) {
-    await scaffoldComponent(project, o.component, title)
+    await scaffoldComponent(project, o.component, title, root)
     return
   }
   if (!SLUG_RE.test(name)) {
@@ -269,7 +276,7 @@ async function main() {
     if (device !== 'reference') deviceId = device
   }
 
-  const { registry, errors } = await scanProjects()
+  const { registry, errors } = await scanProjects(root)
   if (errors.length > 0) {
     fail(`project registry có lỗi — sửa trước:\n  ${errors.map((e) => `${e.file}: ${e.message}`).join('\n  ')}`)
   }
@@ -315,7 +322,7 @@ async function main() {
   }
 
   const file = `project/${project}/screens/${name}.html`
-  const absFile = path.join(ROOT, file)
+  const absFile = path.join(root, file)
   try {
     await readFile(absFile, 'utf8')
     fail(`${file} already exists on disk`)
@@ -345,11 +352,11 @@ async function main() {
  * DNA-token prefill: the template body only uses global spacing/radius vars,
  * so the header pre-lists exactly the vars the body names — the lint's
  * tokens cross-check (every body var listed) holds without author edits. */
-async function scaffoldComponent(project, slug, title) {
+async function scaffoldComponent(project, slug, title, root) {
   if (!SLUG_RE.test(slug)) {
     fail(`bad --component "${slug}" — use kebab-case, e.g. stat-tile`)
   }
-  const { registry, errors } = await scanProjects()
+  const { registry, errors } = await scanProjects(root)
   if (errors.length > 0) {
     fail(`project registry có lỗi — sửa trước:\n  ${errors.map((e) => `${e.file}: ${e.message}`).join('\n  ')}`)
   }
@@ -360,7 +367,7 @@ async function scaffoldComponent(project, slug, title) {
     fail(`component "${slug}" đã tồn tại trong project/${project}/components/`)
   }
   const file = `project/${project}/components/${slug}.html`
-  const absFile = path.join(ROOT, file)
+  const absFile = path.join(root, file)
   try {
     await readFile(absFile, 'utf8')
     fail(`${file} already exists on disk`)

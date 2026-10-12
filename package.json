@@ -10,6 +10,7 @@
     "export": "node --disable-warning=ExperimentalWarning scripts/export.ts",
     "export:icons": "node --disable-warning=ExperimentalWarning scripts/export-icons.ts",
     "locate": "node --disable-warning=ExperimentalWarning scripts/locate.ts",
+    "golden:check": "node --disable-warning=ExperimentalWarning scripts/golden-check.ts",
     "icons": "node --disable-warning=ExperimentalWarning scripts/icons.ts",
     "lint:tokens": "node --disable-warning=ExperimentalWarning scripts/tokens-lint.ts",
     "lint:subset": "node --disable-warning=ExperimentalWarning scripts/subset-lint.ts",

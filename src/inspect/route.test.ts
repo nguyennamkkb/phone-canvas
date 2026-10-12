@@ -20,6 +20,18 @@ describe('shouldAccept — routing gate', () => {
     expect(shouldAccept(undefined, spec, SELF, SELF)).toBe(false)
   })
 
+  it('accepts the opaque origin a sandboxed srcdoc frame reports', () => {
+    // `sandbox="allow-scripts"` (no allow-same-origin) → event.origin === 'null'.
+    // The token, not the origin, is what authenticates the frame.
+    expect(shouldAccept(entry, spec, 'null', SELF)).toBe(true)
+    expect(shouldAccept(entry, spec, 'null')).toBe(true)
+  })
+
+  it('still refuses an opaque origin without the right token or frame', () => {
+    expect(shouldAccept({ token: 'other' }, spec, 'null', SELF)).toBe(false)
+    expect(shouldAccept(undefined, spec, 'null', SELF)).toBe(false)
+  })
+
   it('ignores malformed payloads even from the right frame', () => {
     const bad = { ...spec, nodes: [{ id: 'e0' }] }
     expect(shouldAccept(entry, bad, SELF, SELF)).toBe(false)
@@ -44,6 +56,12 @@ describe('shouldCountDrop — visible drops vs silent ignores', () => {
     expect(shouldCountDrop(undefined, bad, SELF, SELF)).toBe(false)
     expect(shouldCountDrop(entry, { type: 'spec' }, SELF, SELF)).toBe(false)
     expect(shouldCountDrop(entry, null, SELF, SELF)).toBe(false)
+  })
+
+  it('counts a malformed payload from the opaque origin too', () => {
+    const bad = { ...spec, nodes: [{ id: 'e0' }] }
+    expect(shouldCountDrop(entry, bad, 'null', SELF)).toBe(true)
+    expect(shouldCountDrop({ token: 'other' }, bad, 'null', SELF)).toBe(false)
   })
 
   it('does not count valid payloads', () => {

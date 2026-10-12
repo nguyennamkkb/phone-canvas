@@ -49,6 +49,25 @@ element tree, click a row (or click the element directly in **Đo đạc** mode)
 read its spec. **Copy JSON** hands the whole screen — or just the selected
 element — to an LLM.
 
+The panel also works at **element level**. Once something is selected:
+
+| Control | What it does |
+|---|---|
+| Thumbnail | The real crop of the selection, taken through the same CDP pipeline as `npm run locate` — not a DOM screenshot, so it is what an export would draw |
+| pad / pad % cạnh dài | Absolute padding in points, or a fraction of the element's larger side |
+| gồm khung cha (1 cấp) | Widen the region to include the parent box, so a cluster comes out whole |
+| **Xuất element này** | Writes `project/<id>/exports/<name>@2x.png` + `.json` (spec, ancestors, `pngClip`) — a file handoff, not just the clipboard |
+| **Xuất children** | One PNG + JSON per direct child, named from `data-asset`/class |
+| **So sánh golden** / **Ghi golden** | Compare the current crop against the element's committed golden (hash crop + spec, Hamming ≤ 4) or bless the current crop as the new golden. `lệch` shows the golden and the current crop side by side |
+
+The crop is taken in Node (the board's iframe is a sandboxed origin with no CDP
+access), over the dev server's `/__pc/element/*` routes — so this row only works
+under `npm run dev`; a built board says so instead of offering a dead button.
+
+**So lệch hai màn (drift)** compares the interpreted specs of two mounted
+screens and groups the differences by kind (spacing, type, size, radius, …) —
+the tool for a project like paywall-kit where 26 screens share one DNA.
+
 ---
 
 ## Export to PNG
@@ -95,6 +114,27 @@ back to the perceptual distance (Hamming ≤ 4 still reads as `khớp`), so the
 same commit stays green across OS font/AA differences. Both flags are
 off by default and plain exports never touch the store.
 
+`--element <query>` narrows `--golden` to one element inside the screen. The
+query is either the element's stem (`pw-cta`) or a dot-separated class-token set
+where every token must be present (`pw-card.fp-plan.is-best` — needed because
+`pw-card` alone matches several elements per screen, and a pin that silently
+retargets is a lie). It writes a record `{elementKey, cropHash, phash, specHash}`
+plus the crop PNG into the same store, so a component can be reviewed on its own
+instead of through every screen that uses it.
+
+```bash
+npm run export -- --golden --element pw-cta --screen family-plan
+npm run export -- --element-check --element pw-cta --screen family-plan   # compare only, no writes
+npm run golden:check                                                      # every pinned component
+```
+
+`--element-check` writes nothing and exits non-zero when a crop or the spec
+digest moved (or when the query is ambiguous), which is what makes it usable as
+a gate. `npm run golden:check` runs the pinned list — the shared components of
+paywall-kit (`pw-card`, `pw-cta`) — and `.github/workflows/gate.yml` runs
+`npm run gate` plus `golden:check` on every push, so a CSS tweak that changes a
+pinned component turns CI red with the distance printed.
+
 Both the app and the script call `src/extractor/compose.ts`, so an export cannot
 drift from what the board shows.
 
@@ -108,14 +148,28 @@ what it built.
 ```bash
 npm run locate -- --screen my-screen --x 195 --y 640
 npm run locate -- --screen my-screen --x 195 --y 640 --pad 32 --scale 2 --device iphone-se --theme dark
+npm run locate -- --screen my-screen --box 16,155,358,168 --pad-pct 0.1 --ancestors 1
+npm run locate -- --screen my-screen --box 16,155,358,168 --children --out /tmp/kids
 ```
 
 Point (`--x/--y`) is in points from the device top-left — the same space the
-panel reports. Output is two files: `<screen>-locate-<x>x<y>@<scale>x.png`
-(the element's region with padding) and `<screen>-locate-<x>x<y>.json`
-(the element's spec in Copy-JSON shape, plus ancestors and the point).
-A point on the status bar or empty area reports `miss` and still shoots
-a square around the point.
+panel reports. `--box x,y,w,h` is the alternative the panel uses: it hits the
+element under the box's centre, so a crop taken here and a crop taken from the
+board go through the same code path.
+
+Output is two files: `<screen>-locate-<x>x<y>@<scale>x.png` (the element's
+region with padding) and `<screen>-locate-<x>x<y>.json` (the element's spec in
+Copy-JSON shape, plus ancestors and the point). A point on the status bar or
+empty area reports `miss` and still shoots a square around the point.
+
+`--pad-pct 0.1` pads by 10% of the element's **larger side** instead of a fixed
+`--pad` (a long card and a small chip need different absolute padding for the
+same visual breathing room). `--ancestors 1` includes one level of the parent
+chain in the region, which is what makes a cluster (three countdown cells) come
+out whole instead of clipped. `--children` writes one PNG + JSON per direct
+child instead of the single region, named from `data-asset`/class (`pw-card`,
+`ss-title`) rather than from capture order, so a name survives an unrelated edit
+to the screen.
 
 Same guarantees as export: the document is composed by
 `src/extractor/compose.ts`, captured by the real `bridge.js`, interpreted
@@ -415,8 +469,30 @@ the node selection a second after you pick one; a `WindowProxy` identity check
 that silently dropped every message from a sandboxed iframe; and a capture that
 ran before the iframe had been laid out, reporting an empty spec.
 
+A later pass (the `core-upgrade` change, 2026-10-12) drove the board through a
+real browser session instead of reading code, and found the same class of bug
+once more: the message gate compared `event.origin` against the board's own
+origin, but a `sandbox="allow-scripts"` srcdoc iframe reports the opaque origin
+`"null"` — so **every** bridge message was rejected and the inspector had been
+dead in a real browser all along. Routing now authenticates on the per-node
+token and accepts the opaque origin (`src/inspect/route.ts`). Verified in that
+session:
+
+- element crop from the panel: live thumbnail, pad %/ancestors, one-click export,
+  per-child export — clip × scale matches the PNG header on reference, iPhone SE
+  and iPad 11
+- element golden: write → `khớp d=0`; change the element's `gap` → `lệch d=9`
+  with `spec lệch` and before/after side by side; restore → `khớp` again
+- spec drift between two screens (`seasonal-sale` ↔ `family-plan`), grouped by
+  kind (spacing / type / size / radius / …)
+- board state: one `pc.board.<id>` record, `board.json` seed applied on a fresh
+  board, export/import round trip, no `pc.statefile.` marker left behind
+- `npm run lint` (0 lỗi) · `npm run audit:regions` (84 màn, 0 lỗi) ·
+  `npx vitest run` (390 test)
+
 Not yet covered: SwiftUI code generation (out of scope by choice), multi-screen
-flows as edges, and persistence — the board is in-memory.
+flows as edges, and a backend — persistence is one `pc.board.<id>` record in
+localStorage plus a committed `project/<id>/board.json` freeze, not a server.
 
 ## Next
 

@@ -26,10 +26,10 @@ import {
   parseStateFile,
   saveBoard,
   saveDockCollapsed,
-  saveImportedStateFile,
+  seedBoard,
   toStateFile,
 } from '../projects/storage'
-import type { TrashEntry } from '../projects/storage'
+import type { BoardSnapshot, TrashEntry } from '../projects/storage'
 import { missingScreenIds } from './reconcile'
 import { TrashDialog } from './TrashDialog'
 import { ErrorBoundary } from '../shell/ErrorBoundary'
@@ -102,13 +102,23 @@ function freshNodes(project: Project): BoardNode[] {
   return out
 }
 
-function openingNodes(project: Project): {
+/**
+ * The ONE open rule for a saved arrangement, whether it came from the record
+ * (`loadBoard`) or from the async freeze seed (`seedBoard`): a frozen artifact
+ * handed to a different code path would open under different rules, which is
+ * how the two copies drifted apart in the first place.
+ *
+ * `saved === null` → fresh layout.
+ */
+function openingNodes(
+  project: Project,
+  saved: BoardSnapshot | null,
+): {
   nodes: BoardNode[]
   edges: Edge[]
   removed: string[]
   trash: TrashEntry[]
 } {
-  const saved = loadBoard(project.id)
   if (saved && saved.nodes.length > 0) {
     let max = 0
     for (const n of saved.nodes) {
@@ -228,7 +238,7 @@ function BoardViewInner({
   const { select } = useInspector()
 
   const opening = useMemo(() => {
-    const saved = openingNodes(project)
+    const saved = openingNodes(project, loadBoard(project.id))
     const trashedIds = saved.trash.map((t) => t.screenId)
     return {
       nodes: reconciledNodes(project, saved.nodes, [...saved.removed, ...trashedIds]),
@@ -254,6 +264,30 @@ function BoardViewInner({
   const [removed, setRemoved] = useState<string[]>(opening.removed)
   // thùng rác per-project: snapshot node + edges bị cắt, newest cuối
   const [trash, setTrash] = useState<TrashEntry[]>(opening.trash)
+
+  // Freeze seed (5.2): `project/<id>/board.json` — the `npm run project --
+  // freeze` artifact — opens the board ONLY when the record does not already
+  // own it (seedBoard decides, one rule: exportedAt > savedAt, or no record).
+  // Declared BEFORE the save effect on purpose: that effect writes the record
+  // as soon as the board opens, so a seed called after it would always see a
+  // record newer than the artifact and could never seed anything. The winner
+  // lands through the same prune + reconcile rules as a record read, in one
+  // batched update, so a normal reload (record wins → null) repaints nothing.
+  useEffect(() => {
+    let superseded = false
+    void seedBoard(project.id).then((file) => {
+      if (superseded || !file) return
+      const seeded = openingNodes(project, file.board)
+      const trashedIds = seeded.trash.map((t) => t.screenId)
+      setNodes(reconciledNodes(project, seeded.nodes, [...seeded.removed, ...trashedIds]))
+      setEdges(seeded.edges)
+      setRemoved(seeded.removed)
+      setTrash(seeded.trash)
+    })
+    return () => {
+      superseded = true
+    }
+  }, [project, setNodes, setEdges])
 
   useEffect(() => {
     saveBoard(project.id, { nodes, edges, removed, trash })
@@ -305,7 +339,7 @@ function BoardViewInner({
 
   // xuất/nhập trạng thái — browser không ghi được vào repo nên đi qua file
   const handleExportState = useCallback(() => {
-    const stateFile = toStateFile(project.id, { v: 4, nodes, edges, removed, trash })
+    const stateFile = toStateFile(project.id, { v: 5, nodes, edges, removed, trash })
     const url = URL.createObjectURL(
       new Blob([JSON.stringify(stateFile, null, 2)], { type: 'application/json' }),
     )
@@ -320,8 +354,9 @@ function BoardViewInner({
     async (file: File) => {
       try {
         const stateFile = parseStateFile(await file.text(), project.id)
-        saveImportedStateFile(stateFile)
-        // write-through: cache bằng đúng nội dung file, rồi reload để board đọc lại
+        // write-through into the ONE store, then reload so the board reads it
+        // back. No marker is written any more: the record's `savedAt` (now) is
+        // newer than the freeze, which is exactly what protects the import.
         saveBoard(project.id, stateFile.board)
         window.location.reload()
       } catch (e) {

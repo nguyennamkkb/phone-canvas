@@ -13,3 +13,10 @@ project/*/exports
 .qwen/
 # SLP multi-agent runtime (pane ids, task registry, peer memory — workspace-local)
 herdr-context/
+
+# This machine's global gitignore excludes `.github`; re-include the CI workflow
+# here so it stays visible to git (a repo .gitignore outranks the user-level
+# excludes file). Without these three lines the workflow silently never ships.
+!.github/
+!.github/workflows/
+!.github/workflows/gate.yml

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { activeTabOf, composeScreenDoc, screenBgOf } from './compose'
+import { activeTabOf, composeScreenDoc, inlineIconMasks, screenBgOf } from './compose'
 import * as legacy from './compose.legacy'
 import { DEVICES, getDevice } from '../frame/devices'
 import { SCREENS, componentMap } from '../projects/registry'
@@ -490,6 +490,108 @@ describe('composeScreenDoc · parse5 parser (core-hardening §2)', () => {
       screenBgOf("<div class='screen' style='background-color: #000'>x</div>")
     })
     expect(Moral.some((w) => w.includes('screenBgOf'))).toBe(true)
+  })
+})
+
+describe('inlineIconMasks (board-only mask inlining)', () => {
+  const icons = { '/icons/search.svg': 'data:image/svg+xml;charset=utf-8,%3Csvg%3E' }
+
+  it('inlines a mask url() the sandboxed iframe could not fetch', () => {
+    expect(inlineIconMasks(".a { mask-image: url('/icons/search.svg'); }", icons)).toBe(
+      ".a { mask-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%3E'); }",
+    )
+  })
+
+  it('inlines the --icon a project token declares, unquoted or relative', () => {
+    expect(inlineIconMasks('.a { --icon: url(/icons/search.svg); }', icons)).toContain(
+      'url(data:image/svg+xml;charset=utf-8,%3Csvg%3E)',
+    )
+    expect(inlineIconMasks('.a { --icon: url("./icons/search.svg"); }', icons)).toContain(
+      'url("data:image/svg+xml;charset=utf-8,%3Csvg%3E")',
+    )
+  })
+
+  it('leaves an ordinary image alone — it is a no-cors fetch that already renders', () => {
+    const css = ".a { background-image: url('/icons/search.svg'); }"
+    expect(inlineIconMasks(css, icons)).toBe(css)
+  })
+
+  it('leaves an already-inlined glyph, an unknown file and an unknown property byte-identical', () => {
+    for (const css of [
+      ".a { mask-image: url('data:image/svg+xml,%3Csvg%3E'); }",
+      ".a { mask-image: url('/icons/nope.svg'); }",
+      '.a { color: url(/icons/search.svg); }',
+      '--icon-src: \'/icons/search.svg\';',
+    ]) {
+      expect(inlineIconMasks(css, icons)).toBe(css)
+    }
+  })
+
+  it('inlines for the board and leaves the export byte-identical', () => {
+    const css = '.a { mask-image: url("/icons/search.svg"); }'
+    const args = { html: '', device, stylesheets: [css], iconMasks: icons }
+    expect(composeScreenDoc({ ...args, bridgeJs: 'var x=1;' })).not.toContain('/icons/search.svg')
+    expect(composeScreenDoc({ ...args, bridgeJs: null })).toContain(css)
+  })
+
+  it('composes every registered screen with no icon url() left on the board', () => {
+    for (const screen of SCREENS) {
+      const doc = composeScreenDoc({
+        html: screen.html,
+        device,
+        stylesheets: [".a { mask-image: url('/icons/search.svg'); }"],
+        components: componentMap(screen.projectId),
+        bridgeJs: 'var x=1;',
+        iconMasks: icons,
+      })
+      expect(doc).not.toContain('url(\'/icons/search.svg\')')
+    }
+  })
+})
+
+describe('composeScreenDoc · expansion failures reach the board (2.1/2.3)', () => {
+  const broken = '<div class="screen"><div class="body"><!-- @component app-nav --></div></div>'
+
+  it('hands the root cause to onExpandError and keeps the placeholder visible', () => {
+    const seen: Array<{ kind: string; id: string }> = []
+    const doc = composeScreenDoc({
+      html: broken,
+      device,
+      stylesheets: [],
+      components: {},
+      onExpandError: (errors) => seen.push(...errors),
+    })
+    expect(seen).toEqual([{ kind: 'missing', id: 'app-nav' }])
+    expect(doc).toContain('<!-- @component app-nav -->')
+  })
+
+  it('reports a cycle instead of hanging on it', () => {
+    const seen: Array<{ kind: string; id: string }> = []
+    composeScreenDoc({
+      html: '<div class="screen"><div class="body"><!-- @component a --></div></div>',
+      device,
+      stylesheets: [],
+      components: { a: '<!-- @component b -->', b: '<!-- @component a -->' },
+      onExpandError: (errors) => seen.push(...errors),
+    })
+    expect(seen).toEqual([{ kind: 'cycle', id: 'a' }])
+  })
+
+  it('stays silent when every component resolves', () => {
+    const onExpandError = vi.fn()
+    composeScreenDoc({
+      html: broken,
+      device,
+      stylesheets: [],
+      components: { 'app-nav': '<nav class="region-nav"></nav>' },
+      onExpandError,
+    })
+    expect(onExpandError).not.toHaveBeenCalled()
+  })
+
+  it('is observational only — the document is byte-identical with and without the hook', () => {
+    const args = { html: broken, device, stylesheets: [], components: {} }
+    expect(composeScreenDoc({ ...args, onExpandError: () => {} })).toBe(composeScreenDoc(args))
   })
 })
 

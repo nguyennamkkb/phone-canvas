@@ -1,0 +1,144 @@
+<!-- pc {"title":"Family Plan","lightStatusBar":true} -->
+<style>
+.family-plan {
+  --fp-hi: rgba(255, 255, 255, 0.14);
+  --fp-soft: rgba(255, 255, 255, 0.08);
+  --fp-line: rgba(255, 255, 255, 0.22);
+}
+.family-plan .fp-title {
+  font-family: var(--font);
+  font-size: var(--t-large);
+  font-weight: 800;
+  line-height: 40px;
+  letter-spacing: -0.5px;
+  color: var(--label);
+  text-align: center;
+}
+.family-plan .fp-tray {
+  background: var(--fp-soft);
+  border: 1px solid var(--fp-line);
+  border-radius: var(--r-lg);
+  padding: var(--s3) var(--s4);
+}
+.family-plan .fp-dot {
+  width: var(--pw-dot-size);
+  height: var(--pw-dot-size);
+}
+.family-plan .fp-stat {
+  font-family: var(--font);
+  font-size: var(--t-title2);
+  font-weight: 800;
+  line-height: 28px;
+  color: var(--label);
+}
+.family-plan .fp-stat-lime {
+  color: var(--accent-lime);
+}
+.family-plan .fp-plan {
+  background: var(--fp-soft);
+  border: 1px solid var(--fp-line);
+}
+.family-plan .fp-plan.is-best {
+  background: var(--fp-hi);
+  border: 1px solid var(--accent-lime);
+}
+.family-plan .fp-rule {
+  height: 1px;
+  background: var(--fp-line);
+}
+</style>
+<div class="screen family-plan" style="background-color: var(--bg); background-image: linear-gradient(180deg, var(--pw-top) 0%, var(--pw-deep) 30%, var(--pw-mid) 52%, var(--pw-magenta) 74%, var(--pw-bot) 100%); background-size: cover; background-position: center; background-repeat: no-repeat">
+  <div class="body" style="padding: var(--s4); gap: var(--s5)">
+    <div class="row" style="gap: 0; justify-content: flex-end">
+      <button class="mx-x" data-slot="back" aria-label="Close">
+        <span class="icon icon-sm" data-symbol="xmark"></span>
+      </button>
+    </div>
+
+    <div class="col" style="gap: var(--s3); align-items: center">
+      <span class="pw-tag">UP TO 6 SEATS</span>
+      <h1 class="fp-title">One plan for the whole family</h1>
+      <div class="t-subhead" style="text-align: center; color: var(--label-2)">Share Premium with everyone you love</div>
+    </div>
+
+    <div class="fp-tray row" style="gap: var(--s3); align-items: flex-start; justify-content: center">
+      <div class="col" style="gap: var(--s1); align-items: center">
+        <span class="pw-dot fp-dot">
+          <span class="icon icon-sm" data-symbol="person.fill"></span>
+        </span>
+        <div class="t-caption" style="color: var(--label-2)">Mom</div>
+      </div>
+      <div class="col" style="gap: var(--s1); align-items: center">
+        <span class="pw-dot fp-dot">
+          <span class="icon icon-sm" data-symbol="person.fill"></span>
+        </span>
+        <div class="t-caption" style="color: var(--label-2)">Dad</div>
+      </div>
+      <div class="col" style="gap: var(--s1); align-items: center">
+        <span class="pw-dot fp-dot">
+          <span class="icon icon-sm" data-symbol="person.fill"></span>
+        </span>
+        <div class="t-caption" style="color: var(--label-2)">Kid</div>
+      </div>
+      <div class="col" style="gap: var(--s1); align-items: center">
+        <span class="pw-dot fp-dot">
+          <span class="icon icon-sm" data-symbol="person.fill"></span>
+        </span>
+        <div class="t-caption" style="color: var(--label-2)">Gran</div>
+      </div>
+    </div>
+
+    <div class="col" style="gap: var(--s3)">
+      <!-- Family plan: selected, straddle BEST VALUE tag -->
+      <button class="pw-card fp-plan is-best" style="position: relative; overflow: visible; padding-top: var(--s5)">
+        <span class="pw-tag" style="position: absolute; top: 0; right: var(--s4); margin-top: -14px">BEST VALUE</span>
+        <div class="grow col" style="gap: 0">
+          <div class="t-headline">Family Yearly</div>
+          <div class="t-subhead" style="color: var(--label-2)">6 seats • $0.83 per seat/mo</div>
+        </div>
+        <div class="col" style="gap: 0; align-items: flex-end; padding-top: var(--s4)">
+          <div class="t-headline">$59.99</div>
+          <div class="t-caption" style="color: var(--label-2)">/yr</div>
+        </div>
+      </button>
+      <button class="pw-card fp-plan">
+        <div class="grow col" style="gap: 0">
+          <div class="t-headline">Individual Yearly</div>
+          <div class="t-subhead" style="color: var(--label-2)">1 seat • $2.50/mo</div>
+        </div>
+        <div class="t-headline">$29.99</div>
+      </button>
+    </div>
+
+    <div class="row" style="gap: var(--s3); justify-content: center">
+      <div class="col" style="gap: 0; align-items: center">
+        <div class="fp-stat">$0.83</div>
+        <div class="t-caption" style="color: var(--label-2)">per seat/mo</div>
+      </div>
+      <div class="col" style="gap: 0; align-items: center">
+        <div class="fp-stat fp-stat-lime">3x</div>
+        <div class="t-caption" style="color: var(--label-2)">cheaper</div>
+      </div>
+      <div class="col" style="gap: 0; align-items: center">
+        <div class="fp-stat">6</div>
+        <div class="t-caption" style="color: var(--label-2)">seats included</div>
+      </div>
+    </div>
+
+    <div class="fp-rule"></div>
+
+    <div class="col" style="gap: var(--s2)">
+      <button class="pw-cta" style="gap: var(--s2)">Start Family Trial<span class="icon icon-sm" data-symbol="arrow.right"></span></button>
+      <div class="row" style="gap: var(--s1); justify-content: center">
+        <span class="icon icon-sm" data-symbol="lock.fill" style="color: var(--label-2)"></span>
+        <div class="t-subhead" style="text-align: center; color: var(--label-2)">3 days free, then $59.99/year. Cancel anytime.</div>
+      </div>
+    </div>
+
+    <div class="row" style="gap: var(--s4); justify-content: center">
+      <span class="t-footnote" style="color: var(--label-2); text-decoration: underline">Terms</span>
+      <span class="t-footnote" style="color: var(--label-2); text-decoration: underline">Privacy</span>
+      <span class="t-footnote" style="color: var(--label-2); text-decoration: underline">Restore</span>
+    </div>
+  </div>
+</div>

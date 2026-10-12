@@ -4,7 +4,8 @@ import { labelCopyText } from './nodeLabel'
 import type { Node, NodeProps } from '@xyflow/react'
 import { Handle, Position } from '@xyflow/react'
 import { formChip, formFactorOf, getDevice, isKnownDevice } from '../frame/devices'
-import { buildSrcDoc } from '../extractor/buildSrcDoc'
+import { buildSrcDocWithErrors } from '../extractor/buildSrcDoc'
+import { expandErrorSummary, type ExpandError } from '../components/expand'
 import { SCREEN_BY_ID } from '../screens'
 import { projectOfScreen } from '../projects/projects'
 import { draftCss, useTokenDraft } from '../tokens/store'
@@ -85,22 +86,20 @@ function PhoneNodeInner({ id, data }: NodeProps) {
     return draftCssText ? `${draftCssText}\n${expandCssText}` : expandCssText
   }, [draft, expanded, contentH])
 
-  const srcDoc = useMemo(
-    () =>
-      screen
-        ? buildSrcDoc({
-            html: screen.html,
-            device,
-            nodeId: id,
-            token,
-            lightStatusBar: screen.lightStatusBar,
-            projectId,
-            theme: tokenTheme,
-            extraCss,
-          })
-        : '<!doctype html><p style="font:14px system-ui;padding:24px">Screen not found</p>',
-    [screen, device, id, token, projectId, tokenTheme, extraCss],
-  )
+  const { srcDoc, expandErrors } = useMemo(() => {
+    if (!screen) return { srcDoc: '<!doctype html><p style="font:14px system-ui;padding:24px">Screen not found</p>', expandErrors: [] as ExpandError[] }
+    return buildSrcDocWithErrors({
+      html: screen.html,
+      device,
+      nodeId: id,
+      token,
+      lightStatusBar: screen.lightStatusBar,
+      projectId,
+      theme: tokenTheme,
+      extraCss,
+    })
+  }, [screen, device, id, token, projectId, tokenTheme, extraCss])
+  const expandError = expandErrorSummary(expandErrors, screen?.file ?? d.screenId)
 
   useEffect(() => {
     registerFrame(id, frameRef.current, token)
@@ -164,6 +163,11 @@ function PhoneNodeInner({ id, data }: NodeProps) {
           >
             {golden.state === 'match' ? '●' : golden.state === 'mismatch' ? '●' : '○'}
           </Badge>
+          {expandError && (
+            <Badge variant="destructive" title={expandError.title}>
+              {expandError.text}
+            </Badge>
+          )}
           {formChipText && (
             <Badge
               variant="secondary"

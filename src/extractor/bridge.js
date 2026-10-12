@@ -166,6 +166,9 @@
           asset: ell.getAttribute('data-asset') || '',
           // the glyph is inlined as a data URI; --icon-src keeps the file name
           iconSrc: (css.getPropertyValue('--icon-src') || '').replace(/^['"]|['"]$/g, '').trim(),
+          // not getAttribute('class'): an <svg> root exposes an SVGAnimatedString
+          // here, and the file stem needs a plain string
+          class: typeof ell.className === 'string' ? ell.className : '',
         },
         scroll: {
           y: ell.scrollHeight > ell.clientHeight + 1,

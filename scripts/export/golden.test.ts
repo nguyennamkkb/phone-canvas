@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
+import { mkdtempSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { createHash } from 'node:crypto'
@@ -7,18 +7,25 @@ import { deflateSync } from 'node:zlib'
 import { parseArgs } from './cli.ts'
 import {
   GOLDEN_PHASH_THRESHOLD,
+  buildElementGoldenRecord,
   buildGoldenRecord,
+  compareElementGolden,
   compareGolden,
+  elementGoldenKey,
   goldenKey,
   goldenOs,
   hashBuffer,
+  loadElementGolden,
   loadManifest,
   loadManifestCascade,
   phashDistance,
   phashPng,
   resolveGoldenDir,
   resolveGoldenOsDir,
+  saveElementGolden,
   saveManifest,
+  specDigest,
+  upsertElementRecord,
   upsertRecord,
 } from './golden.ts'
 
@@ -117,6 +124,86 @@ function goldenRecordFor(png: Buffer, timestamp = '2026-10-02T00:00:00Z') {
     width: 390,
     height: 844,
     timestamp,
+  })
+}
+
+/**
+ * One element node in the shape `element.ts`'s `payloadFor()` writes: the
+ * identity/style fields the digest keeps, plus the measured box/plumbing it
+ * must ignore.
+ */
+function specNode(overrides: Record<string, unknown> = {}) {
+  return {
+    id: 'e13',
+    tag: 'button',
+    parent: 'e12',
+    depth: 3,
+    role: 'Button',
+    swiftUiShape: 'Button { HStack(spacing: 8) }',
+    label: 'Button · "Start Family Trial"',
+    text: 'Start Family Trial',
+    box: { x: 16, y: 403, w: 114, h: 80 },
+    layout: { direction: 'row', gap: 8, justify: 'center', align: 'center', selfAlign: 'auto', wrap: false, layer: false },
+    padding: { top: 0, right: 28, bottom: 0, left: 28 },
+    size: { w: 114, h: 80, grow: 0, fillWidth: true, fillHeight: false },
+    typography: {
+      family: '-apple-system',
+      size: 17,
+      weight: 700,
+      weightName: 'bold',
+      lineHeight: 22,
+      lineSpacing: 5,
+      tracking: 0,
+      align: 'center',
+      transform: 'none',
+      color: 'rgb(0, 0, 0)',
+      colorHex: '#000000',
+    },
+    image: null,
+    surface: {
+      background: 'rgb(255, 255, 255)',
+      backgroundHex: '#ffffff',
+      backgroundAlpha: 1,
+      backgroundImage: '',
+      backgroundKind: 'color',
+      radius: 28,
+      borderWidth: 0,
+      borderColor: '',
+      borderHex: '',
+      shadow: 'none',
+    },
+    scrollable: false,
+    ...overrides,
+  }
+}
+
+/** A payload in the shape `payloadFor()` writes. */
+function payloadFor(overrides: Record<string, unknown> = {}) {
+  return {
+    version: 1,
+    screen: 'family-plan',
+    device: 'reference',
+    theme: 'light',
+    point: { x: 73, y: 443 },
+    hit: true,
+    selectedElement: specNode(),
+    ancestors: [{ id: 'e12', role: 'VStack', label: '', box: { x: 16, y: 331, w: 358, h: 220 } }],
+    candidates: 121,
+    png: 'pw-cta@2x.png',
+    pngClip: { x: 0, y: 379, width: 390, height: 104 },
+    pngWidth: 780,
+    pngHeight: 208,
+    ...overrides,
+  }
+}
+
+function elementRecordFor(png: Buffer, payload = payloadFor(), stem = 'pw-card') {
+  const identity = { screen: 'seasonal-sale', device: 'reference', theme: 'light', stem, scale: 2 }
+  return buildElementGoldenRecord({
+    identity,
+    png,
+    payload,
+    pngFile: `${elementGoldenKey(identity)}.png`,
   })
 }
 describe('--all-devices flag', () => {
@@ -357,5 +444,226 @@ describe('resolveGoldenOsDir (read-old / write-new)', () => {
     const merged = loadManifestCascade([osDir, base])
     expect(merged.records[goldenKey(osRecord)].sha256).toBe(hashBuffer(osPng))
     expect(merged.updatedAt).toBe('2026-10-03T00:00:00Z')
+  })
+})
+
+describe('element golden key', () => {
+  it('is screen--device--theme--stem, distinct per axis', () => {
+    const key = elementGoldenKey({ screen: 'seasonal-sale', device: 'reference', theme: 'light', stem: 'pw-card' })
+    expect(key).toBe('seasonal-sale--reference--light--pw-card')
+    expect(elementGoldenKey({ screen: 'seasonal-sale', device: 'reference', theme: 'dark', stem: 'pw-card' })).not.toBe(key)
+    expect(elementGoldenKey({ screen: 'seasonal-sale', device: 'ipad-11', theme: 'light', stem: 'pw-card' })).not.toBe(key)
+    expect(elementGoldenKey({ screen: 'family-plan', device: 'reference', theme: 'light', stem: 'pw-card' })).not.toBe(key)
+    expect(elementGoldenKey({ screen: 'seasonal-sale', device: 'reference', theme: 'light', stem: 'pw-cta' })).not.toBe(key)
+    // an element key can never be mistaken for a screen key of the same render
+    expect(key).not.toBe(goldenKey({ screen: 'seasonal-sale', device: 'reference', theme: 'light', scale: 2, full: false }))
+  })
+})
+
+describe('specDigest', () => {
+  it('ignores measured geometry and capture plumbing', () => {
+    const base = payloadFor()
+    // a different machine/render: another OS box, another crop, another capture
+    const shifted = payloadFor({
+      screen: 'seasonal-sale',
+      device: 'ipad-11',
+      theme: 'dark',
+      scale: 3,
+      point: { x: 80, y: 450 },
+      candidates: 130,
+      png: 'other@3x.png',
+      pngClip: { x: 0, y: 380, width: 390, height: 110 },
+      pngWidth: 780,
+      pngHeight: 220,
+      selectedElement: specNode({
+        id: 'e40',
+        parent: 'e20',
+        depth: 4,
+        box: { x: 16, y: 410, w: 114, h: 86 },
+        size: { w: 120, h: 86, grow: 0, fillWidth: true, fillHeight: false },
+      }),
+      ancestors: [{ id: 'e20', role: 'VStack', label: '', box: { x: 0, y: 0, w: 390, h: 844 } }],
+    })
+    expect(specDigest(shifted)).toBe(specDigest(base))
+    // key order is not information either
+    const reordered = Object.fromEntries(Object.entries(base).reverse())
+    expect(specDigest(reordered)).toBe(specDigest(base))
+  })
+
+  it('moves for a radius, a color, a font or a text change', () => {
+    const base = specDigest(payloadFor())
+    const node = specNode()
+    const withNode = (change: Record<string, unknown>) => specDigest(payloadFor({ selectedElement: specNode(change) }))
+    expect(withNode({ surface: { ...node.surface, radius: 4 } })).not.toBe(base)
+    expect(withNode({ surface: { ...node.surface, backgroundHex: '#7a2b98' } })).not.toBe(base)
+    expect(withNode({ typography: { ...node.typography, size: 15 } })).not.toBe(base)
+    expect(withNode({ text: 'Start Free Trial' })).not.toBe(base)
+    // the authored layout is style too: gap and padding must move it
+    expect(withNode({ layout: { ...node.layout, gap: 12 } })).not.toBe(base)
+    expect(withNode({ padding: { ...node.padding, left: 40 } })).not.toBe(base)
+    // an ancestor's identity/role is context, not geometry
+    expect(specDigest(payloadFor({ ancestors: [{ id: 'e12', role: 'ZStack', label: '', box: { x: 0, y: 0, w: 390, h: 844 } }] }))).not.toBe(base)
+  })
+})
+
+describe('element golden record', () => {
+  it('hashes the crop with the pipeline rules and the spec digest', () => {
+    const png = uiBandsPng()
+    const payload = payloadFor()
+    const record = elementRecordFor(png, payload)
+    expect(record).toMatchObject({
+      elementKey: 'seasonal-sale--reference--light--pw-card',
+      screen: 'seasonal-sale',
+      device: 'reference',
+      theme: 'light',
+      scale: 2,
+      png: 'seasonal-sale--reference--light--pw-card.png',
+    })
+    expect(record.cropHash).toBe(hashBuffer(png))
+    expect(record.phash).toBe(phashPng(png))
+    expect(record.phash).toMatch(/^[0-9a-f]{16}$/)
+    expect(record.specHash).toBe(specDigest(payload))
+    expect(record.specHash).toHaveLength(64)
+    expect(Number.isFinite(record.updatedAt)).toBe(true)
+    // a re-run over unchanged bytes keeps the crop hash; a style edit does not
+    expect(elementRecordFor(png, payload).cropHash).toBe(record.cropHash)
+    const styled = payloadFor({ selectedElement: specNode({ surface: { ...specNode().surface, radius: 4 } }) })
+    expect(elementRecordFor(png, styled).specHash).not.toBe(record.specHash)
+    expect(elementRecordFor(png, styled).cropHash).toBe(record.cropHash)
+  })
+})
+
+describe('compareElementGolden', () => {
+  it('missing record is missing, never an error', () => {
+    const png = uiBandsPng()
+    for (const nothing of [null, undefined]) {
+      expect(compareElementGolden(nothing, png, payloadFor())).toEqual({
+        state: 'missing',
+        distance: null,
+        cropMatch: false,
+        specMatch: null,
+      })
+    }
+  })
+
+  it('byte-exact crop with the same spec is khớp', () => {
+    const png = gradientPng()
+    const payload = payloadFor()
+    const record = elementRecordFor(png, payload)
+    expect(compareElementGolden(record, png, payload)).toEqual({
+      state: 'match',
+      distance: 0,
+      cropMatch: true,
+      specMatch: true,
+    })
+  })
+
+  it('AA-level noise stays within threshold (still khớp) and reports the distance', () => {
+    const record = elementRecordFor(uiBandsPng())
+    const dirty = uiBandsPng(true)
+    expect(hashBuffer(dirty)).not.toBe(record.cropHash)
+    const verdict = compareElementGolden(record, dirty, payloadFor())
+    expect(verdict.state).toBe('match')
+    expect(verdict.cropMatch).toBe(true)
+    expect(verdict.distance).not.toBeNull()
+    expect(verdict.distance as number).toBeGreaterThan(0)
+    expect(verdict.distance as number).toBeLessThanOrEqual(GOLDEN_PHASH_THRESHOLD)
+  })
+
+  it('a heavily edited crop is lệch with a distance', () => {
+    const width = 72
+    const height = 64
+    const record = elementRecordFor(gradientPng(width, height))
+    const inverted = encodePng(width, height, (x, y) => [
+      255 - ((x * 3 + y) & 0xff),
+      255 - ((x + y * 5) & 0xff),
+      255 - ((x * 7 + y * 3) & 0xff),
+    ])
+    const verdict = compareElementGolden(record, inverted, payloadFor())
+    expect(verdict.state).toBe('mismatch')
+    expect(verdict.cropMatch).toBe(false)
+    expect(verdict.distance as number).toBeGreaterThan(GOLDEN_PHASH_THRESHOLD)
+  })
+
+  it('a style change the crop cannot see still reports specMatch false', () => {
+    const png = uiBandsPng()
+    const record = elementRecordFor(png, payloadFor())
+    // the border-radius case: identical pixels, a different declared style
+    const styled = payloadFor({
+      selectedElement: specNode({ surface: { ...specNode().surface, radius: 4 } }),
+    })
+    const verdict = compareElementGolden(record, png, styled)
+    expect(verdict.state).toBe('match')
+    expect(verdict.cropMatch).toBe(true)
+    expect(verdict.specMatch).toBe(false)
+  })
+
+  it('specMatch is null when the record carries no spec hash', () => {
+    const png = uiBandsPng()
+    const record = { ...elementRecordFor(png), specHash: '' }
+    const verdict = compareElementGolden(record, png, payloadFor())
+    expect(verdict.specMatch).toBeNull()
+    expect(verdict.cropMatch).toBe(true)
+  })
+})
+
+describe('element golden manifest round-trip', () => {
+  it('holds both halves: an element upsert never drops screen records', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'goldens-'))
+    const screenRecord = goldenRecordFor(gradientPng())
+    const elementRecord = elementRecordFor(uiBandsPng())
+    saveManifest(dir, upsertRecord(loadManifest(dir), screenRecord))
+    saveManifest(dir, upsertElementRecord(loadManifest(dir), elementRecord))
+    const manifest = loadManifest(dir)
+    expect(Object.keys(manifest.records)).toEqual([goldenKey(screenRecord)])
+    expect(Object.keys(manifest.elements ?? {})).toEqual([elementRecord.elementKey])
+    // and the screen-only path leaves the element half alone on re-run
+    saveManifest(dir, upsertRecord(loadManifest(dir), goldenRecordFor(gradientPng(), '2026-10-05T00:00:00Z')))
+    const again = loadManifest(dir)
+    expect(Object.keys(again.elements ?? {})).toEqual([elementRecord.elementKey])
+    expect(again.updatedAt).toBe('2026-10-05T00:00:00Z')
+    expect(JSON.parse(readFileSync(join(dir, 'goldens.json'), 'utf8')).elements[elementRecord.elementKey].png).toBe(
+      elementRecord.png,
+    )
+  })
+
+  it('an old manifest without `elements` still loads, with no element goldens', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'goldens-old-'))
+    const record = goldenRecordFor(gradientPng())
+    writeFileSync(
+      join(dir, 'goldens.json'),
+      JSON.stringify({ version: 1, updatedAt: record.timestamp, records: { [goldenKey(record)]: record } }),
+    )
+    const manifest = loadManifest(dir)
+    expect(Object.keys(manifest.records)).toEqual([goldenKey(record)])
+    // the missing key reads as an empty set, and a re-save does not invent one
+    expect(Object.keys(manifest.elements ?? {})).toEqual([])
+    expect('elements' in manifest).toBe(false)
+    expect(loadElementGolden(dir, 'seasonal-sale--reference--light--pw-card')).toBeNull()
+  })
+
+  it('saveElementGolden + loadElementGolden round-trips the crop bytes', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'goldens-el-'))
+    const png = uiBandsPng()
+    const record = elementRecordFor(png)
+    saveElementGolden(dir, record, png)
+    saveManifest(dir, upsertElementRecord(loadManifest(dir), record))
+    const loaded = loadElementGolden(dir, record.elementKey)
+    expect(loaded?.png.equals(png)).toBe(true)
+    expect(loaded?.record.cropHash).toBe(hashBuffer(png))
+    expect(loadElementGolden(dir, 'seasonal-sale--reference--light--nope')).toBeNull()
+    // a record whose crop file is gone has nothing to compare against
+    unlinkSync(join(dir, record.png))
+    expect(loadElementGolden(dir, record.elementKey)).toBeNull()
+  })
+
+  it('cascade merges the element half per key', () => {
+    const base = mkdtempSync(join(tmpdir(), 'goldens-base-'))
+    const osDir = mkdtempSync(join(tmpdir(), 'goldens-os-'))
+    const baseRecord = elementRecordFor(gradientPng())
+    saveManifest(base, upsertElementRecord(loadManifest(base), baseRecord))
+    saveManifest(osDir, upsertElementRecord(loadManifest(osDir), { ...baseRecord, cropHash: 'f'.repeat(64) }))
+    const merged = loadManifestCascade([osDir, base])
+    expect(merged.elements?.[baseRecord.elementKey].cropHash).toBe('f'.repeat(64))
   })
 })

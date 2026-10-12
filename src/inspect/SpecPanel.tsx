@@ -9,6 +9,9 @@ import { SpecDetail } from './spec-detail/SpecDetail'
 import { ElementTree } from './element-tree/ElementTree'
 import { NodePicker } from './node-picker/NodePicker'
 import { copyPayloadFor, copyPayloadText } from './copy-json/copyJson'
+import { ElementExport } from './element-export/ElementExport'
+import { CompareSpecs, type CompareScreen } from './compare/CompareSpecs'
+import { SCREEN_BY_ID } from '../screens'
 import { Button } from '@/components/ui/button'
 
 export type SpecPanelProps = {
@@ -38,7 +41,7 @@ export function SpecPanel({
   onFocusScreen,
   onClosePanel,
 }: SpecPanelProps) {
-  const { specs, selection, select, selected, requestRecapture, dropped } = useInspector()
+  const { specs, selection, select, selected, requestRecapture, dropped, ancestry } = useInspector()
   const { tokenTheme } = useBoardSettings()
   const found = nodes.find((n) => n.id === selectedNodeId) ?? null
   // the token table is reference, never a spec target
@@ -46,6 +49,12 @@ export function SpecPanel({
   const projectId = node ? (projectOfScreen(node.data.screenId)?.id ?? '') : ''
   const lookup = (raw: string) => tokenNameForColor(projectId, raw, tokenTheme)
   const specList = node ? (specs[node.id] ?? []) : []
+  // spec-vs-spec drift needs two mounted screens; the board order is the picker
+  const compareScreens: CompareScreen[] = nodes.map((n) => ({
+    nodeId: n.id,
+    screenId: n.data.screenId,
+    title: SCREEN_BY_ID.get(n.data.screenId)?.title ?? n.data.screenId,
+  }))
   const firstNodeId = nodes.length > 0 ? nodes[0]?.id ?? null : null
 
   const hasSpec = specList.length > 0
@@ -142,6 +151,8 @@ export function SpecPanel({
           <p className="empty">Đang đọc DOM… (Copy JSON chờ xong bước này)</p>
         )}
 
+        <CompareSpecs screens={compareScreens} specs={specs} />
+
         {node && !hasSpec && nodeTimedOut && (
           <div className="empty flex flex-col items-start gap-2">
             <p>
@@ -170,6 +181,13 @@ export function SpecPanel({
         {hasSpec && node && (
           <>
             <ElementTree specList={specList} selection={selection} nodeId={node.id} onPick={select} />
+            <ElementExport
+              screenId={node.data.screenId}
+              deviceId={node.data.deviceId}
+              theme={tokenTheme}
+              selected={selected}
+              ancestry={ancestry}
+            />
             {selected ? (
               <SpecDetail node={selected} lookup={lookup} />
             ) : (

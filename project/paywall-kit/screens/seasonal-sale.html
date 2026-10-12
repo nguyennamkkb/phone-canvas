@@ -1,0 +1,116 @@
+<!-- pc {"title":"Seasonal Sale","lightStatusBar":true} -->
+<style>
+.seasonal-sale {
+  --ss-hi: rgba(255, 255, 255, 0.14);
+  --ss-soft: rgba(255, 255, 255, 0.08);
+  --ss-line: rgba(255, 255, 255, 0.22);
+}
+.seasonal-sale .ss-title {
+  font-family: var(--font);
+  font-size: var(--t-large);
+  font-weight: 800;
+  line-height: 40px;
+  letter-spacing: -0.5px;
+  color: var(--label);
+  text-align: center;
+}
+.seasonal-sale .ss-cell {
+  background: var(--ss-hi);
+  border: 1px solid var(--ss-line);
+}
+.seasonal-sale .ss-num {
+  font-family: var(--font);
+  font-size: var(--t-large);
+  font-weight: 800;
+  line-height: 38px;
+  color: var(--label);
+}
+.seasonal-sale .ss-plan {
+  background: var(--ss-soft);
+  border: 1px solid var(--ss-line);
+}
+.seasonal-sale .ss-plan.is-best {
+  background: var(--ss-hi);
+  border: 1px solid var(--accent-lime);
+}
+.seasonal-sale .ss-was {
+  color: var(--label-2);
+  text-decoration: line-through;
+}
+.seasonal-sale .ss-rule {
+  height: 1px;
+  background: var(--ss-line);
+}
+</style>
+<div class="screen seasonal-sale" style="background-color: var(--bg); background-image: linear-gradient(180deg, var(--pw-top) 0%, var(--pw-deep) 30%, var(--pw-mid) 52%, var(--pw-magenta) 74%, var(--pw-bot) 100%); background-size: cover; background-position: center; background-repeat: no-repeat">
+  <div class="body" style="padding: var(--s4); gap: var(--s5)">
+    <div class="row" style="gap: 0; justify-content: flex-end">
+      <button class="mx-x" data-slot="back" aria-label="Close">
+        <span class="icon icon-sm" data-symbol="xmark"></span>
+      </button>
+    </div>
+
+    <div class="col" style="gap: var(--s3); align-items: center">
+      <span class="pw-dot">
+        <span class="icon icon-sm" data-symbol="tag"></span>
+      </span>
+      <span class="pw-tag">HOLIDAY SALE — 50% OFF</span>
+      <h1 class="ss-title">Premium for half the price</h1>
+      <div class="t-subhead" style="text-align: center; color: var(--label-2)">Sale ends in</div>
+    </div>
+
+    <div class="row" style="gap: var(--s2)">
+      <div class="grow pw-card ss-cell" style="gap: 0; flex-direction: column; align-items: center; padding: var(--s3) var(--s2)">
+        <div class="ss-num">02</div>
+        <div class="t-caption" style="color: var(--label-2)">days</div>
+      </div>
+      <div class="grow pw-card ss-cell" style="gap: 0; flex-direction: column; align-items: center; padding: var(--s3) var(--s2)">
+        <div class="ss-num">14</div>
+        <div class="t-caption" style="color: var(--label-2)">hours</div>
+      </div>
+      <div class="grow pw-card ss-cell" style="gap: 0; flex-direction: column; align-items: center; padding: var(--s3) var(--s2)">
+        <div class="ss-num">36</div>
+        <div class="t-caption" style="color: var(--label-2)">mins</div>
+      </div>
+    </div>
+
+    <div class="col" style="gap: var(--s3)">
+      <!-- Yearly plan: selected, straddle SAVE tag -->
+      <button class="pw-card ss-plan is-best" style="position: relative; overflow: visible; padding-top: var(--s5)">
+        <span class="pw-tag" style="position: absolute; top: 0; right: var(--s4); margin-top: -14px">SAVE 50%</span>
+        <div class="grow col" style="gap: 0">
+          <div class="t-headline">Yearly</div>
+          <div class="t-subhead" style="color: var(--label-2)">$29.99/yr after 3-day free trial</div>
+        </div>
+        <div class="col" style="gap: 0; align-items: flex-end; padding-top: var(--s4)">
+          <div class="t-caption ss-was">$59.99</div>
+          <div class="t-headline">$2.50</div>
+          <div class="t-caption" style="color: var(--label-2)">/mo</div>
+        </div>
+      </button>
+      <button class="pw-card ss-plan">
+        <div class="grow col" style="gap: 0">
+          <div class="t-headline">Monthly</div>
+          <div class="t-subhead" style="color: var(--label-2)">$4.99/mo, cancel anytime</div>
+        </div>
+        <div class="t-headline">$4.99</div>
+      </button>
+    </div>
+
+    <div class="ss-rule"></div>
+
+    <div class="col" style="gap: var(--s2)">
+      <button class="pw-cta" style="gap: var(--s2)">Claim 50% Off<span class="icon icon-sm" data-symbol="arrow.right"></span></button>
+      <div class="row" style="gap: var(--s1); justify-content: center">
+        <span class="icon icon-sm" data-symbol="lock.fill" style="color: var(--label-2)"></span>
+        <div class="t-subhead" style="text-align: center; color: var(--label-2)">3 days free, then $29.99/year. Cancel anytime.</div>
+      </div>
+    </div>
+
+    <div class="row" style="gap: var(--s4); justify-content: center">
+      <span class="t-footnote" style="color: var(--label-2); text-decoration: underline">Terms</span>
+      <span class="t-footnote" style="color: var(--label-2); text-decoration: underline">Privacy</span>
+      <span class="t-footnote" style="color: var(--label-2); text-decoration: underline">Restore</span>
+    </div>
+  </div>
+</div>

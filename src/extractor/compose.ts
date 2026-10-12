@@ -1,6 +1,6 @@
 import * as parse5 from 'parse5'
 import type { Device } from '../frame/devices'
-import { expandComponents } from '../components/expand.ts'
+import { expandComponents, type ExpandError } from '../components/expand.ts'
 import * as legacy from './compose.legacy.ts'
 
 /**
@@ -25,6 +25,23 @@ export type ComposeOptions = {
    * Exports use null: no measurement attributes, no hover overlay.
    */
   bridgeJs?: string | null
+  /**
+   * `/icons/<file>.svg` → an inlined `data:image/svg+xml,…` URI.
+   *
+   * Only consulted for a board document (bridgeJs present). A mask image is a
+   * CORS-mode fetch, so a `url('/icons/…')` inside a mask is refused by the
+   * sandboxed iframe's opaque origin and the glyph VANISHES rather than
+   * degrading — while an export, loaded from a file:// document that is not
+   * opaque, renders it. Supplying the artwork lets compose inline it, so both
+   * paths show the same icon. Exports pass nothing and stay byte-identical.
+   */
+  iconMasks?: Record<string, string>
+  /**
+   * Called once per compose with every component-expansion problem found
+   * (missing id, cycle, depth). The board uses it to show the root cause on
+   * the node; export/audit callers omit it and stay byte-identical.
+   */
+  onExpandError?: (errors: ExpandError[]) => void
   /** identify which canvas node this iframe belongs to (app only) */
   nodeId?: string
   /**
@@ -122,6 +139,56 @@ body.is-bare { height: auto; }
   background: #fff;
 }
 `
+
+/** mask-bearing properties: their url() must survive an opaque origin */
+const MASK_PROPERTY = /^(?:-webkit-)?mask(?:-(?:image|border|border-image|box-image))?$/i
+/** one declaration: separator, property, value — the value stops at ; { } or a quote */
+const DECLARATION =
+  /(^|[;{}])(\s*)(-{0,2}[A-Za-z][\w-]*)([ \t]*:[ \t]*)((?:[^;{}"']|"[^"]*"|'[^']*')*)/g
+const URL_IN_CSS = /url\(\s*(?:(['"])([^'"]*)\1|([^)'"]*))\s*\)/g
+
+/**
+ * The artwork for one `url()`, or null when it is not an icon we can inline.
+ * Accepts the shapes an author writes: `/icons/x.svg`, `icons/x.svg`,
+ * `./icons/x.svg` and an absolute same-document URL.
+ */
+function inlineableIcon(url: string, icons: Record<string, string>): string | null {
+  if (/^(?:data|blob|about):/i.test(url)) return null
+  const path = url.replace(/^[a-z][a-z0-9+.-]*:\/\/[^/]*/i, '').split(/[?#]/)[0] ?? ''
+  return icons[path] ?? icons[`/${path.replace(/^\.?\//, '')}`] ?? null
+}
+
+/**
+ * Replace external icon `url()` with the inlined data URI inside mask
+ * declarations (and custom properties, which is how a project declares a glyph:
+ * `--icon: url('/icons/x.svg')`). `background-image` is deliberately left
+ * alone — an ordinary image is a no-cors fetch and renders fine, so inlining it
+ * would only grow the document.
+ *
+ * String work on purpose: the rewrite is byte-preserving everywhere else, so a
+ * document with no external mask comes out exactly as it did.
+ */
+export function inlineIconMasks(css: string, icons: Record<string, string>): string {
+  return css.replace(
+    DECLARATION,
+    (whole, sep: string, gap: string, prop: string, colon: string, value: string) => {
+      if (!value.includes('url(')) return whole
+      if (!MASK_PROPERTY.test(prop) && !prop.startsWith('--')) return whole
+      const rewritten = value.replace(
+        URL_IN_CSS,
+        (match, quote?: string, quoted?: string, bare?: string) => {
+          const url = (quoted ?? bare ?? '').trim()
+          // unquoted, the original form is restored: an author may omit the quotes
+          const q = quote ?? ''
+          if (!q && url !== bare) return match
+          const data = inlineableIcon(url, icons)
+          return data === null ? match : `url(${q}${data}${q})`
+        },
+      )
+      return rewritten === value ? whole : `${sep}${gap}${prop}${colon}${rewritten}`
+    },
+  )
+}
 
 function statusBarHtml(device: Device, light: boolean): string {
   if (device.safeTop <= 0) return ''
@@ -563,6 +630,8 @@ export function composeScreenDoc(options: ComposeOptions): string {
     device,
     stylesheets,
     bridgeJs = null,
+    iconMasks,
+    onExpandError,
     nodeId,
     token,
     lightStatusBar,
@@ -571,13 +640,23 @@ export function composeScreenDoc(options: ComposeOptions): string {
     bare = false,
   } = options
   const themeAttr = theme === 'dark' ? ' data-theme="dark"' : ''
+  // Collect every component-expansion problem across all expand passes so the
+  // board can show the root cause on the node (task 2.1). One callback per
+  // compose; export/audit omit onExpandError and see no behavior change.
+  const expandErrors: ExpandError[] = []
+  const expandHere = (source: string): string => {
+    if (!components) return source
+    const result = expandComponents(source, components)
+    expandErrors.push(...result.errors)
+    return result.html
+  }
   let body: string
   let navHtml = ''
   let tabsHtml = ''
   if (bare) {
     // component preview: splice `@component` fragments in, but leave the
     // markup untouched — no band is built, so a component can be inspected
-    const expanded = components ? expandComponents(html, components).html : html
+    const expanded = expandHere(html)
     body = expanded
   } else {
     // shell-owned bands, in two passes. The screen's OWN slot content is lifted
@@ -587,7 +666,7 @@ export function composeScreenDoc(options: ComposeOptions): string {
     // and an element the screen already removed cannot be overwritten.
     const ownNav = liftNav(html, 'data-slot:screen')
     const ownTabs = takeAttributed(ownNav.rest, 'data-tab', 'data-tab:screen')
-    const expanded = components ? expandComponents(ownTabs.rest, components).html : ownTabs.rest
+    const expanded = expandHere(ownTabs.rest)
     const defNav = liftNav(expanded, 'data-slot:defaults')
     const defTabs = takeAttributed(defNav.rest, 'data-tab', 'data-tab:defaults')
     body = defTabs.rest
@@ -619,7 +698,14 @@ export function composeScreenDoc(options: ComposeOptions): string {
     }
   }
 
-  const styles = stylesheets.map((css) => `<style>${css}</style>`).join('\n')
+  // Board only: a sandboxed srcdoc iframe has an opaque origin, which refuses
+  // the CORS-mode fetch a mask image needs. Inline whatever artwork we were
+  // given so a glyph cannot vanish here while an export still draws it. An
+  // export (bridgeJs null) composes byte for byte as before.
+  const isBoard = typeof bridgeJs === 'string' && bridgeJs !== ''
+  const styles = stylesheets
+    .map((css) => `<style>${isBoard && iconMasks ? inlineIconMasks(css, iconMasks) : css}</style>`)
+    .join('\n')
 
   // optional screen background: replay the root's longhand background onto
   // .device so the statusbar/home strips continue the screen instead of
@@ -632,6 +718,10 @@ export function composeScreenDoc(options: ComposeOptions): string {
   const bridge = bridgeJs
     ? `\n<script>${bridgeJs.replace(/<\/script/gi, '<\\/script')}</script>`
     : ''
+
+  // Report expansion problems once, after every pass has run. Export/audit
+  // omit onExpandError: untouched path, byte-identical document.
+  if (onExpandError && expandErrors.length > 0) onExpandError(expandErrors)
 
   return `<!doctype html>
 <html lang="en"${themeAttr}>

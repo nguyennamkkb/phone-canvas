@@ -22,20 +22,6 @@
 }
 
 :root[data-theme='dark'] {
-  --wl-card: #ffffff;
-  --wl-disc: rgba(255, 255, 255, 0.28);
-  --wl-ink: #1b1a22;
-  --wl-key: #f4f3fa;
-  --wl-glyph-dim: rgba(27, 26, 34, 0.55);
-  --wl-yellow: #ffcf5c;
-  --wl-purple: #4f3d9e;
-  --wl-gray: #c4c4ce;
-  --wl-dots: rgba(27, 26, 34, 0.25);
-  --wl-canvas: #3b2a8f;
-  --wl-pill: rgba(255, 255, 255, 0.18);
-  --wl-dim: rgba(255, 255, 255, 0.65);
-  --wl-accent: #ffc93c;
-  --wl-accent-ink: #3b2a8f;
 }
 
 /* Port từ scratch-watch (gộp lab): token chung cho các màn activity/heart/timer/weather. */

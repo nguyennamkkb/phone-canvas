@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import {
-  darkTwinViolations,
+  darkBlockViolations,
   leftoverHardColors,
   noLiteralViolations,
   parseModeVars,
@@ -17,10 +17,20 @@ const ENTRIES: Array<[string, string]> = [
 describe('parseModeVars', () => {
   it('splits light vars from every dark block, keeping file lines', () => {
     const css = `:root {\n  --bg: #ffffff;\n}\n:root[data-theme='dark'] {\n  --bg: #000000;\n}\n`
-    const { light, dark, ownTwin } = parseModeVars(css)
+    const { light, dark, ownTwin, darkRootDecls } = parseModeVars(css)
     expect(light.get('--bg')).toMatchObject({ value: '#ffffff', line: 2 })
     expect(dark.get('--bg')).toMatchObject({ value: '#000000', line: 5 })
     expect(ownTwin.size).toBe(0)
+    expect(darkRootDecls).toEqual([{ name: '--bg', value: '#000000', line: 5, combined: false }])
+  })
+
+  it('measures lines against the original text, not the comment-masked copy', () => {
+    // the mask blanks a whole comment including its newlines, so a line taken
+    // from it drifts by the number of comment lines above the declaration
+    const css = `/* two\n   comment lines */\n:root {\n  --bg: #ffffff;\n}\n:root[data-theme='dark'] {\n  --bg: #ffffff;\n}\n`
+    const { rootLight, darkRootDecls } = parseModeVars(css)
+    expect(rootLight.get('--bg')?.line).toBe(4)
+    expect(darkRootDecls[0]?.line).toBe(7)
   })
 
   it('treats a combined :root + dark rule as its own twin', () => {
@@ -100,33 +110,41 @@ describe('leftoverHardColors', () => {
 })
 
 
-describe('darkTwinViolations', () => {
-  it('fails a light color with no dark twin, naming file:line and the fix', () => {
-    const css = `:root {\n  --cta: #007aff;\n}\n:root[data-theme='dark'] {\n  --other: #000;\n}\n`
-    const found = darkTwinViolations('demo', css)
+describe('darkBlockViolations', () => {
+  it('flags a dark token repeating its base :root value, naming both lines and the fix', () => {
+    const css = `:root {\n  --bg: #ffffff;\n  --cta: #007aff;\n}\n:root[data-theme='dark'] {\n  --bg: #ffffff;\n  --cta: #0a84ff;\n}\n`
+    const found = darkBlockViolations('demo', css)
     expect(found).toHaveLength(1)
     expect(found[0]?.message).toBe(
-      `project/demo/tokens.css:2  --cta thiếu dark twin — thêm vào :root[data-theme='dark']`,
+      `project/demo/tokens.css:6  --bg trùng base :root:2 — xoá khỏi dark, giữ ở base`,
     )
   })
 
-  it('ignores scoped element vars, which never join :root dark switching', () => {
-    const css = `:root {\n  --bg: #fff;\n}\n.screen {\n  --faint: rgba(0, 0, 0, 0.5);\n}\n:root[data-theme='dark'] {\n  --bg: #000;\n}\n`
-    expect(darkTwinViolations('demo', css)).toEqual([])
+  it('treats a whitespace-only difference as the same value', () => {
+    const css = `:root {\n  --shadow: 0 1px 2px rgba(0, 0, 0, 0.1);\n}\n:root[data-theme='dark'] {\n  --shadow:  0 1px 2px    rgba(0, 0, 0, 0.1);\n}\n`
+    expect(darkBlockViolations('demo', css)).toHaveLength(1)
   })
 
-  it('passes twins, own-twins, non-colors, and single-mode projects', () => {
-    const twinned = `:root {\n  --cta: #007aff;\n  --gap: 8px;\n}\n:root[data-theme='dark'] {\n  --cta: #0a84ff;\n}\n`
-    expect(darkTwinViolations('demo', twinned)).toEqual([])
-    const ownTwin = `:root,\n:root[data-theme='dark'] {\n  --paper: #ffffff;\n}\n`
-    expect(darkTwinViolations('demo', ownTwin)).toEqual([])
+  it('flags a dark-only token: the base :root never declares it', () => {
+    const css = `:root {\n  --bg: #ffffff;\n}\n:root[data-theme='dark'] {\n  --bg: #101418;\n  --ink: #f4f4f8;\n}\n`
+    const found = darkBlockViolations('demo', css)
+    expect(found).toHaveLength(1)
+    expect(found[0]?.message).toBe(
+      `project/demo/tokens.css:6  --ink chỉ có ở dark, thiếu base :root — thêm vào base rồi để dark override`,
+    )
+  })
+
+  it('passes real overrides, combined rules, scoped dark rules, and single-mode files', () => {
+    const overrides = `:root {\n  --bg: #ffffff;\n}\n:root[data-theme='dark'] {\n  --bg: #101418;\n}\n`
+    expect(darkBlockViolations('demo', overrides)).toEqual([])
+    // one declaration shared by both modes is not a copy to delete
+    const combined = `:root,\n:root[data-theme='dark'] {\n  --paper: #ffffff;\n}\n`
+    expect(darkBlockViolations('demo', combined)).toEqual([])
+    // scoped dark rules legitimately re-declare tokens for one element, even
+    // when the value happens to match base
+    const scoped = `:root {\n  --bg: #f2f2f7;\n}\n:root[data-theme='dark'] .app-mood {\n  --bg: #f2f2f7;\n}\n`
+    expect(darkBlockViolations('demo', scoped)).toEqual([])
     const singleMode = `:root {\n  --bg: #0a0618;\n}\n`
-    expect(darkTwinViolations('demo', singleMode)).toEqual([])
-  })
-
-  it('honors the allowlist for documented exceptions', () => {
-    const css = `:root {\n  --separator: rgba(60, 60, 67, 0.21);\n}\n:root[data-theme='dark'] {\n  --bg: #000;\n}\n`
-    expect(darkTwinViolations('widget-lab', css)).toEqual([])
-    expect(darkTwinViolations('other', css)).toHaveLength(1)
+    expect(darkBlockViolations('demo', singleMode)).toEqual([])
   })
 })

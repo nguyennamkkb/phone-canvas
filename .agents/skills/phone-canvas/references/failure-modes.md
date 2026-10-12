@@ -26,7 +26,7 @@ same origin as the assets, so the fetch is same-origin and succeeds. An icon bug
 that only appears on the board is this one.
 
 **Fix.** Never write `style="--icon: url(…)"`. Add the glyph to `SYMBOLS` in
-`scripts/icons.ts` and run `npm run icons`; the generator inlines it.
+`scripts/icons.ts` and run `npm run icons`; the generator inlines it. Since core-upgrade 1.1, composeScreenDoc also inlines any remaining external mask URL at compose time (iconMasksFor() in src/extractor/assets.ts + inlineIconMasks() in src/extractor/compose.ts, board path only) — so a stray URL degrades to a slightly larger srcdoc instead of a vanished glyph. The generator remains the primary path; the compose-time inline is the safety net.
 
 **Guard.** The panel reports `externalMask` in orange.
 
@@ -192,16 +192,22 @@ change frame mode too.
 ## 12. Parallel test workers racing on the same files
 
 **Symptom.** Two probe suites pass alone, fail together — one's cleanup
-deletes files the other's assertions still need. Flaky, order-dependent,
-green on re-run.
+deletes files the other's assertions still need (`ENOENT project/zz-…/project.json`
+while another worker's `import.meta.glob` transform reads the tree). Flaky,
+order-dependent, green on re-run.
 
 **Cause.** Vitest runs test files in parallel workers by default. Suites
-that write into the same directory (export probes, golden fixtures) race
-each other.
+that write into the same directory race each other — and the victims are the
+readers: `src/projects/registry.ts` globs the whole `project/` tree, so a
+suite that scaffolds a probe project in the repo breaks every other suite
+that is mid-transform.
 
-**Fix.** `test: { fileParallelism: false }` in `vite.config.ts` — serial
-files, still parallel asserts inside a file. Do not "fix" it by
-reordering tests; the race returns with the next new suite.
+**Fix.** Give each suite its own `mkdtemp` root (`scripts/export/golden.test.ts`
+is the pattern) and pass it to the CLI under test — `scripts/new-screen.ts`
+takes `--root <dir>` for exactly this. Never "fix" it by reordering tests, and
+do not reach for `fileParallelism: false`: the flag was removed deliberately
+(core-upgrade 5.3) because it taxed the whole suite for one pair of races.
+`project/` is read-only for the duration of a test run.
 
 ---
 
@@ -223,14 +229,85 @@ and vitest tolerate both; Node tolerates exactly one.
 ## 14. An empty board that ignores its seed file
 
 **Symptom.** `project/<id>/board.json` exists (written by
-`npm run project -- freeze <id>`), but a fresh board opens empty.
+`npm run project -- freeze <id>`), but a fresh board opens with the default
+layout instead of the frozen one.
 
-**Cause.** The seed is read on the render path, where `async` is not an
-option — so `src/projects/storage.ts` reads it with a synchronous XHR
-(`async=false`). Anything that breaks sync reads (SSR context, missing
-`XMLHttpRequest`, a worker without sync XHR) silently yields no seed, and
-the board falls back to empty — by design, never an error.
+**Cause.** The seed is applied only when it is **newer** than the saved record
+(`exportedAt > savedAt`) or when no record exists at all — a board you have
+already dragged around wins, by design. `seedBoard()` (`src/projects/storage.ts`)
+fetches the file once per project on mount; a 404, unreadable JSON, or a
+`projectId` that does not match is `null` and never an error.
 
-**Fix.** This is a read path, not a bug: open the board in the browser
-(Vite serves the file from cache), or re-freeze. Do not "fix" it by making
-the read async — render cannot await.
+**Fix.** This is a precedence rule, not a bug: clear the board's saved state
+(`localStorage` key `pc.board.<projectId>`) to see the freeze again, or re-run
+`npm run project -- freeze <id>` to make the artifact newer. Do not "fix" it by
+forcing the file to win — a dragged arrangement is the user's work.
+
+Note the old shape of this failure mode: the seed used to be read with a
+**synchronous XHR on the render path**, so anything without sync XHR silently
+lost it. That read is gone (core-upgrade 5.2) — there is now one store
+(`pc.board.<id>`, v5) and one async seed step.
+
+---
+
+## 15. An inspector that never reads anything (sandboxed origin)
+
+**Symptom.** The panel sits on "Đang đọc DOM…" forever, the tree never appears,
+`Copy JSON` stays disabled, and nothing is logged. Every screen on the board
+behaves the same way.
+
+**Cause.** A `sandbox="allow-scripts"` iframe (no `allow-same-origin`) has an
+**opaque origin**, so `event.origin` for every `postMessage` it sends is the
+string `"null"` — never the parent's origin. An accept gate that compares
+`event.origin` against `window.location.origin` therefore rejects **every**
+message the bridge sends, silently, because a rejected message is indistinguishable
+from one that was never sent.
+
+**Fix.** The per-frame **token** is what authenticates a message (random per
+node, present only in that node's srcdoc); the origin check only has to reject
+strangers, so it accepts the board's own origin **or** the opaque `"null"`
+(`originAllowed()` in `src/inspect/route.ts`). Probe it before trusting a gate:
+`<iframe sandbox="allow-scripts" srcdoc="<script>parent.postMessage({p:1},'*')</script>">`
+reports `"null"`; the same srcdoc without `sandbox` reports the parent origin.
+
+**Why it survived review.** Reading the code suggested "srcdoc inherits the
+parent origin" (true without `sandbox`), and every unit test passed an explicit
+origin — the bug only existed in a real browser. Any messaging gate must be
+verified by running it.
+
+---
+
+## 16. Writing a file reloads the whole board
+
+**Symptom.** You click **Xuất element này** / **Ghi golden** and the board
+flashes: selection gone, panel back to "Click một màn hình trên bảng". It reads
+as "the button did nothing".
+
+**Cause.** Generated output lands inside the tree Vite watches for the registry
+globs (`project/<id>/exports/`, `project/<id>/goldens/`, `project/<id>/board.json`),
+so Vite invalidates `src/projects/registry.ts` and reloads the page. A dev
+plugin's own watcher guard does not stop it — Vite's glob invalidation is a
+separate mechanism.
+
+**Fix.** Keep generated output out of the watcher:
+`server.watch.ignored: ['**/project/*/exports/**', '**/project/*/goldens/**', '**/project/*/board.json']`
+in `vite.config.ts`, and ignore the same paths in `registryGuardDev`'s
+`onProjectFile`. Both halves are needed.
+
+---
+
+## 17. A golden that stays green when the element changed
+
+**Symptom.** You change an element's CSS (a corner radius, a border), run
+`npm run golden:check`, and it reports `khớp` — the crop hash cannot see it.
+
+**Cause.** The crop comparison falls back to a **perceptual** dHash (Hamming ≤ 4),
+and a symmetric change (all four corners, a mirrored gradient) can leave the
+gradient hash unchanged. The pixels did move; the coarse hash did not.
+
+**Fix.** The element golden carries a **spec digest** as well: a canonical,
+geometry-free projection of the measured spec (style, typography, surface,
+radius, text — measured boxes and capture ids dropped, because those shift with
+OS fonts). `--element-check` and `npm run golden:check` fail on **either** half
+moving, and print which one (`crop khớp, spec lệch`). When you add a new golden
+comparison, check both halves — a hash that only sees pixels is not a review.

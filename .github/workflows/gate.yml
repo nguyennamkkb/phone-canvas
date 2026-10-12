@@ -1,0 +1,35 @@
+# The repo's gate: lint + region audit + vitest, then the element goldens of
+# the paywall family (a green that never measured anything is a lie, so the
+# golden check runs in the same job and fails the build).
+name: gate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      # The exporter drives the Chrome already on the machine over CDP; on CI
+      # that Chrome is the one Playwright downloads.
+      - run: npx playwright install --with-deps chromium
+
+      # resolveChrome() treats an explicit CHROME_PATH as authoritative, and its
+      # own Playwright fallback is version-pinned (chromium-1243), so it would
+      # miss a newer download: name the installed binary explicitly.
+      - name: Point the exporter at the installed Chromium
+        run: echo "CHROME_PATH=$(find "$HOME/.cache/ms-playwright" -type f -name chrome | head -n1)" >> "$GITHUB_ENV"
+
+      - run: npm run gate
+      - run: npm run golden:check

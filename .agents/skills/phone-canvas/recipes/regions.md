@@ -123,7 +123,8 @@ Escape hatches, both of which must be justified in writing:
 
 * **`:root` only matches `<html>`.** A token declared on `:root` is *inherited*
   by `.screen`, so it always loses to a rule that assigns it directly. Declare
-  `--bg` on the scope that uses it, plus a dark twin.
+  `--bg` on the scope that uses it; add a dark override only if that scope's
+  value actually changes in dark (`dark-copy` / `dark-orphan` in `lint:tokens`).
 * **Zero flex basis lies about the painted ratio.** `flex: 1 1 0` distributes
   space *inside* the box, so a pane's padding lands outside it and a nominal
   split paints lopsided. A percentage basis is a border-box size and stays true.

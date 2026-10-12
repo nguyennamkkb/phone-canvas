@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "updatedAt": "2026-10-12T07:32:56.765Z",
+  "records": {},
+  "elements": {
+    "seasonal-sale--reference--light--pw-cta": {
+      "elementKey": "seasonal-sale--reference--light--pw-cta",
+      "screen": "seasonal-sale",
+      "device": "reference",
+      "theme": "light",
+      "scale": 2,
+      "cropHash": "dfafb1f4e2516351d1b0c35fef4423f5346301bb5375328c8b68fa7e0c4a59db",
+      "phash": "0001017161010109",
+      "specHash": "beae0fede688b6725be83c4af01cb5a8b9aa0b2bc75eb21132f2e41a521cb337",
+      "png": "seasonal-sale--reference--light--pw-cta.png",
+      "updatedAt": 1791790371220
+    },
+    "family-plan--reference--light--pw-cta": {
+      "elementKey": "family-plan--reference--light--pw-cta",
+      "screen": "family-plan",
+      "device": "reference",
+      "theme": "light",
+      "scale": 2,
+      "cropHash": "bd4550ffb75ec9676c24044af3b6b987288d781fae631607e33996e1132fb6ff",
+      "phash": "0101016171010109",
+      "specHash": "84c2ca0d87d01b08996bd6126eab19124e6b1b6018a16c4144ec22569d1b4b37",
+      "png": "family-plan--reference--light--pw-cta.png",
+      "updatedAt": 1791790373121
+    },
+    "family-plan--reference--light--pw-card": {
+      "elementKey": "family-plan--reference--light--pw-card",
+      "screen": "family-plan",
+      "device": "reference",
+      "theme": "light",
+      "scale": 2,
+      "cropHash": "37840a7f4d7af9f26c9e4bcae55120d0eab34db4721a9e2009121cfc09f0ca1b",
+      "phash": "110101312d490101",
+      "specHash": "6c9abb5e81326db03a3e0d374b107de77954cae11052b723fea04c783efe3198",
+      "png": "family-plan--reference--light--pw-card.png",
+      "updatedAt": 1791790374956
+    },
+    "seasonal-sale--reference--light--pw-card": {
+      "elementKey": "seasonal-sale--reference--light--pw-card",
+      "screen": "seasonal-sale",
+      "device": "reference",
+      "theme": "light",
+      "scale": 2,
+      "cropHash": "0e3bfeba04b46907aaa38c545a70f61c00c8073142442d09b8f166abd4b61129",
+      "phash": "690101416d110101",
+      "specHash": "5e2015a96d6d1cb05bb1e4d840355123feba96657afc37fb73d055afbe2ad591",
+      "png": "seasonal-sale--reference--light--pw-card.png",
+      "updatedAt": 1791790376765
+    }
+  }
+}

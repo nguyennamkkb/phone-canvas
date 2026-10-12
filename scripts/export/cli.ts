@@ -38,6 +38,20 @@ export type Options = {
    * Off by default; plain exports never touch the store.
    */
   golden: boolean
+  /**
+   * Element to record a golden for, by name (`--element pw-card`): the first
+   * element in document order whose `elementStem`, `data-asset` or class
+   * matches. A dot-separated set (`pw-card.fp-plan.is-best`) requires every
+   * token on the same element, in any order. Requires `--golden` — element
+   * records live in the same store — unless `--element-check` is set.
+   */
+  element: string | null
+  /**
+   * Compare-only twin of `--element`: crop every selected render and report
+   * khớp/lệch against the stored golden without writing anything. Exits 1 on a
+   * `lệch`, a missing golden, an ambiguous match or no match at all.
+   */
+  elementCheck: boolean
 }
 
 /**
@@ -76,6 +90,22 @@ Export phone screens to PNG.
   --golden         also write versioned PNGs + a sha256 record per render
                    into the golden store (project/<id>/goldens/ for a single
                    --project, else goldens/). Off by default.
+  --element <name> also record one element golden per selected screen: the
+                   first element in document order whose stem (data-asset /
+                   data-symbol / icon or image file / class / id), data-asset
+                   or class is <name>. Crop PNG + record go into the same
+                   golden store; the run prints khớp/lệch against the stored
+                   crop. Needs --golden, and <name> must exist on EVERY
+                   selected screen.
+                   A dot-separated set requires every token on ONE element,
+                   in any order: "pw-card" alone matches five elements on
+                   seasonal-sale, "pw-card.ss-plan.is-best" matches exactly the
+                   plan card. Pin the set, not the first lookalike.
+  --element-check  compare only: crop each --element match and report
+                   khớp/lệch against the stored golden, writing nothing.
+                   Exits 1 on lệch, on a missing golden, on an ambiguous match
+                   (it lists every candidate instead of taking the first) and
+                   on no match. Needs --element, not --golden.
   --list           print available screens and devices, then exit
   --help           print this message
 
@@ -85,10 +115,12 @@ Examples
   npm run export -- --screen my-screen --device ipad-11   # my-screen-ipad-11@2x.png
   npm run export -- --screen my-screen --full             # my-screen-full@2x.png
   npm run export -- --device all --out docs/shots
+  npm run export -- --golden --element pw-card --screen seasonal-sale
+  npm run export -- --element-check --element pw-card.ss-plan.is-best --screen seasonal-sale
 `.trim()
 
 export function parseArgs(argv: string[]): Options {
-  const options: Options = { screens: ['all'], devices: ['reference'], projects: [], themes: ['light'], scale: 2, out: 'exports', explicitOut: false, explicitDevices: false, full: false, allDevices: false, golden: false }
+  const options: Options = { screens: ['all'], devices: ['reference'], projects: [], themes: ['light'], scale: 2, out: 'exports', explicitOut: false, explicitDevices: false, full: false, allDevices: false, golden: false, element: null, elementCheck: false }
   const screens: string[] = []
   const devices: string[] = []
   const projects: string[] = []
@@ -142,6 +174,12 @@ export function parseArgs(argv: string[]): Options {
       case '--golden':
         options.golden = true
         break
+      case '--element':
+        options.element = next()
+        break
+      case '--element-check':
+        options.elementCheck = true
+        break
       default:
         throw new Error(`unknown option: ${arg}`)
     }
@@ -152,6 +190,15 @@ export function parseArgs(argv: string[]): Options {
   options.explicitDevices = devices.length > 0
   options.themes = themes.length ? themes : ['light']
   options.projects = projects
+  // an element golden is a record in the golden store: without --golden there
+  // is nowhere to write it and nothing to compare against. The check mode only
+  // reads the store, so it needs no --golden.
+  if (options.element && !options.golden && !options.elementCheck) throw new Error('--element needs --golden')
+  if (options.elementCheck && !options.element) throw new Error('--element-check needs --element')
+  // a query with no tokens ("" / ".") would match every element on the screen
+  if (options.element !== null && options.element.split('.').filter(Boolean).length === 0) {
+    throw new Error('--element needs a non-empty name')
+  }
   if (!options.explicitOut && projects.length === 1) {
     options.out = `project/${projects[0]}/exports`
   }

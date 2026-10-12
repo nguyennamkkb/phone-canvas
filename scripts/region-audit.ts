@@ -27,10 +27,10 @@
  *   overflow               a .body-fixed / .screen that fits its frame
  *   shell-band             band exists when the slot does, inside .viewport
  *
- * A finding fails the gate. When there is no Chrome on the machine it prints a
- * loud SKIPPED line and exits 0, the same precedent as
- * `scripts/export/export.test.ts` — and the mechanism that paints the strips
- * is still covered by a unit test on `screenBgOf`.
+ * A finding fails the gate. When there is no Chrome on the machine it is a hard
+ * FAILURE, not a skip: the measured tier is the only tier that can see
+ * geometry, so exiting 0 without a browser would let `npm run gate` print a
+ * green that was never earned. The reason and the fix are printed together.
  */
 
 import { readFile } from 'node:fs/promises'
@@ -437,14 +437,18 @@ async function main(): Promise<void> {
   }
 
   // Resolve the browser BEFORE composing the site, so a machine without Chrome
-  // skips cleanly instead of half-starting a server it never uses.
+  // fails before half-starting a server it can never use. No silent skip: the
+  // measured tier is the tier that catches a 30 pt button and a control on the
+  // crease, and a green gate that never measured anything is a lie.
   try {
     findChrome()
   } catch (error) {
-    for (const line of describeSkip(error instanceof Error ? error.message : String(error))) {
-      console.log(line)
+    for (const line of describeMissingChrome(
+      error instanceof Error ? error.message : String(error),
+    )) {
+      console.error(line)
     }
-    return
+    process.exit(1)
   }
 
   const site = await startSite(documents, PUBLIC_DIR)
@@ -498,11 +502,34 @@ async function main(): Promise<void> {
 }
 
 /**
- * What to print when there is no browser to measure in. Loud on purpose: a
- * silent skip reads like a clean run, and the whole point of the measured tier
- * is that geometry is checked rather than assumed. It names the unit test that
- * still covers the background mechanism, so the reader knows what is and is not
- * being verified.
+ * What to print when there is NO browser to measure in. This is a failure, not
+ * a skip: the whole point of the measured tier is that geometry is checked
+ * rather than assumed, so it names both what went unmeasured and the exact ways
+ * to fix it — install Chrome, point `$CHROME_PATH` at a binary, or install the
+ * Playwright-pinned Chromium the exporter falls back to.
+ */
+export function describeMissingChrome(reason: string): string[] {
+  return [
+    '',
+    `MISSING CHROME  audit:regions KHÔNG chạy được — không có trình duyệt để đo hình học`,
+    `  ${reason.replace(/\n/g, '\n  ')}`,
+    '',
+    '  sàn chạm 44 pt, dải chia, vùng cuộn và nền dải OS CHƯA được kiểm lần này',
+    '',
+    '  cách sửa:',
+    '    1. cài Google Chrome (https://www.google.com/chrome/) rồi chạy lại `npm run audit:regions`',
+    '    2. hoặc trỏ CHROME_PATH tới binary:',
+    '       CHROME_PATH=/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome npm run gate',
+    '    3. hoặc cài Chromium mà exporter dùng làm dự phòng:',
+    '       npx playwright install chromium',
+    '',
+    '  gate bị fail có chủ ý: xanh khi không đo gì là xanh giả.',
+  ]
+}
+
+/**
+ * What to print when the browser WAS found but the run blew up later. Same
+ * loudness, different cause: the geometry still went unmeasured.
  */
 export function describeSkip(reason: string): string[] {
   return [
@@ -527,7 +554,11 @@ function describePose(id: string, device: Device, probe: Probe): string {
   return `${id} · ${device.form} · 1 pane`
 }
 
-main().catch((error: unknown) => {
-  console.error(`audit:regions: ${error instanceof Error ? error.message : String(error)}`)
-  process.exit(1)
-})
+// Importable by scripts/region-audit.test.ts without running the audit: only
+// auto-run when invoked as `node scripts/region-audit.ts` (argv[1] is the file).
+if ((process.argv[1] ?? '').endsWith('region-audit.ts')) {
+  main().catch((error: unknown) => {
+    console.error(`audit:regions: ${error instanceof Error ? error.message : String(error)}`)
+    process.exit(1)
+  })
+}

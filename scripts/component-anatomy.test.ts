@@ -1,6 +1,7 @@
-import { describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { spawnSync } from 'node:child_process'
-import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { anatomyOf, missingAnatomyItems } from './component-anatomy.ts'
 
@@ -47,7 +48,22 @@ describe('anatomy header enforcement', () => {
 describe('new-screen --component scaffolds a born-clean component', () => {
   const ROOT = path.resolve('scripts', '..')
   const PROJECT = 'zz-anatomy-scaffold'
-  const DIR = path.join(ROOT, 'project', PROJECT)
+  // The probe project lives in a mkdtemp tree, not in the repo's project/:
+  // this suite creates and deletes it twice, and every other worker globs
+  // project/** (src/projects/registry.ts) — a probe dir appearing/disappearing
+  // there failed those workers with ENOENT on project.json. `--root` aims the
+  // real CLI at the private tree, so it is still what the CLI WROTE.
+  let root: string
+  let DIR: string
+
+  beforeAll(async () => {
+    root = await mkdtemp(path.join(tmpdir(), 'anatomy-scaffold-'))
+    DIR = path.join(root, 'project', PROJECT)
+  })
+
+  afterAll(async () => {
+    await rm(root, { recursive: true, force: true })
+  })
 
   it('scaffolded component passes lint:components at birth', async () => {
     await mkdir(path.join(DIR, 'components'), { recursive: true })
@@ -55,7 +71,7 @@ describe('new-screen --component scaffolds a born-clean component', () => {
     const cli = path.join(ROOT, 'scripts/new-screen.ts')
     const run = spawnSync(
       process.execPath,
-      ['--disable-warning=ExperimentalWarning', cli, '--project', PROJECT, '--component', 'zz-card', '--title', 'Card'],
+      ['--disable-warning=ExperimentalWarning', cli, '--root', root, '--project', PROJECT, '--component', 'zz-card', '--title', 'Card'],
       { cwd: ROOT, encoding: 'utf8' },
     )
     try {
@@ -63,9 +79,9 @@ describe('new-screen --component scaffolds a born-clean component', () => {
       const html = await readFile(path.join(DIR, 'components', 'zz-card.html'), 'utf8')
       // enforcement contract at unit level: the scaffolded file carries all
       // 11 items, so the lint's per-file check passes at birth. (The full
-      // CLI is not spawned here: it scans the real project/ tree, which the
-      // parallel new-screen probe project shares — the BLOCK exit code is
-      // proven by the QA receipt instead: 18 errors/exit 1 before headers,
+      // lint:components CLI is not spawned here: it would walk the whole real
+      // project/ tree to check one probe file — the BLOCK exit code is proven
+      // by the QA receipt instead: 18 errors/exit 1 before headers,
       // 0 errors/exit 0 after.)
       expect(missingAnatomyItems(html, 'zz-card')).toEqual([])
       expect(html).toContain('--s2')
@@ -83,7 +99,7 @@ describe('new-screen --component scaffolds a born-clean component', () => {
     const cli = path.join(ROOT, 'scripts/new-screen.ts')
     const run = spawnSync(
       process.execPath,
-      ['--disable-warning=ExperimentalWarning', cli, '--project', PROJECT, '--component', 'zz-card', '--title', 'Card'],
+      ['--disable-warning=ExperimentalWarning', cli, '--root', root, '--project', PROJECT, '--component', 'zz-card', '--title', 'Card'],
       { cwd: ROOT, encoding: 'utf8' },
     )
     try {

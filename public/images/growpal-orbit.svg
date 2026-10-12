@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 230" role="img" aria-labelledby="title desc">
+  <title id="title">GrowPal wellbeing guide</title>
+  <desc id="desc">A cheerful guide meditating among colourful wellness orbs.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#D7F3FF"/>
+      <stop offset="1" stop-color="#F7D9F4"/>
+    </linearGradient>
+    <linearGradient id="pink" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFB0D8"/>
+      <stop offset="1" stop-color="#B85FD9"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#B7F0FF"/>
+      <stop offset="1" stop-color="#69A9EE"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFE99A"/>
+      <stop offset="1" stop-color="#F4A65A"/>
+    </linearGradient>
+  </defs>
+  <rect x="16" y="10" width="288" height="202" rx="88" fill="url(#sky)" opacity=".58"/>
+  <circle cx="72" cy="72" r="25" fill="url(#blue)"/>
+  <circle cx="72" cy="72" r="17" fill="#EAF9FF" opacity=".82"/>
+  <path d="M64 71c8-10 18-7 17 3-1 8-8 10-13 9" fill="none" stroke="#5A87CF" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="245" cy="72" r="26" fill="url(#blue)"/>
+  <path d="M236 70c6-9 16-6 17 3 1 7-5 12-11 12" fill="none" stroke="#667FD1" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="270" cy="129" r="27" fill="url(#gold)"/>
+  <rect x="258" y="118" width="24" height="20" rx="7" fill="#FFF7E8"/>
+  <path d="M264 118v-5c0-7 12-7 12 0v5" fill="none" stroke="#F3A557" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="103" cy="37" r="25" fill="url(#pink)"/>
+  <path d="M94 33c7-10 16-6 17 3 1 8-7 14-14 11" fill="none" stroke="#F9E95E" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="63" cy="150" r="22" fill="#FFE0E5" opacity=".78"/>
+  <path d="M55 154c3-13 12-17 17-6 4 9-5 16-10 14" fill="#FF8D9A"/>
+  <circle cx="224" cy="180" r="21" fill="#F9E7FB" opacity=".9"/>
+  <path d="M214 183c7-10 18-8 20 1" fill="none" stroke="#D3A8E0" stroke-width="5" stroke-linecap="round"/>
+  <ellipse cx="160" cy="190" rx="73" ry="18" fill="#B77AB7" opacity=".16"/>
+  <path d="M119 177c10-26 27-38 42-39 17 0 37 13 45 39" fill="#DB6BA9"/>
+  <path d="M124 177c14-20 27-23 36-23 12 0 28 6 40 23" fill="#F2A4C7"/>
+  <path d="M130 172c4-30 12-55 30-55s27 25 31 55" fill="#F8E3D9"/>
+  <path d="M129 133c5-28 17-41 31-41 16 0 28 14 32 41" fill="#8E4D72"/>
+  <circle cx="145" cy="113" r="18" fill="#F6C6AD"/>
+  <circle cx="175" cy="113" r="18" fill="#F6C6AD"/>
+  <path d="M139 107c7-19 32-25 43-1-12-8-26-8-43 1" fill="#8B456B"/>
+  <path d="M146 116h1m27 0h1" stroke="#39243A" stroke-width="4" stroke-linecap="round"/>
+  <path d="M156 128c3 3 7 3 10 0" fill="none" stroke="#BE6D78" stroke-width="3" stroke-linecap="round"/>
+  <path d="M126 144c-17 0-18 27-5 35l20-13" fill="#F6C6AD"/>
+  <path d="M194 144c17 0 18 27 5 35l-20-13" fill="#F6C6AD"/>
+  <path d="M129 143c6 6 11 13 14 21m48-21c-6 6-11 13-14 21" fill="none" stroke="#C95C98" stroke-width="8" stroke-linecap="round"/>
+  <path d="M126 174c14-11 29-12 34 2l-20 15c-12-2-20-7-27-13z" fill="#9C5BA3"/>
+  <path d="M194 174c-14-11-29-12-34 2l20 15c12-2 20-7 27-13z" fill="#9C5BA3"/>
+  <path d="M158 139h4v37h-4z" fill="#F5E6E6"/>
+</svg>

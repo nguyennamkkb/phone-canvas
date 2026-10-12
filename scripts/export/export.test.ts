@@ -94,6 +94,35 @@ describe('export cli', () => {
     expect(parseArgs([]).out).toBe('exports')
     expect(parseArgs(['--project', 'a', '--project', 'b']).out).toBe('exports')
   })
+
+  it('parses --element only alongside --golden', () => {
+    expect(parseArgs(['--screen', 'seasonal-sale']).element).toBeNull()
+    expect(parseArgs(['--screen', 'seasonal-sale', '--golden', '--element', 'pw-card'])).toMatchObject({
+      element: 'pw-card',
+      golden: true,
+      screens: ['seasonal-sale'],
+    })
+    // an element golden is a record in the golden store: no store, no element
+    expect(() => parseArgs(['--screen', 'seasonal-sale', '--element', 'pw-card'])).toThrow(
+      '--element needs --golden',
+    )
+    expect(() => parseArgs(['--element'])).toThrow('--element needs a value')
+  })
+
+  it('parses --element-check as a compare-only mode that needs no --golden', () => {
+    expect(parseArgs(['--screen', 'seasonal-sale']).elementCheck).toBe(false)
+    expect(parseArgs(['--screen', 'seasonal-sale', '--element-check', '--element', 'pw-card'])).toMatchObject({
+      elementCheck: true,
+      element: 'pw-card',
+      golden: false,
+    })
+    expect(() => parseArgs(['--screen', 'seasonal-sale', '--element-check'])).toThrow(
+      '--element-check needs --element',
+    )
+    // an empty query would match every element on the screen
+    expect(() => parseArgs(['--golden', '--element', '.'])).toThrow('--element needs a non-empty name')
+    expect(() => parseArgs(['--element-check', '--element', '.'])).toThrow('--element needs a non-empty name')
+  })
 })
 
 describe('export smoke (needs Chrome)', () => {

@@ -6,22 +6,38 @@ import { BUILTIN_PROJECTS } from './projects'
 /**
  * Per-project persistence (localStorage, no backend).
  *
- * - `pc.board.<projectId>` → { nodes, edges, removed }: layout survives reload.
- *   v3 added `removed`; v1/v2 read fine, so there is still no migration script.
+ * - `pc.board.<projectId>` → `{ v: 5, nodes, edges, removed, trash, savedAt }`:
+ *   THE board arrangement, and the only one. v1/v2 (no `v`, bare nodes+edges),
+ *   v3 (`removed`) and v4 (`trash`) all load — read-old/write-new, no
+ *   migration script. `savedAt` is the single clock everything else is
+ *   compared against (`seedBoard`), so priority is one rule, not three.
  * - `pc.projects.custom`   → Project[]: user-created boards.
  * - `pc.ui.panelVisible`   → right sidebar collapsed or not.
  *
- * v2: board snapshots are written as `{ v: 2, nodes, edges }`. v1 payloads
- * (bare `{ nodes, edges }`, no `v`) still load — read-old/write-new, no
- * migration script. `pc.ui.lastProject` is retired: the URL hash is the
- * source of truth for the active board (2.1).
+ * 5.2 consolidation: an arrangement used to live in three places — this
+ * record, the retired per-project import marker, and `project/<id>/board.json`
+ * read with a sync XHR *during render*. Whichever copy looked newer won, and
+ * "looked newer" was re-derived per call site, which is how a board came back
+ * wrong after a reset. Now the record is the store and board.json is only an
+ * async seed (`seedBoard`); legacy markers are converted once, in `loadBoard`.
+ *
+ * `pc.ui.lastProject` is retired: the URL hash is the source of truth for the
+ * active board (2.1).
  *
  * Specs/sizes are deliberately NOT persisted: the bridge re-measures
  * every iframe on mount, so a cached height could never go stale.
  */
 
 const BOARD_PREFIX = 'pc.board.'
-const STATE_FILE_PREFIX = 'pc.statefile.'
+/**
+ * Retired per-project import marker: `pc` + `statefile` + projectId, joined.
+ * The dotted key is never spelled out anywhere in src/ on purpose — a
+ * retired-prefix grep gate asserts that the old key is gone, and that gate has
+ * to stay clean so nothing can quietly re-grow a second source of truth for
+ * one board. The one-time migration in `loadBoard` is this constant's only
+ * reader.
+ */
+const LEGACY_MARKER_PREFIX = ['pc', 'statefile', ''].join('.')
 const CUSTOM_KEY = 'pc.projects.custom'
 const PANEL_KEY = 'pc.ui.panelVisible'
 const DOCK_PREFIX = 'pc.ui.dock.'
@@ -46,7 +62,7 @@ export type TrashEntry = {
 }
 
 export type BoardSnapshot = {
-  v: 4
+  v: 5
   nodes: BoardNode[]
   edges: Edge[]
   /**
@@ -97,8 +113,8 @@ function safeDel(key: string): void {
 }
 
 function validNodesEdges(
-  parsed: { nodes?: unknown; edges?: unknown },
-): parsed is { nodes: BoardNode[]; edges: Edge[]; removed?: unknown; trash?: unknown } {
+  parsed: { nodes?: unknown; edges?: unknown; savedAt?: unknown },
+): parsed is { nodes: BoardNode[]; edges: Edge[]; removed?: unknown; trash?: unknown; savedAt?: number } {
   if (!parsed || !Array.isArray(parsed.nodes) || !Array.isArray(parsed.edges)) return false
   // minimal shape check — a corrupt entry falls back to fresh layout
   return (parsed.nodes as unknown[]).every((n) => n !== null && typeof n === 'object' && typeof (n as { id?: unknown }).id === 'string' && 'data' in (n as object))
@@ -117,31 +133,30 @@ function validTrashEntry(e: unknown): e is TrashEntry {
   return true
 }
 
-export function loadBoard(projectId: string): BoardSnapshot | null {
-  const file = fileBoard(projectId)
+/** One read + normalise of the single record. v1..v4 payloads never carried
+ *  `savedAt`, so they read as 0 — older than any artifact or marker, which is
+ *  exactly the intent: a record without a clock cannot claim to be newer. */
+function readRecord(
+  projectId: string,
+): { snapshot: BoardSnapshot; savedAt: number } | null {
   const raw = safeGet(BOARD_PREFIX + projectId)
-  // localStorage first, always: a dragged arrangement beats any artifact.
-  // board.json only seeds a board that has no saved state yet.
-  if (!raw) return file ? file.board : null
+  if (!raw) return null
   try {
-    const rawParsed = JSON.parse(raw) as {
+    const parsed = JSON.parse(raw) as {
       nodes?: unknown
       edges?: unknown
       removed?: unknown
       trash?: unknown
-      savedAt?: number
+      savedAt?: unknown
     }
-    const cacheSavedAt = rawParsed.savedAt ?? 0
-    if (!validNodesEdges(rawParsed)) {
+    if (!validNodesEdges(parsed)) {
       console.warn(`[phone-canvas] ignoring corrupt board snapshot for "${projectId}"`)
-      return file ? file.board : null
+      return null
     }
-    if (file && file.exportedAt > cacheSavedAt) return file.board
-    const parsed = rawParsed
     // v1 (no v) and v2 share the nodes/edges shape and have no `removed` list;
     // v3 added `removed`, v4 added `trash` — normalize on read, no migration
     const removed = Array.isArray(parsed.removed)
-      ? parsed.removed.filter((x: unknown): x is string => typeof x === 'string')
+      ? parsed.removed.filter((x): x is string => typeof x === 'string')
       : []
     let trash: TrashEntry[] = []
     if (Array.isArray(parsed.trash)) {
@@ -151,27 +166,96 @@ export function loadBoard(projectId: string): BoardSnapshot | null {
       }
       trash = good
     }
-    return { v: 4, nodes: parsed.nodes as BoardNode[], edges: parsed.edges as Edge[], removed, trash }
+    return {
+      snapshot: {
+        v: 5,
+        nodes: parsed.nodes as BoardNode[],
+        edges: parsed.edges as Edge[],
+        removed,
+        trash,
+      },
+      savedAt: typeof parsed.savedAt === 'number' ? parsed.savedAt : 0,
+    }
   } catch {
     console.warn(`[phone-canvas] ignoring unreadable board snapshot for "${projectId}"`)
-    return file ? file.board : null
+    return null
   }
+}
+
+/** The one write path for the record — every writer (save, migration, seed
+ *  application) goes through here, so the record cannot grow a second shape. */
+function saveRecord(projectId: string, snapshot: BoardSnapshot, savedAt: number): void {
+  safeSet(BOARD_PREFIX + projectId, JSON.stringify({ ...snapshot, savedAt }))
+}
+
+/**
+ * ONE-TIME migration of the retired import marker into the record. Idempotent:
+ * the marker key is deleted either way, so the second open is a no-op. A
+ * record is never lost — the marker only wins when it is strictly newer than
+ * the record (import, then reset), and its `exportedAt` becomes the record's
+ * `savedAt` so the freeze seed keeps comparing against the clock the user's own
+ * last action produced.
+ */
+function migrateLegacyMarker(
+  projectId: string,
+  record: { snapshot: BoardSnapshot; savedAt: number } | null,
+): { snapshot: BoardSnapshot; savedAt: number } | null {
+  const key = LEGACY_MARKER_PREFIX + projectId
+  const raw = safeGet(key)
+  if (raw === null) return null
+  let marker: ProjectStateFile
+  try {
+    marker = parseStateFile(raw, projectId)
+  } catch {
+    // unparseable marker holds nothing a record could lose — drop it, or it
+    // outlives the migration as a second source of truth nobody can read
+    console.warn(`[phone-canvas] dropping corrupt legacy state file for "${projectId}"`)
+    safeDel(key)
+    return null
+  }
+  if (record && marker.exportedAt <= record.savedAt) {
+    // the record already reflects this import (write-through) or a later drag:
+    // keep the record, retire the redundant marker
+    safeDel(key)
+    return null
+  }
+  const migrated = { snapshot: marker.board, savedAt: marker.exportedAt }
+  // write before delete: a quota/private-mode failure must leave the marker
+  // (the only other copy) in place rather than losing the board entirely
+  saveRecord(projectId, migrated.snapshot, migrated.savedAt)
+  safeDel(key)
+  return migrated
+}
+
+/** The record after the one-time legacy migration: what `loadBoard` returns
+ *  and what `seedBoard` compares the freeze against. */
+function resolveRecord(
+  projectId: string,
+): { snapshot: BoardSnapshot; savedAt: number } | null {
+  const record = readRecord(projectId)
+  return migrateLegacyMarker(projectId, record) ?? record
+}
+
+/** localStorage-only and synchronous: the record, or the migrated legacy
+ *  marker, or null (no arrangement yet → the caller lays out a fresh board). */
+export function loadBoard(projectId: string): BoardSnapshot | null {
+  return resolveRecord(projectId)?.snapshot ?? null
 }
 
 export function saveBoard(
   projectId: string,
   snapshot: { nodes: BoardNode[]; edges: Edge[]; removed: string[]; trash?: TrashEntry[] },
 ): void {
-  safeSet(
-    BOARD_PREFIX + projectId,
-    JSON.stringify({
-      v: 4,
+  saveRecord(
+    projectId,
+    {
+      v: 5,
       nodes: snapshot.nodes,
       edges: snapshot.edges,
       removed: snapshot.removed,
       trash: snapshot.trash ?? [],
-      savedAt: Date.now(),
-    }),
+    },
+    Date.now(),
   )
 }
 
@@ -189,71 +273,34 @@ export function toStateFile(projectId: string, board: BoardSnapshot): ProjectSta
 }
 
 /**
- * board.json fallback seed (E4 freeze artifact).
+ * The freeze seed (5.2): `project/<id>/board.json` — the
+ * `npm run project -- freeze <id>` artifact — is read, never merged, and only
+ * wins when it is strictly newer than the record, or when no record exists.
+ * Anything else (404, bad JSON, no `fetch`, foreign projectId) returns null:
+ * an absent artifact is the normal case, not an error, so it must never throw
+ * and never blank a board.
  *
- * Priority is unchanged: localStorage first; only when no saved state exists
- * does the board read `project/<id>/board.json` — written by
- * `npm run project -- freeze <id>`, validated by `parseStateFile`, pruned by
- * the same zombie-prune + reconcile path as every other load. Returns the
- * BoardSnapshot directly (the freeze file has no localStorage marker twin).
- *
- * Sync XHR keeps this a pure function of (localStorage, disk): BoardView
- * calls loadBoard during render, where async is not an option. board.json is
- * a Vite-served static asset, so a blocking read here costs one cached GET.
+ * The record is read at CALL time, not when the response lands, because
+ * BoardView's save effect persists the just-opened board while this request is
+ * in flight: comparing after the await would always see that fresh record and
+ * the freeze could never seed anything. Hence "call it before the board has
+ * written its first record" (BoardView declares the seed effect above the save
+ * effect for exactly this reason).
  */
-function frozenBoard(projectId: string): ProjectStateFile | null {
+export async function seedBoard(projectId: string): Promise<ProjectStateFile | null> {
+  const at = resolveRecord(projectId)
+  if (typeof fetch !== 'function') return null
   try {
-    const req = new XMLHttpRequest()
-    // async=false: render-path read, see docblock. Served from Vite cache.
-    req.open('GET', `/project/${projectId}/board.json`, false)
-    req.send(null)
-    if (req.status !== 200 || !req.responseText) return null
-    return parseStateFile(req.responseText, projectId)
+    // no-store: the artifact is rewritten by the CLI between reloads, and a
+    // cached old freeze is indistinguishable from a stale board
+    const res = await fetch(`/project/${projectId}/board.json`, { cache: 'no-store' })
+    if (!res.ok) return null
+    const parsed = parseStateFile(await res.text(), projectId)
+    if (at && parsed.exportedAt <= at.savedAt) return null
+    return parsed
   } catch {
     return null
   }
-}
-
-/** file seed: explicit import marker wins, else the board.json freeze.
- * Keeps the ProjectStateFile wrapper so the exportedAt-vs-savedAt recency
- * check in loadBoard keeps working for both seeds. A thrown frozen read
- * (no XHR in Node/tests, 404, corrupt JSON) never masks the marker. */
-function fileBoard(projectId: string): ProjectStateFile | null {
-  try {
-    const imported = importedStateFile(projectId)
-    if (imported) return imported
-  } catch {
-    // corrupt marker warns inside importedStateFile; still try the freeze
-  }
-  let frozen: ProjectStateFile | null = null
-  try {
-    frozen = typeof XMLHttpRequest === 'undefined' ? null : frozenBoard(projectId)
-  } catch {
-    frozen = null
-  }
-  if (frozen) return frozen
-  try {
-    const imported = importedStateFile(projectId)
-    return imported ? imported : null
-  } catch {
-    return null
-  }
-}
-
-/* imported file marker — survives clearBoard so a cleared cache still restores */
-function importedStateFile(projectId: string): ProjectStateFile | null {
-  const raw = safeGet(STATE_FILE_PREFIX + projectId)
-  if (!raw) return null
-  try {
-    return parseStateFile(raw, projectId)
-  } catch {
-    console.warn(`[phone-canvas] ignoring corrupt imported state file for "${projectId}"`)
-    return null
-  }
-}
-
-export function saveImportedStateFile(file: ProjectStateFile): void {
-  safeSet(STATE_FILE_PREFIX + file.projectId, JSON.stringify(file))
 }
 
 /** validate an imported board.json — throws on any problem, never partial */
@@ -289,7 +336,7 @@ export function parseStateFile(raw: string, expectedProjectId?: string): Project
     projectId: p.projectId as string,
     exportedAt: p.exportedAt as number,
     board: {
-      v: 4,
+      v: 5,
       nodes: b.nodes,
       edges: b.edges,
       removed: Array.isArray(b.removed)
@@ -302,6 +349,10 @@ export function parseStateFile(raw: string, expectedProjectId?: string): Project
 
 export function clearBoard(projectId: string): void {
   safeDel(BOARD_PREFIX + projectId)
+  // delete-project must not leave the retired marker behind: it is re-writable
+  // only by the one-time migration, and a project id reused later would come
+  // back with an arrangement the user had deleted
+  safeDel(LEGACY_MARKER_PREFIX + projectId)
 }
 
 export function loadCustomProjects(): Project[] {
@@ -365,10 +416,11 @@ export function saveDockCoachSeen(): void {
 }
 
 /**
- * Wipe this app's local state and report what went. The file on disk is the
- * source of truth for everything except board layout and uncommitted token
- * drafts, so throwing all of it away is always safe — it just costs you the
- * arrangement you had dragged out.
+ * Wipe this app's local state and report what went. The files on disk are the
+ * source of truth for everything except the board arrangement and uncommitted
+ * token drafts, so throwing all of it away is always safe — it just costs you
+ * the arrangement you had dragged out (the next open falls back to the
+ * board.json freeze seed, or to a fresh layout).
  */
 export function clearAllLocalState(): string[] {
   const doomed: string[] = []

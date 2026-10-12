@@ -1,5 +1,6 @@
 import { spawnSync } from 'node:child_process'
-import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -18,14 +19,21 @@ import { screenViolations } from './region-rules.ts'
  *
  * The probe project is named so it sorts last, which keeps `screens[0]` (used by
  * the export smoke test) on the same screen it has always been.
+ *
+ * The probe tree is a `mkdtemp` root, never the repo's `project/`: this suite
+ * creates and deletes the probe project several times, and every other worker
+ * globs `project/**` (src/projects/registry.ts). Writing there made those
+ * workers fail on a half-created `project.json` — the CLI is aimed with
+ * `--root`, so what it WROTE is still what gets linted.
  */
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const PROJECT = 'zz-scaffold-check'
-const DIR = path.join(ROOT, 'project', PROJECT)
 /** same probe, but with no chrome at all — the refusal path needs both */
 const EMPTY_PROJECT = 'zz-scaffold-empty'
-const EMPTY_DIR = path.join(ROOT, 'project', EMPTY_PROJECT)
+let root: string
+let DIR: string
+let EMPTY_DIR: string
 const DEVICE_SIZES = DEVICES.flatMap((d) => [d.width, d.height] as const)
 
 const CHROME: Record<string, string> = {
@@ -44,7 +52,7 @@ function scaffoldIn(project: string, name: string, ...extra: string[]) {
   const cli = path.join(ROOT, 'scripts/new-screen.ts')
   return spawnSync(
     process.execPath,
-    ['--disable-warning=ExperimentalWarning', cli, '--project', project, '--name', name, '--title', name, ...extra],
+    ['--disable-warning=ExperimentalWarning', cli, '--root', root, '--project', project, '--name', name, '--title', name, ...extra],
     { cwd: ROOT, encoding: 'utf8' },
   )
 }
@@ -55,6 +63,9 @@ async function lint(name: string) {
 }
 
 beforeAll(async () => {
+  root = await mkdtemp(path.join(tmpdir(), 'new-screen-'))
+  DIR = path.join(root, 'project', PROJECT)
+  EMPTY_DIR = path.join(root, 'project', EMPTY_PROJECT)
   await mkdir(path.join(DIR, 'components'), { recursive: true })
   await writeFile(path.join(DIR, 'project.json'), '{\n  "title": "Scaffold check"\n}\n')
   for (const [id, html] of Object.entries(CHROME)) {
@@ -65,8 +76,7 @@ beforeAll(async () => {
 })
 
 afterAll(async () => {
-  await rm(DIR, { recursive: true, force: true })
-  await rm(EMPTY_DIR, { recursive: true, force: true })
+  await rm(root, { recursive: true, force: true })
 })
 
 describe('new-screen produces a screen that already passes the gate', () => {

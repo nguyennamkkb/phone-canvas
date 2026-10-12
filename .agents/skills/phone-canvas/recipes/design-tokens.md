@@ -17,7 +17,7 @@ gates it. There is no other source of color.
 }
 
 :root[data-theme='dark'] {
-  /* every color above, redefined for dark — no exceptions */
+  /* ONLY the tokens whose value actually changes in dark */
   --bg: #1e1712;
   --accent: #9db06c;
 }
@@ -30,9 +30,18 @@ gates it. There is no other source of color.
 }
 ```
 
-Three blocks, in that order: light colors, dark colors, scales. A color with
-no dark entry silently falls back to its light value — that is a bug, not a
-default. Scales have no mode and are never duplicated in the dark block.
+Three blocks, in that order: light colors, dark colors, scales. **The base
+block is the complete set; the dark block is a diff.** `:root[data-theme='dark']`
+inherits everything from `:root`, so a token that does not change in dark must
+not appear there at all — a dark declaration with the same value as its base is
+copy-paste, and `lint:tokens` fails it (`dark-copy`). A token declared *only* in
+dark is worse: light mode silently loses it, and that is `dark-orphan`. Scales
+have no mode and never appear in the dark block.
+
+So a color with no dark entry is the normal case, not a bug — it keeps its light
+value, which is what a mode-neutral token should do. The lint that used to demand
+a twin for every light token is gone (core-upgrade 5.1): it was the rule that
+forced whole-block duplication.
 
 ## Naming
 
@@ -40,9 +49,9 @@ default. Scales have no mode and are never duplicated in the dark block.
   Screens should only ever name these.
 - Palette after: `--sage`, `--ember-soft`, `--mood-1`… Raw material the
   semantic layer is built from, not screen vocabulary.
-- New token: add light + dark + (if sized) nothing — sizes are modeless.
-  One line per mode, alphabetical inside its group, same order in both blocks
-  so a missing dark value is visible at a glance.
+- New token: one line in the base block, plus a dark override **only if the dark
+  value differs**. Sizes are modeless. Keep the same order in both blocks so a
+  real override is visible at a glance.
 
 ## Working on the board
 

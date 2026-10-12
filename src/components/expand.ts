@@ -24,6 +24,35 @@ export type ExpandResult = {
   errors: ExpandError[]
 }
 
+/**
+ * How each failure reads on the board. The badge names the cause, not the code
+ * path: "thiếu component: app-nav" is actionable, "missing" is not.
+ */
+const KIND_LABEL: Record<ExpandErrorKind, string> = {
+  missing: 'thiếu component',
+  cycle: 'component lặp vòng',
+  depth: 'component quá sâu',
+}
+
+/**
+ * The node badge for a failed expansion (core-upgrade 2.1): the cause and the
+ * offending component id in the badge itself, the screen file in the tooltip —
+ * the three facts needed to find the broken include. Null when nothing failed,
+ * so the caller drops the badge instead of rendering an empty one.
+ */
+export function expandErrorSummary(
+  errors: ExpandError[],
+  screenFile: string,
+): { text: string; title: string } | null {
+  if (errors.length === 0) return null
+  const causes = errors.map((e) => `${KIND_LABEL[e.kind]}: ${e.id}`).join(', ')
+  const name = screenFile.split('/').pop() || screenFile
+  return {
+    text: `⚠ ${causes} · ${name}`,
+    title: `Component lỗi trong ${screenFile}: ${causes} — placeholder giữ nguyên dạng comment, màn hình thiếu ruột`,
+  }
+}
+
 /** `<!-- @component tab -->` — id is kebab-case-ish, no spaces */
 const PLACEHOLDER = /<!--\s*@component\s+([a-zA-Z0-9_-]+)\s*-->/g
 

@@ -23,10 +23,14 @@ npm run export -- --project <id>   # that project's screens → project/<id>/exp
 npm run export -- --screen lesson-details --scale 3
 npm run export -- --all-devices --out docs/shots   # every width in DEVICES (README shorthand: --device all)
 npm run export -- --all-devices --golden           # + versioned PNGs + sha256 records (scripts/export/golden.ts)
+npm run export -- --golden --element pw-cta --screen family-plan   # element-level golden (crop + spec digest)
+npm run export -- --element-check --element pw-cta --screen family-plan  # compare only, exit 1 on drift
+npm run golden:check             # every pinned component (scripts/golden-check.ts) — what CI runs
 npm run export -- --device ipad-11 --full --theme dark   # --full = whole page, --theme = light|dark
 npm run export -- --list          # ids, titles, devices
 npm run locate -- --screen my-screen --x 195 --y 640 [--pad 32 --scale 2 --device iphone-se --theme dark]
-npm run project -- freeze <id>   # write project/<id>/board.json seed (scripts/board-freeze.ts)
+npm run locate -- --screen my-screen --box 16,155,358,168 [--pad-pct 0.1] [--ancestors 1] [--children]
+npm run project -- freeze <id>   # write project/<id>/board.json seed (scripts/board-freeze.ts; keeps the old file as .bak)
 npm run scan:projects            # print the registry both readers see (scripts/scan-projects.ts)
 npm run preview                  # vite preview (static host, no rewrite rules needed)
 npm run export:icons -- --project <id>   # that project's glyphs → project/<id>/exports/icons/
@@ -54,6 +58,12 @@ changed + boards/trash touched, then auto-run the gate (tsc +
 lint). The `new-screen` / `delete-screen` / `rename-screen` aliases stay so
 old habits keep working.
 
+`npm run gate` needs a browser: `audit:regions` measures geometry in Chrome
+(`$CHROME_PATH` → machine install → the Playwright-pinned Chromium). With no
+browser it prints `MISSING CHROME` + the three ways to fix it and exits 1 — it
+never reports a skip, because a green gate that measured nothing is a lie
+(core-upgrade 2.2). CI sets `CHROME_PATH` from its own Chromium install.
+
 ## The board
 
 | Control | Effect |
@@ -65,6 +75,27 @@ old habits keep working.
 | **🗑** | open the per-project trash dialog (badge = count) |
 | **Xuất** | download `project-id-board.json` (`{ v: 1, projectId, exportedAt, board }`) |
 | **Nhập** | upload a previously exported `.json` — validates version/projectId/schema, then reloads |
+
+The panel also works at **element level** once something is selected in the tree
+(or picked in **Đo đạc**):
+
+| Control | Effect |
+|---|---|
+| thumbnail | the real crop of the selection, taken through the same CDP pipeline as `npm run locate` — not a DOM screenshot, so it is what an export would draw |
+| pad / pad % cạnh dài | absolute padding in points, or a fraction of the element's larger side |
+| gồm khung cha (1 cấp) | widen the region to include the parent box, so a cluster comes out whole |
+| **Xuất element này** | `project/<id>/exports/<name>@2x.png` + `.json` (spec, ancestors, `pngClip`) — a file handoff, not just the clipboard |
+| **Xuất children** | one PNG + JSON per direct child, named from `data-asset`/class (`uniqueNames` suffixes `-2` on a repeat) |
+| **So sánh golden** / **Ghi golden** | compare the current crop against the committed element golden (crop hash + spec digest) or bless the current crop as the new one; `lệch` shows golden and current side by side |
+
+The crop runs in **Node**, over the dev server's `/__pc/element/*` routes
+(`scripts/export/element-server.ts`): the board's iframe is a sandboxed origin
+with no CDP access. So this row only works under `npm run dev` — a built board
+says so instead of offering a dead button.
+
+**So lệch hai màn (drift)** compares the interpreted specs of two mounted screens
+and groups the differences by kind (spacing, type, size, radius, …), collapsed by
+default. The tool for a project where many screens share one DNA.
 
 Each node carries a two-row vertical label (`src/canvas/PhoneNode.tsx`,
 `docs/upgrade-core/13_NODE_LABEL_PROPOSAL.md` — never wider than the node,
@@ -95,24 +126,29 @@ Trash is part of the board snapshot (v4) and persists across reloads.
 
 ### State file (export/import)
 
-The board layout is persisted in localStorage. To move a board between machines
-or recover from a wiped cache:
+A board arrangement lives in exactly **one** place: the localStorage record
+`pc.board.<projectId>` (v5 — `nodes`, `edges`, `removed`, `trash`, `savedAt`).
+To move a board between machines or recover from a wiped cache:
 
 1. **Export** — click **Xuất**; download `project-id-board.json`.
 2. **Import** — click **Nhập**, pick the file. It validates:
    - `v === 1`, matching `projectId`, valid `nodes/edges/removed/trash` shape.
    - On failure the file is rejected with an alert and the current state is untouched.
-3. After import the board reloads from the file; the cache is the write-through
-   copy, and the file wins on the next open as long as it is newer.
+3. After import the board writes the file straight into the single record and
+   reloads; a fresh `savedAt` then outranks the freeze, which is what makes an
+   import survive a reset. There is no second "imported file" key any more
+   (the old `pc.statefile.*` marker was retired in core-upgrade 5.2; a surviving
+   one is migrated into the record once, then deleted).
 
 ### Frozen seed (`project/<id>/board.json`)
 
 `npm run project -- freeze <id>` writes a board snapshot in the exact
 `ProjectStateFile` shape `parseStateFile` validates (`scripts/board-freeze.ts`,
 `src/projects/storage.ts`) — positions use the same `nextSlotX` rule as the
-board (gap 120). An empty board with no saved state reads it as a seed
-(render-path read; never touches localStorage, reconcile, or flow). It seeds,
-it never replaces Xuất/Nhập.
+board (gap 120), and an existing `board.json` is kept as `board.json.bak` first.
+On mount the board `fetch`es it once per project (`seedBoard`) and applies it
+**only when it is newer than the saved record** — localStorage wins, always. It
+seeds, it never replaces Xuất/Nhập.
 
 ## Where things live
 
@@ -128,7 +164,7 @@ src/screens/palettes.css      colour palettes (layer 2 of 3)
 src/screens/vocab.css         component vocabulary (layer 3 of 3)
 src/screens/icons.css        base .icon rules (hand-written)
 src/screens/icon-set.css     GENERATED — do not edit
-src/projects/storage.ts      localStorage keys, board snapshot v4, trash, state-file marker
+src/projects/storage.ts      the one board store (pc.board.<id> v5), trash, seed + import
 src/board/TrashDialog.tsx    per-project trash UI
 src/extractor/bridge.js      runs INSIDE the iframe: capture, hover, click, height
 src/extractor/compose.ts     stylesheets + chrome + screen + bridge → one document
@@ -136,17 +172,24 @@ src/spec/infer.ts            the only place that knows about SwiftUI
 src/canvas/nodeId.ts         node identity (a counter, never derived from a screen)
 scripts/icons.ts             icon generator + the SF Symbol → file map
 scripts/export.ts            screens → PNG via Chrome over CDP, zero deps
-scripts/new-screen.ts        create a screen from a contract-valid template
+scripts/export/element.ts    element crop pipeline (session, pad %/ancestors, children, naming)
+scripts/export/element-server.ts  dev-only HTTP bridge the panel calls (/__pc/element/*)
+scripts/new-screen.ts        create a screen from a contract-valid template (--root for tests)
 scripts/rename-screen.ts     rename a screen id (rollback on failure)
 scripts/delete-screen.ts     permanently remove a screen
 scripts/screen.ts            unified entry: add|rename|remove|list|gate (+ auto-gate)
 scripts/screen-filter.ts     shared --screen <id> filter for the lint CLIs
-scripts/export/cli.ts        export flags (--screen/--project/--device/--all-devices/--golden/--full/--theme)
-scripts/export/golden.ts     golden store (goldens.json manifest + versioned PNGs + sha256)
-scripts/board-freeze.ts      project -- freeze: board.json seed writer
+scripts/export/cli.ts        export flags (--screen/--project/--device/--all-devices/--golden/--element/--element-check/--full/--theme)
+scripts/export/golden.ts     golden store (goldens.json manifest: screen records + element records + specDigest)
+scripts/golden-check.ts      the pinned-element CI check (npm run golden:check)
+scripts/board-freeze.ts      project -- freeze: board.json seed writer (+ .bak)
 scripts/component-anatomy.ts 11-item @anatomy header (lint:components BLOCKS when missing)
 src/spec/ir.ts               Spec IR v1 envelope builder (irVersion)
 src/inspect/badges.ts        owner + golden badges (pure, read-only)
+src/inspect/element-export/  panel: live thumbnail, crop options, export, element golden + side-by-side
+src/inspect/compare/         panel: spec drift between two mounted screens (pure diff + UI)
+src/inspect/route.ts         bridge message gate (per-node token; opaque origin allowed)
+.github/workflows/gate.yml   CI: gate + golden:check (CHROME_PATH set from the Playwright install)
 openspec/specs/screen-regions/ region contract (spec) + docs/upgrade-core/02,03 (migration notes)
 public/icons/                monochrome glyphs
 public/images/               full-colour art

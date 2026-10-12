@@ -19,6 +19,8 @@ export type RawNode = {
     asset: string
     /** original icon file, from `--icon-src` (the mask itself is a data URI) */
     iconSrc: string
+    /** raw `className`; `''` when absent or non-string (an `<svg>` root) */
+    class: string
   }
   css: Record<string, string | number>
 }

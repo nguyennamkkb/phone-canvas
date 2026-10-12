@@ -7,6 +7,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { generateIconSet } from './scripts/icons.ts'
 import { scanProjects } from './scripts/scan-projects.ts'
+import { elementTools } from './scripts/export/element-server.ts'
 const rootDir = path.dirname(fileURLToPath(import.meta.url))
 
 /**
@@ -94,9 +95,12 @@ function registryGuardDev(): Plugin {
 
       void refresh(false)
       const onProjectFile = (file: string) => {
-        // export output lives beside the screens — a PNG landing must not
-        // re-run the registry check, let alone disturb the board
-        if (file.includes(`${path.sep}exports${path.sep}`)) return
+        // Generated output lives beside the screens: a PNG landing under
+        // `exports/` (element handoff) or `goldens/` (element/screen golden)
+        // must not re-run the registry check — a glob invalidation there
+        // reloads the whole board mid-measurement, which is exactly the
+        // "my change did nothing" confusion the watcher exists to prevent.
+        if (/[\\/](exports|goldens)[\\/]/.test(file)) return
         if (file.includes(`${path.sep}project${path.sep}`)) void refresh(true)
       }
       server.watcher.on('add', onProjectFile)
@@ -167,12 +171,23 @@ function noStore(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [iconSet(), registryGuard(), registryGuardDev(), projectAssets(), noStore(), tailwindcss(), react()],
+  plugins: [iconSet(), registryGuard(), registryGuardDev(), projectAssets(), noStore(), elementTools(), tailwindcss(), react()],
   resolve: { alias: { '@': path.resolve(rootDir, 'src') } },
-  server: { port: 5273 },
-  // Probe projects (zz-*) write real files under project/ so the scaffold CLI
-  // is tested through what it WROTE, not through a mock. Two probe suites in
-  // parallel workers race (one's cleanup deletes files the other's
-  // import.meta.glob transform is reading). Sequential files = no race.
-  test: { fileParallelism: false },
+  server: {
+    port: 5273,
+    // Generated output lands INSIDE the project tree: element handoff PNG/JSON
+    // under `exports/`, golden crops + `goldens.json` under `goldens/`, and the
+    // freeze artifact `board.json`. Vite watches `project/` for the registry
+    // globs, so without this every write reloads the whole board — which read
+    // as "the button did nothing" (and threw away the selection you were
+    // measuring). The registry guard above ignores the same paths.
+    watch: { ignored: ['**/project/*/exports/**', '**/project/*/goldens/**', '**/project/*/board.json'] },
+  },
+  // Deliberately no `fileParallelism: false`. Every suite that writes to disk
+  // owns a `mkdtemp` root for it (pattern: `scripts/export/golden.test.ts`) or
+  // a probe id nobody else has, so no two workers touch the same path — and
+  // the probe suites aim their CLI at that root instead of at `project/`,
+  // which stays read-only for the whole run. One shared path would make the
+  // whole suite flaky; serialising every file to hide it taxes the 99% that
+  // never touch the disk.
 })
