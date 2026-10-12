@@ -1,0 +1,98 @@
+<!-- pc {"title":"Language & Region"} -->
+<!-- FS-002 Language & Region Setup — push chrome.
+     Hero = the language selector (one IMMEDIATE element, per FS-002 §8).
+     The continue control is the exit, not the subject, so it is PINNED below
+     the scroller in the lower thumb zone and stays reachable at any scroll
+     offset; the availability note is SECONDARY and only reassures a user
+     whose language is not shipped. Loading resolves from the bundled corpus,
+     so there is no spinner here.
+
+     Band: `.body-fixed` is the one content band; the locale list is the one
+     scroller inside it. `.body` was wrong here — it scrolled the Continue
+     button off the bottom with the list, which is the single most common way
+     a pinned-CTA screen ships broken. -->
+<div class="screen" style="background-color: var(--bg)">
+  <button data-slot="back" class="nr-icon-btn" aria-label="Back">
+    <span class="icon icon-sm" data-symbol="chevron.left"></span>
+  </button>
+  <span data-slot="title" class="nav-title">Language</span>
+
+  <!-- The home indicator OVERLAYS the frame bottom (the shell paints it
+       absolutely), so a pinned band has to reserve the inset itself. -->
+  <div class="body-fixed" style="gap: var(--s4); padding: var(--s4) var(--s5) calc(var(--s5) + var(--safe-bottom))">
+    <div class="col" style="gap: var(--s2); padding-top: var(--s2)">
+      <div class="nr-eyebrow">Step 1 of 3</div>
+      <div class="nr-hero" style="color: var(--label)">Choose your language</div>
+      <div class="t-subhead" style="color: var(--label-2)">Sets the interface and the translation shown beside each verse.</div>
+    </div>
+
+    <!-- COMP / SearchField — filtering the shipped locale list -->
+    <button class="nr-row is-plain" style="background: var(--surface-2)" aria-label="Filter languages">
+      <span class="icon icon-sm" data-symbol="magnifyingglass" style="color: var(--label-2)"></span>
+      <span class="t-body" style="color: var(--label-2)">Filter languages</span>
+    </button>
+
+    <!-- the one scroller: the hero list scrolls, the CTA below does not -->
+    <div class="col nr-scroll" style="gap: var(--s3)">
+      <!-- hero: the locale list. One selection at a time; the selected row is
+           the only filled plane, so selection never depends on colour alone. -->
+      <div class="col" style="gap: var(--s2)">
+        <button class="nr-row is-on" aria-label="English, selected" aria-pressed="true">
+          <span class="nr-tile is-sm"><span class="icon icon-sm" data-symbol="checkmark"></span></span>
+          <span class="grow col" style="gap: 0">
+            <span class="nr-row-title">English</span>
+            <span class="nr-row-sub">Interface and translation</span>
+          </span>
+          <span class="icon icon-sm" data-symbol="checkmark" style="color: var(--accent)"></span>
+        </button>
+
+        <button class="nr-row" aria-label="Bahasa Indonesia, interface and translation">
+          <span class="nr-tile is-sm is-plain"><span class="icon icon-sm" data-symbol="textformat"></span></span>
+          <span class="grow col" style="gap: 0">
+            <span class="nr-row-title">Bahasa Indonesia</span>
+            <span class="nr-row-sub">Interface and translation</span>
+          </span>
+        </button>
+
+        <button class="nr-row" aria-label="Türkçe, interface and translation">
+          <span class="nr-tile is-sm is-plain"><span class="icon icon-sm" data-symbol="textformat"></span></span>
+          <span class="grow col" style="gap: 0">
+            <span class="nr-row-title">Türkçe</span>
+            <span class="nr-row-sub">Interface and translation</span>
+          </span>
+        </button>
+
+        <button class="nr-row" aria-label="العربية, interface and translation">
+          <span class="nr-tile is-sm is-plain"><span class="icon icon-sm" data-symbol="textformat"></span></span>
+          <span class="grow col" style="gap: 0">
+            <span class="nr-row-title">العربية</span>
+            <span class="nr-row-sub">Interface and translation</span>
+          </span>
+        </button>
+
+        <button class="nr-row" aria-label="اردو, interface and translation">
+          <span class="nr-tile is-sm is-plain"><span class="icon icon-sm" data-symbol="textformat"></span></span>
+          <span class="grow col" style="gap: 0">
+            <span class="nr-row-title">اردو</span>
+            <span class="nr-row-sub">Interface and translation</span>
+          </span>
+        </button>
+      </div>
+
+      <!-- SECONDARY: availability note. Useful when doubted, irrelevant once
+           chosen — so it states the fact and names the recovery. -->
+      <div class="nr-card is-quiet" style="gap: var(--s2)">
+        <div class="row" style="gap: var(--s2); align-items: flex-start">
+          <span class="icon icon-sm" data-symbol="info.circle" style="color: var(--accent)"></span>
+          <div class="grow col" style="gap: 0">
+            <div class="nr-row-title">Other languages</div>
+            <div class="nr-row-sub">Translations ship inside the app.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- pinned: the exit from the screen, always in the lower thumb zone -->
+    <button class="nr-btn is-block">Continue</button>
+  </div>
+</div>

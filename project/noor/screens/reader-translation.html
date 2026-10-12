@@ -1,0 +1,75 @@
+<!-- pc {"title":"Translation"} -->
+<!-- FS-006 Reader — Translation Panel. Pushed FROM FS-005, which is why it owes
+     a back affordance: the reader is the app root (Overview.md §2 D6), so there
+     is no tab bar and no dashboard here — this is a push onto the reader's own
+     stack, and `chevron.left` is the honest way back to the same verse.
+
+     EI-004 is the governing anchor and the reason the arch exists at all:
+     meaning sits adjacent to what it explains, never filed in a separate
+     destination. The rationed ornament (VD-001 §5.6) is spent here and nowhere
+     else in the app — `COMP / ArchPanel`, one framing job, one surface.
+
+     Attention law: the TRANSLATION BODY is the IMMEDIATE element. The Arabic
+     above it is CONTEXTUAL — FS-006 §8 records that the reader has already read
+     this verse and does not need it enlarged — so the anchor is set one Uthmani
+     step down and stays the smaller region. The explained text outranks the
+     text it is explained by, and outranks its own decoration.
+
+     Band: `.body-fixed` + one inner scroller. The arch is pinned under the top
+     inset (FS-006 §3.1); the edition control and the translation scroll together
+     beneath it (FS-006 §3.2/§3.3), so neither competes with the anchor for the
+     top inset, and the last line clears the home indicator.
+
+     Deliberately absent: the Now Playing bar. Concept-A permits one persistent
+     chrome element and FS-006 §8 bounds this panel's visible set to its own
+     matrix — the reader behind keeps the bar, and a push screen does not carry a
+     second copy of it. Also absent: the RARE fallback notice (FS-006 §8 — "when
+     absent it has no presence at all"); this panel is in the state where the
+     active edition resolves, so there is nothing to substitute. -->
+<div class="screen" style="background-color: var(--bg)">
+  <button data-slot="back" class="nr-icon-btn" aria-label="Back">
+    <span class="icon icon-sm" data-symbol="chevron.left"></span>
+  </button>
+  <span data-slot="title" class="nav-title">Translation</span>
+
+  <div class="body-fixed" style="gap: var(--s4); padding: var(--s2) var(--s5) calc(var(--s5) + var(--safe-bottom))">
+    <!-- COMP / ArchPanel — CONTEXTUAL verse anchor (FS-006 §3.1). The one
+         ornate element in the design system, framing the panel's meaning
+         against the word it explains. -->
+    <div class="nr-arch">
+      <div class="nr-arch-plane">
+        <div class="nr-verse-sm">اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ</div>
+        <!-- The verse's own play affordance is the ONLY target in here: the
+             verse text itself is not tappable, because word inspection is a
+             separate context and a stray tap must not be able to open it. The
+             reference rides the same row so the niche holds one thing — the
+             Arabic — and its identifier sits on the plinth with the number. -->
+        <div class="nr-verse-tools">
+          <button class="nr-icon-btn" aria-label="Play verse 1:7">
+            <span class="icon icon-sm" data-symbol="play.fill"></span>
+          </button>
+          <span class="nr-row-sub">Al-Fatihah · 1:7</span>
+          <span class="grow"></span>
+          <span class="nr-mark">٧</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- the one scroller: the edition control at the head of the body, so it
+         reads as a label for what follows rather than a floating control -->
+    <div class="col nr-scroll" style="gap: var(--s5)">
+      <button class="nr-row" aria-label="Translation edition: Sahih International. Change the translation.">
+        <span class="nr-tile is-sm is-plain"><span class="icon icon-sm" data-symbol="textformat"></span></span>
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">Sahih International</span>
+          <span class="nr-row-sub">English · 4 editions available</span>
+        </span>
+        <span class="icon icon-sm" data-symbol="chevron.right" style="color: var(--label-3)"></span>
+      </button>
+
+      <!-- hero: the meaning the panel exists for, in the callout role
+           VD-001 §5.1 gives translation prose -->
+      <div class="t-subhead">The path of those upon whom You have bestowed favour, not of those who have incurred [Your] anger or of those who are astray.</div>
+    </div>
+  </div>
+</div>

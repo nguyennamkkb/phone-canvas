@@ -1,0 +1,82 @@
+<!-- pc {"title":"Page navigator"} -->
+<!-- FS-010 Page Navigator. Pushed from FS-005's page affordance, so it owes a
+     back affordance; the typed number is deliberately NOT carried back (FS-010
+     §2 — a navigator that remembers a number the user abandoned is worse than
+     one that starts clean).
+
+     NO ARCH HERE. The mihrab is rationed to the translation panel alone
+     (EI-004). This screen is a plain field and two actions.
+
+     EI-005 in its numeric form: an exact reference the user can STATE must be
+     reachable in one gesture. The field therefore arrives pre-filled with where
+     they already are and is the only thing on screen at IMMEDIATE — everything
+     else confirms it or commits it.
+
+     Band: `.body-fixed`, nothing scrolls. The field and the passage it resolves
+     to share ONE pinned position and are never separated by a scroll (FS-010
+     §3.2) — the summary exists to confirm the field, and a scroll between them
+     would let the user commit without ever seeing what they typed. The jump
+     control and the surah shortcut are anchored at the floor, 12pt apart so the
+     two adjacent actions cannot be confused (FS-010 §3.3/§3.4).
+
+     604 is a real quantity, so it is set in the serif numeral face — and the
+     page the user types is set at `nr-numeric`, because a number the user has
+     to state must never be set as a label. -->
+<div class="screen" style="background-color: var(--bg)">
+  <button data-slot="back" class="nr-icon-btn" aria-label="Back">
+    <span class="icon icon-sm" data-symbol="chevron.left"></span>
+  </button>
+  <span data-slot="title" class="nav-title">Page</span>
+
+  <div class="body-fixed" style="gap: var(--s3); padding: var(--s3) var(--s5) calc(var(--s5) + var(--safe-bottom))">
+    <!-- PINNED, all three of FS-010 §3.1/§3.2: what you are on, the field, and
+         what the field currently resolves to. -->
+    <div class="col" style="gap: var(--s3)">
+      <!-- the current position. FS-010 has no section for it, but the field is
+           pre-filled with `currentPageNumber`, and without this the user cannot
+           tell a starting value from a destination they chose — so it is stated
+           rather than left to be inferred from a digit. Same marker vocabulary
+           as the reader's last-read marker and the surah index. -->
+      <div class="nr-marker">
+        <span class="nr-marker-rule"></span>
+        <span class="t-caption" style="color: var(--label-2)">You are here</span>
+        <span class="nr-marker-rule"></span>
+      </div>
+
+      <!-- COMP / SearchField in numeric mode: full usable width, 64pt tall so a
+           34pt numeral fits inside it without the field becoming a label with
+           a number in it. `is-on` because the field is live on arrival. -->
+      <button class="nr-search is-on" style="padding: var(--s4); gap: var(--s3)"
+              aria-label="Page number. Currently 1. Type a page number from 1 to 604.">
+        <span class="icon" data-symbol="keypad"></span>
+        <span class="nr-numeric" style="color: var(--label)">1</span>
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">Page</span>
+          <span class="nr-row-sub" style="font-family: var(--nr-font-display)">1 – 604</span>
+        </span>
+      </button>
+
+      <!-- the resolved passage: not tappable (FS-010 §3.2). Committing happens
+           through the jump control, never by tapping the summary. -->
+      <div class="nr-card is-quiet" style="gap: var(--s2)">
+        <div class="row" style="gap: var(--s3)">
+          <span class="grow nr-row-title">Al-Fatihah</span>
+          <span class="nr-verse-sm">الفاتحة</span>
+        </div>
+        <div class="nr-row-sub">Page <span style="font-family: var(--nr-font-display)">1</span> · verses <span style="font-family: var(--nr-font-display)">1–7</span></div>
+      </div>
+    </div>
+
+    <!-- the keyboard's room when it is raised; the only flexible child -->
+    <span class="spacer"></span>
+
+    <!-- PINNED at the floor: the commit, then the way out for a user who thinks
+         in names rather than numbers. Both are full width so neither is
+         mistaken for a text link, and 12pt apart so a mis-tap cannot open the
+         wrong destination. -->
+    <div class="col" style="gap: var(--s4)">
+      <button class="nr-btn is-block">Go to page</button>
+      <button class="nr-btn is-quiet is-block">Find by surah name</button>
+    </div>
+  </div>
+</div>

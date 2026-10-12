@@ -1,0 +1,152 @@
+<!-- pc {"title":"Speed"} -->
+<!-- FS-015 Speed Control. Pushed FROM the expanded player (FS-012) or from a
+     drill (FS-014) — never presented from a tab, because this app has no tab
+     bar (Overview.md §2 D6). So it owes a back affordance, and `chevron.left`
+     is the honest one: the tier applies on SELECTION, not on confirm, so
+     backing out preserves it. That rule is stated at the foot of the screen
+     rather than left to be discovered (FS-015 §2).
+
+     Origin rendered here is `player` with `isPlaying` true — FS-015 §4 says an
+     absent origin is treated as `player`, and EI-002's whole thesis is that a
+     speed change must be audible on the passage now playing. A paused origin
+     would need the "applies when playback resumes" variant instead.
+
+     Attention law (FS-015 §8): the TIER CONTROL is the only IMMEDIATE element
+     and the one raised plane on the screen. The sample region is CONTEXTUAL
+     and the comparison note is SECONDARY, so both sit on the ambient plane —
+     exactly one thing on this screen is lit.
+
+     NO ARCH, and not by omission: EI-004 rations the mihrab to the
+     verse-aligned translation on FS-006 alone. FS-015 §8's counter hypothesis
+     records that reaching for it here — an enlarged passage above the control
+     — is the precise failure the spec was written to prevent. Every plane
+     below is a plain `nr-card` / `nr-row`.
+
+     The active tier is marked three ways, never by colour alone (a11y §6): the
+     filled plane + shadow `.nr-mode.is-on` paints, the checkmark glyph on the
+     current-value statement, and `aria-pressed` for the platform.
+
+     Band: `.body-fixed`, no scroller — two cards, a note and a stated rule,
+     and nothing here is long enough to need one. A scroller would only have
+     been a way to hide an overflow. -->
+<div class="screen" style="background-color: var(--bg)">
+  <button data-slot="back" class="nr-icon-btn" aria-label="Back">
+    <span class="icon icon-sm" data-symbol="chevron.left"></span>
+  </button>
+  <span data-slot="title" class="nav-title">Speed</span>
+
+  <div class="body-fixed" style="gap: var(--s4); padding: var(--s4) var(--s5) calc(var(--s5) + var(--safe-bottom))">
+
+    <!-- SAMPLE REGION — CONTEXTUAL (FS-015 §3.2). Says what the change is
+         being applied to: which passage, where in it, and how far through.
+         Deliberately NOT a button — §3.2 makes it an identifier, and a target
+         here would imply something could be done to it. The glyph is a
+         domain marker (this passage is audio), not a transport control. -->
+    <div class="nr-card is-quiet" style="width: 100%; gap: var(--s3); padding: var(--s3) var(--s4)">
+      <div class="row" style="gap: var(--s2)">
+        <span class="icon icon-sm" data-symbol="speaker.wave.2" style="color: var(--accent)"></span>
+        <span class="nr-eyebrow">Applies to</span>
+        <span class="grow"></span>
+        <span class="nr-setting-val">0:42 of 1:34</span>
+      </div>
+
+      <div class="nr-verse-sm">لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۚ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ</div>
+
+      <div class="row" style="gap: var(--s2)">
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">Al-Baqarah · 2:255</span>
+          <span class="nr-row-sub">Mishary Rashid Alafasy</span>
+        </span>
+        <span class="nr-mark">٢٥٥</span>
+      </div>
+
+      <!-- position within the passage. The tier control answers "how fast";
+           this answers "through how much of what". Its 44pt padded row is
+           halved here: that padding exists so a TAPPABLE 20pt thumb keeps a
+           44pt hit region, and this thumb is a marker on an identifier, not
+           a target (FS-015 §3.2). At full height the row read as dead space
+           inside the card. -->
+      <div class="nr-seek" style="cursor: default; min-height: var(--s6)">
+        <div class="nr-seek-track">
+          <div class="nr-seek-fill" style="width: 45%"></div>
+          <div class="nr-seek-thumb" style="left: 45%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIER CONTROL — IMMEDIATE, the one IMMEDIATE element (FS-015 §8). The
+         only raised plane on the screen.
+         F10 trust surface: the applied rate is stated in the serif numeral
+         role at 34pt ABOVE the control, not only implied by which segment is
+         filled — a user who opened this screen from a drill needs to read the
+         number, not infer it. The checkmark pairs with the brass value so the
+         current state is never carried by colour alone.
+         The six shipped tiers are exactly the enum in FS-015 §4: continuous
+         rates are deliberately absent (a fraction between tiers is audibly
+         uneven, not merely different) — which the sub-line now says, so the
+         absence of a continuous slider is explained rather than merely
+         tolerated. -->
+    <div class="nr-card" style="width: 100%; gap: var(--s3); padding: var(--s3) var(--s4)">
+      <div class="row" style="gap: var(--s3)">
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">Playback speed</span>
+          <span class="nr-row-sub">Six fixed rates</span>
+        </span>
+        <span class="icon icon-sm" data-symbol="checkmark" style="color: var(--accent)"></span>
+        <span class="nr-numeric" style="margin-left: calc(var(--s3) * -0.5)">0.75×</span>
+      </div>
+
+      <div class="nr-modes" style="width: 100%">
+        <button class="nr-mode" style="padding: 0 var(--s1); font-family: var(--nr-font-display)"
+                aria-label="Half speed — 0.5 times">0.5×</button>
+        <button class="nr-mode is-on" style="padding: 0 var(--s1); font-family: var(--nr-font-display)"
+                aria-label="Three-quarter speed — 0.75 times" aria-pressed="true">0.75×</button>
+        <button class="nr-mode" style="padding: 0 var(--s1); font-family: var(--nr-font-display)"
+                aria-label="Normal speed — 1.0 times">1.0×</button>
+        <button class="nr-mode" style="padding: 0 var(--s1); font-family: var(--nr-font-display)"
+                aria-label="One and a quarter speed — 1.25 times">1.25×</button>
+        <button class="nr-mode" style="padding: 0 var(--s1); font-family: var(--nr-font-display)"
+                aria-label="One and a half speed — 1.5 times">1.5×</button>
+        <button class="nr-mode" style="padding: 0 var(--s1); font-family: var(--nr-font-display)"
+                aria-label="Double speed — 2.0 times">2.0×</button>
+      </div>
+    </div>
+
+    <!-- COMPARISON NOTE — SECONDARY (FS-015 §3.3). Says what each tier is
+         FOR, which is the question a first-time chooser actually has and the
+         one a returning user has stopped asking. It is deliberately NOT a card:
+         one raised plane on this screen, and it is the tier control. Its group
+         lines drop to `t-subhead` — set in `nr-row-title` they read at exactly
+         the hero's own weight and the note took over the screen's structure,
+         which is the opposite of SECONDARY. The ranges are set in the display
+         serif so they are visibly the SAME numerals as the six segments above.
+         Every tier's meaning is present, so nothing here can be lost to
+         truncation. -->
+    <div class="col" style="gap: var(--s3)">
+      <span class="nr-eyebrow">What each tier is for</span>
+
+      <div class="col" style="gap: 0">
+        <span class="t-subhead"><span style="font-family: var(--nr-font-display)">0.5× · 0.75×</span> — slow study</span>
+        <span class="nr-row-sub">For a verse you are still learning, word by word.</span>
+      </div>
+      <div class="col" style="gap: 0">
+        <span class="t-subhead"><span style="font-family: var(--nr-font-display)">1.0× · 1.25×</span> — the reciter's own pace</span>
+        <span class="nr-row-sub">Comprehension without losing the recitation's rhythm.</span>
+      </div>
+      <div class="col" style="gap: 0">
+        <span class="t-subhead"><span style="font-family: var(--nr-font-display)">1.5× · 2.0×</span> — fast review</span>
+        <span class="nr-row-sub">Ground you have already covered, not a first hearing.</span>
+      </div>
+    </div>
+
+    <!-- the one rule worth stating: speed applies on selection, so dismissing
+         this screen never silently reverts what the user just chose. The
+         spacer pins it to the foot of the frame with the home-indicator inset,
+         which is where FS-008 puts its equivalent — it is the statement most
+         likely to be skipped, so it is the one that must not be missed. -->
+    <div class="spacer"></div>
+    <div class="t-caption" style="color: var(--label-2); text-align: center">
+      A tier applies at once, and stays when you go back.
+    </div>
+  </div>
+</div>

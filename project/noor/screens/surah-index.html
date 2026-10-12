@@ -1,0 +1,210 @@
+<!-- pc {"title":"Surahs"} -->
+<!-- FS-009 Surah Index. Pushed from FS-005's surah affordance, so it owes a back
+     affordance; the filter is deliberately NOT carried back (FS-009 §2 — a filter
+     left behind would silently change what the navigation affordance opens next
+     time, which is the hidden state that makes a reader distrust its navigation).
+
+     NO ARCH HERE. The mihrab is rationed to the translation panel alone (EI-004).
+     This screen is plain `nr-card` / `nr-row` planes, and there is nothing here
+     worth framing: the arch is rationed for a passage the user chose to DWELL on,
+     and picking a surah from a catalogue is not dwelling.
+
+     EI-005 governs this screen: a half-remembered reference should feel findable
+     within one gesture. So the filter is READY and pinned, not promoted — FS-009
+     §8's Counter Hypothesis rejects a search-first surface, because many users
+     arrive with a number or with the intention to resume, and making the fastest
+     case the slowest is the wrong trade.
+
+     Band: `.body-fixed` with the filter pinned above, one scroller, and the
+     continuation affordance pinned below so it can never be mistaken for surah 1
+     (FS-009 §3.4) — a session action, not a catalogue member.
+
+     The list shows a slice of the opening surahs, not 114 rows. Rendering the
+     whole catalogue would be the "truncated list that implies 7 surahs exist"
+     failure; rendering the opening surahs and letting the scroll run past the
+     fold is what makes the catalogue's size legible. -->
+<div class="screen" style="background-color: var(--bg)">
+  <button data-slot="back" class="nr-icon-btn" aria-label="Back">
+    <span class="icon icon-sm" data-symbol="chevron.left"></span>
+  </button>
+  <span data-slot="title" class="nav-title">Surahs</span>
+
+  <div class="body-fixed" style="gap: var(--s3); padding: var(--s3) 0 0">
+    <!-- PINNED: the filter and its scope control. They survive the list moving
+         under them (FS-009 §3.1). -->
+    <div class="col" style="gap: var(--s2); padding: 0 var(--s5)">
+      <!-- COMP / SearchField — full width, 44pt floor -->
+      <button class="nr-search" aria-label="Filter surahs by name">
+        <span class="icon icon-sm" data-symbol="magnifyingglass"></span>
+        <span>Filter surahs</span>
+      </button>
+
+      <!-- script-scope control (SECONDARY): which spelling the filter matches.
+           Useful to someone who knows what they are remembering, ignorable
+           otherwise — so it is the quietest thing on the pinned band. -->
+      <div class="nr-modes">
+        <button class="nr-mode is-on" aria-label="Match both spellings" aria-pressed="true">Any</button>
+        <button class="nr-mode" aria-label="Match the Arabic spelling">Arabic</button>
+        <button class="nr-mode" aria-label="Match the Romanised spelling">Roman</button>
+      </div>
+    </div>
+
+  <!-- the one scroller: match count, then the catalogue -->
+  <div class="col nr-scroll" style="gap: var(--s3); padding: 0 var(--s5)">
+    <div class="nr-row-sub">Showing <span style="font-family: var(--nr-font-display)">114</span> surahs</div>
+
+    <!-- current-position marker (CONTEXTUAL): a state of its row, never a
+         pinned header. It scrolls away with the list, so it cannot be mistaken
+         for one — and the row beneath it also takes the filled plane, so the
+         state is never carried by colour alone. -->
+    <div class="nr-marker">
+      <span class="nr-marker-rule"></span>
+      <span class="t-caption" style="color: var(--label-2)">You are here</span>
+      <span class="nr-marker-rule"></span>
+    </div>
+
+    <!-- COMP / ListRow × 12. One row is ONE target carrying both scripts,
+         because a user may aim at either — splitting them into two targets
+         would put a seam between the surah and its own name. The gap is tuned
+         so the fold lands INSIDE a row rather than cleanly after one: a list
+         that ends tidily at the fold reads as though the catalogue were seven
+         surahs long, and "Showing 114" is a caption nobody reads twice. -->
+    <div class="col" style="gap: var(--s3)">
+      <button class="nr-row is-on" style="padding: var(--s1) var(--s4)"
+              aria-label="Surah 1, Al-Fatihah, Meccan, 7 verses. You are reading this surah.">
+        <span class="nr-numeric">1</span>
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">Al-Fatihah</span>
+          <span class="nr-row-sub">Meccan · 7 verses</span>
+        </span>
+        <span class="nr-verse-sm">الفاتحة</span>
+      </button>
+
+      <button class="nr-row" style="padding: var(--s1) var(--s4)"
+              aria-label="Surah 2, Al-Baqarah, Meccan, 286 verses">
+        <span class="nr-numeric">2</span>
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">Al-Baqarah</span>
+          <span class="nr-row-sub">Meccan · 286 verses</span>
+        </span>
+        <span class="nr-verse-sm">البقرة</span>
+      </button>
+
+      <button class="nr-row" style="padding: var(--s1) var(--s4)"
+              aria-label="Surah 3, Al-Imran, Meccan, 200 verses">
+        <span class="nr-numeric">3</span>
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">Al-Imran</span>
+          <span class="nr-row-sub">Meccan · 200 verses</span>
+        </span>
+        <span class="nr-verse-sm">آل عمران</span>
+      </button>
+
+      <button class="nr-row" style="padding: var(--s1) var(--s4)"
+              aria-label="Surah 4, An-Nisa, Meccan, 176 verses">
+        <span class="nr-numeric">4</span>
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">An-Nisa</span>
+          <span class="nr-row-sub">Meccan · 176 verses</span>
+        </span>
+        <span class="nr-verse-sm">النساء</span>
+      </button>
+
+      <button class="nr-row" style="padding: var(--s1) var(--s4)"
+              aria-label="Surah 5, Al-Ma'idah, Meccan, 120 verses">
+        <span class="nr-numeric">5</span>
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">Al-Ma'idah</span>
+          <span class="nr-row-sub">Meccan · 120 verses</span>
+        </span>
+        <span class="nr-verse-sm">المائدة</span>
+      </button>
+
+      <button class="nr-row" style="padding: var(--s1) var(--s4)"
+              aria-label="Surah 6, Al-An'am, Meccan, 165 verses">
+        <span class="nr-numeric">6</span>
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">Al-An'am</span>
+          <span class="nr-row-sub">Meccan · 165 verses</span>
+        </span>
+        <span class="nr-verse-sm">الأنعام</span>
+      </button>
+
+      <button class="nr-row" style="padding: var(--s1) var(--s4)"
+              aria-label="Surah 7, Al-A'raf, Meccan, 206 verses">
+        <span class="nr-numeric">7</span>
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">Al-A'raf</span>
+          <span class="nr-row-sub">Meccan · 206 verses</span>
+        </span>
+        <span class="nr-verse-sm">الأعراف</span>
+      </button>
+
+      <button class="nr-row" style="padding: var(--s1) var(--s4)"
+              aria-label="Surah 8, Al-Anfal, Meccan, 75 verses">
+        <span class="nr-numeric">8</span>
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">Al-Anfal</span>
+          <span class="nr-row-sub">Meccan · 75 verses</span>
+        </span>
+        <span class="nr-verse-sm">الأنفال</span>
+      </button>
+
+      <button class="nr-row" style="padding: var(--s1) var(--s4)"
+              aria-label="Surah 9, At-Tawbah, Meccan, 129 verses">
+        <span class="nr-numeric">9</span>
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">At-Tawbah</span>
+          <span class="nr-row-sub">Meccan · 129 verses</span>
+        </span>
+        <span class="nr-verse-sm">التوبة</span>
+      </button>
+
+      <button class="nr-row" style="padding: var(--s1) var(--s4)"
+              aria-label="Surah 10, Yunus, Meccan, 109 verses">
+        <span class="nr-numeric">10</span>
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">Yunus</span>
+          <span class="nr-row-sub">Meccan · 109 verses</span>
+        </span>
+        <span class="nr-verse-sm">يونس</span>
+      </button>
+
+      <button class="nr-row" style="padding: var(--s1) var(--s4)"
+              aria-label="Surah 11, Hud, Meccan, 123 verses">
+        <span class="nr-numeric">11</span>
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">Hud</span>
+          <span class="nr-row-sub">Meccan · 123 verses</span>
+        </span>
+        <span class="nr-verse-sm">هود</span>
+      </button>
+
+      <button class="nr-row" style="padding: var(--s1) var(--s4)"
+              aria-label="Surah 12, Yusuf, Meccan, 111 verses">
+        <span class="nr-numeric">12</span>
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">Yusuf</span>
+          <span class="nr-row-sub">Meccan · 111 verses</span>
+        </span>
+        <span class="nr-verse-sm">يوسف</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- pinned: the continuation affordance (CONTEXTUAL). A session action, not a
+       catalogue member, so it is split from the list by a load-bearing rule —
+       `--edge` is the one border in the system allowed to carry meaning, and
+       this boundary's whole job is to mean "not a surah". -->
+  <div class="col" style="gap: var(--s2); padding: var(--s3) var(--s5) calc(var(--s4) + var(--safe-bottom)); border-top: 1px solid var(--edge)">
+    <button class="nr-row is-on" aria-label="Continue reading Al-Fatihah from your last verse">
+      <span class="nr-tile is-sm"><span class="icon icon-sm" data-symbol="book"></span></span>
+      <span class="grow col" style="gap: 0">
+        <span class="nr-row-title">Continue in Al-Fatihah</span>
+        <span class="nr-row-sub">Return to your last verse</span>
+      </span>
+      <span class="icon icon-sm" data-symbol="chevron.right" style="color: var(--label-3)"></span>
+    </button>
+  </div>
+</div>
+</div>

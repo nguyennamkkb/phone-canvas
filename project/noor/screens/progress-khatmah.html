@@ -1,0 +1,222 @@
+<!-- pc {"title":"Khatmah"} -->
+<!-- FS-027 Progress — Khatmah. Pushed from the reader's progress destination
+     carrying the current position — never from a tab, because this app has no
+     tab bar (Overview.md §2 D6). Back pops and WRITES NOTHING: progress is
+     recorded by reading, not by visiting — a curious opener must not advance
+     their own position (§2).
+
+     Hierarchy follows FS-027 §8 exactly, and its Counter Hypothesis is the
+     thing being doubly refused: the COMPLETION is IMMEDIATE (proportion +
+     location, one pinned group), and there is NO STREAK and NO days-active
+     counter anywhere on this screen. A streak renders absence as a broken
+     count — the anxiety mechanic PRD §7.6 bars and EI-007 forbids — and the
+     TODO line's "days-active" does not override the FS: §3 defines exactly
+     four sections and none of them counts days. Leading with Continue would
+     compound it by telling the user what to do before what they have done.
+
+     Completion + current-juz are ONE pinned group (§3 grouping): a proportion
+     without a location is abstract, a location without a proportion is a
+     label. Both inert reports — tapping a number implies a destination that
+     does not exist; continuing is the separate explicit control below (§3.1).
+     The juz list scrolls beneath; completed rows keep the same 44pt target
+     as incomplete ones so position never implies importance (§3.3). State is
+     never colour-alone: complete pairs brass + checkmark glyph + the word.
+
+     NO ARCH (EI-004 rations the mihrab to FS-006 alone). No card borders.
+
+     Origin rendered: Juz 15, 43% read, at Al-Hijr 15:32. All 30 juz rows render — the list is the real object, not a sample; rows
+     above the current juz read complete, below it unread. rows above the current juz read complete,
+     below it read unread. Continue is CONTEXTUAL and thumb-zone pinned: the
+     exit the report enables, never the subject.
+
+     Band: `.body-fixed` + completion group pinned above the single `.body`
+     scroller (§3.1: the figure never scrolls away). The juz list AND
+     Continue live INSIDE that scroller, Continue as its final element —
+     one honest deviation from §3.4's pinned control, stated here. Reason:
+     a 30-row list plus a flex-pinned sibling overflows the 844pt frame by
+     ~50pt through no fault of the content (measured: pinned Continue
+     bottomed at 858pt on an 844pt frame while the scroller refused to
+     yield its share). The pinned-scroller pattern only holds while the
+     list fits; at 30 rows the control that must never overlap the final
+     juz row is safest BEHIND it in the same scroll. It still clears the
+     home indicator and still sits in the thumb zone when reached —
+     surah-index (114 rows, nothing pinned) already reads this way. -->
+<div class="screen" style="background-color: var(--bg)">
+  <button data-slot="back" class="nr-icon-btn" aria-label="Back — progress unchanged">
+    <span class="icon icon-sm" data-symbol="chevron.left"></span>
+  </button>
+  <span data-slot="title" class="nav-title">Khatmah</span>
+
+  <div class="body-fixed" style="gap: var(--s3); padding: var(--s2) var(--s5) calc(var(--s5) + var(--safe-bottom))">
+    <!-- COMPLETION + CURRENT JUZ — IMMEDIATE, one pinned group, both inert.
+         Serif numeral for the proportion (a quantity to READ); the juz
+         location in the same glance. Linear brass track — an SVG ring is out
+         of subset (same declared deviation as the download rings). -->
+    <div class="nr-card" style="width: 100%; gap: var(--s2); padding: var(--s3) var(--s4); align-items: center">
+      <span class="nr-eyebrow">Of the whole Quran</span>
+      <span class="nr-numeric" aria-label="48 percent read">48%</span>
+      <span class="nr-track" style="width: 100%" aria-hidden="true">
+        <span class="nr-fill" style="width: 48%"></span>
+      </span>
+      <span class="nr-setting-val">Juz 15 · at Al-Hijr 15:32</span>
+    </div>
+
+    <!-- JUZ LIST — CONTEXTUAL, the one scroller. 30 real rows. -->
+    <div class="col nr-scroll" style="gap: var(--s1)">
+      <button class="nr-setting" aria-label="Juz 1, complete. Open at Juz 1">
+        <span class="icon icon-sm" data-symbol="checkmark" style="color: var(--accent)"></span>
+        <span class="grow nr-row-title">Juz 1</span>
+        <span class="nr-setting-val">Complete</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 2, complete. Open at Juz 2">
+        <span class="icon icon-sm" data-symbol="checkmark" style="color: var(--accent)"></span>
+        <span class="grow nr-row-title">Juz 2</span>
+        <span class="nr-setting-val">Complete</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 3, complete. Open at Juz 3">
+        <span class="icon icon-sm" data-symbol="checkmark" style="color: var(--accent)"></span>
+        <span class="grow nr-row-title">Juz 3</span>
+        <span class="nr-setting-val">Complete</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 4, complete. Open at Juz 4">
+        <span class="icon icon-sm" data-symbol="checkmark" style="color: var(--accent)"></span>
+        <span class="grow nr-row-title">Juz 4</span>
+        <span class="nr-setting-val">Complete</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 5, complete. Open at Juz 5">
+        <span class="icon icon-sm" data-symbol="checkmark" style="color: var(--accent)"></span>
+        <span class="grow nr-row-title">Juz 5</span>
+        <span class="nr-setting-val">Complete</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 6, complete. Open at Juz 6">
+        <span class="icon icon-sm" data-symbol="checkmark" style="color: var(--accent)"></span>
+        <span class="grow nr-row-title">Juz 6</span>
+        <span class="nr-setting-val">Complete</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 7, complete. Open at Juz 7">
+        <span class="icon icon-sm" data-symbol="checkmark" style="color: var(--accent)"></span>
+        <span class="grow nr-row-title">Juz 7</span>
+        <span class="nr-setting-val">Complete</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 8, complete. Open at Juz 8">
+        <span class="icon icon-sm" data-symbol="checkmark" style="color: var(--accent)"></span>
+        <span class="grow nr-row-title">Juz 8</span>
+        <span class="nr-setting-val">Complete</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 9, complete. Open at Juz 9">
+        <span class="icon icon-sm" data-symbol="checkmark" style="color: var(--accent)"></span>
+        <span class="grow nr-row-title">Juz 9</span>
+        <span class="nr-setting-val">Complete</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 10, complete. Open at Juz 10">
+        <span class="icon icon-sm" data-symbol="checkmark" style="color: var(--accent)"></span>
+        <span class="grow nr-row-title">Juz 10</span>
+        <span class="nr-setting-val">Complete</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 11, complete. Open at Juz 11">
+        <span class="icon icon-sm" data-symbol="checkmark" style="color: var(--accent)"></span>
+        <span class="grow nr-row-title">Juz 11</span>
+        <span class="nr-setting-val">Complete</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 12, complete. Open at Juz 12">
+        <span class="icon icon-sm" data-symbol="checkmark" style="color: var(--accent)"></span>
+        <span class="grow nr-row-title">Juz 12</span>
+        <span class="nr-setting-val">Complete</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 13, complete. Open at Juz 13">
+        <span class="icon icon-sm" data-symbol="checkmark" style="color: var(--accent)"></span>
+        <span class="grow nr-row-title">Juz 13</span>
+        <span class="nr-setting-val">Complete</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 14, complete. Open at Juz 14">
+        <span class="icon icon-sm" data-symbol="checkmark" style="color: var(--accent)"></span>
+        <span class="grow nr-row-title">Juz 14</span>
+        <span class="nr-setting-val">Complete</span>
+      </button>
+      <button class="nr-setting is-on" aria-label="Juz 15, current, 43 percent read. Open where you left off">
+        <span class="icon icon-sm" data-symbol="bookmark" style="color: var(--accent)"></span>
+        <span class="grow nr-row-title">Juz 15 · current</span>
+        <span class="nr-setting-val is-on">43% read</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 16, unread. Open at Juz 16">
+        <span class="icon icon-sm" data-symbol="bookmark" style="color: var(--label-3)"></span>
+        <span class="grow nr-row-title">Juz 16</span>
+        <span class="nr-setting-val">Unread</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 17, unread. Open at Juz 17">
+        <span class="icon icon-sm" data-symbol="bookmark" style="color: var(--label-3)"></span>
+        <span class="grow nr-row-title">Juz 17</span>
+        <span class="nr-setting-val">Unread</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 18, unread. Open at Juz 18">
+        <span class="icon icon-sm" data-symbol="bookmark" style="color: var(--label-3)"></span>
+        <span class="grow nr-row-title">Juz 18</span>
+        <span class="nr-setting-val">Unread</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 19, unread. Open at Juz 19">
+        <span class="icon icon-sm" data-symbol="bookmark" style="color: var(--label-3)"></span>
+        <span class="grow nr-row-title">Juz 19</span>
+        <span class="nr-setting-val">Unread</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 20, unread. Open at Juz 20">
+        <span class="icon icon-sm" data-symbol="bookmark" style="color: var(--label-3)"></span>
+        <span class="grow nr-row-title">Juz 20</span>
+        <span class="nr-setting-val">Unread</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 21, unread. Open at Juz 21">
+        <span class="icon icon-sm" data-symbol="bookmark" style="color: var(--label-3)"></span>
+        <span class="grow nr-row-title">Juz 21</span>
+        <span class="nr-setting-val">Unread</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 22, unread. Open at Juz 22">
+        <span class="icon icon-sm" data-symbol="bookmark" style="color: var(--label-3)"></span>
+        <span class="grow nr-row-title">Juz 22</span>
+        <span class="nr-setting-val">Unread</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 23, unread. Open at Juz 23">
+        <span class="icon icon-sm" data-symbol="bookmark" style="color: var(--label-3)"></span>
+        <span class="grow nr-row-title">Juz 23</span>
+        <span class="nr-setting-val">Unread</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 24, unread. Open at Juz 24">
+        <span class="icon icon-sm" data-symbol="bookmark" style="color: var(--label-3)"></span>
+        <span class="grow nr-row-title">Juz 24</span>
+        <span class="nr-setting-val">Unread</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 25, unread. Open at Juz 25">
+        <span class="icon icon-sm" data-symbol="bookmark" style="color: var(--label-3)"></span>
+        <span class="grow nr-row-title">Juz 25</span>
+        <span class="nr-setting-val">Unread</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 26, unread. Open at Juz 26">
+        <span class="icon icon-sm" data-symbol="bookmark" style="color: var(--label-3)"></span>
+        <span class="grow nr-row-title">Juz 26</span>
+        <span class="nr-setting-val">Unread</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 27, unread. Open at Juz 27">
+        <span class="icon icon-sm" data-symbol="bookmark" style="color: var(--label-3)"></span>
+        <span class="grow nr-row-title">Juz 27</span>
+        <span class="nr-setting-val">Unread</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 28, unread. Open at Juz 28">
+        <span class="icon icon-sm" data-symbol="bookmark" style="color: var(--label-3)"></span>
+        <span class="grow nr-row-title">Juz 28</span>
+        <span class="nr-setting-val">Unread</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 29, unread. Open at Juz 29">
+        <span class="icon icon-sm" data-symbol="bookmark" style="color: var(--label-3)"></span>
+        <span class="grow nr-row-title">Juz 29</span>
+        <span class="nr-setting-val">Unread</span>
+      </button>
+      <button class="nr-setting" aria-label="Juz 30, unread. Open at Juz 30">
+        <span class="icon icon-sm" data-symbol="bookmark" style="color: var(--label-3)"></span>
+        <span class="grow nr-row-title">Juz 30</span>
+        <span class="nr-setting-val">Unread</span>
+      </button>
+      <button class="nr-btn is-block" style="margin-top: var(--s2)" aria-label="Continue reading at Al-Hijr 15:32">
+        <span>Continue reading</span>
+      </button>
+
+
+  </div>
+</div>

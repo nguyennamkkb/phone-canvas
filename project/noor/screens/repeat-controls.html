@@ -1,0 +1,201 @@
+<!-- pc {"title":"Repeat"} -->
+<!-- FS-014 Repeat & Segment Controls. Pushed FROM the expanded player (FS-012)
+     on the repeat row, so it owes a back affordance and `chevron.left` is the
+     honest way back.
+
+     FS-014 §2 fixes the back behaviour, and it is the one thing a configuration
+     screen can get quietly wrong: backing out after nudging the count must NOT
+     start a drill. So the only element on this screen that begins anything is
+     the labelled CTA, and the caption above it says so rather than leaving the
+     user to infer it.
+
+     NO ARCH. EI-004 rations the mihrab to the verse-aligned translation alone,
+     and VD-001 §5.6 calls it the system's single ornate element. Spending it on
+     a set of steppers would dilute the one ornament the design system has.
+     Every plane below is a plain `nr-card` / `nr-setting` / `nr-row`.
+
+     Hierarchy follows FS-014 §8 exactly, and the Counter Hypothesis in that
+     section is the thing being refused: the RANGE is the IMMEDIATE element and
+     it is the only thing that gets the hero plane. The count is a CONTEXTUAL
+     refinement of a drill that is already pointed somewhere, the mode and the
+     gap are SECONDARY, and nothing is dressed up as a game — there is no
+     streak, no encouragement, no progress theatre. This is an instrument.
+
+     Every control states its CURRENT VALUE. F10 is a trust surface: a memoriser
+     is about to spend real time on whatever these numbers say, so a blank or an
+     inferred value is a lie. The bound each control cannot cross is stated in
+     its own caption ("up to 10") and again in the pinned readout, because
+     FS-014 §7 is right that a limit the user has to discover by tapping into it
+     is worse than a limit that was told to them.
+
+     Band: `.body-fixed` + the range region pinned above the scroller + one
+     pinned CTA. The range does NOT scroll away (FS-014 §3.1 — "a drill over
+     the wrong range is worse than a drill over none"), and the count and gap
+     scroll beneath it, with the gap last so it is the first row to go when the
+     frame is short (FS-014 §3.3). -->
+<div class="screen" style="background-color: var(--bg)">
+  <button data-slot="back" class="nr-icon-btn" aria-label="Back">
+    <span class="icon icon-sm" data-symbol="chevron.left"></span>
+  </button>
+  <span data-slot="title" class="nav-title">Repeat</span>
+
+  <div class="body-fixed" style="gap: var(--s3); padding: var(--s2) var(--s5) calc(var(--s5) + var(--safe-bottom))">
+    <!-- THE RANGE REGION — IMMEDIATE (FS-014 §8). The one target of its own is
+         deliberately NOT the region: FS-014 §3.1 says two bounds must never be
+         mis-set at once, so only the four ± steps below are tappable and the
+         plane between them is inert. The real answer to "what am I drilling" is
+         the passage named in the title AND one rendered ayah of it — an
+         instruction nobody can satisfy by reading "1:1 – 1:7" aloud. -->
+    <div class="nr-card" style="width: 100%; gap: var(--s2); padding: var(--s3) var(--s4)">
+      <div class="row" style="gap: var(--s3); align-items: flex-end">
+        <span class="grow col" style="gap: var(--s1)">
+          <span class="nr-eyebrow">Drill range</span>
+          <span class="nr-row-title">Al-Fatihah · 1:1 – 1:7</span>
+        </span>
+        <span class="nr-setting-val">7 verses</span>
+      </div>
+
+      <!-- The ayah mark sits TRAILING the verse, so the verse needs trailing
+           room of its own: `nr-verse-sm` is `text-align: right` (RTL), which
+           pushed the Arabic hard against the card's padding and left the mark
+           flush on the edge — reading as clipped rather than as a number. The
+           trailing pad is the mark's gutter. -->
+      <div class="row" style="gap: var(--s2); align-items: flex-start">
+        <span class="grow nr-verse-sm" style="padding-left: var(--s3)">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</span>
+        <span class="nr-mark">١</span>
+      </div>
+
+      <!-- start bound -->
+      <div class="row" style="gap: var(--s3)">
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">Start</span>
+          <span class="nr-setting-val">first ayah</span>
+        </span>
+        <span class="nr-stepper">
+          <button class="nr-stepper-btn" aria-label="Start the drill one ayah earlier">
+            <span class="icon icon-sm" data-symbol="minus"></span>
+          </button>
+          <span class="nr-stepper-val">1</span>
+          <button class="nr-stepper-btn" aria-label="Start the drill one ayah later">
+            <span class="icon icon-sm" data-symbol="plus"></span>
+          </button>
+        </span>
+      </div>
+
+      <!-- end bound -->
+      <div class="row" style="gap: var(--s3)">
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">End</span>
+          <span class="nr-setting-val">last ayah</span>
+        </span>
+        <span class="nr-stepper">
+          <button class="nr-stepper-btn" aria-label="End the drill one ayah earlier">
+            <span class="icon icon-sm" data-symbol="minus"></span>
+          </button>
+          <span class="nr-stepper-val">7</span>
+          <button class="nr-stepper-btn" aria-label="End the drill one ayah later">
+            <span class="icon icon-sm" data-symbol="plus"></span>
+          </button>
+        </span>
+      </div>
+    </div>
+
+    <!-- The one scroller. COUNT → MODE → GAP: FS-014 §8 ranks the count
+         CONTEXTUAL and the mode SECONDARY, so the count is the first control
+         under the range region and the mode sits beneath it. The gap is last
+         and therefore the first row to scroll away (FS-014 §3.3) — which is
+         exactly where FS-014 §8 says it belongs, at the bottom of a user's
+         mental list.
+
+         Every caption under a stepper is kept SHORT on purpose: the label
+         column is whatever is left after `.nr-stepper` takes its 44+12+88+12+44,
+         so a sentence there wraps to three lines and the row stops being a
+         44pt control. One word per caption; anything longer belongs under the
+         row at full width, and there is no full-width line to spare on a
+         390pt frame.
+
+         Every ± step is FILLED — no `is-quiet`. `is-quiet` is transparent, so a
+         quiet step beside a filled one reads as a missing button rather than
+         as a step that has reached its bound: Start showed a ghost minus and a
+         solid plus, End the reverse, and the exported frame looked like a
+         rendering fault. A stepper has to read as a stepper before it can be
+         trusted to also say "you are at the floor"; the bounds live in the
+         captions and in "up to 10" instead. -->
+    <div class="col nr-scroll" style="gap: var(--s3)">
+      <!-- count control (CONTEXTUAL) — the parameter a memoriser adjusts most.
+           The ceiling is stated on the row, not left to be discovered by
+           tapping past it (FS-014 §7: "Repeats stop at 10."). -->
+      <div class="nr-card" style="gap: var(--s2); padding: var(--s3) var(--s4)">
+        <div class="row" style="gap: var(--s3)">
+          <span class="grow col" style="gap: 0">
+            <span class="nr-row-title">Repetitions</span>
+            <span class="nr-setting-val">up to 10</span>
+          </span>
+          <span class="nr-stepper">
+            <button class="nr-stepper-btn" aria-label="One fewer repetition">
+              <span class="icon icon-sm" data-symbol="minus"></span>
+            </button>
+            <span class="nr-stepper-val">5</span>
+            <button class="nr-stepper-btn" aria-label="One more repetition">
+              <span class="icon icon-sm" data-symbol="plus"></span>
+            </button>
+          </span>
+        </div>
+      </div>
+
+      <!-- mode control (SECONDARY) — COMP / SegmentedControl, full width, two
+           segments so each is half the control and neither needs precise aim
+           (FS-014 §3.4). The filled plane on the live segment is the state, not
+           the brass text, so it survives without colour. -->
+      <div class="nr-card" style="gap: var(--s2); padding: var(--s3) var(--s4)">
+        <span class="nr-row-title">What repeats</span>
+        <div class="nr-modes">
+          <button class="nr-mode is-on" aria-label="Repeat the whole range" aria-pressed="true">Whole range</button>
+          <button class="nr-mode" aria-label="Repeat a single ayah">Single ayah</button>
+        </div>
+        <span class="nr-setting-val">Switching keeps your repetitions and gap.</span>
+      </div>
+
+      <!-- gap control (SECONDARY). Zero here is a CHOSEN value, not an absent
+           one, and FS-014 §4 is explicit that the two must never be confused —
+           so the row says so in words ("no silence") as well as showing the
+           numeral, and the pinned readout below carries it again as "0 s gap". -->
+      <div class="nr-card" style="gap: var(--s2); padding: var(--s3) var(--s4)">
+        <div class="row" style="gap: var(--s3)">
+          <span class="grow col" style="gap: 0">
+            <span class="nr-row-title">Gap</span>
+            <span class="nr-setting-val">no silence</span>
+          </span>
+          <span class="nr-stepper">
+            <button class="nr-stepper-btn" aria-label="One second less silence">
+              <span class="icon icon-sm" data-symbol="minus"></span>
+            </button>
+            <span class="nr-stepper-val">0</span>
+            <button class="nr-stepper-btn" aria-label="One second more silence">
+              <span class="icon icon-sm" data-symbol="plus"></span>
+            </button>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pinned. The drill restated in one line before it is started — the whole
+         point of a trust surface is that the user can read back what they are
+         about to commit to, including a zero gap. Brass + a glyph, never brass
+         alone. One line by construction: this is the last thing on the screen
+         and a two-line readout here is a readout that eats the count control. -->
+    <div class="col" style="gap: var(--s2)">
+      <div class="nr-setting is-on" style="cursor: default; padding: var(--s1) var(--s4)">
+        <span class="nr-row-title">This drill</span>
+        <span class="grow"></span>
+        <span class="icon icon-xs" data-symbol="repeat" style="color: var(--accent)"></span>
+        <span class="nr-setting-val is-on">1:1–1:7 · 5 reps · 0 s gap</span>
+      </div>
+      <div class="t-caption" style="color: var(--label-2); text-align: center">Going back keeps these settings and starts nothing.</div>
+      <button class="nr-btn is-block" aria-label="Begin the drill on Al-Fatihah 1:1 to 1:7, five times, with no silence">
+        <span class="icon icon-sm" data-symbol="play.fill"></span>
+        <span>Begin the drill</span>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,92 @@
+<!-- pc {"title":"What Leaves This Device"} -->
+<!-- FS-004 Capability Disclosure — push chrome. EI-010: the app shows its own
+     workings instead of asking for trust, so this screen enumerates stored /
+     sent / requested as facts. Per the attention law the acknowledge control
+     is the exit, not the subject, and must not outrank the statement itself.
+     A disclosure that could be empty would be one that can lie by omission —
+     so Empty is not applicable by construction.
+
+     Band: `.body-fixed` + one inner scroller: the disclosure scrolls, the
+     acknowledge button and the offline footnote stay pinned at the floor. -->
+<div class="screen" style="background-color: var(--bg)">
+  <button data-slot="back" class="nr-icon-btn" aria-label="Back">
+    <span class="icon icon-sm" data-symbol="chevron.left"></span>
+  </button>
+  <span data-slot="title" class="nav-title">Privacy</span>
+
+  <div class="body-fixed" style="gap: var(--s4); padding: var(--s4) var(--s5) calc(var(--s5) + var(--safe-bottom))">
+    <div class="col" style="gap: var(--s2); padding-top: var(--s2)">
+      <div class="nr-eyebrow">Step 3 of 3</div>
+      <!-- hero: the network behaviour statement, above the fold -->
+      <div class="nr-hero" style="color: var(--label)">Nothing leaves this device</div>
+      <div class="t-subhead" style="color: var(--label-2)">Noor has no account, no analytics and no advertising. Here is the whole of it.</div>
+    </div>
+
+    <!-- the one scroller: the disclosure itself -->
+    <div class="col nr-scroll" style="gap: var(--s3)">
+      <!-- COMP / PrivacyDisclosure: stored / sent / requested as ListRow triples -->
+      <div class="nr-card" style="gap: 0; padding: var(--s4) var(--s5)">
+        <div class="row" style="gap: var(--s2); padding-bottom: var(--s2)">
+          <span class="icon icon-sm" data-symbol="lock.fill" style="color: var(--accent)"></span>
+          <span class="nr-row-title">Stored on this device</span>
+        </div>
+        <div class="nr-fact">
+          <span class="nr-tile is-sm is-plain"><span class="icon icon-xs" data-symbol="bookmark"></span></span>
+          <span class="grow nr-fact-text">
+            <span class="nr-fact-label">Bookmarks and notes</span>
+            <span class="nr-fact-value">Only what you save.</span>
+          </span>
+        </div>
+        <div class="nr-fact">
+          <span class="nr-tile is-sm is-plain"><span class="icon icon-xs" data-symbol="book"></span></span>
+          <span class="grow nr-fact-text">
+            <span class="nr-fact-label">Reading position</span>
+            <span class="nr-fact-value">Your last verse, so the app opens there.</span>
+          </span>
+        </div>
+        <div class="nr-fact">
+          <span class="nr-tile is-sm is-plain"><span class="icon icon-xs" data-symbol="download"></span></span>
+          <span class="grow nr-fact-text">
+            <span class="nr-fact-label">Downloaded recitations</span>
+            <span class="nr-fact-value">Audio you chose to download.</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- the claim EI-010 exists to make checkable, stated as fact -->
+      <div class="nr-card" style="gap: 0; padding: var(--s4) var(--s5)">
+        <div class="row" style="gap: var(--s2); padding-bottom: var(--s2)">
+          <span class="icon icon-sm" data-symbol="shield.fill" style="color: var(--accent)"></span>
+          <span class="nr-row-title">Sent anywhere</span>
+        </div>
+        <div class="nr-fact">
+          <span class="nr-tile is-sm is-plain"><span class="icon icon-xs" data-symbol="xmark"></span></span>
+          <span class="grow nr-fact-text">
+            <span class="nr-fact-label">Nothing</span>
+            <span class="nr-fact-value">No analytics, no crash reporting, no ad identifier.</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="nr-card" style="gap: 0; padding: var(--s4) var(--s5)">
+        <div class="row" style="gap: var(--s2); padding-bottom: var(--s2)">
+          <span class="icon icon-sm" data-symbol="hand.raised" style="color: var(--accent)"></span>
+          <span class="nr-row-title">Requested from you</span>
+        </div>
+        <div class="nr-fact">
+          <span class="nr-tile is-sm is-plain"><span class="icon icon-xs" data-symbol="bell"></span></span>
+          <span class="grow nr-fact-text">
+            <span class="nr-fact-label">Notifications, only if you ask</span>
+            <span class="nr-fact-value">Never requested at launch.</span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- pinned: the exit and its SECONDARY footnote -->
+    <div class="col" style="gap: var(--s3)">
+      <button class="nr-btn is-block">Continue to the Mushaf</button>
+      <div class="t-caption" style="color: var(--label-2); text-align: center">The Quranic text is already on your phone. It works on a plane.</div>
+    </div>
+  </div>
+</div>

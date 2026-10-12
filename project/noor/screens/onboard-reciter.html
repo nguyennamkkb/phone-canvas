@@ -1,0 +1,82 @@
+<!-- pc {"title":"Reciter Choice"} -->
+<!-- FS-003 Reciter Choice — push chrome. Medium density (the one onboarding
+     screen that is): choosing blind is not a choice, so the list is the hero.
+     The audition control only carries meaning while a row is auditioning, and
+     the auditioning row shows its own state — that feedback is what makes the
+     audition trustworthy. Empty is not applicable by construction: the
+     catalogue ships with the app.
+
+     Band: `.body-fixed` + one inner scroller, so the Continue button stays
+     pinned at the floor while the reciter list scrolls beneath it. -->
+<div class="screen" style="background-color: var(--bg)">
+  <button data-slot="back" class="nr-icon-btn" aria-label="Back">
+    <span class="icon icon-sm" data-symbol="chevron.left"></span>
+  </button>
+  <span data-slot="title" class="nav-title">Reciter</span>
+
+  <div class="body-fixed" style="gap: var(--s4); padding: var(--s4) var(--s5) calc(var(--s5) + var(--safe-bottom))">
+    <div class="col" style="gap: var(--s2); padding-top: var(--s2)">
+      <div class="nr-eyebrow">Step 2 of 3</div>
+      <div class="nr-hero" style="color: var(--label)">Who should you hear?</div>
+      <div class="t-subhead" style="color: var(--label-2)">Tap a name to preview Al-Fatihah. Change it any time in Settings.</div>
+    </div>
+
+    <!-- the one scroller: hero list -->
+    <div class="col nr-scroll" style="gap: var(--s2)">
+      <!-- auditioning + selected: the row state is the feedback -->
+      <button class="nr-row is-on" aria-label="Mishary Rashid Alafasy, auditioning, selected" aria-pressed="true">
+        <span class="nr-tile is-sm"><span class="icon icon-sm" data-symbol="play.fill"></span></span>
+        <span class="grow col" style="gap: var(--s1)">
+          <span class="nr-row-title">Mishary Rashid Alafasy</span>
+          <span class="nr-row-sub">Hafs from Asim · Murattal</span>
+          <!-- the audition's progress through a known quantity: one brass fill -->
+          <span class="nr-track"><span class="nr-fill" style="width: 42%"></span></span>
+        </span>
+        <span class="icon icon-sm" data-symbol="checkmark" style="color: var(--accent)"></span>
+      </button>
+
+      <button class="nr-row" aria-label="Mahmoud Khalil Al-Husary, Hafs from Asim, Mujawwad">
+        <span class="nr-tile is-sm is-plain"><span class="icon icon-sm" data-symbol="speaker.wave.2"></span></span>
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">Mahmoud Khalil Al-Husary</span>
+          <span class="nr-row-sub">Hafs from Asim · Mujawwad</span>
+        </span>
+      </button>
+
+      <button class="nr-row" aria-label="AbdulBasit Abdurrahman, Hafs from Asim, Murattal">
+        <span class="nr-tile is-sm is-plain"><span class="icon icon-sm" data-symbol="speaker.wave.2"></span></span>
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">AbdulBasit Abdurrahman</span>
+          <span class="nr-row-sub">Hafs from Asim · Murattal</span>
+        </span>
+      </button>
+
+      <button class="nr-row" aria-label="Saud ash-Shuraim, Hafs from Asim, Murattal">
+        <span class="nr-tile is-sm is-plain"><span class="icon icon-sm" data-symbol="speaker.wave.2"></span></span>
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">Saud ash-Shuraim</span>
+          <span class="nr-row-sub">Hafs from Asim · Murattal</span>
+        </span>
+      </button>
+
+      <button class="nr-row" aria-label="Ali al-Hudhaify, Hafs from Asim, Murattal">
+        <span class="nr-tile is-sm is-plain"><span class="icon icon-sm" data-symbol="speaker.wave.2"></span></span>
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">Ali al-Hudhaify</span>
+          <span class="nr-row-sub">Hafs from Asim · Murattal</span>
+        </span>
+      </button>
+
+      <button class="nr-row" aria-label="Yasser al-Dosari, Hafs from Asim, Murattal">
+        <span class="nr-tile is-sm is-plain"><span class="icon icon-sm" data-symbol="speaker.wave.2"></span></span>
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">Yasser al-Dosari</span>
+          <span class="nr-row-sub">Hafs from Asim · Murattal</span>
+        </span>
+      </button>
+    </div>
+
+    <!-- pinned: the confirming action, always in the lower thumb zone -->
+    <button class="nr-btn is-block">Continue</button>
+  </div>
+</div>

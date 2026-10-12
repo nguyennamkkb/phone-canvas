@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" width="320" height="320" role="img" aria-label="Crescent and star ornament">
+  <!-- Noor wordmark ornament — single-hue brass line work on transparent.
+       PROJECT-DRAWN. docs/Noor/references/noor-deen-companion-mockup.png does
+       not exist on disk, so this is an original drawing in the extracted
+       language (warm monochrome gold, 2pt stroke, soft geometry), not a
+       reproduction of the reference artwork.
+
+       No full diagonals: two crossing corner-to-corner lines read as a
+       broken-image placeholder, which is exactly the wrong signal on a
+       launch screen. The frame is corner brackets instead. -->
+  <g fill="none" stroke="#C8A165" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- corner brackets: the geometric line ornament, low-opacity layer -->
+    <g opacity="0.45">
+      <path d="M104 56h-48v48"/>
+      <path d="M216 56h48v48"/>
+      <path d="M104 264h-48v-48"/>
+      <path d="M216 264h48v-48"/>
+    </g>
+    <!-- the crescent: one arc closed by a shallower return, leaving a lit rim -->
+    <path d="M170 92a84 84 0 1 0 0 136 66 66 0 1 1 0-136z"/>
+    <!-- starburst, eight points, sitting in the crescent's opening -->
+    <path d="M186 132l7 24 24-7-19 17 19 17-24-7-7 24-7-24-24 7 19-17-19-17 24 7z"/>
+  </g>
+</svg>

@@ -1,0 +1,83 @@
+<!-- pc {"title":"History"} -->
+<!-- FS-041 History — Recently Read. Pushed from the reader's history
+     destination carrying the current position (most-recent anchored) — never
+     from a tab, because this app has no tab bar (Overview.md §2 D6). Back
+     pops and WRITES NOTHING: opening + closing must not create an entry, or
+     the list becomes curiosity rather than practice (§2).
+
+     The list is reverse-chronological positions, most recent first (§3.1).
+     Each row is ONE 44pt+ target to FS-005 at that exact offset (surah,
+     verse, scroll) with `contextOrigin: history` — reference + snippet never
+     split, because opening an entry is a single intent. The today marker is
+     a STATE of its row (small brass "Today" word beside the time), never a
+     heading — a heading above a mixed list would imply a grouping the app
+     does not maintain (§3 grouping). Clear is SEPARATE and LAST (§3
+     grouping): it acts on the whole list, and adjacent to rows it would read
+     as navigation. Present only when non-empty; separated by a visible
+     boundary (a quiet card holding it apart from the rows).
+
+     NO ARCH (EI-004 rations the mihrab to FS-006 alone). No card borders.
+
+     Origin rendered: 5 entries across today + yesterday + last week, most
+     recent first. Times are words ("This morning", "Yesterday"), never bare
+     clocks without days — "9:41" alone does not answer "where was I".
+     Tapping any row resumes the reader exactly; clearing empties the store
+     (and the Clear control with it — an empty list carries no eraser).
+
+     Band: single `.body` scroller — rows scroll beneath the top inset, Clear
+     is the list's final element clearing the home indicator. No pinned band:
+     nothing here reports continuously. -->
+<div class="screen" style="background-color: var(--bg)">
+  <button data-slot="back" class="nr-icon-btn" aria-label="Back — history unchanged">
+    <span class="icon icon-sm" data-symbol="chevron.left"></span>
+  </button>
+  <span data-slot="title" class="nav-title">History</span>
+
+  <div class="body" style="gap: var(--s2); padding: var(--s4) var(--s5) calc(var(--s5) + var(--safe-bottom))">
+    <button class="nr-setting is-on" aria-label="This morning — Al-Hijr 15:32. Resume reading here">
+      <span class="grow col" style="gap: 0">
+        <span class="nr-row-title">Al-Hijr · 15:32</span>
+        <span class="nr-setting-val">And warn them of the Day of Regret…</span>
+      </span>
+      <span class="nr-setting-val is-on">Today</span>
+    </button>
+    <button class="nr-setting is-on" aria-label="Yesterday evening — Al-Baqarah 2:255. Resume reading here">
+      <span class="grow col" style="gap: 0">
+        <span class="nr-row-title">Al-Baqarah · 2:255</span>
+        <span class="nr-setting-val">Allah — there is no god but He…</span>
+      </span>
+      <span class="nr-setting-val">Yesterday</span>
+    </button>
+    <button class="nr-setting is-on" aria-label="Yesterday morning — At-Tin 95:1. Resume reading here">
+      <span class="grow col" style="gap: 0">
+        <span class="nr-row-title">At-Tin · 95:1</span>
+        <span class="nr-setting-val">And by the fig and the olive…</span>
+      </span>
+      <span class="nr-setting-val">Yesterday</span>
+    </button>
+    <button class="nr-setting is-on" aria-label="3 days ago — An-Nur 24:35. Resume reading here">
+      <span class="grow col" style="gap: 0">
+        <span class="nr-row-title">An-Nur · 24:35</span>
+        <span class="nr-setting-val">Allah is the Light of the heavens…</span>
+      </span>
+      <span class="nr-setting-val">3 days ago</span>
+    </button>
+    <button class="nr-setting is-on" aria-label="Last week — Al-Fatihah 1:2. Resume reading here">
+      <span class="grow col" style="gap: 0">
+        <span class="nr-row-title">Al-Fatihah · 1:2</span>
+        <span class="nr-setting-val">All praise is for Allah…</span>
+      </span>
+      <span class="nr-setting-val">Last week</span>
+    </button>
+
+    <!-- CLEAR — separate, last, boundary-held (§3 grouping). Destructive and
+         whole-list: never adjacent-naked to the rows. Gone with the list
+         when the list is empty (nothing to erase, no eraser). -->
+    <div class="nr-card is-quiet" style="gap: 0; padding: var(--s2) var(--s4); margin-top: var(--s2)">
+      <button class="nr-setting" style="min-height: var(--touch-min)" aria-label="Clear all history">
+        <span class="icon icon-sm" data-symbol="trash" style="color: var(--label-2)"></span>
+        <span class="grow nr-row-title">Clear history</span>
+      </button>
+    </div>
+  </div>
+</div>

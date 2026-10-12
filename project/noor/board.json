@@ -1,0 +1,183 @@
+{
+  "v": 1,
+  "projectId": "noor",
+  "exportedAt": 1791815712102,
+  "board": {
+    "v": 5,
+    "nodes": [
+      {
+        "id": "noor-n1",
+        "type": "phone",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "data": {
+          "screenId": "splash",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "noor-n2",
+        "type": "phone",
+        "position": {
+          "x": 534,
+          "y": 0
+        },
+        "data": {
+          "screenId": "onboard-language",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "noor-n3",
+        "type": "phone",
+        "position": {
+          "x": 1068,
+          "y": 0
+        },
+        "data": {
+          "screenId": "onboard-privacy",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "noor-n4",
+        "type": "phone",
+        "position": {
+          "x": 1602,
+          "y": 0
+        },
+        "data": {
+          "screenId": "onboard-reciter",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "noor-n5",
+        "type": "phone",
+        "position": {
+          "x": 0,
+          "y": 1028
+        },
+        "data": {
+          "screenId": "surah-index",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "noor-n6",
+        "type": "phone",
+        "position": {
+          "x": 534,
+          "y": 1028
+        },
+        "data": {
+          "screenId": "page-navigator",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "noor-n7",
+        "type": "phone",
+        "position": {
+          "x": 0,
+          "y": 2056
+        },
+        "data": {
+          "screenId": "reader-mushaf",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "noor-n8",
+        "type": "phone",
+        "position": {
+          "x": 0,
+          "y": 3084
+        },
+        "data": {
+          "screenId": "reader-text-settings",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "noor-n9",
+        "type": "phone",
+        "position": {
+          "x": 534,
+          "y": 3084
+        },
+        "data": {
+          "screenId": "reader-translation",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "noor-n10",
+        "type": "phone",
+        "position": {
+          "x": 0,
+          "y": 4112
+        },
+        "data": {
+          "screenId": "repeat-controls",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "noor-n11",
+        "type": "phone",
+        "position": {
+          "x": 534,
+          "y": 4112
+        },
+        "data": {
+          "screenId": "speed-control",
+          "deviceId": "reference"
+        }
+      }
+    ],
+    "edges": [],
+    "removed": [],
+    "trash": [],
+    "arrangement": [
+      {
+        "name": "Khởi động",
+        "screens": [
+          "splash",
+          "onboard-language",
+          "onboard-privacy",
+          "onboard-reciter"
+        ]
+      },
+      {
+        "name": "Mục lục",
+        "screens": [
+          "surah-index",
+          "page-navigator"
+        ]
+      },
+      {
+        "name": "Đọc",
+        "screens": [
+          "reader-mushaf"
+        ]
+      },
+      {
+        "name": "Tùy chỉnh",
+        "screens": [
+          "reader-text-settings",
+          "reader-translation"
+        ]
+      },
+      {
+        "name": "Phát lại",
+        "screens": [
+          "repeat-controls",
+          "speed-control"
+        ]
+      }
+    ]
+  }
+}

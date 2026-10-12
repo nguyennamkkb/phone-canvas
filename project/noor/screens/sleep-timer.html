@@ -1,0 +1,85 @@
+<!-- pc {"title":"Sleep timer"} -->
+<!-- FS-016 Sleep Timer. Presented FROM the expanded player (FS-012) on the
+     timer row — never from a tab, because this app has no tab bar
+     (Overview.md §2 D6). Back dismisses and leaves any engaged timer RUNNING:
+     a timer that stops because the user looked at another setting cannot be
+     trusted (FS-016 §2, EI-002 continuity).
+
+     Hierarchy follows FS-016 §8 exactly, and its Counter Hypothesis is the
+     thing being refused: the DURATION CONTROL is the IMMEDIATE element and
+     the one raised plane. The remaining-time region is CONTEXTUAL — a
+     countdown answers the question asked AFTER setting, not the one that
+     brings anyone here, and it does not exist in the state most sessions are
+     in (no timer). Leading with it would put a known number in the brightest
+     position and demote the only decision available.
+
+     NO ARCH (EI-004 rations the mihrab to FS-006 alone). Every plane below is
+     a plain `nr-card` / `nr-modes` / `nr-btn`.
+
+     Origin rendered here is `engaged`: 30 minutes set, 22:14 left — so the
+     duration control marks the ENGAGED tier rather than the shipped default
+     (acceptance #3), the remaining region is present, and the cancel control
+     is present (acceptance #1's inverse: absent only when nothing is
+     engaged). State is never colour-alone: the live tier pairs the filled
+     `is-on` plane with `aria-pressed`; remaining time is a serif numeral,
+     not a tint.
+
+     The six tiers are the shipped enum in FS-016 §4 verbatim — no free-form
+     duration, because a recitation ending mid-verse is worse than one ending
+     at a verse boundary. The expiry rule (§7 `timer_expired`: stops at the
+     interval or the verse end, whichever first) is stated at the foot, not
+     inferred.
+
+     Band: `.body-fixed`, no scroller — remaining region, one control, one
+     cancel, one rule. Nothing here is long enough to need a scroller, and a
+     scroller would only hide an overflow. -->
+<div class="screen" style="background-color: var(--bg)">
+  <button data-slot="back" class="nr-icon-btn" aria-label="Back — the timer keeps counting">
+    <span class="icon icon-sm" data-symbol="chevron.left"></span>
+  </button>
+  <span data-slot="title" class="nav-title">Sleep timer</span>
+
+  <div class="body-fixed" style="gap: var(--s4); padding: var(--s4) var(--s5) calc(var(--s5) + var(--safe-bottom))">
+    <!-- REMAINING REGION — CONTEXTUAL. Reports; not tappable (§3.2: the only
+         way to change a timer is the duration control). Serif numeral role
+         for the quantity, exactly like FS-015's applied-rate readout — a
+         value the user must READ, not infer. -->
+    <div class="col" style="gap: var(--s1); align-items: center">
+      <span class="nr-eyebrow">Time left</span>
+      <span class="nr-numeric" aria-label="22 minutes 14 seconds left">22:14</span>
+      <span class="nr-row-sub">Playback stops at 30 minutes, or at the verse end — whichever first.</span>
+    </div>
+
+    <!-- DURATION CONTROL — IMMEDIATE, the one IMMEDIATE element and the one
+         raised plane. COMP / SegmentedControl over the six shipped durations
+         (§4 enum verbatim). Six segments share the full width evenly and the
+         control never wraps (§3.1); the engaged tier is marked by plane +
+         `aria-pressed`, never by brass alone. -->
+    <div class="nr-card" style="width: 100%; gap: var(--s3); padding: var(--s3) var(--s4)">
+      <span class="nr-row-title">Stop after</span>
+      <div class="nr-modes" style="width: 100%">
+        <button class="nr-mode" style="padding: 0 var(--s1)" aria-label="5 minutes">5</button>
+        <button class="nr-mode" style="padding: 0 var(--s1)" aria-label="10 minutes">10</button>
+        <button class="nr-mode" style="padding: 0 var(--s1)" aria-label="15 minutes">15</button>
+        <button class="nr-mode is-on" style="padding: 0 var(--s1)" aria-label="30 minutes — engaged" aria-pressed="true">30</button>
+        <button class="nr-mode" style="padding: 0 var(--s1)" aria-label="45 minutes">45</button>
+        <button class="nr-mode" style="padding: 0 var(--s1)" aria-label="60 minutes">60</button>
+      </div>
+      <span class="nr-setting-val">Minutes. Tapping another tier moves the stop, it does not add one.</span>
+    </div>
+
+    <!-- CANCEL — CONTEXTUAL, present only while engaged (acceptance #1).
+         Separate from the tiers on purpose (§3 grouping): one sets, one
+         clears, and an "off" segment would make a destructive-sounding
+         choice look like an ordinary tier. Quiet style — the commitment is
+         the control; clearing is the reversal. Separated by ≥12pt. -->
+    <div class="col" style="gap: var(--s2); padding-top: var(--s2)">
+    <button class="nr-btn is-quiet is-block" aria-label="Clear the sleep timer — playback continues">
+      Clear the timer
+    </button>
+    <div class="t-caption" style="color: var(--label-2); text-align: center">
+      Going back keeps it counting.
+    </div>
+    </div>
+  </div>
+</div>
