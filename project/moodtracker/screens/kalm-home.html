@@ -1,0 +1,95 @@
+<!-- pc {"title":"Kalm Home"} -->
+<div class="screen" data-tab-active="home" style="background-color: var(--bg); background-image: radial-gradient(circle 110px at 335px 70px, var(--peach-deep) 0%, var(--peach-deep) 55%, transparent 100%); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed">
+  <div class="body">
+    <div class="mt-hero">
+      <div class="col" style="gap: 0; padding-top: var(--s2)">
+        <div class="t-caption" style="color: var(--label-2-ground)">Welcome to Kalm,</div>
+        <div class="t-page">Arya Wijaya</div>
+      </div>
+    </div>
+
+    <div class="mt-sheet">
+      <!-- Mood Today card -->
+      <div class="mt-card">
+        <div class="row" style="align-items: center">
+          <div class="grow col" style="gap: var(--s1)">
+            <div class="t-headline">Mood Today</div>
+            <div class="row" style="gap: var(--s2); align-items: center">
+              <span class="icon icon-sm" data-symbol="face.smiling" style="color: var(--teal)"></span>
+              <span class="t-subhead" style="color: var(--teal); font-weight: 600">Supor Happy</span>
+            </div>
+          </div>
+          <span class="icon icon-sm" data-symbol="arrow.right" style="color: var(--label)"></span>
+        </div>
+      </div>
+
+      <!-- Mascot with halo -->
+      <div class="row" style="justify-content: center">
+        <img class="art" src="/project/moodtracker/assets/mascot-happy.svg" data-asset="MascotHappy" width="180" height="180" alt="Mascot with halo" />
+      </div>
+
+      <!-- Mood Tracker chart -->
+      <div class="mt-card is-tint">
+        <div class="row">
+          <span class="icon icon-sm" data-symbol="sparkles" style="color: var(--accent)"></span>
+          <div class="grow t-headline">Mood Tracker</div>
+        </div>
+        <div class="segmented-light">
+          <button class="seg is-on">Week</button>
+          <button class="seg">Month</button>
+          <button class="seg">Year</button>
+        </div>
+        <div class="mt-climate">
+          <button class="mt-climate-day" aria-label="Monday, up">
+            <span class="mt-climate-track"><span class="mt-climate-bar is-up" style="height: 60%"></span></span>
+            <span>Mo</span>
+          </button>
+          <button class="mt-climate-day" aria-label="Tuesday, calm">
+            <span class="mt-climate-track"><span class="mt-climate-bar" style="height: 90%"></span></span>
+            <span>Tu</span>
+          </button>
+          <button class="mt-climate-day" aria-label="Wednesday, low">
+            <span class="mt-climate-track"><span class="mt-climate-bar is-low" style="height: 35%"></span></span>
+            <span>We</span>
+          </button>
+          <button class="mt-climate-day" aria-label="Thursday, up">
+            <span class="mt-climate-track"><span class="mt-climate-bar is-up" style="height: 55%"></span></span>
+            <span>Th</span>
+          </button>
+          <button class="mt-climate-day" aria-label="Friday, low">
+            <span class="mt-climate-track"><span class="mt-climate-bar is-low" style="height: 40%"></span></span>
+            <span>Fr</span>
+          </button>
+          <button class="mt-climate-day" aria-label="Saturday, up">
+            <span class="mt-climate-track"><span class="mt-climate-bar is-up" style="height: 65%"></span></span>
+            <span>Sa</span>
+          </button>
+          <button class="mt-climate-day" aria-label="Sunday, calm">
+            <span class="mt-climate-track"><span class="mt-climate-bar" style="height: 95%"></span></span>
+            <span>Su</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Your Session -->
+      <div class="col" style="gap: var(--s3)">
+        <div class="row">
+          <div class="grow t-headline">Your Session</div>
+          <button class="t-caption" style="color: var(--teal); font: inherit; border: 0; background: transparent; cursor: pointer; min-height: var(--touch-min); padding: 0 var(--s2)">See All →</button>
+        </div>
+        <div class="mt-card">
+          <div class="row" style="gap: var(--s3); align-items: center">
+            <img class="art" src="/project/moodtracker/assets/mascot-avatar.svg" data-asset="MascotAvatar" width="48" height="48" alt="Doctor avatar" />
+            <div class="grow col" style="gap: 0">
+              <div class="t-headline">DR Kalm Ness</div>
+              <div class="t-caption" style="color: var(--label-2)">14:00 - 17:00</div>
+            </div>
+            <button class="icon icon-sm" data-symbol="bubble.left" style="color: var(--accent); min-width: var(--touch-min); min-height: var(--touch-min); border: 0; background: var(--coral-soft); border-radius: var(--r-full); cursor: pointer" aria-label="Chat"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- @component app-tabs -->
+</div>

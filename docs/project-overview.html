@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tổng quan dự án — phone-canvas</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: -apple-system, system-ui, sans-serif; line-height: 1.6; max-width: 960px; margin: 0 auto; padding: 32px 20px 64px; }
+  h1 { font-size: 28px; margin-bottom: 4px; }
+  h2 { font-size: 20px; margin-top: 40px; border-bottom: 1px solid #8884; padding-bottom: 6px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { border: 1px solid #8885; padding: 6px 10px; text-align: left; vertical-align: top; }
+  th { background: #8882; }
+  code { font-size: 13px; background: #8882; padding: 1px 5px; border-radius: 4px; }
+  pre { background: #8881; padding: 12px 16px; border-radius: 8px; overflow-x: auto; font-size: 13px; }
+  .sub { color: #888; margin-top: 0; }
+  .flow { display: flex; gap: 0; align-items: stretch; flex-wrap: wrap; margin: 16px 0; }
+  .flow div { border: 1px solid #8886; border-radius: 8px; padding: 8px 14px; font-size: 14px; }
+  .flow span { align-self: center; padding: 0 8px; color: #888; }
+</style>
+</head>
+<body>
+
+<h1>phone-canvas — Tổng quan dự án</h1>
+<p class="sub">Design board chứa màn hình điện thoại dưới dạng HTML thật, đo số liệu chính xác từng element để viết SwiftUI.</p>
+
+<h2>1. Ý tưởng cốt lõi</h2>
+<p>Không mô phỏng thiết bị, không viewport cố định, không scroll ẩn. Màn hình cần 992pt thì là hình chữ nhật cao 992pt. <code>&lt;iframe&gt;</code> là nguồn sự thật của layout, <code>SPEC</code> là hợp đồng, panel chỉ là view.</p>
+<div class="flow">
+  <div>AI (LLM bất kỳ)<br>prompt + tokens.css + contract</div><span>─html─►</span>
+  <div>Board (React + React Flow)<br>node hình chữ nhật + <code>&lt;iframe srcdoc&gt;</code></div><span>─postMessage─►</span>
+  <div>buildSpec()<br>phía parent, test được</div><span>─►</span>
+  <div>Panel<br>bảng spec từng element</div>
+</div>
+
+<h2>2. Năm bất biến (invariants)</h2>
+<table>
+  <tr><th>#</th><th>Bất biến</th><th>Nghĩa thực tế</th></tr>
+  <tr><td>1</td><td>1 CSS px === 1 pt</td><td>Iframe luôn render ở kích thước tự nhiên của device, chỉ scale bằng camera canvas (<code>transform</code>). Không dùng CSS <code>zoom</code> hay scale lồng nhau.</td></tr>
+  <tr><td>2</td><td>Khung cố định, body cuộn</td><td><code>.device</code> cao đúng bằng device. Một scroller dọc duy nhất: <code>.body</code> (nội dung dài hơn khung) hoặc <code>.body-fixed</code> (vừa khung).</td></tr>
+  <tr><td>3</td><td>Safe area là region tường minh, không phải inset</td><td>Status bar, home indicator là element thật do shell sở hữu — screen author không bao giờ tự vẽ. Map vào <code>.safeAreaInset</code>, loại khỏi capture.</td></tr>
+  <tr><td>4</td><td>Raw xuống, diễn giải lên</td><td>Bridge gửi computed style nguyên bản. Mọi diễn giải SwiftUI (role, stack, màu, <code>lineSpacing</code>) nằm ở <code>src/spec/infer.ts</code> phía parent.</td></tr>
+  <tr><td>5</td><td>Màn hình fluid mọi chiều rộng</td><td>Viết bằng token class (<code>col</code>, <code>row</code>, <code>var(--s*)</code>), không px cứng theo một device. Layout khác hẳn theo form factor thì tách màn hình riêng, không rẽ nhánh <code>if-device</code>.</td></tr>
+</table>
+
+<h2>3. Projects hiện có</h2>
+<p>Thư mục <code>project/&lt;id&gt;/</code> <strong>là</strong> registry — không cần wire hay codegen. Mỗi project: <code>project.json</code>, <code>tokens.css</code> (override), <code>screens/*.html</code>, <code>components/*.html</code>, <code>assets/**</code>.</p>
+<table>
+  <tr><th>Project</th><th>Tiêu đề</th><th>Screens</th><th>Components</th></tr>
+  <tr><td><code>calo-ai</code></td><td>Calo AI</td><td>3 (food-detail, settings, stats)</td><td>2</td></tr>
+  <tr><td><code>foundation-kit</code></td><td>Foundation Kit (bộ component chuẩn Apple)</td><td>2 (alert-demo, foundation-showcase)</td><td>15</td></tr>
+  <tr><td><code>frank-sound</code></td><td>Frank Sound</td><td>3 (collection, discover, player)</td><td>1 (app-tabs)</td></tr>
+  <tr><td><code>scratch-tablet</code></td><td>Tablet Lab</td><td>1 (library)</td><td>0</td></tr>
+  <tr><td><code>scratch-watch</code></td><td>Watch Lab</td><td>4 (activity, heart, timer, weather)</td><td>0</td></tr>
+  <tr><td><code>scratch-widget</code></td><td>Widget Lab</td><td>4 (battery, calendar, forecast, today)</td><td>0</td></tr>
+</table>
+<p>Tổng: 6 projects, 17 screens. Screen id = tên file (duy nhất toàn cục); metadata ở dòng đầu: <code>&lt;!-- pc {"title":"Home","deviceId":"widget-small"} --&gt;</code>.</p>
+
+<h2>4. Devices</h2>
+<p>Nguồn duy nhất: <code>src/frame/devices.ts</code>. Export không truyền <code>--device</code> thì mỗi màn render đúng <code>deviceId</code> trong header của nó (mặc định <code>reference</code>); truyền rồi thì <code>--device</code> thắng header.</p>
+<table>
+  <tr><th>Form</th><th>Device</th><th>Rộng (pt)</th></tr>
+  <tr><td rowspan="4">phone</td><td><code>reference</code> 390×844</td><td>390</td></tr>
+  <tr><td><code>iphone-16-pro</code></td><td>402</td></tr>
+  <tr><td><code>iphone-se</code></td><td>375</td></tr>
+  <tr><td><code>appstore-67</code> 430×932</td><td>430</td></tr>
+  <tr><td rowspan="2">tablet</td><td><code>ipad-11</code> 820×1180</td><td>820</td></tr>
+  <tr><td><code>ipad-mini</code> 744×1133</td><td>744</td></tr>
+  <tr><td>Duo</td><td><code>duo-cover</code> 466 · <code>duo-inner</code> 890</td><td>466 / 890</td></tr>
+  <tr><td>watch</td><td><code>watch-45</code> 198×242</td><td>198</td></tr>
+  <tr><td rowspan="2">widget</td><td><code>widget-small</code> 169×169</td><td>169</td></tr>
+  <tr><td><code>widget-medium</code> 360×169</td><td>360</td></tr>
+</table>
+
+<h2>5. Screen regions — shell sở hữu bands</h2>
+<p>Bạn không vẽ status bar, home indicator, navbar hay tab bar — <code>compose.ts</code> đặt chúng. Bạn khai báo <strong>nội dung</strong> của band (phone: <code>data-slot="back|title|right"</code> + nút <code>data-tab</code> + band <code>.body</code>/<code>.body-fixed</code>) hoặc cách xếp (iPad/Duo). Gutter 16pt, lưới 4/8pt, mọi element tương tác ≥ 44×44pt. Hiện chỉ band phone là shell-owned; Duo/tablet vẫn author-owned.</p>
+<p>Hai tầng kiểm tra, cả hai đều fail <code>npm run gate</code>:</p>
+<pre>npm run lint:regions    # tĩnh: band shell-owned, slot lạ, anatomy nav/tab, px device, touch floor
+npm run audit:regions   # đo thật trên Chrome: rect 44pt, một scroller, overflow, band shell, fold 50/50</pre>
+
+<h2>6. Assets — hai làn</h2>
+<table>
+  <tr><th>Làn</th><th>Nguồn</th><th>Cách dùng</th><th>Ra SwiftUI</th></tr>
+  <tr><td><strong>Icon (mask)</strong></td><td><code>public/icons/</code>, map trong <code>scripts/icons.ts</code></td><td><code>&lt;span class="icon" data-symbol="magnifyingglass"&gt;</code> — đặt tên theo SF Symbol, không theo path</td><td><code>Image(systemName:)</code> + tint</td></tr>
+  <tr><td><strong>Art (ảnh)</strong></td><td><code>project/&lt;id&gt;/assets/</code> (riêng) · <code>public/images/</code> (chung)</td><td><code>&lt;img class="art" alt="Tên"&gt;</code> — đặt tên bằng <code>alt</code>/<code>data-asset</code></td><td><code>Image("Tên")</code></td></tr>
+</table>
+<p>Glyph được inline data-URI bằng <code>npm run icons</code> (iframe sandbox chặn fetch mask). Màn hình chỉ được tham chiếu asset của đúng project mình — lint chặn URL khác project và file thiếu.</p>
+
+<h2>7. CSS → SwiftUI (subset)</h2>
+<p>Flex column/row + gap ↔ <code>VStack</code>/<code>HStack</code> 1:1 · <code>flex-grow</code> ↔ <code>.frame(maxWidth/maxHeight: .infinity)</code> · padding/border-radius/background ↔ <code>.padding</code>/<code>clipShape</code>/<code>.background</code> · <code>box-shadow</code> ↔ <code>.shadow</code> (1 shadow/chuỗi) · <code>line-height − size</code> ↔ <code>.lineSpacing</code> · <code>.icon[data-symbol]</code> ↔ <code>Image(systemName:)</code>.</p>
+<p><strong>Cố tình không hỗ trợ</strong> — extractor báo đỏ <code>Block (out of subset)</code> thay vì giả vờ: <code>display:grid</code>, <code>float</code>, <code>transform</code>, <code>clip-path</code>, filter, mọi layout không phải flexbox.</p>
+
+<h2>8. Lệnh thường dùng</h2>
+<pre>npm run dev            # board http://localhost:5273
+npm run export         # mọi màn hình → exports/*.png (khung device @2x)
+npm run export -- --project calo-ai --screen my-screen --scale 3 --full --device all
+npm run locate -- --screen my-screen --x 195 --y 640   # crop + spec JSON tại 1 điểm
+npm run screen -- add --project my-app --name my-screen --title "My Screen"
+npm run project -- add my-app
+npm run icons          # inline glyph mới từ public/icons/ vào icon-set.css
+npm run gate           # lint + audit:regions + test (cổng cuối)</pre>
+
+<h2>9. Cấu trúc mã nguồn</h2>
+<pre>project/&lt;id&gt;/          registry: project.json · tokens.css · screens/*.html · components/*.html · assets/**
+src/canvas/            Board.tsx (React Flow) · PhoneNode.tsx (1 màn = 1 node)
+src/frame/devices.ts   dữ liệu device duy nhất
+src/screens/           tokens.css (từ vựng style) · icons.css · index.ts (registry)
+src/extractor/         bridge.js (trong iframe) · compose.ts (app + script cùng gọi → export không lệch board)
+src/spec/infer.ts      nơi duy nhất biết về SwiftUI
+src/inspect/           SpecPanel (cây + bảng spec + Copy JSON)
+scripts/               export · locate · icons · new-screen/rename/delete-screen · project · lint/audit regions · tokens/subset/components lint</pre>
+
+<h2>10. Đã kiểm chứng &amp; việc tiếp theo</h2>
+<p><strong>Đã kiểm chứng trên instance chạy thật:</strong> capture 45–69 element/màn × 37 thuộc tính; chiều cao content được tôn trọng; click trong sandbox → select đúng id; export 9/9 cặp screen×device đúng pixel; icon tint từ <code>currentColor</code>, art giữ màu riêng. Ba bug thật đã bắt được khi chạy: react-flow xóa selection, check <code>WindowProxy</code> làm rơi message iframe, capture chạy trước khi iframe layout xong.</p>
+<p><strong>Ngoài phạm vi (chủ ý):</strong> sinh code SwiftUI, multi-screen flow dạng edge, persistence (board in-memory).</p>
+<p><strong>Tiếp theo:</strong> vòng lặp authoring (prompt → screen → export → critique → patch, lint gate từng vòng) · design token dạng data (panel báo <code>#007AFF = --accent</code>) · note từng element (spec thành tài liệu handoff).</p>
+
+<p class="sub">Tài liệu chi tiết: <code>README.md</code> · <code>docs/screen-regions.md</code> · <code>docs/devices.md</code> · <code>docs/research-design-tokens.md</code></p>
+
+</body>
+</html>

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" fill="none">
+  <!-- brain body -->
+  <ellipse cx="80" cy="80" rx="50" ry="45" fill="#e8445f"/>
+  <circle cx="80" cy="35" r="19" fill="#e8445f"/>
+  <circle cx="56" cy="41" r="17" fill="#e8445f"/>
+  <circle cx="104" cy="41" r="17" fill="#e8445f"/>
+  <circle cx="37" cy="56" r="16" fill="#e8445f"/>
+  <circle cx="123" cy="56" r="16" fill="#e8445f"/>
+  <circle cx="32" cy="70" r="14" fill="#e8445f"/>
+  <circle cx="128" cy="70" r="14" fill="#e8445f"/>
+  <!-- brain folds -->
+  <path d="M43 74C45 57 58 47 73 47" stroke="#d84058" stroke-width="4.5" stroke-linecap="round"/>
+  <path d="M117 74C115 57 102 47 87 47" stroke="#d84058" stroke-width="4.5" stroke-linecap="round"/>
+  <path d="M60 40q-5 10 1 19" stroke="#d84058" stroke-width="4.5" stroke-linecap="round"/>
+  <path d="M100 40q5 10-1 19" stroke="#d84058" stroke-width="4.5" stroke-linecap="round"/>
+  <path d="M80 48q4 8 0 15" stroke="#d84058" stroke-width="4.5" stroke-linecap="round"/>
+  <!-- face -->
+  <ellipse cx="62" cy="76" rx="14" ry="16" fill="#ffffff"/>
+  <ellipse cx="98" cy="76" rx="14" ry="16" fill="#ffffff"/>
+  <circle cx="62" cy="78" r="7.5" fill="#2a2140"/>
+  <circle cx="98" cy="78" r="7.5" fill="#2a2140"/>
+  <circle cx="65" cy="74" r="2.3" fill="#ffffff"/>
+  <circle cx="101" cy="74" r="2.3" fill="#ffffff"/>
+  <ellipse cx="48" cy="95" rx="7" ry="4.5" fill="#f9b3c0" opacity="0.9"/>
+  <ellipse cx="112" cy="95" rx="7" ry="4.5" fill="#f9b3c0" opacity="0.9"/>
+  <path d="M60 98A20 16 0 0 0 100 98Z" fill="#2a2140"/>
+  <ellipse cx="80" cy="107" rx="7" ry="4" fill="#f9b3c0"/>
+</svg>
