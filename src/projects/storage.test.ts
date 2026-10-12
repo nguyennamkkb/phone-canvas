@@ -330,4 +330,30 @@ describe('parseStateFile', () => {
     const raw = JSON.stringify(toStateFile('a', { v: 5, nodes: [], edges: [], removed: [], trash: [] }))
     expect(() => parseStateFile(raw, 'b')).toThrow()
   })
+
+  it('round-trips an arrangement and keeps pre-arrangement snapshots bare', () => {
+    saveBoard('pa', {
+      nodes: [],
+      edges: [],
+      removed: [],
+      trash: [],
+      arrangement: [{ name: 'onboarding', screens: ['a', 'b'] }, { screens: ['c'] }],
+    })
+    expect(loadBoard('pa')?.arrangement).toEqual([{ name: 'onboarding', screens: ['a', 'b'] }, { screens: ['c'] }])
+    // snapshots written before arrangement existed carry no field at all
+    saveBoard('ps', { nodes: [], edges: [], removed: [], trash: [] })
+    expect(loadBoard('ps')?.arrangement).toBeUndefined()
+  })
+
+  it('rejects a malformed arrangement but reads one with a bad row dropped', () => {
+    const bad = JSON.stringify({
+      v: 1,
+      projectId: 'px',
+      exportedAt: 7,
+      board: { v: 5, nodes: [], edges: [], removed: [], trash: [], arrangement: [{ screens: 'nope' }] },
+    })
+    expect(() => parseStateFile(bad, 'px')).toThrow()
+    seed('pc.board.px', bad)
+    expect(loadBoard('px')?.arrangement).toBeUndefined()
+  })
 })

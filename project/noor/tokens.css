@@ -1,0 +1,822 @@
+/* Noor (نور) — VD-001 "The Mushaf Is the Room" + VD-002 motion + VD-003 components.
+ *
+   Every colour below is the value measured in docs/Noor/Design_Direction.md
+   §5.2 (produced by references/contrast.py, repaired by references/tune.py).
+   Nothing here was chosen by eye. The measured ratio sits in the comment so
+   the handoff can re-verify it.
+ *
+   DEVIATIONS from VD-001, declared at the source:
+   - Two families, as specified. The display serif is an iOS/macOS system
+     stack: 'Iowan Old Style' is not loadable in the browser preview. SwiftUI
+     applies .custom("Cormorant Garamond" / whatever the brand finalises) at
+     handoff; the *sizes* below are the contract, not the family name.
+ *   - Uthmani Arabic falls back to the system naskh stack in the preview.
+     SwiftUI applies .custom("KFGQPC Uthmanic Script HAFS") at handoff.
+ *   - The Now Playing bar uses a SOLID surface, not the specified 82%
+     translucency + 20pt blur: `backdrop-filter` is outside the board's
+     SwiftUI-mappable subset and the gate rejects it. VD-001 §5.5 lists
+     translucent as Now-Playing-only and Reduce Transparency resolving to
+     solid `surface`, so the solid form is a sanctioned state of that token.
+ *   - The brass arc is drawn as a linear track+fill rather than a stroked
+ *   circle: `border-radius` on an offset element is fine, but an SVG arc is
+ *   out of subset. Semantics are unchanged — one accent fill = progress
+ *   through a known quantity.
+ */
+
+/* ==========================================================================
+ * 1. LIGHT — surfaces and text first (semantic), palette after.
+ *    Ratios are measured against the surface named in each comment.
+ * ========================================================================== */
+:root {
+  /* ---- surfaces ---- */
+  --bg: #f5efe1;              /* warm cream canvas — never pure white */
+  /* The inset fill sits a step UP from the canvas, not down. A darker inset
+     measured brass at 4.20:1 — below the 4.5:1 body-text floor — so the
+     whole family moved lighter until every text colour clears AA on it. */
+  --bg-grouped: #f8f2e5;     /* brass 4.63:1 · label-2 5.56:1 · label-3 3.20:1 */
+  --surface: #fdfaf3;        /* raised plane (elevation 1) */
+  --surface-2: #f7f2e6;      /* inner tint inside a raised plane */
+
+  /* ---- text ---- */
+  --label: #2a2622;          /* text-primary — 13.09:1 on --bg */
+  --label-2: #6b5f52;        /* text-secondary — 5.41:1 on --bg */
+  --label-3: #8e8778;        /* tertiary / inactive glyph — 3.42:1 on --surface */
+  --on-primary: #f7f2e7;     /* on a --primary plane — 9.10:1 on #2c4739 */
+
+  /* ---- semantic action ---- */
+  --primary: #2c4739;        /* deep forest green — 8.86:1 on --bg */
+  --primary-deep: #1f3529;   /* 11.76:1 on --bg */
+  --primary-soft: rgba(44, 71, 57, 0.10);
+  --accent: #88682e;         /* brass — 4.50:1 on --bg; the ONLY warm hue
+                                permitted to carry text or icons */
+  --accent-soft: rgba(136, 104, 46, 0.12);
+  --brass: #c8a165;          /* accent-bright — 2.10:1 on --bg, ORNAMENT ONLY
+                                in light mode. Never a control, never text. */
+  --disabled: #8d867a;       /* 3.15:1 on --bg · 3.46:1 on --surface. Darkened
+                                from the doc's #969086, which cleared 3:1 on
+                                --surface but not on the canvas — a disabled
+                                glyph on a screen background is still a
+                                perceivable control edge. */
+  --separator: #d8cfbe;
+  --edge: #8e8778;           /* border-strong — 3.42:1 on --surface; the only
+                                border allowed to carry meaning */
+  --fill: rgba(44, 71, 57, 0.06);
+
+  /* ---- the raw palette this system is built from ---- */
+  --cream: #f5efe1;
+  --paper: #fdfaf3;
+  --forest: #2c4739;
+  --forest-deep: #1f3529;
+  --moss: #5e9476;
+  --brass-deep: #88682e;
+  --brass-light: #d9b87c;
+  --taupe: #6b5f52;
+  --veil: rgba(200, 161, 101, 0.16);   /* ornament wash */
+
+  /* ---- shadow + scrim ---- */
+  --nr-shadow-sm: 0 2px 10px rgba(26, 20, 14, 0.08);
+  --nr-shadow-lg: 0 6px 24px rgba(26, 20, 14, 0.14);
+  --nr-scrim: rgba(26, 20, 14, 0.40);
+}
+
+/* ==========================================================================
+ * 2. DARK — a first-class token set, not an inversion. Every ratio was
+ *    measured independently; no light value is carried across. Note
+ *    --brass is the one token whose ROLE changes: ornament-only in light
+ *    (2.10:1), text-capable in dark (10.20:1).
+ * ========================================================================== */
+:root[data-theme='dark'] {
+  --bg: #16211b;
+  --bg-grouped: #24332a;
+  --surface: #1e2c24;
+  --surface-2: #1a2620;
+
+  --label: #f2ede2;          /* 14.19:1 on --bg */
+  --label-2: #b3a897;        /* 7.07:1 on --bg */
+  --label-3: #6e7f73;        /* 3.43:1 on --surface */
+  --on-primary: #12201a;     /* 7.37:1 on #7fb894 */
+
+  --primary: #7fb894;
+  --primary-deep: #5e9476;
+  --primary-soft: rgba(127, 184, 148, 0.14);
+  --accent: #d9b87c;         /* 8.76:1 on --bg */
+  --accent-soft: rgba(217, 184, 124, 0.14);
+  --brass: #e3c88f;          /* 10.20:1 on --bg — text-capable in dark */
+  --disabled: #76857a;       /* 4.27:1 on --bg · 3.42:1 on --bg-grouped */
+  --separator: #3a4a40;
+  --edge: #6e7f73;
+  --fill: rgba(242, 237, 226, 0.08);
+
+  --cream: #16211b;
+  --paper: #1e2c24;
+  --forest: #7fb894;
+  --forest-deep: #5e9476;
+  --brass-deep: #d9b87c;
+  --brass-light: #e3c88f;
+  --taupe: #b3a897;
+  --veil: rgba(227, 200, 143, 0.14);
+
+  --nr-shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.40);
+  --nr-shadow-lg: 0 6px 24px rgba(0, 0, 0, 0.55);
+  --nr-scrim: rgba(0, 0, 0, 0.60);
+}
+
+/* ==========================================================================
+ * 3. SCALES — modeless, never duplicated in the dark block.
+ *    4pt grid. Screen margin 20pt, section gap 24pt, card padding 16pt.
+ *    Type sizes are VD-001 §5.1 exactly.
+ * ========================================================================== */
+:root {
+  /* radii — soft and organic, no sharp corner anywhere */
+  --nr-r-sm: 10px;      /* chips, inline badges, icon tiles */
+  --nr-r-md: 18px;      /* rows, inputs, list cards */
+  --nr-r-lg: 26px;      /* primary cards, sheets */
+  --nr-r-pill: 999px;   /* buttons, segmented controls */
+
+  /* type — display serif for wordmark / titles / numerals, humanist sans
+     for body and controls. Two families maximum, enforced. */
+  --nr-font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+  --nr-font-arabic: 'SF Arabic', 'Geeza Pro', 'Al Bayan', 'Noto Naskh Arabic', 'Times New Roman', serif;
+
+  --nr-t-display: 40px;   /* wordmark + onboarding only; never above the reader */
+  --nr-t-hero: 28px;      /* pushed-workspace title */
+  --nr-t-title: 20px;     /* card + section heading */
+  --nr-t-verse: 26px;     /* Uthmani floor; holds at AX1, does not scale */
+  --nr-t-verse-sm: 20px;  /* lowest legible Uthmani */
+  --nr-t-numeric: 34px;   /* serif numerals for progress quantities */
+
+  /* fixed measures that belong to a COMPONENT, not to a device */
+  --nr-tile: 88px;        /* COMP / IconTile */
+  --nr-nowbar-h: 64px;    /* COMP / NowPlayingBar */
+  --nr-transport: 44px;   /* COMP / TransportButton */
+  --nr-arch-min-h: 120px; /* COMP / ArchPanel — VD-001 §5.9 "min 120pt height" */
+  --nr-arch-crown: 168px; /* COMP / ArchPanel — the dome's rise. Fixed rather
+                              than a percentage so the silhouette is the SAME
+                              shape at every verse length; a percentage crown
+                              stretches with the text and the arch stops reading
+                              as one ornament. */
+  --nr-preview-h: 224px;  /* FS-008 preview region — FIXED, not content-sized:
+                             raising the text size must never push the controls
+                             out from under the thumb (FS-008 §3.1). Sized for
+                             the largest Uthmani tier over three rendered
+                             lines, so no tier clips. */
+
+  /* --- audio family (FS-012 … FS-016) ---
+     Declared ONCE here, before those screens were built, because all five
+     compose the same four components. Adding them per-screen meant five
+     near-identical rules fighting over one file. */
+  --nr-cover-lg: 160px;    /* COMP / artwork on the expanded player */
+  --nr-transport-lg: 72px; /* the play/pause target — well past the 44pt floor,
+                              because it is the screen's primary action */
+  --nr-seek-h: 8px;        /* COMP / ProgressBar is 8pt in both orientations */
+  --nr-seek-thumb: 20px;   /* the knob on a seek bar; ≥ the 44pt hit region is
+                              guaranteed by the padded row that wraps it */
+}
+
+/* ==========================================================================
+ * 4b. AUDIO VOCABULARY — shared by FS-012 … FS-016
+ *     VD-001 §5.9 registers these as components; they ship here because five
+ *     screens in one domain draw the same transport, stepper and timer.
+ * ========================================================================== */
+
+/* --- COMP / TransportButton — 44pt floor; the player's primary is larger --- */
+.nr-transport {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--nr-transport);
+  height: var(--nr-transport);
+  border: 0;
+  border-radius: var(--nr-r-pill);
+  background: transparent;
+  color: var(--primary);
+  cursor: pointer;
+}
+.nr-transport.is-lg {
+  width: var(--nr-transport-lg);
+  height: var(--nr-transport-lg);
+  background: var(--primary);
+  color: var(--on-primary);
+  box-shadow: var(--nr-shadow-sm);
+}
+/* the artwork on the expanded player — full colour, so an <img class="art"> */
+.nr-cover-lg {
+  flex: 0 0 auto;
+  width: var(--nr-cover-lg);
+  height: var(--nr-cover-lg);
+  border-radius: var(--nr-r-lg);
+  box-shadow: var(--nr-shadow-lg);
+}
+
+/* --- COMP / SeekBar — a padded row so the 20pt thumb keeps a 44pt hit --- */
+.nr-seek {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 0 0 auto;
+  width: 100%;
+  min-height: var(--touch-min);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.nr-seek-track {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: var(--nr-seek-h);
+  border-radius: var(--nr-r-pill);
+  background: var(--bg-grouped);
+}
+.nr-seek-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: var(--nr-seek-h);
+  border-radius: var(--nr-r-pill);
+  background: var(--accent);
+}
+/* the knob. Positioned with left/margin, never a transform: a transform is
+   invisible to the layout engine and the spec would report the wrong box. */
+.nr-seek-thumb {
+  position: absolute;
+  top: -6px;
+  width: var(--nr-seek-thumb);
+  height: var(--nr-seek-thumb);
+  margin-left: -10px;
+  border-radius: var(--nr-r-pill);
+  background: var(--primary);
+}
+
+/* --- COMP / Stepper — 44×44 per step, per VD-001 §5.9. Used by FS-014 --- */
+.nr-stepper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  flex: 0 0 auto;
+}
+.nr-stepper-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border: 0;
+  border-radius: var(--nr-r-pill);
+  background: var(--bg-grouped);
+  color: var(--primary);
+  cursor: pointer;
+}
+.nr-stepper-btn.is-quiet {
+  background: transparent;
+  color: var(--label-2);
+}
+/* the value between the two steps, in the serif numeral role */
+.nr-stepper-val {
+  font-family: var(--nr-font-display);
+  font-size: var(--nr-t-title);
+  font-weight: 600;
+  line-height: 26px;
+  min-width: var(--nr-tile);
+  text-align: center;
+  color: var(--label);
+}
+
+/* --- COMP / SettingRow — a label that always names its current value.
+     VD-001 §5.3: every control states its current value (F10 trust surface). --- */
+.nr-setting {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  flex: 0 0 auto;
+  width: 100%;
+  min-height: var(--touch-min);
+  padding: var(--s3) var(--s4);
+  border: 0;
+  border-radius: var(--nr-r-md);
+  background: transparent;
+  color: var(--label);
+  font-family: var(--font);
+  font-size: var(--t-body);
+  text-align: left;
+  cursor: pointer;
+}
+.nr-setting.is-on {
+  background: var(--surface);
+  box-shadow: var(--nr-shadow-sm);
+}
+.nr-setting-val {
+  font-size: var(--t-footnote);
+  line-height: 18px;
+  color: var(--label-2);
+}
+/* a value that is ON: brass, and paired with a glyph so it is never colour-alone */
+.nr-setting-val.is-on {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+ * 4. COMPONENT VOCABULARY — nr-*
+ *    One class per COMP / entry in VD-001 §5.9. Every container maps to a
+ *    SwiftUI stack; no decorative wrappers.
+ * ========================================================================== */
+
+/* --- typography roles (VD-001 §5.1) --- */
+.nr-display {
+  font-family: var(--nr-font-display);
+  font-size: var(--nr-t-display);
+  font-weight: 600;
+  line-height: 46px;
+  letter-spacing: -0.6px;
+}
+.nr-hero {
+  font-family: var(--nr-font-display);
+  font-size: var(--nr-t-hero);
+  font-weight: 600;
+  line-height: 34px;
+  letter-spacing: -0.4px;
+}
+.nr-title {
+  font-family: var(--nr-font-display);
+  font-size: var(--nr-t-title);
+  font-weight: 600;
+  line-height: 26px;
+  letter-spacing: -0.2px;
+}
+.nr-numeric {
+  font-family: var(--nr-font-display);
+  font-size: var(--nr-t-numeric);
+  font-weight: 600;
+  line-height: 40px;
+  letter-spacing: -0.5px;
+}
+.nr-verse {
+  font-family: var(--nr-font-arabic);
+  font-size: var(--nr-t-verse);
+  font-weight: 400;
+  line-height: 46px;
+  direction: rtl;
+  text-align: right;
+}
+.nr-verse-sm {
+  font-family: var(--nr-font-arabic);
+  font-size: var(--nr-t-verse-sm);
+  font-weight: 400;
+  line-height: 36px;
+  direction: rtl;
+  text-align: right;
+}
+/* the ayah-number marker: an ornament, never the carrier of meaning */
+.nr-mark {
+  font-family: var(--nr-font-arabic);
+  font-size: var(--nr-t-verse-sm);
+  line-height: 36px;
+  color: var(--accent);
+}
+.nr-eyebrow {
+  font-size: var(--t-caption);
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* --- COMP / PillButton --- */
+.nr-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  flex: 0 0 auto;
+  min-height: var(--touch-min);
+  height: 56px;
+  padding: 0 var(--s6);
+  border: 0;
+  border-radius: var(--nr-r-pill);
+  background: var(--primary);
+  color: var(--on-primary);
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 600;
+  cursor: pointer;
+}
+.nr-btn.is-quiet {
+  background: transparent;
+  color: var(--primary);
+  border: 1px solid var(--edge);
+}
+.nr-btn.is-block {
+  width: 100%;
+}
+/* a square transport / icon control — 44 x 44 floor, never smaller */
+.nr-icon-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border: 0;
+  border-radius: var(--nr-r-pill);
+  background: transparent;
+  color: var(--primary);
+  cursor: pointer;
+}
+.nr-icon-btn.is-on {
+  background: var(--primary-soft);
+  color: var(--accent);
+}
+.nr-icon-btn.is-quiet {
+  color: var(--label-2);
+}
+
+/* --- COMP / IconTile --- */
+.nr-tile {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--nr-tile);
+  height: var(--nr-tile);
+  border-radius: var(--nr-r-sm);
+  background: var(--surface);
+  color: var(--accent);
+}
+.nr-tile.is-sm {
+  width: var(--touch-min);
+  height: var(--touch-min);
+}
+.nr-tile.is-plain {
+  background: var(--bg-grouped);
+  color: var(--label-2);
+}
+
+/* --- COMP / ContentCard (elevation 1: tone + shadow, NO border) --- */
+.nr-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  flex: 0 0 auto;
+  padding: var(--s4);
+  border: 0;
+  border-radius: var(--nr-r-lg);
+  background: var(--surface);
+  box-shadow: var(--nr-shadow-sm);
+}
+.nr-card.is-quiet {
+  background: var(--bg-grouped);
+  box-shadow: none;
+}
+
+/* --- COMP / ArchPanel — the ONE ornate container in the whole system -------
+   EI-004 rations this to a single framing job: the verse-aligned translation,
+   set directly beneath the verse it explains. It appears on exactly one surface
+   at a time and nowhere else in the app, so this class is the only place
+   ornament is allowed to exist at all. A screen that wants ornament anywhere
+   else has a design bug, not a missing class.
+
+   The silhouette is a domed mihrab: a full-width elliptical crown over a soft
+   base, built from TWO stacked rounded planes rather than one bordered box.
+   A pointed ogee apex is not expressible here — `clip-path` and inline SVG are
+   outside the board's SwiftUI-mappable subset — and stacked radii are exactly
+   what SwiftUI reproduces (UnevenRoundedRectangle, top corners only), so the
+   shape survives the handoff rather than being a web-only trick.
+
+   Sizing is VD-001 §5.9 verbatim: fluid — width by parent, min 120pt height.
+
+   Two rules keep it honest rather than merely decorative:
+     · the OUTER plane is the brass wash, not a plane of its own. An ornament
+       this large stops reading as ornament the moment it becomes a field.
+     · the single hairline sits on the INNER plane's edge — the arch's inner
+       edge, VD-001 §5.6 tertiary ornament — and it is an inset shadow, not a
+       border. "No card borders" is a system rule, and a hairline nobody is
+       meant to read must never arrive as a stroke. */
+.nr-arch {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  width: 100%;
+  min-height: var(--nr-arch-min-h);
+  padding: var(--s3);
+  border: 0;
+  /* 42% horizontal leaves a real straight JAMB each side before the vault
+     starts; a 50% radius has no jamb at all and the panel reads as a rounded
+     card, not a niche. The base takes radius-sm rather than radius-lg so the
+     dome stands on a plinth — a round bottom turns the whole silhouette into
+     a tombstone. */
+  border-radius: 42% 42% var(--nr-r-sm) var(--nr-r-sm)
+    / var(--nr-arch-crown) var(--nr-arch-crown) var(--nr-r-sm) var(--nr-r-sm);
+  background: var(--veil);
+}
+/* the interior plane: the verse sits on THIS, never on the wash */
+.nr-arch-plane {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--s2);
+  flex: 1 1 auto;
+  width: 100%;
+  /* The crown is padding, so no text ever lands in the arch's shoulder where
+     the wash would show through — but it must NOT be the full crown: at
+     `crown - s10` the content sat on the plinth and left a void above it, so
+     the niche read as a tombstone with a caption rather than a framed verse.
+     A little over half the crown centres the verse in the visible dome. */
+  padding: calc(var(--nr-arch-crown) * 0.55) var(--s4) var(--s4);
+  border-radius: inherit;
+  background: var(--surface);
+  /* The moulding is a full ring, not an inset shadow: `inset 0 0 0 1px`
+     follows the parent's ELLIPTICAL radius and got clipped asymmetrically —
+     visible down the right jamb, absent on the left, which read as a
+     rendering fault rather than ornament. An outset shadow traces the box it
+     is applied to, so the ring closes on every side. */
+  box-shadow: 0 0 0 1px var(--brass);
+}
+
+/* --- COMP / SearchField — EI-005's whole thesis is that a half-remembered
+   reference should feel findable within ONE gesture, so this is a full-width
+   field that is simply READY, not a small icon in a corner the user has to
+   find first. 44pt floor, never wrapped, and pinned wherever it is used so it
+   survives the list moving under it. */
+.nr-search {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s2);
+  flex: 0 0 auto;
+  width: 100%;
+  min-height: var(--touch-min);
+  padding: 0 var(--s4);
+  border: 0;
+  border-radius: var(--nr-r-md);
+  background: var(--bg-grouped);
+  color: var(--label-2);
+  font-family: var(--font);
+  font-size: var(--t-body);
+  text-align: left;
+  cursor: pointer;
+}
+/* Active: the field is live and focused, so it lifts onto the raised plane
+   rather than staying the ambient inset. Same modifier name as `.nr-icon-btn`,
+   `.nr-row` and `.nr-mode` — a state reads the same way everywhere. */
+.nr-search.is-on {
+  background: var(--surface);
+}
+
+/* --- COMP / ListRow --- */
+.nr-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  flex: 0 0 auto;
+  min-height: var(--touch-min);
+  width: 100%;
+  padding: var(--s3) var(--s4);
+  border: 0;
+  border-radius: var(--nr-r-md);
+  background: transparent;
+  color: var(--label);
+  font-family: var(--font);
+  font-size: var(--t-body);
+  text-align: left;
+  cursor: pointer;
+}
+.nr-row.is-on {
+  background: var(--surface);
+  box-shadow: var(--nr-shadow-sm);
+}
+.nr-row.is-plain {
+  cursor: default;
+}
+.nr-row-title {
+  font-size: var(--t-body);
+  font-weight: 600;
+  line-height: 22px;
+}
+.nr-row-sub {
+  font-size: var(--t-footnote);
+  line-height: 18px;
+  color: var(--label-2);
+}
+
+/* --- COMP / SegmentedControl — the Read / Listen / Memorize switcher --- */
+.nr-modes {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2px;
+  flex: 0 0 auto;
+  padding: 3px;
+  border-radius: var(--nr-r-pill);
+  background: var(--bg-grouped);
+}
+.nr-mode {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: var(--touch-min);
+  padding: 0 var(--s2);
+  border: 0;
+  border-radius: var(--nr-r-pill);
+  background: transparent;
+  color: var(--label-2);
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  font-weight: 600;
+  cursor: pointer;
+}
+.nr-mode.is-on {
+  background: var(--surface);
+  color: var(--primary);
+  box-shadow: var(--nr-shadow-sm);
+}
+
+/* --- COMP / ReadingPlane — elevation 0, no gradient, no scrim, no float --- */
+.nr-plane {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: var(--s2) 0;
+}
+/* one COMP / VerseRow — padded to the 44pt floor regardless of line count */
+.nr-verse-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  flex: 0 0 auto;
+  width: 100%;
+  min-height: var(--touch-min);
+  padding: var(--s4) var(--s5);
+  border: 0;
+  border-radius: var(--nr-r-md);
+  background: transparent;
+  color: var(--label);
+  text-align: left;
+  cursor: pointer;
+}
+/* EI-001: the lit verse is the only fully lit thing on the surface */
+.nr-verse-row.is-lit {
+  background: var(--primary);
+  color: var(--on-primary);
+  box-shadow: var(--nr-shadow-lg);
+}
+.nr-verse-row.is-lit .nr-mark,
+.nr-verse-row.is-lit .nr-row-sub {
+  color: var(--on-primary);
+}
+.nr-verse-tools {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s2);
+}
+
+/* the last-read marker (RARE: faint, never animated) */
+.nr-marker {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s2);
+  flex: 0 0 auto;
+}
+.nr-marker-rule {
+  flex: 1 1 auto;
+  height: 1px;
+  background: var(--separator);
+}
+
+/* --- the one scroller on a screen that has a pinned band below it ---
+   A `.col` that fills the leftover height and scrolls. `nr-scroll` is named
+   separately because it is the ONE place a screen may declare a scroller
+   inside its band: the shell's band contract allows one scroll region per
+   screen, and this is it.
+
+   The scrollbar is hidden because the board renders a persistent macOS
+   scrollbar track that reads as a stray grey stripe beside the content in an
+   exported frame. SwiftUI's ScrollView shows no such artifact, so hiding it
+   makes the export match the target rather than diverge from it. */
+.nr-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.nr-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* --- COMP / NowPlayingBar — the ONE permitted persistent chrome element --- */
+.nr-nowbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  flex: 0 0 auto;
+  width: 100%;
+  min-height: var(--nr-nowbar-h);
+  padding: var(--s2) var(--s4);
+  border: 0;
+  border-radius: var(--nr-r-lg);
+  background: var(--surface);
+  box-shadow: var(--nr-shadow-lg);
+  color: var(--label);
+  font-family: var(--font);
+  text-align: left;
+  cursor: pointer;
+}
+.nr-cover {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--nr-r-sm);
+}
+.nr-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.nr-meta-title {
+  font-size: var(--t-subhead);
+  font-weight: 600;
+  line-height: 20px;
+}
+.nr-meta-sub {
+  font-size: var(--t-caption);
+  line-height: 16px;
+  color: var(--label-2);
+}
+
+/* --- COMP / ProgressBar — the brass arc's linear sibling. 8pt track. --- */
+.nr-track {
+  display: flex;
+  flex-direction: row;
+  flex: 0 0 auto;
+  width: 100%;
+  height: 8px;
+  border-radius: var(--nr-r-pill);
+  background: var(--bg-grouped);
+  overflow: hidden;
+}
+.nr-fill {
+  flex: 0 0 auto;
+  height: 8px;
+  border-radius: var(--nr-r-pill);
+  background: var(--accent);
+}
+
+/* --- COMP / PrivacyDisclosure — label over value, fact outranks navigation --- */
+.nr-fact {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--s3);
+  flex: 0 0 auto;
+  width: 100%;
+  padding: var(--s3) 0;
+}
+.nr-fact-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.nr-fact-label {
+  font-size: var(--t-body);
+  line-height: 22px;
+}
+.nr-fact-value {
+  font-size: var(--t-caption);
+  line-height: 16px;
+  color: var(--label-2);
+}
+
+/* --- the ornament band: a flat wash the art sits on, never behind text --- */
+.nr-ornament {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 100%;
+  padding: var(--s6) 0;
+}

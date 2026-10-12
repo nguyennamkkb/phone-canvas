@@ -30,7 +30,7 @@ npm run export -- --device ipad-11 --full --theme dark   # --full = whole page, 
 npm run export -- --list          # ids, titles, devices
 npm run locate -- --screen my-screen --x 195 --y 640 [--pad 32 --scale 2 --device iphone-se --theme dark]
 npm run locate -- --screen my-screen --box 16,155,358,168 [--pad-pct 0.1] [--ancestors 1] [--children]
-npm run project -- freeze <id>   # write project/<id>/board.json seed (scripts/board-freeze.ts; keeps the old file as .bak)
+npm run project -- freeze <id> [--order a,b,c] [--row-size N] [--rows "a,b;c,d"] [--row-names "A;B"] [--sort alpha] [--dry-run]   # seed with rows (recipe: recipes/board-arrange.md)
 npm run scan:projects            # print the registry both readers see (scripts/scan-projects.ts)
 npm run preview                  # vite preview (static host, no rewrite rules needed)
 npm run export:icons -- --project <id>   # that project's glyphs → project/<id>/exports/icons/
@@ -144,8 +144,12 @@ To move a board between machines or recover from a wiped cache:
 
 `npm run project -- freeze <id>` writes a board snapshot in the exact
 `ProjectStateFile` shape `parseStateFile` validates (`scripts/board-freeze.ts`,
-`src/projects/storage.ts`) — positions use the same `nextSlotX` rule as the
-board (gap 120), and an existing `board.json` is kept as `board.json.bak` first.
+`src/projects/storage.ts`) — positions use the same `layoutRows` rule as the
+board (gap 120 ngang, 160 dọc), and an existing `board.json` is kept as `board.json.bak` first.
+Rows: `--rows "a,b;c,d"` (hàng显式), `--order` + `--row-size N` (cắt đều),
+`--row-names` (tên nhóm), `--sort alpha` (hành vi một hàng alphabet cũ),
+`--dry-run` (in hàng + tọa độ, không ghi). Id lạ → exit 1, không ghi gì.
+Full recipe: `recipes/board-arrange.md`.
 On mount the board `fetch`es it once per project (`seedBoard`) and applies it
 **only when it is newer than the saved record** — localStorage wins, always. It
 seeds, it never replaces Xuất/Nhập.

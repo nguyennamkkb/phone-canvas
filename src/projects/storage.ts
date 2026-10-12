@@ -61,10 +61,23 @@ export type TrashEntry = {
   deletedAt: number
 }
 
+export type ArrangementRow = {
+  /** group label (e.g. "onboarding") — display only, never affects coordinates */
+  name?: string
+  /** screen ids left-to-right in this row */
+  screens: string[]
+}
+
 export type BoardSnapshot = {
   v: 5
   nodes: BoardNode[]
   edges: Edge[]
+  /**
+   * Row model the positions were derived from (board-arrangement).
+   * Absent on pre-arrangement snapshots — readers keep those verbatim
+   * and never re-derive. Present means "last applied arrangement".
+   */
+  arrangement?: ArrangementRow[]
   /**
    * Screen ids deliberately taken off this board. Without it, reconciliation
    * on open would put back every screen the user deleted.
@@ -114,7 +127,7 @@ function safeDel(key: string): void {
 
 function validNodesEdges(
   parsed: { nodes?: unknown; edges?: unknown; savedAt?: unknown },
-): parsed is { nodes: BoardNode[]; edges: Edge[]; removed?: unknown; trash?: unknown; savedAt?: number } {
+): parsed is { nodes: BoardNode[]; edges: Edge[]; removed?: unknown; trash?: unknown; arrangement?: unknown; savedAt?: number } {
   if (!parsed || !Array.isArray(parsed.nodes) || !Array.isArray(parsed.edges)) return false
   // minimal shape check — a corrupt entry falls back to fresh layout
   return (parsed.nodes as unknown[]).every((n) => n !== null && typeof n === 'object' && typeof (n as { id?: unknown }).id === 'string' && 'data' in (n as object))
@@ -133,6 +146,20 @@ function validTrashEntry(e: unknown): e is TrashEntry {
   return true
 }
 
+function validArrangementRow(r: unknown): r is ArrangementRow {
+  if (!r || typeof r !== 'object') return false
+  const row = r as Record<string, unknown>
+  if (row.name !== undefined && typeof row.name !== 'string') return false
+  return Array.isArray(row.screens) && (row.screens as unknown[]).every((s) => typeof s === 'string')
+}
+
+/** keep well-formed rows, drop the rest (localStorage read path is lenient) */
+function sanitizeArrangement(raw: unknown): ArrangementRow[] | undefined {
+  if (raw === undefined || !Array.isArray(raw)) return undefined
+  const good = (raw as unknown[]).filter(validArrangementRow)
+  return good.length > 0 ? (good as ArrangementRow[]) : undefined
+}
+
 /** One read + normalise of the single record. v1..v4 payloads never carried
  *  `savedAt`, so they read as 0 — older than any artifact or marker, which is
  *  exactly the intent: a record without a clock cannot claim to be newer. */
@@ -147,6 +174,7 @@ function readRecord(
       edges?: unknown
       removed?: unknown
       trash?: unknown
+      arrangement?: unknown
       savedAt?: unknown
     }
     if (!validNodesEdges(parsed)) {
@@ -166,14 +194,17 @@ function readRecord(
       }
       trash = good
     }
+    const snapshot: BoardSnapshot = {
+      v: 5,
+      nodes: parsed.nodes as BoardNode[],
+      edges: parsed.edges as Edge[],
+      removed,
+      trash,
+    }
+    const arrangement = sanitizeArrangement(parsed.arrangement)
+    if (arrangement) snapshot.arrangement = arrangement
     return {
-      snapshot: {
-        v: 5,
-        nodes: parsed.nodes as BoardNode[],
-        edges: parsed.edges as Edge[],
-        removed,
-        trash,
-      },
+      snapshot,
       savedAt: typeof parsed.savedAt === 'number' ? parsed.savedAt : 0,
     }
   } catch {
@@ -244,19 +275,17 @@ export function loadBoard(projectId: string): BoardSnapshot | null {
 
 export function saveBoard(
   projectId: string,
-  snapshot: { nodes: BoardNode[]; edges: Edge[]; removed: string[]; trash?: TrashEntry[] },
+  snapshot: { nodes: BoardNode[]; edges: Edge[]; removed: string[]; trash?: TrashEntry[]; arrangement?: ArrangementRow[] },
 ): void {
-  saveRecord(
-    projectId,
-    {
-      v: 5,
-      nodes: snapshot.nodes,
-      edges: snapshot.edges,
-      removed: snapshot.removed,
-      trash: snapshot.trash ?? [],
-    },
-    Date.now(),
-  )
+  const record: BoardSnapshot = {
+    v: 5,
+    nodes: snapshot.nodes,
+    edges: snapshot.edges,
+    removed: snapshot.removed,
+    trash: snapshot.trash ?? [],
+  }
+  if (snapshot.arrangement) record.arrangement = snapshot.arrangement
+  saveRecord(projectId, record, Date.now())
 }
 
 /* ------------------------------------------------- project state file -- */
@@ -311,6 +340,11 @@ function validBoardSnapshot(b: unknown): b is BoardSnapshot {
   if (s.removed !== undefined && !Array.isArray(s.removed)) return false
   if (s.trash !== undefined && !Array.isArray(s.trash)) return false
   if (Array.isArray(s.trash) && !(s.trash as unknown[]).every(validTrashEntry)) return false
+  // arrangement is optional (pre-arrangement snapshots lack it); when present
+  // every row must be well-formed so an agent-written seed fails fast
+  if (s.arrangement !== undefined) {
+    if (!Array.isArray(s.arrangement) || !(s.arrangement as unknown[]).every(validArrangementRow)) return false
+  }
   return true
 }
 
@@ -331,19 +365,21 @@ export function parseStateFile(raw: string, expectedProjectId?: string): Project
   if (typeof p.exportedAt !== 'number') throw new Error('File thiếu exportedAt.')
   if (!validBoardSnapshot(p.board)) throw new Error('Phần board trong file không hợp lệ.')
   const b = p.board as BoardSnapshot
+  const board: BoardSnapshot = {
+    v: 5,
+    nodes: b.nodes,
+    edges: b.edges,
+    removed: Array.isArray(b.removed)
+      ? (b.removed as unknown[]).filter((x): x is string => typeof x === 'string')
+      : [],
+    trash: Array.isArray(b.trash) ? (b.trash as TrashEntry[]).filter(validTrashEntry) : [],
+  }
+  if (b.arrangement) board.arrangement = b.arrangement
   return {
     v: 1,
     projectId: p.projectId as string,
     exportedAt: p.exportedAt as number,
-    board: {
-      v: 5,
-      nodes: b.nodes,
-      edges: b.edges,
-      removed: Array.isArray(b.removed)
-        ? (b.removed as unknown[]).filter((x): x is string => typeof x === 'string')
-        : [],
-      trash: Array.isArray(b.trash) ? (b.trash as TrashEntry[]).filter(validTrashEntry) : [],
-    },
+    board,
   }
 }
 

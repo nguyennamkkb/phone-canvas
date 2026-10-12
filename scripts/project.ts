@@ -18,7 +18,7 @@ import { mkdir, rm, stat, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
 import { ROOT, scanProjects } from './scan-projects.ts'
-import { writeBoardFreeze } from './board-freeze.ts'
+import { parseRowsFlag, writeBoardFreeze } from './board-freeze.ts'
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 
@@ -30,7 +30,8 @@ function usage() {
       '  npm run project -- add <id> [--title "Title"] [--description "…"]',
       '  npm run project -- remove <id> [--force]',
       '  npm run project -- freeze <id>              # write project/<id>/board.json layout seed',
-      '  npm run project -- list',
+      '           [--order a,b,c] [--row-size N] [--rows "a,b;c,d"] [--row-names "A;B"]',
+      '           [--sort alpha] [--dry-run]         # rows left-to-right, top-to-bottom',
       '',
       `  folders live in project/<id>/ — screens/, components/, tokens.css, assets/`,
     ].join('\n'),
@@ -51,8 +52,8 @@ function parse(argv) {
       usage()
       process.exit(0)
     }
-    if (a === '--force') {
-      flags.force = true
+    if (a === '--force' || a === '--dry-run') {
+      flags[a.slice(2)] = true
       continue
     }
     if (a.startsWith('--')) {
@@ -140,7 +141,18 @@ async function main() {
     if (!id) fail('freeze needs an id')
     // board.json is a layout seed only: the board still loads localStorage
     // first and reads this file solely when no saved state exists.
-    const file = await writeBoardFreeze(id).catch((e) => fail(e instanceof Error ? e.message : String(e)))
+    // (parseRowsFlag comes from the static import above — no dynamic load)
+    const rowSize = flags['row-size'] !== undefined ? Number(flags['row-size']) : undefined
+    if (flags['row-size'] !== undefined && !Number.isInteger(rowSize)) fail('--row-size needs an integer >= 1')
+    const file = await writeBoardFreeze(id, {
+      order: flags.order ? String(flags.order).split(',').map((s) => s.trim()).filter(Boolean) : undefined,
+      rowSize,
+      rows: flags.rows ? parseRowsFlag(String(flags.rows)) : undefined,
+      rowNames: flags['row-names'] ? String(flags['row-names']).split(';').map((s) => s.trim()) : undefined,
+      sort: flags.sort === 'alpha' ? 'alpha' : undefined,
+      dryRun: Boolean(flags['dry-run']),
+    }).catch((e) => fail(e instanceof Error ? e.message : String(e)))
+    if (flags['dry-run']) return
     const rel = path.relative(ROOT, file)
     console.log(`froze ${rel}`)
     console.log('note: board loads localStorage first; board.json seeds empty boards only')
