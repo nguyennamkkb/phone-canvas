@@ -1,0 +1,44 @@
+<!-- pc {"title":"KB1 · 2a Carousel Mirror"} -->
+<style>
+/* T1 – Carousel có peek: thẻ ảnh 3:4 hiện tại + mép thẻ kề (gợi ý vuốt).
+   Chip trên ảnh do app render (dịch được). Tự trượt 4s; vuốt hoặc Continue. */
+.kb1-m2-mirror-track {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--s3);
+  margin-right: calc(-1 * var(--ob-gutter));
+}
+.kb1-m2-mirror-card {
+  flex: 0 0 auto;
+  width: 82%;
+}
+</style>
+<div class="screen" style="background-color: var(--bg)">
+  <div class="body-fixed" style="gap: 0">
+    <div class="ob-steps" role="progressbar" aria-label="Step 2 of 8" aria-valuenow="2" aria-valuemin="1" aria-valuemax="8"><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i></div>
+
+    <div class="ob-scroll" style="gap: var(--s6); padding-top: var(--s5)">
+      <div class="kb1-m2-mirror-track">
+        <div class="ob-hero kb1-m2-mirror-card">
+          <img class="art ob-hero-img" src="/images/ob_hero_mirror_tv_web.png" width="300" height="400" alt="ob_hero_mirror_tv_web" data-asset="ob_hero_mirror_tv_web" />
+          <span class="ob-float" style="top: var(--s3); right: var(--s3)"><span class="icon icon-xs" data-symbol="globe"></span>Browser</span>
+          <span class="ob-float" style="bottom: var(--s3); left: var(--s3)"><i class="ob-live"></i>Mirroring to Samsung TV</span>
+        </div>
+        <div class="kb1-m2-mirror-card" aria-hidden="true">
+          <img class="art ob-hero-img" src="/images/ob_hero_photo_video_web.png" width="300" height="400" alt="ob_hero_photo_video_web" data-asset="ob_hero_photo_video_web" />
+        </div>
+      </div>
+
+      <div class="col" style="gap: var(--s2)">
+        <h1 class="ob-display">Mirror to <span class="ob-hl">Any TV</span> &amp; Web Browser</h1>
+        <p class="ob-lead">Cast your iPhone screen to a smart TV or any web browser, no extra app needed.</p>
+      </div>
+    </div>
+
+    <div class="ob-foot">
+      <div class="dots" style="justify-content: flex-start" aria-label="Slide 1 of 3"><i class="dot is-active"></i><i class="dot"></i><i class="dot"></i></div>
+      <button class="ob-cta">Continue <span class="icon icon-sm" data-symbol="arrow.right"></span></button>
+    </div>
+  </div>
+</div>

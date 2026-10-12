@@ -1,0 +1,88 @@
+<!-- pc {"title":"KB1 · 6a Cast a Photo"} -->
+<style>
+/* Aha moment — trạng thái 1/2: TV đã kết nối, chờ ảnh. Chạm ô chọn ảnh hoặc
+   CTA → mở sheet Photos mặc định của iOS (PhotosPicker, UI hệ thống — không
+   vẽ). Chọn xong → kb1-m6-casting. Quyền Photos đã xin ở màn 4. */
+.kb1-m6-playground-pick {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s4);
+  width: 100%;
+  padding: var(--s4);
+  border: 2px dashed var(--accent-line);
+  border-radius: var(--r-xl);
+  background: var(--bg);
+  color: var(--label);
+  font-family: var(--font);
+  text-align: left;
+  cursor: pointer;
+}
+.kb1-m6-playground-pick-glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--r-lg);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.kb1-m6-playground-later {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-min);
+  border: 0;
+  background: transparent;
+  color: var(--label-2);
+  font-family: var(--font);
+  font-size: var(--t-subhead);
+  cursor: pointer;
+}
+</style>
+<div class="screen" style="background-color: var(--bg)">
+  <div class="body-fixed" style="gap: 0">
+    <div class="ob-steps" role="progressbar" aria-label="Step 6 of 8" aria-valuenow="6" aria-valuemin="1" aria-valuemax="8"><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step"></i><i class="ob-step"></i></div>
+
+    <div class="ob-scroll" style="gap: var(--s5); padding-top: var(--s6)">
+      <div class="col" style="gap: var(--s2)">
+        <h1 class="ob-display">Try it: Cast a <span class="ob-hl">Photo</span></h1>
+        <p class="ob-lead">Pick any photo and watch it appear on your TV instantly.</p>
+      </div>
+
+      <div class="ob-hero" style="padding-top: var(--s5)">
+        <div class="ob-tv">
+          <div class="ob-tv-bezel">
+            <div class="ob-tv-screen">
+              <span class="icon icon-lg" data-symbol="tv"></span>
+              <span class="t-footnote">Waiting for your photo…</span>
+            </div>
+          </div>
+          <i class="ob-tv-neck"></i>
+          <i class="ob-tv-base"></i>
+        </div>
+        <span class="ob-float" style="top: 0; right: var(--s4)">
+          <i class="ob-live"></i>Connected · Samsung QLED 7 Series
+        </span>
+      </div>
+
+      <button class="kb1-m6-playground-pick" aria-label="Choose a photo from your library">
+        <span class="kb1-m6-playground-pick-glyph">
+          <span class="icon icon-lg" data-symbol="photo"></span>
+        </span>
+        <div class="grow col" style="gap: 2px">
+          <span class="t-headline">Tap to choose a photo</span>
+          <span class="t-subhead t-secondary">From your Photos library</span>
+        </div>
+        <span class="icon icon-sm t-secondary" data-symbol="chevron.right"></span>
+      </button>
+    </div>
+
+    <div class="ob-foot" style="gap: 0">
+      <button class="ob-cta">Choose a Photo <span class="icon icon-sm" data-symbol="arrow.right"></span></button>
+      <button class="kb1-m6-playground-later">Not now</button>
+    </div>
+  </div>
+</div>

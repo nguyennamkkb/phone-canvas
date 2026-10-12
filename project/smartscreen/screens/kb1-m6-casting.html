@@ -1,0 +1,101 @@
+<!-- pc {"title":"KB1 · 6b Casting"} -->
+<style>
+/* Aha moment — trạng thái 2/2: ảnh người dùng vừa chọn đang hiện trên TV.
+   Ảnh trên TV = ảnh thật từ PhotosPicker; board dùng ảnh demo
+   /images/ob_demo_user_photo.png (không ship, không phải asset onboarding). Đổi ảnh → mở lại sheet; Stop → ngừng cast; Continue → Paywall.
+   Thời điểm ảnh hiện: haptic success + chip đổi "Casting". */
+.kb1-m6-casting-photo {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  object-fit: cover;
+  border-radius: var(--r-md);
+}
+.kb1-m6-casting-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s2) var(--s2) var(--s2) var(--s2);
+  border-radius: var(--r-xl);
+  background: var(--bg-grouped);
+}
+.kb1-m6-casting-thumb {
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  aspect-ratio: auto;
+  object-fit: cover;
+  border-radius: var(--r-md);
+}
+.kb1-m6-casting-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--bg);
+  color: var(--label);
+  cursor: pointer;
+}
+.kb1-m6-casting-done {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--r-full);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+</style>
+<div class="screen" style="background-color: var(--bg)">
+  <div class="body-fixed" style="gap: 0">
+    <div class="ob-steps" role="progressbar" aria-label="Step 6 of 8" aria-valuenow="6" aria-valuemin="1" aria-valuemax="8"><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step"></i><i class="ob-step"></i></div>
+
+    <div class="ob-scroll" style="gap: var(--s5); padding-top: var(--s6)">
+      <div class="col" style="gap: var(--s2)">
+        <h1 class="ob-display">It's on your <span class="ob-hl">TV</span>!</h1>
+        <p class="ob-lead">That's SmartCast. Photos, videos, your whole screen, just as fast.</p>
+      </div>
+
+      <div class="ob-hero" style="padding-top: var(--s5)">
+        <div class="ob-tv">
+          <div class="ob-tv-bezel">
+            <div class="ob-tv-screen" style="background: var(--label)">
+              <img class="art kb1-m6-casting-photo" src="/images/ob_demo_user_photo.png" width="310" height="174" alt="user_picked_photo" data-asset="user_picked_photo" />
+            </div>
+          </div>
+          <i class="ob-tv-neck"></i>
+          <i class="ob-tv-base"></i>
+        </div>
+        <span class="ob-float" style="top: 0; right: var(--s4)">
+          <span class="kb1-m6-casting-done"><span class="icon icon-xs" data-symbol="checkmark"></span></span>
+          Casting · Samsung QLED 7 Series
+        </span>
+      </div>
+
+      <div class="kb1-m6-casting-bar">
+        <img class="art kb1-m6-casting-thumb" src="/images/ob_demo_user_photo.png" width="48" height="48" alt="user_picked_photo" data-asset="user_picked_photo" />
+        <div class="grow col" style="gap: 2px">
+          <span class="t-headline">IMG_2048</span>
+          <span class="t-footnote t-secondary">Now on Samsung QLED</span>
+        </div>
+        <button class="kb1-m6-casting-action" aria-label="Choose another photo">
+          <span class="icon icon-sm" data-symbol="arrow.triangle.2.circlepath"></span>
+        </button>
+        <button class="kb1-m6-casting-action" aria-label="Stop casting">
+          <span class="icon icon-sm" data-symbol="xmark"></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="ob-foot">
+      <button class="ob-cta">Continue <span class="icon icon-sm" data-symbol="arrow.right"></span></button>
+    </div>
+  </div>
+</div>

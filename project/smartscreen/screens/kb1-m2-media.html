@@ -1,0 +1,50 @@
+<!-- pc {"title":"KB1 · 2b Carousel Media"} -->
+<style>
+/* T1 – Carousel có peek. Slide 2/3 nằm GIỮA: thẻ hiện tại căn giữa màn, lộ
+   mép thẻ trước (slide 1) bên trái và thẻ sau (slide 3) bên phải. Track tràn
+   hết bề ngang màn (bù lề 24pt hai bên); thẻ 77% của 390 ≈ 300pt, bằng thẻ ở
+   slide 1/3. Chip trên ảnh do app render. Tự trượt 4s; vuốt hoặc Continue. */
+.kb1-m2-media-track {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--s3);
+  margin: 0 calc(-1 * var(--ob-gutter));
+}
+.kb1-m2-media-card {
+  flex: 0 0 auto;
+  width: 77%;
+}
+</style>
+<div class="screen" style="background-color: var(--bg)">
+  <div class="body-fixed" style="gap: 0">
+    <div class="ob-steps" role="progressbar" aria-label="Step 2 of 8" aria-valuenow="2" aria-valuemin="1" aria-valuemax="8"><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i></div>
+
+    <div class="ob-scroll" style="gap: var(--s6); padding-top: var(--s5)">
+      <div class="kb1-m2-media-track">
+        <div class="kb1-m2-media-card" aria-hidden="true">
+          <img class="art ob-hero-img" src="/images/ob_hero_mirror_tv_web.png" width="300" height="400" alt="ob_hero_mirror_tv_web" data-asset="ob_hero_mirror_tv_web" />
+        </div>
+        <div class="ob-hero kb1-m2-media-card">
+          <img class="art ob-hero-img" src="/images/ob_hero_photo_video_web.png" width="300" height="400" alt="ob_hero_photo_video_web" data-asset="ob_hero_photo_video_web" />
+          <span class="ob-float" style="top: var(--s3); right: var(--s3)"><span class="icon icon-xs" data-symbol="magnifyingglass"></span>Web images</span>
+          <span class="ob-float" style="bottom: var(--s3); left: var(--s3)"><span class="icon icon-xs" data-symbol="play.fill"></span>Playing on TV</span>
+        </div>
+        <div class="kb1-m2-media-card" aria-hidden="true">
+          <img class="art ob-hero-img" src="/images/ob_hero_whiteboard_camera.png" width="300" height="400" alt="ob_hero_whiteboard_camera" data-asset="ob_hero_whiteboard_camera" />
+        </div>
+      </div>
+
+      <div class="col" style="gap: var(--s2)">
+        <h1 class="ob-display">Cast <span class="ob-hl">Photos</span>, 4K Videos &amp; Web Images</h1>
+        <p class="ob-lead">Play your library on the big screen, or search the web and send images to the TV.</p>
+      </div>
+    </div>
+
+    <div class="ob-foot">
+      <div class="dots" style="justify-content: flex-start" aria-label="Slide 2 of 3"><i class="dot"></i><i class="dot is-active"></i><i class="dot"></i></div>
+      <button class="ob-cta">Continue <span class="icon icon-sm" data-symbol="arrow.right"></span></button>
+    </div>
+  </div>
+</div>

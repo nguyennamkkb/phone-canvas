@@ -1,0 +1,139 @@
+<!-- pc {"title":"KB1 · 8 Welcome"} -->
+<style>
+/* T7 – Chúc mừng: huy chương tròn (ob_hero_pro_success, 1:1) trong chùm pháo
+   giấy vẽ bằng code — SwiftUI bắn pháo giấy 1 lần khi vào màn (tôn trọng
+   Reduce Motion). Thẻ TV đã kết nối nối tiếp màn 6. Chạm ô vào thẳng tính năng.
+   Gold chỉ ở pháo giấy/vương miện (khu Pro vừa mở khoá). */
+.kb1-m8-welcome-burst {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 168px;
+}
+.kb1-m8-welcome-medal {
+  width: 136px;
+  height: 136px;
+  object-fit: cover;
+  border: 6px solid var(--accent-soft);
+  border-radius: var(--r-full);
+}
+.kb1-m8-welcome-crown {
+  position: absolute;
+  top: var(--s2);
+  left: 50%;
+  margin-left: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--bg);
+  border-radius: var(--r-full);
+  background: var(--gold);
+  color: var(--label);
+}
+.kb1-m8-welcome-bit {
+  position: absolute;
+  border-radius: var(--r-full);
+}
+.kb1-m8-welcome-bit.is-blue { background: var(--accent); }
+.kb1-m8-welcome-bit.is-gold { background: var(--gold); }
+.kb1-m8-welcome-bit.is-soft { background: var(--accent-line); }
+.kb1-m8-welcome-bit.is-dot { width: 8px; height: 8px; }
+.kb1-m8-welcome-bit.is-pill { width: 18px; height: 6px; }
+.kb1-m8-welcome-bit.is-big { width: 12px; height: 12px; }
+.kb1-m8-welcome-tv {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s3) var(--s4) var(--s3) var(--s3);
+  border-radius: var(--r-xl);
+  background: var(--label);
+  color: var(--bg);
+}
+.kb1-m8-welcome-tv-glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-md);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.kb1-m8-welcome-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s2);
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 84px;
+  padding: var(--s3);
+  border: 0;
+  border-radius: var(--r-lg);
+  background: var(--bg-grouped);
+  color: var(--label);
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  font-weight: 600;
+  line-height: 16px;
+  text-align: left;
+  cursor: pointer;
+}
+</style>
+<div class="screen" style="background-color: var(--bg)">
+  <div class="body-fixed" style="gap: 0">
+    <div class="ob-steps" role="progressbar" aria-label="Step 8 of 8" aria-valuenow="8" aria-valuemin="1" aria-valuemax="8"><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i></div>
+
+    <div class="ob-scroll" style="gap: var(--s4); padding-top: var(--s4)">
+      <div class="kb1-m8-welcome-burst" aria-hidden="true">
+        <img class="art kb1-m8-welcome-medal" src="/images/ob_hero_pro_success.png" width="136" height="136" alt="ob_hero_pro_success" data-asset="ob_hero_pro_success" />
+        <span class="kb1-m8-welcome-crown"><span class="icon icon-sm" data-symbol="crown"></span></span>
+        <i class="kb1-m8-welcome-bit is-blue is-big" style="top: 24px; left: 22%"></i>
+        <i class="kb1-m8-welcome-bit is-gold is-pill" style="top: 64px; left: 12%"></i>
+        <i class="kb1-m8-welcome-bit is-soft is-dot" style="top: 112px; left: 20%"></i>
+        <i class="kb1-m8-welcome-bit is-gold is-dot" style="top: 146px; left: 30%"></i>
+        <i class="kb1-m8-welcome-bit is-soft is-pill" style="top: 18px; left: 34%"></i>
+        <i class="kb1-m8-welcome-bit is-blue is-dot" style="top: 40px; right: 18%"></i>
+        <i class="kb1-m8-welcome-bit is-soft is-big" style="top: 92px; right: 14%"></i>
+        <i class="kb1-m8-welcome-bit is-blue is-pill" style="top: 136px; right: 24%"></i>
+        <i class="kb1-m8-welcome-bit is-gold is-big" style="top: 120px; right: 8%"></i>
+      </div>
+
+      <div class="col" style="align-items: center; gap: var(--s2)">
+        <h1 class="ob-display" style="text-align: center">Welcome! All Features <span class="ob-hl">Unlocked</span></h1>
+      </div>
+
+      <div class="kb1-m8-welcome-tv">
+        <span class="kb1-m8-welcome-tv-glyph"><span class="icon" data-symbol="tv"></span></span>
+        <div class="grow col" style="gap: 2px">
+          <span class="t-headline">Samsung QLED 7 Series</span>
+          <span class="t-footnote" style="color: var(--accent-line)">Connected · ready to cast</span>
+        </div>
+        <span class="icon icon-sm" data-symbol="checkmark" style="color: var(--accent-line)"></span>
+      </div>
+
+      <div class="col" style="gap: var(--s2)">
+        <div class="row" style="align-items: stretch; gap: var(--s2)">
+          <button class="kb1-m8-welcome-tile"><span class="icon" data-symbol="tv" style="color: var(--accent)"></span>TV Mirror</button>
+          <button class="kb1-m8-welcome-tile"><span class="icon" data-symbol="globe" style="color: var(--accent)"></span>Web Mirror</button>
+          <button class="kb1-m8-welcome-tile"><span class="icon" data-symbol="photo" style="color: var(--accent)"></span>Photos &amp; Videos</button>
+        </div>
+        <div class="row" style="align-items: stretch; gap: var(--s2)">
+          <button class="kb1-m8-welcome-tile"><span class="icon" data-symbol="pencil" style="color: var(--accent)"></span>Whiteboard</button>
+          <button class="kb1-m8-welcome-tile"><span class="icon" data-symbol="magnifyingglass" style="color: var(--accent)"></span>Web Image Cast</button>
+          <button class="kb1-m8-welcome-tile"><span class="icon" data-symbol="video" style="color: var(--accent)"></span>Live Camera</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ob-foot">
+      <button class="ob-cta">Start Casting <span class="icon icon-sm" data-symbol="arrow.right"></span></button>
+    </div>
+  </div>
+</div>

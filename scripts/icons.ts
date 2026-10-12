@@ -140,6 +140,13 @@ const SYMBOLS: Record<string, string> = {
   'envelope.fill': 'envelope-fill.svg',
   'wallet.fill': 'wallet-fill.svg',
   'dollarsign.circle': 'currency-dollar.svg',
+  tv: 'tv.svg',
+  laptopcomputer: 'laptop.svg',
+  qrcode: 'qrcode.svg',
+  globe: 'globe.svg',
+  gift: 'gift.svg',
+  video: 'video.svg',
+  'star.fill': 'star.svg',
 }
 
 /** Tighten the markup, then percent-encode it so it is safe inside url("…") */

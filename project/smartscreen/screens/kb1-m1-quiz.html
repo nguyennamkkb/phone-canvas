@@ -1,0 +1,92 @@
+<!-- pc {"title":"KB1 · 1 Intent Quiz"} -->
+<style>
+/* T2 – Quiz thẻ chọn. Thẻ = ảnh dọc 3:4 bên trái + nhãn; chọn xong tự sang
+   màn sau sau 300ms (thẻ nảy nhẹ). Ảnh minh hoạ thẻ: ob_quiz_*. */
+.kb1-m1-quiz-option {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s4);
+  width: 100%;
+  padding: var(--s2) var(--s4) var(--s2) var(--s2);
+  border: 2px solid transparent;
+  border-radius: var(--r-xl);
+  background: var(--bg-grouped);
+  color: var(--label);
+  font-family: var(--font);
+  text-align: left;
+  cursor: pointer;
+}
+.kb1-m1-quiz-option.is-on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.kb1-m1-quiz-thumb {
+  flex: 0 0 auto;
+  width: 96px;
+  border-radius: var(--r-lg);
+}
+/* ảnh thật: lấp khung 3:4 như placeholder (OnboardHeroImageView, aspectFill) */
+img.kb1-m1-quiz-thumb {
+  height: 128px;
+  object-fit: cover;
+}
+.kb1-m1-quiz-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--accent-line);
+  border-radius: var(--r-full);
+  color: var(--on-accent);
+}
+.kb1-m1-quiz-option.is-on .kb1-m1-quiz-check {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+</style>
+<div class="screen" style="background-color: var(--bg)">
+  <div class="body-fixed" style="gap: 0">
+    <div class="ob-steps" role="progressbar" aria-label="Step 1 of 8" aria-valuenow="1" aria-valuemin="1" aria-valuemax="8"><i class="ob-step is-done"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i></div>
+
+    <div class="ob-scroll" style="gap: var(--s6); padding-top: var(--s8)">
+      <div class="col" style="gap: var(--s2)">
+        <h1 class="ob-display">How will you use <span class="ob-hl">SmartCast</span>?</h1>
+        <p class="ob-lead">We will customize your experience</p>
+      </div>
+
+      <div class="col" role="radiogroup" aria-label="Main purpose" style="gap: var(--s3)">
+        <button class="kb1-m1-quiz-option is-on" role="radio" aria-checked="true">
+          <img class="art kb1-m1-quiz-thumb" src="/images/ob_quiz_family.png" width="96" height="128" alt="ob_quiz_family" data-asset="ob_quiz_family" />
+          <div class="grow col" style="gap: var(--s1)">
+            <span class="t-title3">Family Entertainment</span>
+            <span class="t-subhead t-secondary">Watch 4K movies, relive photo &amp; video albums</span>
+          </div>
+          <span class="kb1-m1-quiz-check">
+            <span class="icon icon-xs" data-symbol="checkmark"></span>
+          </span>
+        </button>
+
+        <button class="kb1-m1-quiz-option" role="radio" aria-checked="false">
+          <img class="art kb1-m1-quiz-thumb" src="/images/ob_quiz_work.png" width="96" height="128" alt="ob_quiz_work" data-asset="ob_quiz_work" />
+          <div class="grow col" style="gap: var(--s1)">
+            <span class="t-title3">Work &amp; Study</span>
+            <span class="t-subhead t-secondary">Whiteboard presentations, mirror to laptop or browser</span>
+          </div>
+          <span class="kb1-m1-quiz-check"></span>
+        </button>
+
+        <button class="kb1-m1-quiz-option" role="radio" aria-checked="false">
+          <img class="art kb1-m1-quiz-thumb" src="/images/ob_quiz_creative.png" width="96" height="128" alt="ob_quiz_creative" data-asset="ob_quiz_creative" />
+          <div class="grow col" style="gap: var(--s1)">
+            <span class="t-title3">Create &amp; Monitor</span>
+            <span class="t-subhead t-secondary">Live Camera to TV, find web images &amp; cast</span>
+          </div>
+          <span class="kb1-m1-quiz-check"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

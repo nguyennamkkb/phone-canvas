@@ -1,0 +1,45 @@
+<!-- pc {"title":"KB1 · 2c Carousel Whiteboard"} -->
+<style>
+/* T1 – Carousel có peek: thẻ ảnh 3:4 hiện tại + mép thẻ kề (gợi ý vuốt).
+   Chip trên ảnh do app render (dịch được). Tự trượt 4s; vuốt hoặc Continue. */
+.kb1-m2-whiteboard-track {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--s3);
+  justify-content: flex-end;
+  margin-left: calc(-1 * var(--ob-gutter));
+}
+.kb1-m2-whiteboard-card {
+  flex: 0 0 auto;
+  width: 82%;
+}
+</style>
+<div class="screen" style="background-color: var(--bg)">
+  <div class="body-fixed" style="gap: 0">
+    <div class="ob-steps" role="progressbar" aria-label="Step 2 of 8" aria-valuenow="2" aria-valuemin="1" aria-valuemax="8"><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i></div>
+
+    <div class="ob-scroll" style="gap: var(--s6); padding-top: var(--s5)">
+      <div class="kb1-m2-whiteboard-track">
+        <div class="kb1-m2-whiteboard-card" aria-hidden="true">
+          <img class="art ob-hero-img" src="/images/ob_hero_photo_video_web.png" width="300" height="400" alt="ob_hero_photo_video_web" data-asset="ob_hero_photo_video_web" />
+        </div>
+        <div class="ob-hero kb1-m2-whiteboard-card">
+          <img class="art ob-hero-img" src="/images/ob_hero_whiteboard_camera.png" width="300" height="400" alt="ob_hero_whiteboard_camera" data-asset="ob_hero_whiteboard_camera" />
+          <span class="ob-float" style="top: var(--s3); left: var(--s3)"><span class="icon icon-xs" data-symbol="pencil"></span>Whiteboard</span>
+          <span class="ob-float" style="bottom: var(--s3); left: var(--s3)"><i class="ob-live"></i>Live Camera</span>
+        </div>
+      </div>
+
+      <div class="col" style="gap: var(--s2)">
+        <h1 class="ob-display">Interactive <span class="ob-hl">Whiteboard</span> &amp; Live Camera</h1>
+        <p class="ob-lead">Draw and present on the TV, or stream your iPhone camera live.</p>
+      </div>
+    </div>
+
+    <div class="ob-foot">
+      <div class="dots" style="justify-content: flex-start" aria-label="Slide 3 of 3"><i class="dot"></i><i class="dot"></i><i class="dot is-active"></i></div>
+      <button class="ob-cta">Continue <span class="icon icon-sm" data-symbol="arrow.right"></span></button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,143 @@
+<!-- pc {"title":"KB1 · 5 Discovery"} -->
+<style>
+/* T4 – Quét: radar vẽ bằng code (vòng lồng nhau, sóng lan ở SwiftUI). Thiết bị
+   tìm thấy "bật" ra thành chip trên các vòng — chạm chip hoặc thẻ web → màn 6.
+   Composite: khung radar là ZStack, chip đặt bằng top/left/right/bottom. */
+.kb1-m5-discovery-radar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 296px;
+}
+.kb1-m5-discovery-ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-full);
+}
+.kb1-m5-discovery-ring.is-1 {
+  width: 288px;
+  height: 288px;
+  border: 1.5px dashed var(--accent-line);
+}
+.kb1-m5-discovery-ring.is-2 {
+  width: 208px;
+  height: 208px;
+  background: var(--accent-soft);
+}
+.kb1-m5-discovery-ring.is-3 {
+  width: 128px;
+  height: 128px;
+  background: var(--accent-line);
+}
+.kb1-m5-discovery-ring.is-core {
+  width: 60px;
+  height: 60px;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.kb1-m5-discovery-device {
+  height: var(--touch-min);
+  border: 0;
+  font-family: var(--font);
+  cursor: pointer;
+}
+.kb1-m5-discovery-device.is-on {
+  background: var(--label);
+  color: var(--bg);
+}
+.kb1-m5-discovery-web {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  width: 100%;
+  padding: var(--s3) var(--s3) var(--s3) var(--s4);
+  border: 0;
+  border-radius: var(--r-xl);
+  background: var(--bg-grouped);
+  color: var(--label);
+  font-family: var(--font);
+  text-align: left;
+  cursor: pointer;
+}
+.kb1-m5-discovery-qr {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--r-lg);
+  background: var(--bg);
+  color: var(--label);
+}
+.kb1-m5-discovery-help {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  min-height: var(--touch-min);
+  border: 0;
+  background: transparent;
+  color: var(--label-2);
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  cursor: pointer;
+}
+</style>
+<div class="screen" style="background-color: var(--bg)">
+  <div class="body-fixed" style="gap: 0">
+    <div class="ob-steps" role="progressbar" aria-label="Step 5 of 8" aria-valuenow="5" aria-valuemin="1" aria-valuemax="8"><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i></div>
+
+    <div class="ob-scroll" style="gap: var(--s5); padding-top: var(--s6)">
+      <div class="col" style="gap: var(--s2)">
+        <h1 class="ob-display">Devices <span class="ob-hl">Ready</span> to Connect</h1>
+        <p class="ob-lead">Choose your TV or open the URL on your computer to mirror</p>
+      </div>
+
+      <div class="kb1-m5-discovery-radar">
+        <div class="kb1-m5-discovery-ring is-1" role="img" aria-label="Scanning for devices">
+          <div class="kb1-m5-discovery-ring is-2">
+            <div class="kb1-m5-discovery-ring is-3">
+              <div class="kb1-m5-discovery-ring is-core">
+                <span class="icon icon-lg" data-symbol="wifi"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="ob-float kb1-m5-discovery-device is-on" style="top: var(--s5); left: 0">
+          <span class="icon icon-sm" data-symbol="tv"></span>
+          Samsung QLED 7 Series
+          <span class="icon icon-xs" data-symbol="checkmark"></span>
+        </button>
+        <button class="ob-float kb1-m5-discovery-device" style="top: 136px; right: 0">
+          <span class="icon icon-sm" data-symbol="tv"></span>
+          LG TV
+        </button>
+        <button class="ob-float kb1-m5-discovery-device" style="bottom: var(--s2); left: var(--s5)">
+          <span class="icon icon-sm" data-symbol="laptopcomputer"></span>
+          MacBook
+        </button>
+      </div>
+
+      <button class="kb1-m5-discovery-web">
+        <span class="icon" data-symbol="globe"></span>
+        <div class="grow col" style="gap: 2px">
+          <span class="t-headline">Mirror to Web Browser</span>
+          <span class="t-subhead t-secondary">web.smartcast.app</span>
+        </div>
+        <span class="kb1-m5-discovery-qr" data-asset="qr_web_mirror">
+          <span class="icon icon-lg" data-symbol="qrcode"></span>
+        </span>
+      </button>
+
+      <button class="kb1-m5-discovery-help">
+        <span class="icon icon-sm" data-symbol="info.circle"></span>
+        Don't see your TV? Join the same Wi-Fi network
+      </button>
+    </div>
+  </div>
+</div>
