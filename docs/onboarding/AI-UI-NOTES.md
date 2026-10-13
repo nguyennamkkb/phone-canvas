@@ -7,7 +7,7 @@
 1. **Dựng UI trước, ảnh sau.** Ảnh hero chưa có — mọi vị trí ảnh dùng **placeholder xám** (quy cách bên dưới). Không tự tạo, tải hay vẽ ảnh minh hoạ thay thế.
 2. Đọc theo thứ tự:
    - [design-direction.md](design-direction.md) — màu, chữ, khung màn, 7 mẫu màn dùng chung (T1–T7), chuyển động.
-   - File kịch bản cần làm: [KB1](kb1-value-first-hard-paywall.md) · [KB2](kb2-interactive-sandbox-metered-paywall.md) · [KB3](kb3-showcase-social-proof-exit-offer.md) — nội dung, copy và mã ảnh của từng màn.
+   - File kịch bản cần làm: [KB1](kb1-value-first-hard-paywall.md) · [KB3](kb3-showcase-social-proof-exit-offer.md) — nội dung, copy và mã ảnh của từng màn.
 3. Dựng **7 mẫu màn T1–T7 thành component dùng chung trước**, sau đó ghép các kịch bản từ các mẫu đó. Không làm mỗi kịch bản một kiểu giao diện riêng.
 
 ## Quy cách placeholder ảnh
@@ -18,7 +18,6 @@
 | Bo góc | 24pt |
 | Kích thước / tỉ lệ | **Đúng như ảnh thật**: 1:1 cho hero; chiều rộng = màn hình − 2×24pt; chiều cao không vượt ~50–55% màn (T1), ~40% (T3), ~25–30% (T5) — xem design-direction mục 4–5 |
 | Nội dung bên trong | Icon `photo` (SF Symbol) màu `#A1A1A1` ở giữa + **mã ảnh** bên dưới, cỡ 12pt monospace (ví dụ `ob_hero_mirror_tv_web`) |
-| Ngoại lệ | `ob_hero_sandbox_tv` (KB2-M1): placeholder xám là **khung TV**, phần màn hình TV bên trong là vùng trắng 16:9 để vẽ canvas thật lên. `ob_hero_trial_timeline`: 3 ô tròn xám 40pt |
 
 **Cách thay ảnh sau này phải không cần sửa code:**
 - Tạo một view dùng chung (ví dụ `OnboardHeroImageView(imageName:)`) nhận **mã ảnh** làm tên asset.
@@ -27,7 +26,7 @@
 - Khi designer bỏ ảnh vào `Assets.xcassets/Onboarding/<mã ảnh>.imageset`, ảnh tự hiện.
 - Mã ảnh nằm trong mục **"Prompt ảnh hero"** của từng file kịch bản và bảng mục 9 của design-direction.
 
-Các vị trí **không** dùng placeholder (vẽ bằng code hoặc UI thật): radar quét thiết bị, thanh % hiệu chỉnh, đồng hồ đếm ngược, danh sách thiết bị, sandbox/playground, Home trong phiên dùng thử. Logo hãng TV (KB3-M4) tạm hiển thị **tên hãng dạng chữ** trên thẻ.
+Các vị trí **không** dùng placeholder (vẽ bằng code hoặc UI thật): radar quét thiết bị, thanh % hiệu chỉnh, đồng hồ đếm ngược, danh sách thiết bị, playground cast ảnh. Logo hãng TV (KB3-M4) tạm hiển thị **tên hãng dạng chữ** trên thẻ.
 
 ## Quy tắc khi dựng
 

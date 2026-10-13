@@ -1,7 +1,7 @@
 # Kịch bản 1: Value-First Progressive Onboarding + Hard Paywall (8 bước)
 
-> Đề xuất nâng cấp luồng onboarding SmartCast iOS — một trong 3 kịch bản A/B test.
-> Kịch bản khác: [KB2 – Interactive Sandbox + Metered Paywall](kb2-interactive-sandbox-metered-paywall.md) · [KB3 – Feature Showcase + Social Proof + Exit Offer](kb3-showcase-social-proof-exit-offer.md)
+> Đề xuất nâng cấp luồng onboarding SmartCast iOS — một trong 2 kịch bản A/B test.
+> Kịch bản khác: [KB3 – Feature Showcase + Social Proof + Exit Offer](kb3-showcase-social-proof-exit-offer.md)
 >
 > **Bản thiết kế hiện hành (2026-10-12):** UI dựng trên phone-canvas, `project/smartscreen/screens/kb1-*.html`. File này mô tả đúng bản đó; mục cuối là prompt tạo ảnh theo **đúng tỉ lệ và vị trí đặt** trong UI.
 
@@ -302,7 +302,7 @@ Outlines: pure black, thick and uniform — about 1.2% of the image width — ro
 Landscape 16:9, 2048x1152.
 ```
 
-### `ob_hero_permission_network` — Màn 4, Giải thích quyền (3:4 dọc, dùng chung KB2-M4)
+### `ob_hero_permission_network` — Màn 4, Giải thích quyền (3:4 dọc)
 **Bố cục:** iPhone đứng ở dưới (màn: khiên + ổ khoá), 3 cung Wi-Fi lan lên; TV (trên-phải) và laptop (giữa-trái) ở đầu sóng, mỗi máy có dấu tích tròn; mái nhà nét nhạt bao cảnh. Hai chip quyền của app vắt từ mép ảnh vào — **tự che, không chừa chỗ**. Đây không phải cảnh cast nên màn TV/laptop **để trơn** (không nội dung, tránh sinh chữ).
 **Đính kèm:** bộ 3 ảnh quiz.
 ```
@@ -315,7 +315,7 @@ Outlines: pure black, thick and uniform — about 1.2% of the image width — ro
 Portrait 3:4, 1536x2048.
 ```
 
-### `ob_hero_paywall_pro` — Màn 7, banner Hard Paywall (tạo 16:9, hiển thị 21:9; tối; dùng chung KB2-M8, KB3-M8)
+### `ob_hero_paywall_pro` — Màn 7, banner Hard Paywall (tạo 16:9, hiển thị 21:9; tối; dùng chung KB3-M6)
 **Bố cục:** TV phát sáng ở giữa, trên màn là vương miện vàng; iPhone nghiêng phía trước bên trái, **màn hiện đúng vương miện đó** (luật màn giống hệt nhau); dải sóng sáng nối hai máy; lấp lánh vàng hai bên. Nút [X] và Restore của app đè hai góc trên — **tự che, không chừa chỗ**.
 **Đính kèm:** bộ 3 ảnh quiz (chỉ lấy nét vẽ).
 ```
@@ -341,7 +341,7 @@ Outlines: white or #BDCCFD, thick and uniform — about 1.2% of the image width 
 Square 1:1, 1024x1024, designed to be cropped to a circle.
 ```
 
-### `ob_hero_pro_success` — Màn 8, huy chương Welcome (1:1, cắt tròn, sáng; dùng chung KB2-M9)
+### `ob_hero_pro_success` — Màn 8, huy chương Welcome (1:1, cắt tròn, sáng)
 **Bố cục:** Nửa người đơn giản giơ hai tay ăn mừng trước TV có dấu tích lớn. **Không** vương miện (app có huy hiệu vương miện vắt mép trên-phải) và không pháo giấy (app vẽ bằng code). Ảnh bị cắt tròn → chủ thể gọn, nằm giữa.
 **Đính kèm:** bộ 3 ảnh quiz.
 ```
