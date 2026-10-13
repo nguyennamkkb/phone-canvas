@@ -1,0 +1,99 @@
+<!-- pc {"title":"SmartCast · Bộ icon sc.*"} -->
+<!--
+  Bộ icon riêng của SmartCast (public/icons/sc-*.svg, khai trong
+  scripts/icons.ts). Quy cách chung: khung 24, nét 1.8, đầu + góc nét bo
+  tròn, hình chữ nhật lớn bo 3 / chi tiết nhỏ bo 1.5; bản .fill tô đặc cùng
+  bo góc. SwiftUI: custom symbol trong Assets.xcassets → Image("sc.photo").
+  Nút back của navbar vẫn là chevron.left hệ thống (shell bắt buộc).
+-->
+<style>
+.sc-icons-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s2);
+  flex: 1 1 0;
+  min-width: 0;
+  padding: var(--s3) var(--s1);
+  border-radius: var(--r-md);
+  background: var(--bg);
+  color: var(--label);
+}
+.sc-icons-name {
+  font-family: var(--font-mono);
+  font-size: var(--t-caption);
+  line-height: 14px;
+  color: var(--label-2);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+</style>
+<div class="screen" style="background-color: var(--bg-grouped)">
+  <div class="body" style="gap: var(--s2); padding: var(--s4) var(--s4) calc(var(--s4) + var(--safe-bottom))">
+    <h1 class="t-title2">SmartCast icons</h1>
+    <p class="t-footnote t-secondary">24 grid · stroke 1.8 · round caps &amp; joins · radius 3</p>
+    <div class="col" style="gap: var(--s2)">
+      <div class="row" style="align-items: stretch; gap: var(--s2)">
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.tv"></span><span class="sc-icons-name">tv</span></div>
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.cast"></span><span class="sc-icons-name">cast</span></div>
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.laptop"></span><span class="sc-icons-name">laptop</span></div>
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.wifi"></span><span class="sc-icons-name">wifi</span></div>
+      </div>
+      <div class="row" style="align-items: stretch; gap: var(--s2)">
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.photo"></span><span class="sc-icons-name">photo</span></div>
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.web.image"></span><span class="sc-icons-name">web.image</span></div>
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.camera"></span><span class="sc-icons-name">camera</span></div>
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.whiteboard"></span><span class="sc-icons-name">whiteboard</span></div>
+      </div>
+      <div class="row" style="align-items: stretch; gap: var(--s2)">
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.video"></span><span class="sc-icons-name">video</span></div>
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.globe"></span><span class="sc-icons-name">globe</span></div>
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.qrcode"></span><span class="sc-icons-name">qrcode</span></div>
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.magnifyingglass"></span><span class="sc-icons-name">magnifyingglass</span></div>
+      </div>
+      <div class="row" style="align-items: stretch; gap: var(--s2)">
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.gear"></span><span class="sc-icons-name">gear</span></div>
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.crown"></span><span class="sc-icons-name">crown</span></div>
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.sparkles"></span><span class="sc-icons-name">sparkles</span></div>
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.star.fill"></span><span class="sc-icons-name">star.fill</span></div>
+      </div>
+      <div class="row" style="align-items: stretch; gap: var(--s2)">
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.shield.fill"></span><span class="sc-icons-name">shield.fill</span></div>
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.lock.fill"></span><span class="sc-icons-name">lock.fill</span></div>
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.play.fill"></span><span class="sc-icons-name">play.fill</span></div>
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.text.quote"></span><span class="sc-icons-name">text.quote</span></div>
+      </div>
+      <div class="row" style="align-items: stretch; gap: var(--s2)">
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.info.circle"></span><span class="sc-icons-name">info.circle</span></div>
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.arrow.circlepath"></span><span class="sc-icons-name">arrow.circlepath</span></div>
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.arrow.right"></span><span class="sc-icons-name">arrow.right</span></div>
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.checkmark"></span><span class="sc-icons-name">checkmark</span></div>
+      </div>
+      <div class="row" style="align-items: stretch; gap: var(--s2)">
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.xmark"></span><span class="sc-icons-name">xmark</span></div>
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.chevron.left"></span><span class="sc-icons-name">chevron.left</span></div>
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.chevron.right"></span><span class="sc-icons-name">chevron.right</span></div>
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.chevron.down"></span><span class="sc-icons-name">chevron.down</span></div>
+      </div>
+      <div class="row" style="align-items: stretch; gap: var(--s2)">
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.pause.fill"></span><span class="sc-icons-name">pause.fill</span></div>
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.backward.fill"></span><span class="sc-icons-name">backward.fill</span></div>
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.forward.fill"></span><span class="sc-icons-name">forward.fill</span></div>
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.gobackward.15"></span><span class="sc-icons-name">gobackward.15</span></div>
+      </div>
+      <div class="row" style="align-items: stretch; gap: var(--s2)">
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.goforward.15"></span><span class="sc-icons-name">goforward.15</span></div>
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.speaker"></span><span class="sc-icons-name">speaker</span></div>
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.speaker.slash"></span><span class="sc-icons-name">speaker.slash</span></div>
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.minus"></span><span class="sc-icons-name">minus</span></div>
+      </div>
+      <div class="row" style="align-items: stretch; gap: var(--s2)">
+        <div class="sc-icons-cell"><span class="icon icon-lg" data-symbol="sc.plus"></span><span class="sc-icons-name">plus</span></div>
+        <div class="sc-icons-cell" style="visibility: hidden"></div>
+        <div class="sc-icons-cell" style="visibility: hidden"></div>
+        <div class="sc-icons-cell" style="visibility: hidden"></div>
+        
+      </div>
+    </div>
+  </div>
+</div>
