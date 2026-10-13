@@ -90,6 +90,7 @@ export function ElementExport({ screenId, deviceId, theme, selected, ancestry }:
   const [padPt, setPadPt] = useState(24)
   const [padPct, setPadPct] = useState<number | null>(null)
   const [withAncestors, setWithAncestors] = useState(false)
+  const [hide, setHide] = useState('')
   const [thumb, setThumb] = useState<{ key: string; dataUrl: string } | null>(null)
   const [thumbError, setThumbError] = useState<string | null>(null)
   const [busy, setBusy] = useState<'crop' | 'export' | 'children' | 'golden' | 'goldenWrite' | null>(
@@ -122,8 +123,13 @@ export function ElementExport({ screenId, deviceId, theme, selected, ancestry }:
       padPt,
       padPct,
       ancestorLevels,
+      // free-typed list: `,.ob-float, .badge` → ['.ob-float', '.badge']
+      hide: hide
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean),
     }
-  }, [box, screenId, deviceId, theme, selected?.id, ancestry, padPt, padPct, ancestorLevels])
+  }, [box, screenId, deviceId, theme, selected?.id, ancestry, padPt, padPct, ancestorLevels, hide])
 
   const key = request ? JSON.stringify(request) : null
 
@@ -317,6 +323,17 @@ export function ElementExport({ screenId, deviceId, theme, selected, ancestry }:
                 onChange={(e) => setWithAncestors(e.target.checked)}
               />
               gồm khung cha (1 cấp)
+            </label>
+            <label className="flex items-center gap-1">
+              ẩn
+              <input
+                type="text"
+                value={hide}
+                onChange={(e) => setHide(e.target.value)}
+                placeholder=".ob-float"
+                className="w-40 rounded border px-1 py-0.5"
+                aria-label="Selector ẩn khi xuất, cách nhau dấu phẩy"
+              />
             </label>
           </div>
 

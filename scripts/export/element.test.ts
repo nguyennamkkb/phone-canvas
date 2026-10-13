@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { clipFor, cropFor, descendantsOf, elementStem, resolvePad, unionBox, uniqueNames } from './element.ts'
+import { clipFor, cropFor, descendantsOf, elementStem, hideExpr, hideStyle, resolvePad, unionBox, uniqueNames } from './element.ts'
 import type { Box, ElementNode } from './element.ts'
 
 const node = (over: Partial<ElementNode> = {}): ElementNode => ({
@@ -34,6 +34,42 @@ describe('resolvePad', () => {
   it('never returns a negative or NaN pad', () => {
     expect(resolvePad({ x: 0, y: 0, w: 100, h: 100 }, { padPt: -5, padPct: null })).toBe(0)
     expect(resolvePad({ x: 0, y: 0, w: 100, h: 100 }, { padPt: 0, padPct: 0 })).toBe(0)
+  })
+})
+
+describe('hideStyle', () => {
+  it('returns nothing when no selector is asked for', () => {
+    expect(hideStyle([])).toBe('')
+  })
+
+  it('hides the matching boxes without touching layout', () => {
+    // visibility, not display: a hidden overlay must not reflow the element
+    // being shot, or the clip (measured before the hide) would miss it
+    expect(hideStyle(['.ob-float'])).toBe('.ob-float { visibility: hidden !important }')
+  })
+
+  it('joins several selectors into one rule', () => {
+    expect(hideStyle(['.ob-float', '.ob-tv-neck'])).toBe(
+      '.ob-float, .ob-tv-neck { visibility: hidden !important }',
+    )
+  })
+
+  it('trims the entries and drops the blanks', () => {
+    expect(hideStyle(['  .ob-float  ', '', '   ', '.ob-tv-base'])).toBe(
+      '.ob-float, .ob-tv-base { visibility: hidden !important }',
+    )
+  })
+})
+
+describe('hideExpr', () => {
+  it('upserts one style element so the next call replaces the rules', () => {
+    const expr = hideExpr('.a { color: red }')
+    expect(expr).toContain('pc-element-hide')
+    expect(expr).toContain(JSON.stringify('.a { color: red }'))
+  })
+
+  it('clears the rules when the hide list is empty', () => {
+    expect(hideExpr(hideStyle([]))).toContain(JSON.stringify(''))
   })
 })
 

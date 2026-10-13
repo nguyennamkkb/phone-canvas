@@ -41,6 +41,8 @@ Locate a component by point, read its spec, shoot its region.
                   wins over --pad when given
   --ancestors <n> ancestor levels to include in the region    (default: 0)
   --children      one PNG + JSON per direct child, not one region
+  --hide <sel>    hide elements matching the selector before the shot
+                  (repeatable; e.g. --hide ".ob-float")
   --scale <n>     pixel density multiplier                    (default: 2)
   --device <id>   device preset                               (default: reference)
   --theme <mode>  light | dark                                (default: light)
@@ -64,6 +66,7 @@ function parse(argv) {
     padPct: null,
     ancestors: 0,
     children: false,
+    hide: [] as string[],
     scale: 2,
     device: 'reference',
     theme: 'light',
@@ -87,6 +90,9 @@ function parse(argv) {
         break
       case '--children':
         o.children = true
+        break
+      case '--hide':
+        o.hide.push(next())
         break
       case '--screen':
         o.screen = next()
@@ -185,6 +191,7 @@ async function main() {
     padPct: options.padPct,
     ancestorLevels: options.ancestors,
     scale: options.scale,
+    hide: options.hide,
   }
 
   const outDir = path.resolve(ROOT, options.out)

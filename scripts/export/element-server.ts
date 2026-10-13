@@ -92,6 +92,9 @@ function inputOf(body: Json): ElementExportInput {
     padPct: typeof body.padPct === 'number' ? body.padPct : null,
     ancestorLevels: typeof body.ancestorLevels === 'number' ? body.ancestorLevels : undefined,
     scale: typeof body.scale === 'number' ? body.scale : undefined,
+    hide: Array.isArray(body.hide)
+      ? (body.hide as unknown[]).filter((s): s is string => typeof s === 'string')
+      : undefined,
   }
 }
 

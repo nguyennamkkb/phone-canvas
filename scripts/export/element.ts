@@ -122,6 +122,38 @@ export function cropFor(
   return clipFor(region, resolvePad(region, opts), bounds)
 }
 
+/**
+ * The CSS that takes the `hide` selectors out of the shot. `visibility`, never
+ * `display`: a hidden overlay must not reflow the layout, because the clip is
+ * measured BEFORE the hide, and a moved element would be shot off-centre.
+ * An empty list is an empty string — the style element then carries no rule.
+ */
+export function hideStyle(selectors: readonly string[]): string {
+  const clean = selectors.map((selector) => selector.trim()).filter(Boolean)
+  if (clean.length === 0) return ''
+  return `${clean.join(', ')} { visibility: hidden !important }`
+}
+
+/**
+ * The evaluate() expression that applies `hideStyle`. It upserts ONE `<style>`
+ * element by a stable id, so an empty string clears whatever the previous crop
+ * hid: the warm session serves many crops in a row, and a leaked rule would
+ * quietly follow every later shot.
+ */
+export function hideExpr(css: string): string {
+  return `(() => {
+    const id = 'pc-element-hide';
+    let style = document.getElementById(id);
+    if (!style) {
+      style = document.createElement('style');
+      style.id = id;
+      document.head.appendChild(style);
+    }
+    style.textContent = ${JSON.stringify(css)};
+    return true;
+  })()`
+}
+
 /* --------------------------------------------------------------- naming -- */
 
 /** `đ` has no canonical decomposition, so NFKD alone would eat the letter */
@@ -248,6 +280,14 @@ export type ElementExportInput = {
   padPct?: number | null // default null
   ancestorLevels?: number // default 0
   scale?: number // default 2
+  /**
+   * CSS selectors to hide before the shot (visibility:hidden, so layout is
+   * untouched and the measured clip stays valid). For overlays that sit on top
+   * of the element being exported — e.g. `['.ob-float']` for a chip that rides
+   * the edge of a TV crop. The spec/JSON is measured first, so hiding changes
+   * the pixels only; a node the element itself owns is never affected.
+   */
+  hide?: string[]
 }
 
 export type ElementExportResult = {
@@ -333,6 +373,8 @@ type Capture = {
   padPt: number
   padPct: number | null
   ancestorLevels: number
+  /** selectors whose matches are painted out for the shot (see hideStyle) */
+  hide: string[]
   bounds: { width: number; height: number }
   spec: SpecNode[]
   rawById: Map<string, RawNode>
@@ -382,6 +424,7 @@ function optionsFor(input: ElementExportInput, registry: Registry) {
     padPt: Number.isFinite(input.padPt) && (input.padPt ?? -1) >= 0 ? (input.padPt as number) : DEFAULT_PAD_PT,
     padPct: input.padPct === null || input.padPct === undefined ? null : input.padPct,
     ancestorLevels: Math.max(0, Math.trunc(input.ancestorLevels ?? 0)),
+    hide: Array.isArray(input.hide) ? input.hide.filter((s): s is string => typeof s === 'string') : [],
   }
 }
 
@@ -632,6 +675,7 @@ class Session implements ElementSession {
       padPt: options.padPt,
       padPct: options.padPct,
       ancestorLevels: options.ancestorLevels,
+      hide: options.hide,
       bounds: { width: options.device.width, height: target.frameHeight },
       spec,
       rawById: new Map(nodes.map((node) => [node.id, node])),
@@ -667,6 +711,23 @@ class Session implements ElementSession {
     return Buffer.from(shot.data, 'base64')
   }
 
+  /**
+   * Shoot with the `hide` rules applied, then always clear them. The clear runs
+   * in `finally` because the session is warm and shared: a leaked rule would
+   * silently change every crop that follows.
+   */
+  private async shootHidden(capture: Capture, clip: Clip): Promise<Buffer> {
+    const css = hideStyle(capture.hide)
+    if (!css) return this.shoot(capture, clip)
+    capture.cdp.attach(capture.target.sessionId)
+    await evaluate(capture.cdp, hideExpr(css))
+    try {
+      return await this.shoot(capture, clip)
+    } finally {
+      await evaluate(capture.cdp, hideExpr(''))
+    }
+  }
+
   private async render(input: ElementExportInput): Promise<Rendered> {
     const capture = await this.open(input)
     const clip = cropFor(
@@ -676,7 +737,7 @@ class Session implements ElementSession {
       capture.bounds,
     )
     await this.applyScale(capture)
-    const png = await this.shoot(capture, clip)
+    const png = await this.shootHidden(capture, clip)
 
     const element = capture.element ? toElementNode(capture.element, capture.rawById) : null
     // a crop that hit nothing still needs a name: screen + the box it shot
@@ -772,7 +833,7 @@ class Session implements ElementSession {
         { padPt: capture.padPt, padPct: capture.padPct, ancestorLevels: 0 },
         capture.bounds,
       )
-      const png = await this.shoot(capture, clip)
+      const png = await this.shootHidden(capture, clip)
       const stem = names[index]
       const payload = payloadFor({
         screen: capture.screen.id,
