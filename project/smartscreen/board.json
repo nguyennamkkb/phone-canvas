@@ -1,7 +1,7 @@
 {
   "v": 1,
   "projectId": "smartscreen",
-  "exportedAt": 1791874784463,
+  "exportedAt": 1791999999999,
   "board": {
     "v": 5,
     "nodes": [
@@ -258,10 +258,22 @@
         }
       },
       {
-        "id": "smartscreen-n22",
+        "id": "smartscreen-n25",
         "type": "phone",
         "position": {
           "x": 534,
+          "y": 3540
+        },
+        "data": {
+          "screenId": "cast-mirror-tv",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "smartscreen-n22",
+        "type": "phone",
+        "position": {
+          "x": 1068,
           "y": 3540
         },
         "data": {
@@ -273,7 +285,7 @@
         "id": "smartscreen-n23",
         "type": "phone",
         "position": {
-          "x": 1068,
+          "x": 1602,
           "y": 3540
         },
         "data": {
@@ -290,6 +302,30 @@
         },
         "data": {
           "screenId": "sc-icons",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "smartscreen-n26",
+        "type": "phone",
+        "position": {
+          "x": 534,
+          "y": 4720
+        },
+        "data": {
+          "screenId": "cast-live-camera",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "smartscreen-n27",
+        "type": "phone",
+        "position": {
+          "x": 1068,
+          "y": 4720
+        },
+        "data": {
+          "screenId": "settings",
           "deviceId": "reference"
         }
       }
@@ -399,7 +435,18 @@
         "id": "xy-edge__smartscreen-n21-smartscreen-n22",
         "source": "smartscreen-n21",
         "target": "smartscreen-n22",
-        "label": "Start Mirroring",
+        "label": "Start Mirroring (PC)",
+        "data": {
+          "flow": {
+            "sourceComponent": "Start Mirroring"
+          }
+        }
+      },
+      {
+        "id": "xy-edge__smartscreen-n21-smartscreen-n25",
+        "source": "smartscreen-n21",
+        "target": "smartscreen-n25",
+        "label": "Start Mirroring (TV)",
         "data": {
           "flow": {
             "sourceComponent": "Start Mirroring"

@@ -1,0 +1,177 @@
+<!-- pc {"title":"Cast · Live Camera","lightStatusBar":true} -->
+<!--
+  Màn Live Camera — THIẾT KẾ RIÊNG, tối giản: camera chiếm toàn màn hình, mọi
+  điều khiển là lớp KÍNH TỐI mờ nổi bên trên (--glass-dark + blur, viền
+  --glass-line). Không thanh điều hướng của shell, không thẻ trắng — khác họ
+  Cast có chủ đích: người dùng cần thấy khung hình, không cần đọc cài đặt.
+  Lớp trên (cách mép --s4):
+  - trái: X đóng (dừng + thoát) · giữa: chip "● Live · Samsung QLED" (chạm =
+    đổi TV) · phải: chip chất lượng "HD" (→ sheet cast-photo-quality).
+  Lớp dưới (khay kính, trên home indicator):
+  - hàng zoom 0.5× · 1× · 2× (đang chọn = nền trắng chữ tối).
+  - hàng điều khiển: mic (bật/tắt tiếng) · NÚT DỪNG CAST 72pt (vòng trắng,
+    lõi accent, ô vuông stop) · đổi camera trước/sau.
+  Camera = luồng camera thật (AVCaptureVideoPreviewLayer, aspectFill); board
+  dùng ảnh demo ob_demo_user_photo. SwiftUI: ZStack { preview.ignoresSafeArea();
+  VStack { topBar; Spacer(); tray } } — kính = .ultraThinMaterial + tint tối.
+  Board không render blur (filter ngoài subset) → board chỉ vẽ lớp tint tối;
+  app thật thêm blur bằng .ultraThinMaterial. Toạ độ absolute chỉ trong khối
+  ghép .cast-live-feed.
+-->
+<style>
+.cast-live-feed {
+  position: relative;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--pro-top);
+}
+.cast-live-cam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cast-live-glass {
+  background: var(--glass-dark);
+  border: 1px solid var(--glass-line);
+  color: var(--pro-ink);
+}
+.cast-live-top {
+  position: absolute;
+  top: var(--s3);
+  left: var(--s4);
+  right: var(--s4);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+}
+.cast-live-round {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: var(--r-full);
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  font-weight: 700;
+  cursor: pointer;
+}
+.cast-live-pill {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s2);
+  min-width: 0;
+  height: 36px;
+  padding: 0 var(--s3);
+  border-radius: var(--r-full);
+  font-size: var(--t-footnote);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.cast-live-pill .ob-live {
+  background: var(--accent-line);
+}
+.cast-live-tray {
+  position: absolute;
+  left: var(--s4);
+  right: var(--s4);
+  bottom: calc(var(--s2) + var(--safe-bottom));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s4);
+  padding: var(--s3) var(--s5) var(--s4);
+  border-radius: var(--r-xl);
+}
+.cast-live-zoom {
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  padding: 0;
+  border-radius: var(--r-full);
+  background: var(--glass-line);
+}
+.cast-live-zoom-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  height: 44px;
+  padding: 0 var(--s2);
+  border: 0;
+  border-radius: var(--r-full);
+  background: transparent;
+  color: var(--pro-ink);
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  font-weight: 600;
+  cursor: pointer;
+}
+.cast-live-zoom-btn.is-on {
+  background: var(--bg);
+  color: var(--label);
+}
+.cast-live-ctrl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--glass-line);
+  color: var(--pro-ink);
+  cursor: pointer;
+}
+.cast-live-stop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 72px;
+  height: 72px;
+  padding: 0;
+  border: 4px solid var(--bg);
+  border-radius: var(--r-full);
+  background: var(--accent);
+  color: var(--on-accent);
+  cursor: pointer;
+}
+</style>
+<div class="screen" style="background-color: #000">
+  <div class="body-fixed" style="gap: 0">
+    <div class="cast-live-feed">
+      <img class="art cast-live-cam" src="/project/smartscreen/assets/ob_demo_user_photo.png" width="390" height="760" alt="camera_preview" data-asset="camera_preview" />
+
+      <div class="cast-live-top">
+        <button class="cast-live-round cast-live-glass" aria-label="Stop and close"><span class="icon icon-sm" data-symbol="sc.xmark"></span></button>
+        <span class="cast-live-pill cast-live-glass" role="status"><i class="ob-live"></i>Live · Samsung QLED</span>
+        <button class="cast-live-round cast-live-glass" aria-label="Quality: HD">HD</button>
+      </div>
+
+      <div class="cast-live-tray cast-live-glass">
+        <div class="cast-live-zoom" role="radiogroup" aria-label="Zoom">
+          <button class="cast-live-zoom-btn" role="radio" aria-checked="false">0.5×</button>
+          <button class="cast-live-zoom-btn is-on" role="radio" aria-checked="true">1×</button>
+          <button class="cast-live-zoom-btn" role="radio" aria-checked="false">2×</button>
+        </div>
+        <div class="row" style="justify-content: space-between; align-self: stretch; gap: 0">
+          <button class="cast-live-ctrl" aria-label="Mute microphone"><span class="icon" data-symbol="sc.speaker"></span></button>
+          <button class="cast-live-stop" aria-label="Stop casting"><span class="icon" data-symbol="sc.stop.fill"></span></button>
+          <button class="cast-live-ctrl" aria-label="Switch camera"><span class="icon" data-symbol="sc.arrow.circlepath"></span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

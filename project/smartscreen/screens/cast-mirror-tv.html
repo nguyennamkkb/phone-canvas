@@ -1,0 +1,110 @@
+<!-- pc {"title":"Cast · Mirroring TV · Đang chiếu"} -->
+<!--
+  Màn Screen Mirroring — ĐANG CHIẾU LÊN TV. Cùng KHUNG với cast-mirror-active
+  (đang chiếu ra trình duyệt) — 2 màn chỉ khác thẻ giữa:
+    vòng LIVE + "● Live · thời gian"  → thẻ trạng thái  → thẻ cài đặt  → Stop
+  - Vòng LIVE, dòng Live, hàng khoá mờ, nút Stop: lớp chung trong tokens.css
+    (.cast-mirror-live / -ring / -live-status / -stop) — sửa ở đó, không ở đây.
+  - Thẻ trạng thái (bản TV): hỏi xác nhận bằng mắt "Is it showing on your TV?"
+    + tên TV (thay thẻ thiết bị rời của bản trước) + 2 nút viên thuốc 44pt
+    cạnh nhau: "Yes" (accent) · "Not working" (accent-soft → màn khắc phục).
+    Nút nhỏ, nằm trong thẻ — để Stop vẫn là hành động lớn duy nhất ở đáy.
+    Bấm Yes → thẻ thu lại còn tên TV (SwiftUI: đổi nội dung thẻ, không màn mới).
+  - Thẻ cài đặt giống cast-mirror: Mirror To (TV) · Quality · Auto-Rotate ·
+    Sound (Pro, vương miện accent nhỏ).
+  Bỏ so với bản trước: badge "?", dòng "Mirror your phone screen to TV & more"
+  (lặp màn 1), thẻ thiết bị rời, nút "No" 48pt nền xám full-width.
+-->
+<style>
+.cast-mirror-tv-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  padding: var(--s4);
+  border-radius: var(--r-lg);
+  background: var(--bg);
+}
+.cast-mirror-tv-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  flex: 1 1 0;
+  height: 44px;
+  padding: 0 var(--s3);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font);
+  font-size: var(--t-subhead);
+  font-weight: 600;
+  cursor: pointer;
+}
+.cast-mirror-tv-btn.is-soft {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+</style>
+<div class="screen" style="background-color: var(--bg-grouped)">
+  <span data-slot="back" aria-label="Back"><span class="icon" data-symbol="chevron.left" style="color: var(--accent)"></span></span>
+  <span data-slot="title" class="t-headline">Mirroring</span>
+  <button data-slot="right" class="cast-pro" aria-label="Upgrade to Pro"><span class="cast-pro-dot"><span class="icon icon-sm" data-symbol="sc.crown"></span></span></button>
+
+  <div class="body-fixed" style="gap: 0">
+    <div class="col grow cast-pad" style="min-height: 0; padding-bottom: calc(var(--s3) + var(--safe-bottom))">
+      <div class="cast-mirror-live" role="status" aria-label="Mirroring live to TV, 15 seconds">
+        <div class="cast-mirror-ring is-1">
+          <div class="cast-mirror-ring is-2">
+            <div class="cast-mirror-ring is-core"><span class="icon icon-lg" data-symbol="sc.tv"></span></div>
+          </div>
+        </div>
+        <span class="cast-mirror-live-status"><i class="ob-live"></i>Live<span class="cast-mirror-live-time">· 00:15</span></span>
+      </div>
+
+      <div class="cast-mirror-tv-card">
+        <div class="row" style="gap: var(--s3)">
+          <span class="cast-mirror-device-tile"><span class="icon" data-symbol="sc.tv"></span></span>
+          <div class="grow col" style="gap: 2px">
+            <span class="t-headline">Is it showing on your TV?</span>
+            <span class="t-caption t-secondary">32in Roku HD TV</span>
+          </div>
+        </div>
+        <div class="row" style="gap: var(--s2)">
+          <button class="cast-mirror-tv-btn"><span class="icon icon-xs" data-symbol="sc.checkmark"></span>Yes</button>
+          <button class="cast-mirror-tv-btn is-soft">Not working</button>
+        </div>
+      </div>
+
+      <div class="cast-mirror-list">
+        <button class="cast-mirror-row" aria-label="Mirror to: TV">
+          <span class="icon" data-symbol="sc.tv" style="color: var(--accent)"></span>
+          <span class="grow">Mirror To</span>
+          <span class="is-value">TV</span>
+          <span class="icon icon-xs" data-symbol="sc.chevron.down" style="color: var(--accent)"></span>
+        </button>
+        <button class="cast-mirror-row" aria-label="Quality: Basic">
+          <span class="icon" data-symbol="sc.sparkles" style="color: var(--accent)"></span>
+          <span class="grow">Quality</span>
+          <span class="is-value">Basic</span>
+          <span class="icon icon-xs" data-symbol="sc.chevron.down" style="color: var(--accent)"></span>
+        </button>
+        <button class="cast-mirror-row" role="switch" aria-checked="true" aria-label="Auto-Rotate">
+          <span class="icon" data-symbol="sc.arrow.circlepath" style="color: var(--accent)"></span>
+          <span class="grow">Auto-Rotate</span>
+          <span class="cast-mirror-switch" aria-hidden="true"><span class="cast-mirror-knob"></span></span>
+        </button>
+        <button class="cast-mirror-row" role="switch" aria-checked="false" aria-label="Sound, Pro">
+          <span class="icon" data-symbol="sc.speaker" style="color: var(--accent)"></span>
+          <span class="grow row" style="gap: var(--s2)">Sound<span class="icon icon-xs" data-symbol="sc.crown" style="color: var(--accent)"></span></span>
+          <span class="cast-mirror-switch is-off" aria-hidden="true"><span class="cast-mirror-knob"></span></span>
+        </button>
+      </div>
+
+      <button class="cast-mirror-stop" aria-label="Stop mirroring">
+        <span class="icon icon-sm" data-symbol="sc.stop.fill"></span>
+        Stop Mirroring
+      </button>
+    </div>
+  </div>
+</div>

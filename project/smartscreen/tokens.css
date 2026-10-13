@@ -44,6 +44,9 @@
   --pro-scrim: rgba(7, 11, 31, 0.72); /* --pro-top @ 72% */
   --gold: #ffc83d; /* chỉ khu Pro: vương miện, sao, Best Value */
   --urgency: #ff4d3a; /* chỉ Exit Offer: đồng hồ, nhãn giảm giá */
+  /* ---- lớp kính tối trên camera toàn màn hình (cast-live-camera) ---- */
+  --glass-dark: rgba(7, 11, 31, 0.5); /* --pro-top @ 50%; app thêm blur (.ultraThinMaterial) */
+  --glass-line: rgba(255, 255, 255, 0.16); /* viền mảnh trắng 16% */
 
   /* ---- Home hiện tại (assets/Main.svg) — CHỈ màn home-current dùng để đối
      chiếu; ngoài bảng design-direction nên các phương án home-* không dùng ---- */
@@ -665,4 +668,76 @@ img.cast-thumb {
   border-radius: var(--r-md);
   background: var(--accent-soft);
   color: var(--accent);
+}
+
+/* ---- Mirroring đang chiếu (cast-mirror-active + cast-mirror-tv): vòng sóng
+   LIVE co theo chiều cao, dòng "● Live · thời gian", hàng khoá mờ, nút Stop. -- */
+.cast-mirror-live {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s3);
+  flex: 1 1 0;
+  min-height: 0;
+}
+.cast-mirror-ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-full);
+}
+/* vòng ngoài co theo chiều cao sân khấu, tối đa 168pt */
+.cast-mirror-ring.is-1 {
+  flex: 1 1 0;
+  min-height: 0;
+  max-height: 168px;
+  aspect-ratio: 1 / 1;
+  border: 1.5px dashed var(--accent-line);
+}
+.cast-mirror-ring.is-2 {
+  width: 72%;
+  height: 72%;
+  background: var(--accent-soft);
+}
+.cast-mirror-ring.is-core {
+  width: 56%;
+  height: 56%;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.cast-mirror-live-status {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s2);
+  font-size: var(--t-subhead);
+  font-weight: 600;
+  color: var(--accent);
+}
+.cast-mirror-live-time {
+  color: var(--label-2);
+  font-variant-numeric: tabular-nums;
+}
+/* hàng cài đặt bị khoá trong trạng thái hiện tại: mờ + dòng lý do */
+.cast-mirror-row.is-dim,
+.cast-mirror-row.is-dim .icon {
+  color: var(--label-3);
+}
+.cast-mirror-stop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  width: 100%;
+  height: var(--ob-cta-h);
+  padding: 0 var(--s6);
+  border: 1.5px solid var(--accent-line);
+  border-radius: var(--r-xl);
+  background: var(--bg);
+  color: var(--accent);
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 600;
+  cursor: pointer;
 }

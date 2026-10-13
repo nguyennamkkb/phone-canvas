@@ -627,6 +627,16 @@
   --icon-src: '/icons/sc-cast.svg';
 }
 
+.icon[data-symbol='sc.airplay'] {
+  --icon: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolygon%20points%3D%2212%2014.5%2016.5%2019.5%207.5%2019.5%22%20fill%3D%22currentColor%22%20stroke%3D%22currentColor%22%20stroke-width%3D%221%22%2F%3E%3Cpath%20d%3D%22M8.5%2012a5%205%200%200%201%207%200%22%2F%3E%3Cpath%20d%3D%22M6%209.5a8.5%208.5%200%200%201%2012%200%22%2F%3E%3Cpath%20d%3D%22M3.5%207a12%2012%200%200%201%2017%200%22%2F%3E%3C%2Fsvg%3E');
+  --icon-src: '/icons/sc-airplay.svg';
+}
+
+.icon[data-symbol='airplayaudio'] {
+  --icon: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolygon%20points%3D%2212%2014.5%2016.5%2019.5%207.5%2019.5%22%20fill%3D%22currentColor%22%20stroke%3D%22currentColor%22%20stroke-width%3D%221%22%2F%3E%3Cpath%20d%3D%22M8.5%2012a5%205%200%200%201%207%200%22%2F%3E%3Cpath%20d%3D%22M6%209.5a8.5%208.5%200%200%201%2012%200%22%2F%3E%3Cpath%20d%3D%22M3.5%207a12%2012%200%200%201%2017%200%22%2F%3E%3C%2Fsvg%3E');
+  --icon-src: '/icons/sc-airplay.svg';
+}
+
 .icon[data-symbol='sc.stop.fill'] {
   --icon: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22currentColor%22%20stroke%3D%22none%22%3E%3Crect%20x%3D%226.5%22%20y%3D%226.5%22%20width%3D%2211%22%20height%3D%2211%22%20rx%3D%222.5%22%2F%3E%3C%2Fsvg%3E');
   --icon-src: '/icons/sc-stop-fill.svg';
@@ -705,6 +715,26 @@
 .icon[data-symbol='sc.star.fill'] {
   --icon: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22currentColor%22%20stroke%3D%22currentColor%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M12%203.5l2.6%205.3%205.8.8-4.2%204.1%201%205.8L12%2016.8l-5.2%202.7%201-5.8-4.2-4.1%205.8-.8Z%22%2F%3E%3C%2Fsvg%3E');
   --icon-src: '/icons/sc-star-fill.svg';
+}
+
+.icon[data-symbol='sc.star'] {
+  --icon: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M12%203.5l2.6%205.3%205.8.8-4.2%204.1%201%205.8L12%2016.8l-5.2%202.7%201-5.8-4.2-4.1%205.8-.8Z%22%2F%3E%3C%2Fsvg%3E');
+  --icon-src: '/icons/sc-star.svg';
+}
+
+.icon[data-symbol='sc.share'] {
+  --icon: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M12%2014.5V3.5%22%2F%3E%3Cpath%20d%3D%22M7.8%207.5%2012%203.2l4.2%204.3%22%2F%3E%3Cpath%20d%3D%22M6%2012.5V19a2%202%200%200%200%202%202h8a2%202%200%200%200%202-2v-6.5%22%2F%3E%3C%2Fsvg%3E');
+  --icon-src: '/icons/sc-share.svg';
+}
+
+.icon[data-symbol='sc.envelope'] {
+  --icon: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%223.5%22%20y%3D%225.5%22%20width%3D%2217%22%20height%3D%2213%22%20rx%3D%223%22%2F%3E%3Cpath%20d%3D%22M4.8%208%2012%2013.2%2019.2%208%22%2F%3E%3C%2Fsvg%3E');
+  --icon-src: '/icons/sc-envelope.svg';
+}
+
+.icon[data-symbol='sc.doc.text'] {
+  --icon: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%226%22%20y%3D%223.5%22%20width%3D%2212%22%20height%3D%2217%22%20rx%3D%223%22%2F%3E%3Cpath%20d%3D%22M9.5%209h5M9.5%2012.5h5M9.5%2016h3%22%2F%3E%3C%2Fsvg%3E');
+  --icon-src: '/icons/sc-doc-text.svg';
 }
 
 .icon[data-symbol='sc.shield.fill'] {

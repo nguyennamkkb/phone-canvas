@@ -16,56 +16,12 @@
      "Not available in browser" (bản trước chỉ mờ, không nói vì sao).
   4. "Stop Mirroring" — nút viên thuốc trắng, chữ + icon accent (đọc ra là
      nút, không lẫn với thẻ), cùng vị trí CTA "Start Mirroring" của màn 1.
+  Cùng KHUNG với cast-mirror-tv (đang chiếu lên TV): vòng LIVE → thẻ trạng
+  thái → thẻ cài đặt → Stop; chỉ khác thẻ giữa (đây là thẻ link). Vòng, dòng
+  Live, hàng mờ, nút Stop là lớp chung trong tokens.css.
   Thời gian + URL là dữ liệu thật của phiên; board dùng giá trị mẫu.
 -->
 <style>
-.cast-mirror-live {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--s3);
-  flex: 1 1 0;
-  min-height: 0;
-}
-.cast-mirror-ring {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--r-full);
-}
-/* vòng ngoài co theo chiều cao sân khấu, tối đa 176pt */
-.cast-mirror-ring.is-1 {
-  flex: 1 1 0;
-  min-height: 0;
-  max-height: 176px;
-  aspect-ratio: 1 / 1;
-  border: 1.5px dashed var(--accent-line);
-}
-.cast-mirror-ring.is-2 {
-  width: 72%;
-  height: 72%;
-  background: var(--accent-soft);
-}
-.cast-mirror-ring.is-core {
-  width: 56%;
-  height: 56%;
-  background: var(--accent);
-  color: var(--on-accent);
-}
-.cast-mirror-live-status {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: var(--s2);
-  font-size: var(--t-subhead);
-  font-weight: 600;
-  color: var(--accent);
-}
-.cast-mirror-live-time {
-  color: var(--label-2);
-  font-variant-numeric: tabular-nums;
-}
 .cast-mirror-link {
   display: flex;
   flex-direction: column;
@@ -104,28 +60,6 @@
   border: 0;
   background: transparent;
   color: var(--accent);
-  cursor: pointer;
-}
-/* đang chiếu ra trình duyệt → Sound không dùng được: hàng mờ + lý do */
-.cast-mirror-row.is-dim,
-.cast-mirror-row.is-dim .icon {
-  color: var(--label-3);
-}
-.cast-mirror-stop {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--s2);
-  width: 100%;
-  height: var(--ob-cta-h);
-  padding: 0 var(--s6);
-  border: 1.5px solid var(--accent-line);
-  border-radius: var(--r-xl);
-  background: var(--bg);
-  color: var(--accent);
-  font-family: var(--font);
-  font-size: var(--t-headline);
-  font-weight: 600;
   cursor: pointer;
 }
 </style>

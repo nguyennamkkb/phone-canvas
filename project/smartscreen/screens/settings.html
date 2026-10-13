@@ -1,0 +1,134 @@
+<!-- pc {"title":"Settings"} -->
+<!--
+  Màn Settings — học theo họ Cast/Home đang có trên board: nền --bg-grouped,
+  thẻ TRẮNG bo --r-lg, hàng 52pt kẻ ngăn --separator, icon sc.*, chevron
+  --label-3, tiêu đề mục .t-title3 (như home-* / cast-devices).
+  Bố cục trên → dưới (.body cuộn, recipe list-screen):
+  1. Nav: back · "Settings" (shell dựng).
+  2. Thẻ Premium — điểm nhấn duy nhất: thẻ --accent-soft (nền thẻ chọn, như
+     thẻ quiz), ô icon TRẮNG chứa vương miện --gold (lối vào khu Pro), tiêu
+     đề + mô tả, nút mũi tên accent 44pt (primary action).
+  3. "General Settings": Languages.
+  4. "More": Restore Purchase · Share the app · Feedback · Rate us ·
+     Privacy Policy.
+  5. "Version 1.0.1.0" căn giữa, spacer đẩy xuống đáy.
+  Dùng lại .cast-mirror-list/.cast-mirror-row (tokens.css) như cast-devices —
+  không viết lại CSS hàng. Icon share / envelope / doc.text / star vẽ thêm
+  cùng quy cách sc.* (24 · nét 1.8 · bo tròn). Crown vàng thay huy hiệu trong
+  ảnh mẫu (gold chỉ dùng ở khu Pro).
+  SwiftUI: List inset-grouped trên --bg-grouped; Premium là NavigationLink.
+-->
+<style>
+.settings-premium {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s3) var(--s4);
+  border: 0;
+  border-radius: var(--r-lg);
+  background: var(--accent-soft);
+  color: var(--label);
+  font-family: var(--font);
+  text-align: left;
+  cursor: pointer;
+}
+.settings-premium-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--r-md);
+  background: var(--bg);
+  color: var(--gold);
+}
+.settings-premium-title {
+  font-size: var(--t-title3);
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: -0.4px;
+}
+.settings-premium-go {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: var(--r-md);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+.settings-version {
+  padding-top: var(--s6);
+  text-align: center;
+}
+</style>
+<div class="screen" style="background-color: var(--bg-grouped)">
+  <span data-slot="back" aria-label="Back"><span class="icon" data-symbol="chevron.left" style="color: var(--accent)"></span></span>
+  <span data-slot="title" class="t-headline">Settings</span>
+
+  <div class="body" style="gap: var(--s5); padding: var(--s2) var(--s4) calc(var(--s4) + var(--safe-bottom))">
+    <button class="settings-premium" aria-label="Premium, unlock all advanced features">
+      <span class="settings-premium-tile"><span class="icon icon-lg" data-symbol="sc.crown"></span></span>
+      <span class="grow col" style="gap: 2px">
+        <span class="settings-premium-title">Premium</span>
+        <span class="t-subhead t-secondary">Unlock all advanced features</span>
+      </span>
+      <span class="settings-premium-go" aria-hidden="true"><span class="icon icon-sm" data-symbol="sc.arrow.right"></span></span>
+    </button>
+
+    <div class="settings-section">
+      <h2 class="t-title3">General Settings</h2>
+      <div class="cast-mirror-list">
+        <button class="cast-mirror-row" aria-label="Languages">
+          <span class="icon" data-symbol="sc.globe" style="color: var(--accent)"></span>
+          <span class="grow">Languages</span>
+          <span class="icon icon-xs" data-symbol="sc.chevron.right" style="color: var(--label-3)"></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h2 class="t-title3">More</h2>
+      <div class="cast-mirror-list">
+        <button class="cast-mirror-row" aria-label="Restore Purchase">
+          <span class="icon" data-symbol="sc.arrow.circlepath" style="color: var(--accent)"></span>
+          <span class="grow">Restore Purchase</span>
+          <span class="icon icon-xs" data-symbol="sc.chevron.right" style="color: var(--label-3)"></span>
+        </button>
+        <button class="cast-mirror-row" aria-label="Share the app">
+          <span class="icon" data-symbol="sc.share" style="color: var(--accent)"></span>
+          <span class="grow">Share the app</span>
+          <span class="icon icon-xs" data-symbol="sc.chevron.right" style="color: var(--label-3)"></span>
+        </button>
+        <button class="cast-mirror-row" aria-label="Feedback">
+          <span class="icon" data-symbol="sc.envelope" style="color: var(--accent)"></span>
+          <span class="grow">Feedback</span>
+          <span class="icon icon-xs" data-symbol="sc.chevron.right" style="color: var(--label-3)"></span>
+        </button>
+        <button class="cast-mirror-row" aria-label="Rate us">
+          <span class="icon" data-symbol="sc.star" style="color: var(--accent)"></span>
+          <span class="grow">Rate us</span>
+          <span class="icon icon-xs" data-symbol="sc.chevron.right" style="color: var(--label-3)"></span>
+        </button>
+        <button class="cast-mirror-row" aria-label="Privacy Policy">
+          <span class="icon" data-symbol="sc.doc.text" style="color: var(--accent)"></span>
+          <span class="grow">Privacy Policy</span>
+          <span class="icon icon-xs" data-symbol="sc.chevron.right" style="color: var(--label-3)"></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+    <div class="t-footnote t-secondary settings-version">Version 1.0.1.0</div>
+  </div>
+</div>
