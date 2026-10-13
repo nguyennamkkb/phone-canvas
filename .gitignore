@@ -20,3 +20,4 @@ herdr-context/
 !.github/
 !.github/workflows/
 !.github/workflows/gate.yml
+.gstack/

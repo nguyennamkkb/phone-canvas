@@ -1,0 +1,98 @@
+<!-- pc {"title":"Cast · Screen Mirroring"} -->
+<!--
+  Màn Screen Mirroring — đồng bộ họ Cast (cast-photo / cast-video) + Home B.
+  Bố cục trên → dưới:
+  1. Nav: back · "Mirroring" (≤ 15 ký tự, không cần tắt lint) · nút Pro tròn
+     (.cast-pro, chỉ hiện với người dùng Free).
+  2. Sân khấu trắng: ảnh cast_mirror_hero (điện thoại dọc → TV hiện y hệt
+     màn hình điện thoại ở giữa, 2 bên trống — đúng cách mirror thật; prompt ở
+     docs/cast/cast-sheets.md); dưới là mô tả 1 dòng.
+  3. Thẻ cài đặt trắng, 4 hàng 52pt có kẻ ngăn (List inset-grouped):
+     Mirror To (TV ⌄) · Quality (Basic ⌄ → sheet cast-photo-quality, đổi tiêu
+     đề) · Auto-Rotate (bật) · Sound (Pro: vương miện nhỏ accent, tắt).
+     Icon + giá trị màu accent như nút Quality của cast-photo; công tắc bật =
+     accent, tắt = accent-soft (không dùng xanh lá hệ thống — ngoài bảng màu).
+  4. Thẻ TV đang nối: glyph TV · tên · "● Connected" (.ob-live) · chevron;
+     chạm = đổi TV.
+  5. CTA viên thuốc 56pt "Start Mirroring" (.ob-cta) dính đáy, chừa
+     --safe-bottom (bản trước thẻ thiết bị đè lên home indicator).
+  Hàng công tắc là button role="switch" cả hàng; công tắc chỉ là hình.
+  Auto-Rotate dùng sc.arrow.circlepath (bộ sc chưa có glyph khoá-xoay).
+  .cast-mirror-list/row/switch/knob/device/tile sống ở tokens.css vì màn
+  đang chiếu (cast-mirror-active) dùng chung.
+-->
+<style>
+.cast-mirror-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s3);
+  flex: 1 1 0;
+  min-height: 0;
+  padding: var(--s4);
+  border-radius: var(--r-lg);
+  background: var(--bg);
+  overflow: hidden;
+}
+/* ảnh 4:3, rộng tối đa 240pt, co theo chiều cao thẻ trên máy nhỏ */
+.cast-mirror-art {
+  flex: 0 1 auto;
+  min-height: 0;
+  width: auto;
+  max-width: 240px;
+  height: 180px;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+}
+</style>
+<div class="screen" style="background-color: var(--bg-grouped)">
+  <span data-slot="back" aria-label="Back"><span class="icon" data-symbol="chevron.left" style="color: var(--accent)"></span></span>
+  <span data-slot="title" class="t-headline">Mirroring</span>
+  <button data-slot="right" class="cast-pro" aria-label="Upgrade to Pro"><span class="cast-pro-dot"><span class="icon icon-sm" data-symbol="sc.crown"></span></span></button>
+
+  <div class="body-fixed" style="gap: 0">
+    <div class="col grow cast-pad" style="min-height: 0; padding-bottom: calc(var(--s3) + var(--safe-bottom))">
+      <div class="cast-mirror-stage">
+        <img class="art cast-mirror-art" src="/project/smartscreen/assets/cast_mirror_hero.png" width="240" height="180" alt="cast_mirror_hero" data-asset="cast_mirror_hero" />
+        <p class="ob-desc">Mirror your whole phone screen to TV &amp; more</p>
+      </div>
+
+      <div class="cast-mirror-list">
+        <button class="cast-mirror-row" aria-label="Mirror to: TV">
+          <span class="icon" data-symbol="sc.tv" style="color: var(--accent)"></span>
+          <span class="grow">Mirror To</span>
+          <span class="is-value">TV</span>
+          <span class="icon icon-xs" data-symbol="sc.chevron.down" style="color: var(--accent)"></span>
+        </button>
+        <button class="cast-mirror-row" aria-label="Quality: Basic">
+          <span class="icon" data-symbol="sc.sparkles" style="color: var(--accent)"></span>
+          <span class="grow">Quality</span>
+          <span class="is-value">Basic</span>
+          <span class="icon icon-xs" data-symbol="sc.chevron.down" style="color: var(--accent)"></span>
+        </button>
+        <button class="cast-mirror-row" role="switch" aria-checked="true" aria-label="Auto-Rotate">
+          <span class="icon" data-symbol="sc.arrow.circlepath" style="color: var(--accent)"></span>
+          <span class="grow">Auto-Rotate</span>
+          <span class="cast-mirror-switch" aria-hidden="true"><span class="cast-mirror-knob"></span></span>
+        </button>
+        <button class="cast-mirror-row" role="switch" aria-checked="false" aria-label="Sound, Pro">
+          <span class="icon" data-symbol="sc.speaker" style="color: var(--accent)"></span>
+          <span class="grow row" style="gap: var(--s2)">Sound<span class="icon icon-xs" data-symbol="sc.crown" style="color: var(--accent)"></span></span>
+          <span class="cast-mirror-switch is-off" aria-hidden="true"><span class="cast-mirror-knob"></span></span>
+        </button>
+      </div>
+
+      <button class="cast-mirror-device" aria-label="Connected to 32in Roku HD TV, change TV">
+        <span class="cast-mirror-device-tile"><span class="icon" data-symbol="sc.tv"></span></span>
+        <span class="grow col" style="gap: 2px">
+          <span class="t-headline">32in Roku HD TV</span>
+          <span class="row" style="gap: var(--s2)"><i class="ob-live"></i><span class="t-caption t-secondary">Connected</span></span>
+        </span>
+        <span class="icon icon-xs" data-symbol="sc.chevron.right" style="color: var(--label-3)"></span>
+      </button>
+
+      <button class="ob-cta"><span class="icon icon-sm" data-symbol="sc.play.fill"></span>Start Mirroring</button>
+    </div>
+  </div>
+</div>

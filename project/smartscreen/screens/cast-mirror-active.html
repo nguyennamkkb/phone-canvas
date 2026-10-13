@@ -1,0 +1,191 @@
+<!-- pc {"title":"Cast · Screen Mirroring · Đang chiếu"} -->
+<!--
+  Màn Screen Mirroring — TRẠNG THÁI ĐANG CHIẾU (đích PC/Tablet qua trình duyệt),
+  sau khi bấm "Start Mirroring" ở cast-mirror. Cùng khung họ Cast.
+  Bố cục trên → dưới:
+  1. Nav: back · "Mirroring" · nút Pro tròn (như màn 1).
+  2. Sân khấu LIVE (không thẻ): vòng sóng đồng tâm quanh lõi laptop accent
+     — cùng ngôn ngữ vòng ở Home B / KB3 radar, đọc ra "đang phát"; dưới là
+     "● Live · 12:45". Vòng co theo chiều cao còn lại (iPhone SE vẫn vừa).
+  2b. Thẻ link: nhãn "Open this link on your PC or tablet" + ô URL (nền
+     accent-soft, chữ mono accent, nút copy 44pt trong ô) + 1 dòng gợi ý
+     "Same Wi-Fi · any browser". Mở link là việc duy nhất người dùng phải
+     làm → thẻ trắng nổi nhất màn.
+  3. Thẻ cài đặt (.cast-mirror-list/row/switch, tokens.css): Mirror To
+     "PC/Tablet" · Quality · Auto-Rotate · Sound MỜ + dòng phụ giải thích
+     "Not available in browser" (bản trước chỉ mờ, không nói vì sao).
+  4. "Stop Mirroring" — nút viên thuốc trắng, chữ + icon accent (đọc ra là
+     nút, không lẫn với thẻ), cùng vị trí CTA "Start Mirroring" của màn 1.
+  Thời gian + URL là dữ liệu thật của phiên; board dùng giá trị mẫu.
+-->
+<style>
+.cast-mirror-live {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s3);
+  flex: 1 1 0;
+  min-height: 0;
+}
+.cast-mirror-ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-full);
+}
+/* vòng ngoài co theo chiều cao sân khấu, tối đa 176pt */
+.cast-mirror-ring.is-1 {
+  flex: 1 1 0;
+  min-height: 0;
+  max-height: 176px;
+  aspect-ratio: 1 / 1;
+  border: 1.5px dashed var(--accent-line);
+}
+.cast-mirror-ring.is-2 {
+  width: 72%;
+  height: 72%;
+  background: var(--accent-soft);
+}
+.cast-mirror-ring.is-core {
+  width: 56%;
+  height: 56%;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.cast-mirror-live-status {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s2);
+  font-size: var(--t-subhead);
+  font-weight: 600;
+  color: var(--accent);
+}
+.cast-mirror-live-time {
+  color: var(--label-2);
+  font-variant-numeric: tabular-nums;
+}
+.cast-mirror-link {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  padding: var(--s4);
+  border-radius: var(--r-lg);
+  background: var(--bg);
+}
+.cast-mirror-url {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s1);
+  min-height: 52px;
+  padding: 0 var(--s1) 0 var(--s4);
+  border-radius: var(--r-md);
+  background: var(--accent-soft);
+}
+.cast-mirror-url-text {
+  flex: 1 1 0;
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: var(--t-callout);
+  font-weight: 600;
+  color: var(--accent);
+  overflow-wrap: anywhere;
+}
+.cast-mirror-url-copy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+}
+/* đang chiếu ra trình duyệt → Sound không dùng được: hàng mờ + lý do */
+.cast-mirror-row.is-dim,
+.cast-mirror-row.is-dim .icon {
+  color: var(--label-3);
+}
+.cast-mirror-stop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  width: 100%;
+  height: var(--ob-cta-h);
+  padding: 0 var(--s6);
+  border: 1.5px solid var(--accent-line);
+  border-radius: var(--r-xl);
+  background: var(--bg);
+  color: var(--accent);
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 600;
+  cursor: pointer;
+}
+</style>
+<div class="screen" style="background-color: var(--bg-grouped)">
+  <span data-slot="back" aria-label="Back"><span class="icon" data-symbol="chevron.left" style="color: var(--accent)"></span></span>
+  <span data-slot="title" class="t-headline">Mirroring</span>
+  <button data-slot="right" class="cast-pro" aria-label="Upgrade to Pro"><span class="cast-pro-dot"><span class="icon icon-sm" data-symbol="sc.crown"></span></span></button>
+
+  <div class="body-fixed" style="gap: 0">
+    <div class="col grow cast-pad" style="min-height: 0; padding-bottom: calc(var(--s3) + var(--safe-bottom))">
+      <div class="cast-mirror-live" role="status" aria-label="Mirroring live, 12 minutes 45 seconds">
+        <div class="cast-mirror-ring is-1">
+          <div class="cast-mirror-ring is-2">
+            <div class="cast-mirror-ring is-core"><span class="icon icon-lg" data-symbol="sc.laptop"></span></div>
+          </div>
+        </div>
+        <span class="cast-mirror-live-status"><i class="ob-live"></i>Live<span class="cast-mirror-live-time">· 12:45</span></span>
+      </div>
+
+      <div class="cast-mirror-link">
+        <span class="t-headline">Open this link on your PC or tablet</span>
+        <div class="cast-mirror-url">
+          <span class="cast-mirror-url-text">http://192.168.5.29:4999</span>
+          <button class="cast-mirror-url-copy" aria-label="Copy link"><span class="icon icon-sm" data-symbol="sc.copy"></span></button>
+        </div>
+        <span class="t-caption t-secondary">Same Wi‑Fi as your phone · any browser</span>
+      </div>
+
+      <div class="cast-mirror-list">
+        <button class="cast-mirror-row" aria-label="Mirror to: PC or tablet">
+          <span class="icon" data-symbol="sc.laptop" style="color: var(--accent)"></span>
+          <span class="grow">Mirror To</span>
+          <span class="is-value">PC/Tablet</span>
+          <span class="icon icon-xs" data-symbol="sc.chevron.down" style="color: var(--accent)"></span>
+        </button>
+        <button class="cast-mirror-row" aria-label="Quality: Basic">
+          <span class="icon" data-symbol="sc.sparkles" style="color: var(--accent)"></span>
+          <span class="grow">Quality</span>
+          <span class="is-value">Basic</span>
+          <span class="icon icon-xs" data-symbol="sc.chevron.down" style="color: var(--accent)"></span>
+        </button>
+        <button class="cast-mirror-row" role="switch" aria-checked="true" aria-label="Auto-Rotate">
+          <span class="icon" data-symbol="sc.arrow.circlepath" style="color: var(--accent)"></span>
+          <span class="grow">Auto-Rotate</span>
+          <span class="cast-mirror-switch" aria-hidden="true"><span class="cast-mirror-knob"></span></span>
+        </button>
+        <button class="cast-mirror-row is-dim" role="switch" aria-checked="false" aria-disabled="true" aria-label="Sound, not available in browser">
+          <span class="icon" data-symbol="sc.speaker"></span>
+          <span class="grow col" style="gap: 0">
+            <span>Sound</span>
+            <span class="t-caption">Not available in browser</span>
+          </span>
+          <span class="cast-mirror-switch is-off" aria-hidden="true"><span class="cast-mirror-knob"></span></span>
+        </button>
+      </div>
+
+      <button class="cast-mirror-stop" aria-label="Stop mirroring">
+        <span class="icon icon-sm" data-symbol="sc.stop.fill"></span>
+        Stop Mirroring
+      </button>
+    </div>
+  </div>
+</div>

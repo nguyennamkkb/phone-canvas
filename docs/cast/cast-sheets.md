@@ -28,6 +28,7 @@ Hình giữa sheet là ảnh minh hoạ 4:3 cỡ 140×105pt (lớp `.cast-sheet-
 |---|---|---|---|---|
 | `cast_check_tv` | Sheet 1, hình giữa | 4:3 · 2048×1536 | 140×105 → 420×315 | ✅ duyệt, đã gắn (nguồn `project/smartscreen/assets/source/ai-studio-img_1791862398557_4cxl2v.png`, nền đã chỉnh về `#E6ECFF`). Ghi chú nhỏ: mặt trời có tia, còn ở `cast_sale_pro` thì không; tay chạm mép trái và mép dưới |
 | `cast_sale_pro` | Sheet 2, hình giữa | 4:3 · 2048×1536 | 140×105 → 420×315 | ✅ duyệt, đã gắn (nguồn `project/smartscreen/assets/source/ai-studio-img_1791862217617_r62l3q.png`, nền đã chỉnh về `#E6ECFF`) |
+| `cast_mirror_hero` | Màn `cast-mirror` (Mirroring), ảnh trong thẻ trắng phía trên | 4:3 · 2048×1536 | ~240×180 (co theo chiều cao thẻ; iPhone SE ~160×120) → 720×540 | ✅ duyệt, đã gắn (nguồn `project/smartscreen/assets/source/ai-studio-4-3-1791869400515.png`, nền và màn TV đã chỉnh về `#E6ECFF`). Ghi chú nhỏ: lưới ra 3×3 thay vì 3×4 nhưng hai màn vẫn trùng nhau; tay chạm mép trái và mép dưới |
 
 ### `cast_check_tv` — Sheet 1 "Is the photo showing on your TV?" (4:3)
 
@@ -81,6 +82,40 @@ Landscape 4:3, 2048x1536.
 - Blob lệch màu thì chỉnh hậu kỳ về `#E6ECFF`, như ảnh Home Ideas (`docs/home/home-redesign.md` §5).
 
 **Gắn vào board:** thay `<div class="ob-ph cast-photo-sale-art" data-asset="cast_sale_pro">…</div>` bằng `<img class="art cast-photo-sale-art" src="/images/cast_sale_pro.png" … data-asset="cast_sale_pro">`, thêm `object-fit: cover`.
+
+### `cast_mirror_hero` — Màn Mirroring, minh hoạ "chiếu nguyên màn hình điện thoại" (4:3)
+
+**Ý ảnh:** mirror khác cast ảnh. **Toàn bộ màn hình điện thoại** hiện lên TV, gồm lưới icon app, nên ảnh phải vẽ đúng cách mirror thật trên TV:
+- Điện thoại cầm **dọc**.
+- Trên TV, màn hình điện thoại hiện **dọc ở giữa**, hai bên là dải trống (pillarbox).
+- Nội dung trên điện thoại và trên TV **giống hệt nhau**: cùng lưới 3×4 ô app, cùng ô nào tô màu nào.
+
+**Đính kèm** bộ 3 ảnh quiz làm style reference, kèm `cast_check_tv` (`project/smartscreen/assets/cast_check_tv.png`) để TV cùng dáng với các ảnh cast khác.
+
+**Vị trí trong UI:** ảnh nằm giữa thẻ trắng phía trên màn, dưới ảnh là dòng chữ "Mirror your whole phone screen to TV & more" do app render. Thẻ co theo chiều cao máy, nên chủ thể phải gọn ở giữa và đọc được ở cỡ ~160pt.
+```
+Using the attached images as the exact style reference (same thick black outlines, same soft rounded shapes, same organic background blob, same amount of white space). Draw the TV exactly like the TV in the attached cast image: same shape, same short feet.
+A bold, simple spot illustration that must read clearly at a small 160x120 size.
+A large flat-screen TV on two short feet fills the upper-right two thirds of the frame. In the bottom-left, one hand holds a smartphone UPRIGHT in portrait orientation. The phone screen shows a simple home screen: a grid of 3 columns by 4 rows of small rounded-square app tiles. On the TV, the phone screen is mirrored exactly: the same tall portrait screen with the same 3x4 grid of rounded-square tiles, centered on the TV screen, with plain empty side areas left and right of it (pillarbox), exactly like real screen mirroring. One curved royal blue dashed arrow flies from the phone up to the TV. Three small Wi-Fi arcs above the phone.
+Coloring: TV screen background #E6ECFF; the mirrored portrait screen on the TV and the phone screen both white; app tiles alternate royal blue #0440FB and #BDCCFD in exactly the same pattern on the phone and on the TV (top-left tile royal blue on both); dashed arrow and Wi-Fi arcs royal blue #0440FB; hand and device bodies white.
+No text, no letters, no numbers, no icons or symbols inside the app tiles — plain filled rounded squares only.
+Subject centered, about 85% of the width and 80–90% of the height, at least 8% margin on every side.
+Background: pure white with ONE flat, solid #E6ECFF organic blob behind the devices — no pattern, no squiggles, no texture; the four corners stay pure white.
+[STYLE-LIGHT]
+Landscape 4:3, 2048x1536.
+```
+**Ô negative:**
+- Dán khối **NEGATIVE** của KB1.
+- Thêm: `landscape phone, horizontal phone, photo of mountains, different screens, app logos, icons with symbols, letters on tiles, status bar, notch details, check mark, price tag, sparkles, pattern, squiggles, decorative texture`.
+
+**Duyệt:**
+- Phải đếm được lưới 3×4 trên cả hai màn, và ô nào xanh đậm / xanh nhạt phải trùng nhau.
+- Trên TV, màn điện thoại là khung dọc ở giữa, hai bên trống.
+- Không có chữ hay ký hiệu trong ô app.
+- Thu về ~160×120 vẫn đọc ngay được "điện thoại dọc → TV hiện y hệt".
+- Blob lệch màu thì chỉnh hậu kỳ về `#E6ECFF`.
+
+**Gắn vào board:** trong `cast-mirror.html`, thay khối `<div class="ob-tv cast-mirror-tv">…</div>` bằng `<img class="art cast-mirror-art" src="/project/smartscreen/assets/cast_mirror_hero.png" data-asset="cast_mirror_hero">`. Ảnh rộng tối đa 240pt, tỉ lệ 4:3, co theo chiều cao thẻ.
 
 ## Cần chốt
 

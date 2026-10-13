@@ -1,0 +1,162 @@
+<!-- pc {"title":"Cast · Devices"} -->
+<!--
+  Màn chọn TV — đồng bộ họ Cast (list trắng .cast-mirror-list/-row dùng chung
+  với màn Mirroring, glyph sc.*, accent). Bố cục trên → dưới, VÙNG CUỘN
+  (.body) vì số TV tìm được thay đổi theo mạng:
+  1. Nav: back · "Choose a TV" · quét lại. Không lặp tiêu đề lớn trong thân.
+  2. Mô tả 1 câu: cùng Wi-Fi với điện thoại.
+  3. "Connected": TV đang nối (glyph cast · tên · ● Connected · đĩa tích).
+  4. "Other TVs": mỗi hàng glyph · tên · dòng phụ = IP / không có thì bỏ ·
+     chevron (chạm = kết nối). Không lặp "Not connected" — tên nhóm đã nói.
+     Hàng cuối "Searching for TVs…" (3 chấm, SwiftUI nhấp nháy) = đang quét,
+     danh sách còn có thể dài thêm.
+  5. Lối thoát ở CUỐI (người dùng xem danh sách trước, không thấy mới cần):
+     "Can't find your TV?" (trợ giúp) · "Mirror to a browser" (QR, như Home B).
+  Khác app (ghi rõ): logo hãng (androidtv / fire tv / Roku) chưa có asset →
+  glyph sc.tv; trạng thái xanh lá / hổ phách của app → accent / bỏ (ngoài
+  bảng màu).
+-->
+<style>
+.cast-devices-pad {
+  gap: 0;
+  padding: var(--s2) var(--s4) calc(var(--s6) + var(--safe-bottom));
+}
+.cast-devices-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+}
+.cast-devices-section {
+  margin: var(--s5) 0 var(--s2) var(--s1);
+  font-size: var(--t-footnote);
+  font-weight: 600;
+  line-height: 18px;
+  color: var(--label-2);
+}
+/* hàng thiết bị có ô glyph 44pt → cao 64 để ô không chạm đường kẻ */
+.cast-devices-list {
+  padding: 0 var(--s3);
+}
+.cast-devices-list .cast-mirror-row {
+  min-height: 64px;
+}
+.cast-devices-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--r-full);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.cast-devices-search {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  min-height: 52px;
+  border-top: 1px solid var(--separator);
+  color: var(--label-2);
+  font-size: var(--t-subhead);
+}
+.cast-devices-dots {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: var(--s1);
+  width: 44px;
+}
+.cast-devices-dots i {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-full);
+  background: var(--accent);
+}
+.cast-devices-dots i:nth-child(2) {
+  background: var(--accent-line);
+}
+.cast-devices-dots i:nth-child(3) {
+  background: var(--accent-soft);
+}
+.cast-devices-links .cast-mirror-row {
+  color: var(--accent);
+  font-size: var(--t-subhead);
+  font-weight: 600;
+}
+</style>
+<div class="screen" style="background-color: var(--bg-grouped)">
+  <span data-slot="back" aria-label="Back"><span class="icon" data-symbol="chevron.left" style="color: var(--accent)"></span></span>
+  <span data-slot="title" class="t-headline">Choose a TV</span>
+  <button data-slot="right" class="cast-devices-nav" aria-label="Scan again"><span class="icon" data-symbol="sc.arrow.circlepath"></span></button>
+
+  <div class="body cast-devices-pad">
+    <p class="ob-desc">Make sure your TV is on the same Wi‑Fi as your phone.</p>
+
+    <span class="cast-devices-section">CONNECTED</span>
+    <div class="cast-mirror-list cast-devices-list">
+      <button class="cast-mirror-row" aria-label="32in Roku HD TV, connected">
+        <span class="cast-mirror-device-tile"><span class="icon" data-symbol="sc.cast"></span></span>
+        <span class="grow col" style="gap: 2px">
+          <span class="t-headline">32in Roku HD TV</span>
+          <span class="row" style="gap: var(--s2)"><i class="ob-live"></i><span class="t-caption t-secondary">Connected</span></span>
+        </span>
+        <span class="cast-devices-check" aria-hidden="true"><span class="icon icon-xs" data-symbol="sc.checkmark"></span></span>
+      </button>
+    </div>
+
+    <span class="cast-devices-section">OTHER TVS</span>
+    <div class="cast-mirror-list cast-devices-list">
+      <button class="cast-mirror-row" aria-label="Connect to meeting room 2">
+        <span class="cast-mirror-device-tile"><span class="icon" data-symbol="sc.tv"></span></span>
+        <span class="grow t-headline">meeting room 2</span>
+        <span class="icon icon-xs" data-symbol="sc.chevron.right" style="color: var(--label-3)"></span>
+      </button>
+      <button class="cast-mirror-row" aria-label="Connect to NT72563_AP, 192.165.5.190">
+        <span class="cast-mirror-device-tile"><span class="icon" data-symbol="sc.tv"></span></span>
+        <span class="grow col" style="gap: 2px">
+          <span class="t-headline">NT72563_AP</span>
+          <span class="t-caption t-secondary">192.165.5.190</span>
+        </span>
+        <span class="icon icon-xs" data-symbol="sc.chevron.right" style="color: var(--label-3)"></span>
+      </button>
+      <button class="cast-mirror-row" aria-label="Connect to 32 inch Roku Select Series HD TV">
+        <span class="cast-mirror-device-tile"><span class="icon" data-symbol="sc.tv"></span></span>
+        <span class="grow t-headline">32" Roku Select Series HD TV</span>
+        <span class="icon icon-xs" data-symbol="sc.chevron.right" style="color: var(--label-3)"></span>
+      </button>
+      <button class="cast-mirror-row" aria-label="Connect to HD TV">
+        <span class="cast-mirror-device-tile"><span class="icon" data-symbol="sc.tv"></span></span>
+        <span class="grow t-headline">HD TV</span>
+        <span class="icon icon-xs" data-symbol="sc.chevron.right" style="color: var(--label-3)"></span>
+      </button>
+      <div class="cast-devices-search" role="status" aria-label="Searching for TVs">
+        <span class="cast-devices-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        Searching for TVs…
+      </div>
+    </div>
+
+    <span class="cast-devices-section">NO TV?</span>
+    <div class="cast-mirror-list cast-devices-links">
+      <button class="cast-mirror-row">
+        <span class="icon" data-symbol="sc.info.circle"></span>
+        <span class="grow">Can’t find your TV?</span>
+        <span class="icon icon-xs" data-symbol="sc.chevron.right" style="color: var(--label-3)"></span>
+      </button>
+      <button class="cast-mirror-row">
+        <span class="icon" data-symbol="sc.qrcode"></span>
+        <span class="grow">Mirror to a browser</span>
+        <span class="icon icon-xs" data-symbol="sc.chevron.right" style="color: var(--label-3)"></span>
+      </button>
+    </div>
+  </div>
+</div>

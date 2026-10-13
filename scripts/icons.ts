@@ -160,6 +160,8 @@ const SYMBOLS: Record<string, string> = {
   'sc.web.image': 'sc-web-image.svg',
   'sc.tv': 'sc-tv.svg',
   'sc.cast': 'sc-cast.svg',
+  'sc.stop.fill': 'sc-stop-fill.svg',
+  'sc.copy': 'sc-copy.svg',
   'sc.laptop': 'sc-laptop.svg',
   'sc.whiteboard': 'sc-whiteboard.svg',
   'sc.camera': 'sc-camera.svg',

@@ -1,0 +1,446 @@
+{
+  "v": 1,
+  "projectId": "smartscreen",
+  "exportedAt": 1791874784463,
+  "board": {
+    "v": 5,
+    "nodes": [
+      {
+        "id": "smartscreen-n1",
+        "type": "phone",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "data": {
+          "screenId": "kb1-m1-quiz",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "smartscreen-n2",
+        "type": "phone",
+        "position": {
+          "x": 534,
+          "y": 0
+        },
+        "data": {
+          "screenId": "kb1-m2-mirror",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "smartscreen-n3",
+        "type": "phone",
+        "position": {
+          "x": 1068,
+          "y": 0
+        },
+        "data": {
+          "screenId": "kb1-m2-media",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "smartscreen-n4",
+        "type": "phone",
+        "position": {
+          "x": 1602,
+          "y": 0
+        },
+        "data": {
+          "screenId": "kb1-m2-whiteboard",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "smartscreen-n5",
+        "type": "phone",
+        "position": {
+          "x": 2136,
+          "y": 0
+        },
+        "data": {
+          "screenId": "kb1-m3-trust",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "smartscreen-n6",
+        "type": "phone",
+        "position": {
+          "x": 2670,
+          "y": 0
+        },
+        "data": {
+          "screenId": "kb1-m4-permission",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "smartscreen-n7",
+        "type": "phone",
+        "position": {
+          "x": 3204,
+          "y": 0
+        },
+        "data": {
+          "screenId": "kb1-m5-discovery",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "smartscreen-n8",
+        "type": "phone",
+        "position": {
+          "x": 3738,
+          "y": 0
+        },
+        "data": {
+          "screenId": "kb1-m6-playground",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "smartscreen-n9",
+        "type": "phone",
+        "position": {
+          "x": 4272,
+          "y": 0
+        },
+        "data": {
+          "screenId": "kb1-m6-casting",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "smartscreen-n10",
+        "type": "phone",
+        "position": {
+          "x": 4806,
+          "y": 0
+        },
+        "data": {
+          "screenId": "kb1-m7-paywall",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "smartscreen-n11",
+        "type": "phone",
+        "position": {
+          "x": 5340,
+          "y": 0
+        },
+        "data": {
+          "screenId": "kb1-m7-exit-offer",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "smartscreen-n12",
+        "type": "phone",
+        "position": {
+          "x": 5874,
+          "y": 0
+        },
+        "data": {
+          "screenId": "kb1-m8-welcome",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "smartscreen-n13",
+        "type": "phone",
+        "position": {
+          "x": 0,
+          "y": 1180
+        },
+        "data": {
+          "screenId": "home-current",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "smartscreen-n14",
+        "type": "phone",
+        "position": {
+          "x": 534,
+          "y": 1180
+        },
+        "data": {
+          "screenId": "home-a-grid",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "smartscreen-n15",
+        "type": "phone",
+        "position": {
+          "x": 1068,
+          "y": 1180
+        },
+        "data": {
+          "screenId": "home-b-stage",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "smartscreen-n16",
+        "type": "phone",
+        "position": {
+          "x": 0,
+          "y": 2360
+        },
+        "data": {
+          "screenId": "cast-photo",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "smartscreen-n17",
+        "type": "phone",
+        "position": {
+          "x": 534,
+          "y": 2360
+        },
+        "data": {
+          "screenId": "cast-photo-quality",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "smartscreen-n18",
+        "type": "phone",
+        "position": {
+          "x": 1068,
+          "y": 2360
+        },
+        "data": {
+          "screenId": "cast-photo-check",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "smartscreen-n19",
+        "type": "phone",
+        "position": {
+          "x": 1602,
+          "y": 2360
+        },
+        "data": {
+          "screenId": "cast-photo-sale",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "smartscreen-n20",
+        "type": "phone",
+        "position": {
+          "x": 2670,
+          "y": 2360
+        },
+        "data": {
+          "screenId": "cast-video",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "smartscreen-n21",
+        "type": "phone",
+        "position": {
+          "x": 0,
+          "y": 3540
+        },
+        "data": {
+          "screenId": "cast-mirror",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "smartscreen-n22",
+        "type": "phone",
+        "position": {
+          "x": 534,
+          "y": 3540
+        },
+        "data": {
+          "screenId": "cast-mirror-active",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "smartscreen-n23",
+        "type": "phone",
+        "position": {
+          "x": 1068,
+          "y": 3540
+        },
+        "data": {
+          "screenId": "cast-devices",
+          "deviceId": "reference"
+        }
+      },
+      {
+        "id": "smartscreen-n24",
+        "type": "phone",
+        "position": {
+          "x": 0,
+          "y": 4720
+        },
+        "data": {
+          "screenId": "sc-icons",
+          "deviceId": "reference"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "xy-edge__smartscreen-n1-smartscreen-n2",
+        "source": "smartscreen-n1",
+        "target": "smartscreen-n2"
+      },
+      {
+        "id": "xy-edge__smartscreen-n2-smartscreen-n3",
+        "source": "smartscreen-n2",
+        "target": "smartscreen-n3"
+      },
+      {
+        "id": "xy-edge__smartscreen-n3-smartscreen-n4",
+        "source": "smartscreen-n3",
+        "target": "smartscreen-n4"
+      },
+      {
+        "id": "xy-edge__smartscreen-n4-smartscreen-n5",
+        "source": "smartscreen-n4",
+        "target": "smartscreen-n5"
+      },
+      {
+        "id": "xy-edge__smartscreen-n5-smartscreen-n6",
+        "source": "smartscreen-n5",
+        "target": "smartscreen-n6"
+      },
+      {
+        "id": "xy-edge__smartscreen-n6-smartscreen-n7",
+        "source": "smartscreen-n6",
+        "target": "smartscreen-n7"
+      },
+      {
+        "id": "xy-edge__smartscreen-n7-smartscreen-n8",
+        "source": "smartscreen-n7",
+        "target": "smartscreen-n8"
+      },
+      {
+        "id": "xy-edge__smartscreen-n8-smartscreen-n9",
+        "source": "smartscreen-n8",
+        "target": "smartscreen-n9"
+      },
+      {
+        "id": "xy-edge__smartscreen-n9-smartscreen-n10",
+        "source": "smartscreen-n9",
+        "target": "smartscreen-n10"
+      },
+      {
+        "id": "xy-edge__smartscreen-n10-smartscreen-n11",
+        "source": "smartscreen-n10",
+        "target": "smartscreen-n11",
+        "label": "X",
+        "data": {
+          "flow": {
+            "sourceComponent": "X"
+          }
+        }
+      },
+      {
+        "id": "xy-edge__smartscreen-n11-smartscreen-n12",
+        "source": "smartscreen-n11",
+        "target": "smartscreen-n12",
+        "label": "Claim",
+        "data": {
+          "flow": {
+            "sourceComponent": "Claim"
+          }
+        }
+      },
+      {
+        "id": "xy-edge__smartscreen-n16-smartscreen-n17",
+        "source": "smartscreen-n16",
+        "target": "smartscreen-n17",
+        "label": "Quality",
+        "data": {
+          "flow": {
+            "sourceComponent": "Quality"
+          }
+        }
+      },
+      {
+        "id": "xy-edge__smartscreen-n16-smartscreen-n18",
+        "source": "smartscreen-n16",
+        "target": "smartscreen-n18",
+        "label": "Cast lần đầu",
+        "data": {
+          "flow": {
+            "sourceComponent": "Cast lần đầu"
+          }
+        }
+      },
+      {
+        "id": "xy-edge__smartscreen-n18-smartscreen-n19",
+        "source": "smartscreen-n18",
+        "target": "smartscreen-n19",
+        "label": "Yes, I see it",
+        "data": {
+          "flow": {
+            "sourceComponent": "Yes, I see it"
+          }
+        }
+      },
+      {
+        "id": "xy-edge__smartscreen-n21-smartscreen-n22",
+        "source": "smartscreen-n21",
+        "target": "smartscreen-n22",
+        "label": "Start Mirroring",
+        "data": {
+          "flow": {
+            "sourceComponent": "Start Mirroring"
+          }
+        }
+      },
+      {
+        "id": "xy-edge__smartscreen-n21-smartscreen-n23",
+        "source": "smartscreen-n21",
+        "target": "smartscreen-n23",
+        "label": "Mirror To",
+        "data": {
+          "flow": {
+            "sourceComponent": "Mirror To"
+          }
+        }
+      },
+      {
+        "id": "xy-edge__smartscreen-n15-smartscreen-n16",
+        "source": "smartscreen-n15",
+        "target": "smartscreen-n16",
+        "label": "Photos",
+        "data": {
+          "flow": {
+            "sourceComponent": "Photos"
+          }
+        }
+      },
+      {
+        "id": "xy-edge__smartscreen-n15-smartscreen-n21",
+        "source": "smartscreen-n15",
+        "target": "smartscreen-n21",
+        "label": "Connect / Mirror",
+        "data": {
+          "flow": {
+            "sourceComponent": "Connect / Mirror"
+          }
+        }
+      }
+    ],
+    "removed": [],
+    "trash": []
+  }
+}

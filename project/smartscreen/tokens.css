@@ -48,6 +48,7 @@
   /* ---- Home hiện tại (assets/Main.svg) — CHỈ màn home-current dùng để đối
      chiếu; ngoài bảng design-direction nên các phương án home-* không dùng ---- */
   --home-ink-2: #464646; /* chữ phụ */
+
 }
 
 :root[data-theme='dark'] {
@@ -581,4 +582,87 @@
 img.cast-thumb {
   object-fit: cover;
   border: 2px solid var(--accent);
+}
+
+/* ---- Screen Mirroring (cast-mirror + cast-mirror-active): list inset-grouped,
+   hàng 52pt có kẻ ngăn, công tắc 51×31 (tắt = accent-soft), thẻ TV đang nối.
+   Sống ở tokens.css vì hai màn cùng dùng; phần sân khấu riêng nằm trong màn. -- */
+.cast-mirror-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0 var(--s4); /* lề trong: icon / công tắc không chạm mép thẻ */
+  border-radius: var(--r-lg);
+  background: var(--bg);
+}
+.cast-mirror-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  min-height: 52px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--label);
+  font-family: var(--font);
+  font-size: var(--t-body);
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+.cast-mirror-row + .cast-mirror-row {
+  border-top: 1px solid var(--separator);
+}
+.cast-mirror-row .is-value {
+  color: var(--accent);
+  font-weight: 600;
+}
+.cast-mirror-switch {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+  width: 51px;
+  height: 31px;
+  padding: 2px;
+  border-radius: var(--r-full);
+  background: var(--accent);
+}
+.cast-mirror-switch.is-off {
+  justify-content: flex-start;
+  background: var(--accent-soft);
+}
+.cast-mirror-knob {
+  width: 27px;
+  height: 27px;
+  border-radius: var(--r-full);
+  background: var(--bg);
+  box-shadow: 0 2px 6px var(--ob-shadow);
+}
+.cast-mirror-device {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s3) var(--s4) var(--s3) var(--s3);
+  border: 0;
+  border-radius: var(--r-lg);
+  background: var(--bg);
+  color: var(--label);
+  font-family: var(--font);
+  text-align: left;
+  cursor: pointer;
+}
+.cast-mirror-device-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-md);
+  background: var(--accent-soft);
+  color: var(--accent);
 }
