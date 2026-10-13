@@ -165,7 +165,7 @@ Dùng nguyên của KB1 — không tạo phong cách riêng cho KB3 (A/B test so
 
 ## Prompt ảnh hero
 
-> **Áp dụng toàn bộ quy tắc ảnh của KB1** ([KB1 · Prompt ảnh hero](kb1-value-first-hard-paywall.md#prompt-ảnh-hero)): công cụ chỉ có **1:1 · 16:9 · 9:16 · 4:3 · 3:4**; **không chừa vùng trống** (chip tự che); **không chữ**, chặn đích danh các thứ hay sinh chữ; cảnh cast thì **màn nguồn và màn đích giống hệt nhau**; chặn xanh da trời; **đính kèm bộ 3 ảnh quiz KB1** (`public/images/ob_quiz_family.png`, `ob_quiz_work.png`, `ob_quiz_creative.png`) làm style reference; duyệt theo **checklist** cuối file KB1.
+> **Áp dụng toàn bộ quy tắc ảnh của KB1** ([KB1 · Prompt ảnh hero](kb1-value-first-hard-paywall.md#prompt-ảnh-hero)): công cụ chỉ có **1:1 · 16:9 · 9:16 · 4:3 · 3:4**; **không chừa vùng trống** (chip tự che); **không chữ**, chặn đích danh các thứ hay sinh chữ; cảnh cast thì **màn nguồn và màn đích giống hệt nhau**; chặn xanh da trời; **đính kèm bộ 3 ảnh quiz KB1** (`project/smartscreen/assets/ob_quiz_family.png`, `ob_quiz_work.png`, `ob_quiz_creative.png`) làm style reference; duyệt theo **checklist** cuối file KB1.
 
 | Mã ảnh | Màn | Tỉ lệ | Kích thước tạo | Hiển thị (reference) → @3x | Trạng thái |
 |---|---|---|---|---|---|

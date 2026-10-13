@@ -111,7 +111,7 @@ Composition: the subject spans about 90% of the width and 70–90% of the height
 People are very simple rounded shapes filled with #BDCCFD or white, faces blank or minimal, no skin tones. No screen reflections or glare, no ground shadow, no drop shadows, no gradients, no 3D, no texture. Devices are simplified mockups with rounded corners, short feet and no brand logos. Absolutely no text, no letters, no numbers, no logos, no watermark.
 ```
 
-> **Bắt buộc đính kèm bộ 3 ảnh màn 1 (`public/images/ob_quiz_family.png`, `ob_quiz_work.png`, `ob_quiz_creative.png`) làm style reference** cho mọi ảnh nền sáng. **Không tạo lại bộ 3 này** — chúng là chuẩn; ảnh khác phải khớp chúng, không phải ngược lại.
+> **Bắt buộc đính kèm bộ 3 ảnh màn 1 (`project/smartscreen/assets/ob_quiz_family.png`, `ob_quiz_work.png`, `ob_quiz_creative.png`) làm style reference** cho mọi ảnh nền sáng. **Không tạo lại bộ 3 này** — chúng là chuẩn; ảnh khác phải khớp chúng, không phải ngược lại.
 
 ### 7.3 Đoạn prompt phong cách tối (STYLE-DARK)
 

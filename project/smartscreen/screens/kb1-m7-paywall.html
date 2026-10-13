@@ -49,7 +49,7 @@
   /* TRÀN VIỀN TRÊN. SwiftUI: Image("ob_hero_paywall_pro") .aspectFill
      .ignoresSafeArea(edges: .top) + mask LinearGradient mờ mép dưới về nền.
      Board không vẽ được dưới status bar (shell đặt nó ngoài viewport), nên ảnh
-     ở /images/ là bản đã pha mép trên/dưới về đúng màu nền → nối liền status
+     ở /project/smartscreen/assets/ là bản đã pha mép trên/dưới về đúng màu nền → nối liền status
      bar. Asset gốc cho app: project/smartscreen/assets/. Tạo 16:9, cắt 21:9. */
   width: 100%;
   height: auto;
@@ -165,9 +165,9 @@
   <div class="body-fixed" style="gap: 0">
     <div class="ob-scroll" style="gap: var(--s4); padding-top: 0">
       <div class="ob-hero kb1-m7-paywall-banner">
-        <img class="art kb1-m7-paywall-hero" src="/images/ob_hero_paywall_pro.png" width="390" height="167" alt="ob_hero_paywall_pro" data-asset="ob_hero_paywall_pro" />
+        <img class="art kb1-m7-paywall-hero" src="/project/smartscreen/assets/ob_hero_paywall_pro.png" width="390" height="167" alt="ob_hero_paywall_pro" data-asset="ob_hero_paywall_pro" />
         <button class="kb1-m7-paywall-close" aria-label="Close">
-          <span class="icon icon-sm" data-symbol="xmark"></span>
+          <span class="icon icon-sm" data-symbol="sc.xmark"></span>
         </button>
         <button class="kb1-m7-paywall-restore">Restore</button>
       </div>
@@ -177,18 +177,18 @@
       <div class="col" style="gap: var(--s3)">
         <div class="row" style="gap: var(--s3)">
           <div class="kb1-m7-paywall-perk">
-            <span class="icon icon-sm kb1-m7-paywall-check" data-symbol="checkmark"></span>4K Mirroring
+            <span class="icon icon-sm kb1-m7-paywall-check" data-symbol="sc.checkmark"></span>4K Mirroring
           </div>
           <div class="kb1-m7-paywall-perk">
-            <span class="icon icon-sm kb1-m7-paywall-check" data-symbol="checkmark"></span>Unlimited Whiteboard
+            <span class="icon icon-sm kb1-m7-paywall-check" data-symbol="sc.checkmark"></span>Unlimited Whiteboard
           </div>
         </div>
         <div class="row" style="gap: var(--s3)">
           <div class="kb1-m7-paywall-perk">
-            <span class="icon icon-sm kb1-m7-paywall-check" data-symbol="checkmark"></span>Live Camera HD
+            <span class="icon icon-sm kb1-m7-paywall-check" data-symbol="sc.checkmark"></span>Live Camera HD
           </div>
           <div class="kb1-m7-paywall-perk">
-            <span class="icon icon-sm kb1-m7-paywall-check" data-symbol="checkmark"></span>No Ads
+            <span class="icon icon-sm kb1-m7-paywall-check" data-symbol="sc.checkmark"></span>No Ads
           </div>
         </div>
       </div>
@@ -228,10 +228,10 @@
     <div class="ob-foot" style="gap: var(--s2)">
       <button class="ob-cta">
         Start 3-Day Free Trial
-        <span class="icon icon-sm" data-symbol="arrow.right"></span>
+        <span class="icon icon-sm" data-symbol="sc.arrow.right"></span>
       </button>
       <div class="row" style="gap: var(--s2); justify-content: center">
-        <span class="icon icon-xs" data-symbol="shield.fill" style="color: var(--accent-line)"></span>
+        <span class="icon icon-xs" data-symbol="sc.shield.fill" style="color: var(--accent-line)"></span>
         <span class="t-footnote" style="color: var(--pro-ink-2)">No payment now · 3 days free, then $—.——/year</span>
       </div>
       <div class="row" style="gap: var(--s1); justify-content: center; margin: calc(-1 * var(--s2)) 0">

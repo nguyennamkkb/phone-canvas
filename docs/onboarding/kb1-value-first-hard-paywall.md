@@ -156,12 +156,12 @@
 | 2 | ✅ Đạt | Prompt **chỉ định màu cho từng chi tiết**, **liệt kê màu bị cấm bằng tên**, cấm phản quang/bóng đổ, quy định độ lấp khung, và yêu cầu "đọc được ở cỡ nhỏ". |
 | `ob_quiz_work` lần 1 | ❌ Lệch phong cách | Màu + nội dung đúng nhưng **nét chỉ dày 0.56% bề ngang** (chuẩn ~1.2%), **viền navy** thay vì đen, **thiếu blob**, nét **thước kẻ, góc vuông nhọn** → ra sơ đồ kỹ thuật, không giống family. Prompt chưa khoá độ dày + dáng nét, và có thể đã tạo **không kèm ảnh family làm style reference**. |
 | `ob_quiz_work` lần 2 | ⚠️ Trôi sang phong cách mới | Độ dày (1.34%) + viền đen đã khớp, nhưng STYLE bản trước tả *"loose, wobbly marker sketch"* và *"large blob"* → nét **kép, run kiểu phác thảo**, blob phủ **45%** khung (family 26%), chủ thể chật **89%** chiều cao (family 71%). **Bài học: tả phong cách bằng số đo của ảnh chuẩn, không dùng tính từ cảm tính** — tính từ kéo cả bộ sang một phong cách mới. |
-| `ob_hero_photo_video_web` lần 2 | ✅ sau hậu kỳ | Không chữ, nội dung đúng, nhưng màn TV + nửa ô lưới là **xanh da trời `#ADD2FF`** (11.7% ảnh, ngoài bảng màu). Không tạo lại: **xoay sắc độ** riêng các điểm ảnh hue 200–220°, độ bão hoà > 0.2 về hue 227° (`#BDCCFD`), giữ nguyên nét + blob. File gốc ở `project/smartscreen/assets/`, bản sửa `public/images/ob_hero_photo_video_web.png`. Prompt các ảnh sau thêm *"not sky blue"* + NEGATIVE *sky blue, cyan, baby blue*. |
+| `ob_hero_photo_video_web` lần 2 | ✅ sau hậu kỳ | Không chữ, nội dung đúng, nhưng màn TV + nửa ô lưới là **xanh da trời `#ADD2FF`** (11.7% ảnh, ngoài bảng màu). Không tạo lại: **xoay sắc độ** riêng các điểm ảnh hue 200–220°, độ bão hoà > 0.2 về hue 227° (`#BDCCFD`), giữ nguyên nét + blob. File gốc ở `project/smartscreen/assets/source/`, bản sửa `project/smartscreen/assets/ob_hero_photo_video_web.png`. Prompt các ảnh sau thêm *"not sky blue"* + NEGATIVE *sky blue, cyan, baby blue*. |
 | Duyệt bộ 3 | ✅ | Đặt cạnh nhau ở cỡ thẻ 96×128pt, `family` + `work` (lần 2) + `creative` đọc thành một họ → duyệt cả bộ. STYLE dưới đây mô tả **khoảng số đo của cả 3 ảnh**, không chỉ ảnh family. |
 
 **Vì vậy mọi prompt dưới đây đều có 4 khối, không bỏ khối nào:** (1) Cảnh + bố cục · (2) **Coloring** — chi tiết nào tô màu nào · (3) Vùng trống · (4) STYLE + tỉ lệ. Cuối cùng dán NEGATIVE nếu công cụ hỗ trợ.
 
-**Ảnh chuẩn phong cách:** bộ 3 ảnh màn 1 đã duyệt — `public/images/ob_quiz_family.png`, `ob_quiz_work.png`, `ob_quiz_creative.png`. Nếu công cụ hỗ trợ *style reference / image prompt*, **luôn đính kèm ảnh này** khi tạo mọi ảnh nền sáng còn lại; dùng cùng công cụ, cùng seed nếu có.
+**Ảnh chuẩn phong cách:** bộ 3 ảnh màn 1 đã duyệt — `project/smartscreen/assets/ob_quiz_family.png`, `ob_quiz_work.png`, `ob_quiz_creative.png`. Nếu công cụ hỗ trợ *style reference / image prompt*, **luôn đính kèm ảnh này** khi tạo mọi ảnh nền sáng còn lại; dùng cùng công cụ, cùng seed nếu có.
 
 | Mã ảnh | Màn | Tỉ lệ | Kích thước tạo | Hiển thị (reference) → xuất @3x | Vùng trống | Trạng thái |
 |---|---|---|---|---|---|---|
@@ -188,7 +188,7 @@ Strictly limited palette: black outlines, royal blue #0440FB, light blue #BDCCFD
 Composition: the subject spans about 90% of the width and 70–90% of the height, centered, with at least 8% margin on every side. Behind the subject, one soft organic #E6ECFF blob roughly the size of the subject, covering about 25–45% of the image; the four corners always stay pure white #FFFFFF.
 People are very simple rounded shapes filled with #BDCCFD or white, faces blank or minimal, no skin tones. No screen reflections or glare, no ground shadow, no drop shadows, no gradients, no 3D, no texture. Devices are simplified mockups with rounded corners, short feet and no brand logos. Absolutely no text, no letters, no numbers, no logos, no watermark.
 ```
-> **Bắt buộc đính kèm bộ 3 ảnh màn 1 (`public/images/ob_quiz_family.png`, `ob_quiz_work.png`, `ob_quiz_creative.png`) làm style reference** cho mọi ảnh nền sáng. **Không tạo lại bộ 3 này** — chúng là chuẩn; ảnh khác phải khớp chúng, không phải ngược lại.
+> **Bắt buộc đính kèm bộ 3 ảnh màn 1 (`project/smartscreen/assets/ob_quiz_family.png`, `ob_quiz_work.png`, `ob_quiz_creative.png`) làm style reference** cho mọi ảnh nền sáng. **Không tạo lại bộ 3 này** — chúng là chuẩn; ảnh khác phải khớp chúng, không phải ngược lại.
 
 **STYLE-DARK** — thay `[STYLE-DARK]`:
 ```
@@ -204,7 +204,7 @@ yellow, green, orange, red, pink, purple, skin tone, beige, gray outlines, navy 
 ---
 
 ### ✅ `ob_quiz_family` — Màn 1, thẻ "Family Entertainment" (3:4) — ĐÃ DUYỆT
-**File:** `public/images/ob_quiz_family.png` (896×1200). Prompt đã cho kết quả đạt, giữ làm mẫu; nếu tạo lại thì thêm câu về chân TV (bản hiện tại bị bắp rang che mất chân phải).
+**File:** `project/smartscreen/assets/ob_quiz_family.png` (896×1200). Prompt đã cho kết quả đạt, giữ làm mẫu; nếu tạo lại thì thêm câu về chân TV (bản hiện tại bị bắp rang che mất chân phải).
 ```
 A bold, simple vertical spot illustration that must read clearly at a tiny 96x128 size.
 A big flat-screen TV fills the upper two thirds of the frame, standing on two short feet, both visible. On its screen: a family of two adults and a small child drawn as very simple rounded shapes, standing in front of one mountain and a sun. A small popcorn bucket stands in front of the TV's bottom right corner without hiding the right foot.
@@ -215,9 +215,9 @@ Portrait 3:4, 1536x2048.
 ```
 
 ### ✅ `ob_quiz_work` — Màn 1, thẻ "Work & Study" (3:4) — ĐÃ DUYỆT
-**File:** `public/images/ob_quiz_work.png` (lần 2).
+**File:** `project/smartscreen/assets/ob_quiz_work.png` (lần 2).
 **Mô tả:** Bảng trắng trên giá vẽ (biểu đồ cột + mũi tên đi lên) + laptop mở phía trước. Phải **cùng độ dày nét, cùng dáng nét bo tròn, cùng blob** với `ob_quiz_family` — đặt cạnh nhau không phân biệt được là hai lần tạo.
-**Đính kèm:** `public/images/ob_quiz_family.png` làm style reference.
+**Đính kèm:** `project/smartscreen/assets/ob_quiz_family.png` làm style reference.
 ```
 Using the attached images as the exact style reference (same black outlines of the same thickness, same soft rounded shapes, same background blob, same amount of white space):
 A bold, simple vertical spot illustration that must read clearly at a tiny 96x128 size.
@@ -229,9 +229,9 @@ Portrait 3:4, 1536x2048.
 ```
 
 ### ✅ `ob_quiz_creative` — Màn 1, thẻ "Create & Monitor" (3:4) — ĐÃ DUYỆT
-**File:** `public/images/ob_quiz_creative.png`. Ghi chú nhỏ: cán kính lúp chạm sát mép trái, bị góc bo cắt nhẹ — nếu tạo lại thì chừa lề trái ≥ 8%.
+**File:** `project/smartscreen/assets/ob_quiz_creative.png`. Ghi chú nhỏ: cán kính lúp chạm sát mép trái, bị góc bo cắt nhẹ — nếu tạo lại thì chừa lề trái ≥ 8%.
 **Mô tả:** iPhone trên tripod mini (camera + chấm "đang quay") + kính lúp đè lên khung ảnh (tìm ảnh web). Cùng phong cách với `ob_quiz_family`.
-**Đính kèm:** `public/images/ob_quiz_family.png` làm style reference.
+**Đính kèm:** `project/smartscreen/assets/ob_quiz_family.png` làm style reference.
 ```
 Using the attached images as the exact style reference (same black outlines of the same thickness, same soft rounded shapes, same background blob, same amount of white space):
 A bold, simple vertical spot illustration that must read clearly at a tiny 96x128 size.
