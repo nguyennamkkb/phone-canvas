@@ -28,8 +28,8 @@ npm run export -- --element-check --element pw-cta --screen family-plan  # compa
 npm run golden:check             # every pinned component (scripts/golden-check.ts) — what CI runs
 npm run export -- --device ipad-11 --full --theme dark   # --full = whole page, --theme = light|dark
 npm run export -- --list          # ids, titles, devices
-npm run locate -- --screen my-screen --x 195 --y 640 [--pad 32 --scale 2 --device iphone-se --theme dark]
-npm run locate -- --screen my-screen --box 16,155,358,168 [--pad-pct 0.1] [--ancestors 1] [--children]
+npm run locate -- --screen my-screen --x 195 --y 640 [--pad 32 --scale 2 --device iphone-se --theme dark] [--hide ".ob-float"]
+npm run locate -- --screen my-screen --box 16,155,358,168 [--pad-pct 0.1] [--ancestors 1] [--children] [--hide ".chip" --hide ".badge"]
 npm run project -- freeze <id>   # write project/<id>/board.json seed (scripts/board-freeze.ts; keeps the old file as .bak)
 npm run scan:projects            # print the registry both readers see (scripts/scan-projects.ts)
 npm run preview                  # vite preview (static host, no rewrite rules needed)
@@ -84,6 +84,7 @@ The panel also works at **element level** once something is selected in the tree
 | thumbnail | the real crop of the selection, taken through the same CDP pipeline as `npm run locate` — not a DOM screenshot, so it is what an export would draw |
 | pad / pad % cạnh dài | absolute padding in points, or a fraction of the element's larger side |
 | gồm khung cha (1 cấp) | widen the region to include the parent box, so a cluster comes out whole |
+| ẩn | CSS selectors to paint out before the shot (`visibility:hidden`, so the element the clip was measured on does not move). For an overlay that rides the element's edge — comma-separated, e.g. `.ob-float, .badge` (failure mode 18) |
 | **Xuất element này** | `project/<id>/exports/<name>@2x.png` + `.json` (spec, ancestors, `pngClip`) — a file handoff, not just the clipboard |
 | **Xuất children** | one PNG + JSON per direct child, named from `data-asset`/class (`uniqueNames` suffixes `-2` on a repeat) |
 | **So sánh golden** / **Ghi golden** | compare the current crop against the committed element golden (crop hash + spec digest) or bless the current crop as the new one; `lệch` shows golden and current side by side |
@@ -172,7 +173,7 @@ src/spec/infer.ts            the only place that knows about SwiftUI
 src/canvas/nodeId.ts         node identity (a counter, never derived from a screen)
 scripts/icons.ts             icon generator + the SF Symbol → file map
 scripts/export.ts            screens → PNG via Chrome over CDP, zero deps
-scripts/export/element.ts    element crop pipeline (session, pad %/ancestors, children, naming)
+scripts/export/element.ts    element crop pipeline (session, pad %/ancestors, children, hide, naming)
 scripts/export/element-server.ts  dev-only HTTP bridge the panel calls (/__pc/element/*)
 scripts/new-screen.ts        create a screen from a contract-valid template (--root for tests)
 scripts/rename-screen.ts     rename a screen id (rollback on failure)

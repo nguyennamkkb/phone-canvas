@@ -311,3 +311,28 @@ radius, text — measured boxes and capture ids dropped, because those shift wit
 OS fonts). `--element-check` and `npm run golden:check` fail on **either** half
 moving, and print which one (`crop khớp, spec lệch`). When you add a new golden
 comparison, check both halves — a hash that only sees pixels is not a review.
+
+---
+
+## 18. A crop that keeps a neighbour's overlay
+
+**Symptom.** You select an element, export it, and a chip / badge / label that
+lives *beside* it in the markup shows up inside the PNG, floating over the edge of
+what you wanted. Nothing throws — the crop just looks wrong.
+
+**Cause.** An element crop is a **region screenshot** (CDP `Page.captureScreenshot`
+with a clip), not a subtree render: everything *painted* inside the region lands in
+the file, siblings included. In `kb1-m6-casting` the chip floats at the top of
+`.ob-hero` while the TV starts below it, so the chip's lower edge overlaps the TV's
+own box — correct markup, contaminated image.
+
+**Fix.** Paint the overlay out for the shot: `--hide ".ob-float"` (repeatable) on
+`npm run locate`, or the panel's **ẩn** field before **Xuất element này**. The rule
+is `visibility: hidden !important`, never `display: none`: the clip is measured
+**before** the hide, so a reflow would move the element out from under its own
+clip. The spec/JSON is measured first too, so hiding changes pixels only.
+
+**Guard.** The rule is cleared in a `finally` — the Chrome session is warm and
+serves many crops in a row, so a leaked rule would quietly follow every later shot.
+A crop made with `--hide` compares `lệch` against a golden stored without it, which
+is the honest verdict: a different render.

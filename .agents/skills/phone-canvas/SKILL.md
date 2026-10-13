@@ -1,6 +1,6 @@
 ---
 name: phone-canvas
-description: Design, build, verify, and hand off phone screens on the phone-canvas board — author a screen as constrained HTML/CSS, render it in an iPhone frame, read per-element specs off the live DOM for SwiftUI, export screens to PNG, crop or golden a single element, and compare specs between screens. Use when asked to create or change a phone screen in this project, to turn a screenshot or mockup into a screen ("tái hiện màn hình này", "dựng màn hình này lên canvas"), to add or fix an icon or illustration asset, to export screens to images, to export or golden one element/component, or to produce SwiftUI specs from a design. Covers the CSS subset, the icon and illustration pipelines, the export-and-look verification loop, and the known silent failure modes.
+description: Design, build, verify, and hand off phone screens on the phone-canvas board — author a screen as constrained HTML/CSS, render it in an iPhone frame, read per-element specs off the live DOM for SwiftUI, export screens to PNG, crop or golden a single element, and compare specs between screens. Use when asked to create or change a phone screen in this project, to turn a screenshot or mockup into a screen ("tái hiện màn hình này", "dựng màn hình này lên canvas"), to add or fix an icon or illustration asset, to export screens to images, to export or golden one element/component, to crop one element without a neighbouring chip or badge riding along, or to produce SwiftUI specs from a design. Covers the CSS subset, the icon and illustration pipelines, the export-and-look verification loop, and the known silent failure modes.
 ---
 
 # Phone Canvas
@@ -46,7 +46,10 @@ then pay for.
    content-driven: if it is not the height you intended, something is too tall
    or too short, and you find it by measuring, never by guessing. For one
    component, crop it instead of the whole screen: select it in the panel and use
-   **Xuất element này** / **Xuất children**, or `npm run locate -- --box …`.
+   **Xuất element này** / **Xuất children**, or `npm run locate -- --box …`. A crop
+   is a region shot, so a neighbouring overlay (a chip riding the element's edge)
+   rides along — clear it with the panel's **ẩn** field or `--hide <selector>`
+   (failure mode 18).
 7. **Look** — actually read the exported PNG. Compare it against the intent or
    the reference. Numbers cannot tell you a layout reads wrong.
 8. **Repair** — fix the highest-severity problem, re-export, look again. Bound it
@@ -168,7 +171,7 @@ Use the live board to confirm observable behavior:
 - **Single-screen check** — every lint takes `--screen <id>` (`scripts/screen-filter.ts`): `npm run lint:regions -- --screen today`. Unknown id exits 1, never a green zero.
 - **Goldens** — `npm run export -- --all-devices --golden` renders every width in `DEVICES` and writes versioned PNGs + sha256 records (`scripts/export/cli.ts`, `scripts/export/golden.ts`; manifest `goldens.json`). The node label shows `khớp golden` / `lệch golden` / `chưa có golden` (read-only — `src/inspect/badges.ts`).
 - **Element goldens + CI** — `--golden --element <stem|class.set>` pins ONE component inside a screen (crop hash + geometry-free spec digest); `--element-check` compares without writing and exits 1 on drift; `npm run golden:check` runs the pinned list (`scripts/golden-check.ts`) and `.github/workflows/gate.yml` runs it after `npm run gate`. The panel's **So sánh golden** / **Ghi golden** does the same for the selected element, with before/after side by side. A dot-separated query (`pw-card.fp-plan.is-best`) is how you pin one of several same-family elements on a screen.
-- **Element crop** — `scripts/export/element.ts` is the one crop pipeline (board panel over `/__pc/element/*`, `npm run locate`, children batches). `--pad-pct` pads by a fraction of the larger side, `--ancestors 1` widens to the parent, `--children` writes one file per direct child named from `data-asset`/class.
+- **Element crop** — `scripts/export/element.ts` is the one crop pipeline (board panel over `/__pc/element/*`, `npm run locate`, children batches). `--pad-pct` pads by a fraction of the larger side, `--ancestors 1` widens to the parent, `--children` writes one file per direct child named from `data-asset`/class, `--hide <selector>` (repeatable) paints matching elements out before the shot — `visibility:hidden`, so the measured clip stays valid; for an overlay riding the element's edge (panel field **ẩn** does the same).
 - **Spec drift** — the panel's **So lệch hai màn** diffs two mounted screens' specs by kind (`src/inspect/compare/`), collapsed by default.
 - **Shared components need anatomy** — every `project/<id>/components/*.html` opens with an 11-item `<!-- @anatomy … -->` header (`scripts/component-anatomy.ts`); `lint:components` BLOCKS when it is missing. Scaffold one born-passing: `npm run new-screen -- --project <id> --component <slug> --title "…"`.
 - **Board seed** — `npm run project -- freeze <id>` writes `project/<id>/board.json` (`scripts/board-freeze.ts`, keeps the old file as `.bak`); the board `fetch`es it once per project (`seedBoard`, `src/projects/storage.ts`) and applies it **only when it is newer than the saved record** — localStorage wins. It never replaces Xuất/Nhập.
