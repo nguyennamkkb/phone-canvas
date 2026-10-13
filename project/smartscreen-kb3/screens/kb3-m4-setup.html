@@ -1,0 +1,136 @@
+<!-- pc {"title":"KB3 · 4 Setup"} -->
+<!--
+  T4 – Màn chờ cá nhân hoá (thay "Technical Calibration" của bản gốc: thanh
+  0→100% trong 3s + "Calibrating latency" là tiến trình giả + claim không có
+  thật — Guideline 2.3.1; L2 đã duyệt 2026-10-12).
+
+  Bố cục cùng nhịp các màn quiz kề bên: tiêu đề + mô tả trên cùng, căn trái;
+  dưới là THẺ SÂN KHẤU (vòng đồng tâm — cùng ngôn ngữ radar của m5-scan, nên
+  màn chờ dẫn mạch sang màn quét; sóng lan + lõi xoay nhẹ ở SwiftUI) giãn lấp
+  chỗ trống; cuối là THẺ CHECKLIST 3 dòng cùng trục trái.
+  Không vòng % / cung tiến trình: không hiển thị tiến độ giả, chỉ việc app làm.
+  3 dòng đọc đúng dữ liệu quiz: brand từ m2 ("Samsung"), tính năng từ m3
+  ("Whiteboard", "Photos"). Snapshot: 2 dòng xong, dòng 3 đang chạy; tick đủ
+  thì tự sang m5 (~2.5s). Không CTA, không Skip.
+-->
+<style>
+.kb3-m4-setup-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 0 224px;
+  border-radius: var(--r-xl);
+  background: var(--bg-grouped);
+}
+.kb3-m4-setup-ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  border-radius: var(--r-full);
+}
+.kb3-m4-setup-ring.is-1 {
+  width: 184px;
+  height: 184px;
+  border: 1.5px dashed var(--accent-line);
+}
+.kb3-m4-setup-ring.is-2 {
+  width: 132px;
+  height: 132px;
+  background: var(--accent-soft);
+}
+.kb3-m4-setup-ring.is-3 {
+  width: 84px;
+  height: 84px;
+  background: var(--accent-line);
+}
+.kb3-m4-setup-ring.is-core {
+  width: 52px;
+  height: 52px;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.kb3-m4-setup-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: var(--s1) var(--s4);
+  border-radius: var(--r-xl);
+  background: var(--bg-grouped);
+}
+.kb3-m4-setup-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  min-height: 52px;
+}
+.kb3-m4-setup-row + .kb3-m4-setup-row {
+  border-top: 1px solid var(--separator);
+}
+.kb3-m4-setup-row b {
+  color: var(--label);
+  font-weight: 600;
+}
+.kb3-m4-setup-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-full);
+}
+.kb3-m4-setup-check.is-done {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.kb3-m4-setup-check.is-active {
+  background: var(--accent-soft);
+}
+.kb3-m4-setup-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--r-full);
+  background: var(--accent);
+}
+</style>
+<div class="screen" style="background-color: var(--bg)">
+  <div class="body-fixed" style="gap: 0">
+    <div class="ob-steps" role="progressbar" aria-label="Step 4 of 9" aria-valuenow="4" aria-valuemin="1" aria-valuemax="9"><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i></div>
+
+    <div class="ob-scroll" style="gap: var(--s5); padding-top: var(--s6)">
+      <div class="col" style="gap: var(--s2)">
+        <h1 class="ob-display">Setting up <span class="ob-hl">SmartCast</span> for you…</h1>
+        <p class="ob-lead">Using your answers to get everything ready.</p>
+      </div>
+
+      <div class="kb3-m4-setup-stage" role="img" aria-label="Setting up">
+        <div class="kb3-m4-setup-ring is-1">
+          <div class="kb3-m4-setup-ring is-2">
+            <div class="kb3-m4-setup-ring is-3">
+              <div class="kb3-m4-setup-ring is-core">
+                <span class="icon" data-symbol="sparkles"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="kb3-m4-setup-list" role="list" aria-label="Setup steps, 2 of 3 done">
+        <div class="kb3-m4-setup-row" role="listitem">
+          <span class="kb3-m4-setup-check is-done"><span class="icon icon-xs" data-symbol="checkmark"></span></span>
+          <span class="grow t-subhead t-secondary">Matching settings for <b>Samsung</b></span>
+        </div>
+        <div class="kb3-m4-setup-row" role="listitem">
+          <span class="kb3-m4-setup-check is-done"><span class="icon icon-xs" data-symbol="checkmark"></span></span>
+          <span class="grow t-subhead t-secondary">Preparing <b>Whiteboard</b> and <b>Photos</b></span>
+        </div>
+        <div class="kb3-m4-setup-row" role="listitem">
+          <span class="kb3-m4-setup-check is-active"><i class="kb3-m4-setup-dot"></i></span>
+          <span class="grow t-subhead t-secondary">Getting ready to find your TV</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

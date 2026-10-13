@@ -1,0 +1,298 @@
+/* SmartCast · KB3 — design system onboarding (docs/onboarding/design-direction.md).
+   Bản sao nguyên vẹn DNA của KB1 (project/smartscreen/tokens.css): KB3 không
+   tạo phong cách riêng — A/B test so sánh *luồng*, không so *giao diện*
+   (kb3 doc §Ngôn ngữ thiết kế chung). Chất riêng của KB3 nằm ở BỐ CỤC từng
+   màn (split 6″/65″, lưới hãng, checklist ring, social-proof paywall, vé
+   "applied", tips), không ở token.
+   Nguồn màu DUY NHẤT: bảng mục 2 của design-direction. Không thêm hex mới;
+   biến thể opacity chỉ suy ra từ màu có sẵn trong bảng (ghi rõ nguồn).
+
+   Ba khối theo recipes/design-tokens.md: light (đầy đủ) → dark (chỉ cái đổi)
+   → scales. Sau đó là vài class KHUNG dùng ở >= 2 màn (thanh tiến trình,
+   placeholder ảnh, vùng cuộn + chân CTA, tiêu đề). CSS chỉ một màn dùng nằm
+   trong khối <style> của chính màn đó (recipes/screen-style.md); mẫu T2–T7
+   sống ở màn đầu tiên dùng nó, chuyển lên đây khi màn thứ hai cần.
+
+   Khu Pro (Paywall / Exit Offer) luôn tối, không theo Sáng/Tối: dùng nhóm
+   --pro-*, không dùng --bg / --label. */
+
+:root {
+  /* ---- surfaces + text (semantic) ---- */
+  --bg: #ffffff;
+  --bg-grouped: #f5f4f9; /* thẻ, khối phụ (Background phụ) */
+  --bg-elevated: #ffffff;
+  --label: #111111; /* tiêu đề */
+  --label-2: #8a8a8e; /* mô tả, phụ đề */
+  --label-3: #a1a1a1; /* chữ mờ = mực placeholder */
+  --separator: #e6ecff;
+  --fill: #f5f4f9;
+
+  /* ---- accent (Assets.xcassets/Colors) ---- */
+  --accent: #0440fb; /* blue500 — CTA, chấm trang, tiến trình */
+  --accent-soft: #e6ecff; /* blue50 — nền thẻ chọn, nền icon */
+  --accent-line: #bdccfd; /* blue100 — viền phụ, mảng nền sau chủ thể */
+  --on-accent: #ffffff;
+
+  /* ---- placeholder ảnh hero (AI-UI-NOTES) ---- */
+  --ob-ph: #d9d9d9;
+  --ob-ph-ink: #a1a1a1;
+  --ob-shadow: rgba(4, 64, 251, 0.14); /* bóng chip nổi = blue500 @ 14%, không xám */
+
+  /* ---- khu Pro: Paywall + Exit Offer, luôn tối ---- */
+  --pro-top: #070b1f; /* gradient dọc: đỉnh */
+  --pro-bottom: #0e1638; /* gradient dọc: đáy */
+  --pro-ink: #ffffff;
+  --pro-ink-2: #bdccfd; /* chữ phụ trên nền tối = blue100 */
+  --pro-ph: #2a3150; /* placeholder ảnh trên nền tối */
+  --pro-card: rgba(189, 204, 253, 0.08); /* blue100 @ 8% */
+  --pro-line: rgba(189, 204, 253, 0.24); /* blue100 @ 24% */
+  --pro-scrim: rgba(7, 11, 31, 0.72); /* --pro-top @ 72% */
+  --gold: #ffc83d; /* chỉ khu Pro: vương miện, sao, Best Value */
+  --urgency: #ff4d3a; /* chỉ Exit Offer: đồng hồ, nhãn giảm giá */
+}
+
+:root[data-theme='dark'] {
+  /* design-direction không định nghĩa onboarding tối; ánh xạ sang bảng tối
+     của chính nó để board render được, giữ accent + chữ phụ như sáng */
+  --bg: #070b1f;
+  --bg-grouped: #0e1638;
+  --bg-elevated: #0e1638;
+  --label: #ffffff;
+  --separator: #2a3150;
+  --fill: #0e1638;
+  --accent-soft: #0e1638;
+  --accent-line: #2a3150;
+  --ob-ph: #2a3150;
+  --ob-shadow: rgba(7, 11, 31, 0.6);
+}
+
+:root {
+  /* ---- scales riêng của onboarding (core.css giữ phần còn lại) ---- */
+  --ob-gutter: var(--s6); /* lề ngang 24pt */
+  --ob-cta-h: 56px; /* nút viên thuốc, bo 28 = --r-xl */
+  --ob-progress-h: 4px;
+  --ob-float-h: 36px; /* chip UI nổi trên ảnh */
+  --r-hero: 24px; /* bo góc ảnh hero / placeholder */
+  --t-ob-display: 30px; /* tiêu đề màn sáng: 30 Bold căn trái */
+  --t-ob-display-lh: 36px;
+  --t-ob-title: 26px; /* tiêu đề khu Pro: 26 Bold căn giữa */
+  --t-ob-title-lh: 32px;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+/* ---------------------------------------------------------------- khung -- */
+
+/* thân màn: vùng cuộn + chân CTA. SwiftUI: VStack { ScrollView {…}; foot }
+   — nội dung cuộn được trên iPhone SE, CTA luôn dính đáy cùng một vị trí. */
+.ob-scroll {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  gap: 0;
+  padding: var(--s2) var(--ob-gutter) var(--s4);
+}
+
+/* home indicator của shell là lớp đè (absolute): thứ cuối cùng của thân
+   phải tự chừa --safe-bottom, nếu không nội dung nằm dưới thanh home */
+.ob-scroll:last-child {
+  padding-bottom: calc(var(--s4) + var(--safe-bottom));
+}
+
+.ob-foot {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--s4);
+  padding: var(--s2) var(--ob-gutter) calc(var(--s4) + var(--safe-bottom));
+}
+
+/* chấm trang carousel: chưa chọn blue100, đang chọn kéo dài blue500 */
+.ob-foot .dot {
+  background: var(--accent-line);
+}
+.ob-foot .dot.is-active {
+  background: var(--accent);
+}
+
+/* tiến trình 8 đoạn thay nút Skip: đoạn đã qua blue500, còn lại blue50 */
+.ob-steps {
+  display: flex;
+  flex-direction: row;
+  gap: var(--s1);
+  padding: var(--s2) var(--ob-gutter) 0;
+}
+.ob-step {
+  flex: 1 1 0;
+  min-width: 0;
+  height: var(--ob-progress-h);
+  border-radius: var(--r-full);
+  background: var(--accent-soft);
+}
+.ob-step.is-done {
+  background: var(--accent);
+}
+
+/* placeholder ảnh 3:4 dọc: xám + icon photo + mã ảnh mono 12pt. SwiftUI:
+   OnboardHeroImageView(imageName:) — có asset thì hiện ảnh, không thì đây */
+.ob-ph {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--r-hero);
+  background: var(--ob-ph);
+  color: var(--ob-ph-ink);
+}
+.ob-ph.is-dark {
+  background: var(--pro-ph);
+}
+.ob-ph-code {
+  font-family: var(--font-mono);
+  font-size: var(--t-caption);
+  line-height: 16px;
+}
+
+/* ảnh + chip UI nổi: ZStack. Chip do app render (dịch được), đặt bằng
+   top/left/right/bottom trong khung ảnh — không transform (rule 5) */
+.ob-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+}
+.ob-float {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s2);
+  height: var(--ob-float-h);
+  padding: 0 var(--s3);
+  border-radius: var(--r-full);
+  background: var(--bg);
+  color: var(--label);
+  font-size: var(--t-footnote);
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 8px 24px var(--ob-shadow);
+}
+.ob-live {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-full);
+  background: var(--accent);
+}
+
+/* tiêu đề màn sáng: editorial, căn trái, một từ nhấn bằng .ob-hl */
+.ob-display {
+  font-size: var(--t-ob-display);
+  font-weight: 800;
+  line-height: var(--t-ob-display-lh);
+  letter-spacing: -0.9px;
+}
+.ob-hl {
+  color: var(--accent);
+}
+.ob-lead {
+  font-size: var(--t-subhead);
+  line-height: 21px;
+  letter-spacing: -0.2px;
+  color: var(--label-2);
+}
+
+/* tiêu đề + mô tả khu Pro (Paywall / Exit): căn giữa */
+.ob-title {
+  font-size: var(--t-ob-title);
+  font-weight: 700;
+  line-height: var(--t-ob-title-lh);
+  letter-spacing: -0.6px;
+  text-align: center;
+}
+.ob-desc {
+  font-size: var(--t-subhead);
+  line-height: 20px;
+  letter-spacing: -0.2px;
+  text-align: center;
+  color: var(--label-2);
+}
+
+/* CTA viên thuốc: cao 56, bo 28, 17 Semibold trắng, nhãn + mũi tên */
+.ob-cta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  width: 100%;
+  height: var(--ob-cta-h);
+  padding: 0 var(--s6);
+  border: 0;
+  border-radius: var(--r-xl);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* TV vẽ bằng code (M6a/M6b): viền đen + màn 16:9 + chân đế. Nội dung màn TV
+   là thứ đang được cast — rỗng (chờ) hoặc ảnh người dùng chọn */
+.ob-tv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+.ob-tv-bezel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: var(--s2);
+  border-radius: var(--r-lg);
+  background: var(--label);
+}
+.ob-tv-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--r-md);
+  background: var(--bg-grouped);
+  color: var(--label-2);
+}
+.ob-tv-neck {
+  width: 8px;
+  height: 12px;
+  background: var(--label);
+}
+.ob-tv-base {
+  width: 96px;
+  height: 5px;
+  border-radius: var(--r-full);
+  background: var(--label);
+}
+
+/* ảnh thật thay .ob-ph: cùng khung (lấp bề ngang, tỉ lệ theo ảnh, bo 24pt).
+   SwiftUI: OnboardHeroImageView — có asset thì Image(mã ảnh).aspectFill */
+/* ảnh nền trắng trên màn trắng sẽ mất dáng thẻ (peek carousel biến mất):
+   viền blue50 giữ khung, không đổi ảnh */
+.ob-hero-img {
+  width: 100%;
+  height: auto;
+  border: 2px solid var(--accent-soft);
+  border-radius: var(--r-hero);
+  object-fit: cover;
+}
+
+/* Khung vé (T6) không nằm ở đây: m8 (Xác nhận ưu đãi) đã bỏ 2026-10-13, chỉ
+   kb3-m7-exit-offer dùng vé → style vé sống trong chính file màn đó. */

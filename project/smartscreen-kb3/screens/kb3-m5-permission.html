@@ -1,0 +1,70 @@
+<!-- pc {"title":"KB3 · 5a Permission"} -->
+<!--
+  T3 – Xin quyền, dùng lại khung KB1-M4 (doc: "dùng lại KB1-M4"). KHÁC KB1:
+  chỉ MỘT quyền — Local Network (L8: Photos/Camera xin theo ngữ cảnh khi dùng
+  tính năng, không gộp vào bước này). Vì chỉ còn một chip, bỏ chip Photos ở
+  mép phải; chip Local Network giữ nguyên vị trí vắt mép trái của KB1.
+  Chip đang ở trạng thái CHƯA cấp (glyph wifi); cấp xong chip đổi sang dấu tích
+  (như KB1-M4) rồi mở System Dialog → m5b.
+  Lead thêm một câu nói rõ chính sách quyền (copy đề xuất, gốc L8 không có
+  câu chữ): "Photos and Camera are asked only when you use them."
+  Ảnh: ob_hero_permission_network — DÙNG LẠI KB1 (public/images, đã có).
+-->
+<style>
+.kb3-m5-permission-hero {
+  align-self: center;
+  width: 72%;
+}
+.kb3-m5-permission-glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--r-full);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.kb3-m5-permission-lead b {
+  color: var(--label);
+  font-weight: 600;
+}
+.kb3-m5-permission-note {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s3) var(--s4);
+  border-radius: var(--r-lg);
+  background: var(--bg-grouped);
+}
+</style>
+<div class="screen" style="background-color: var(--bg)">
+  <div class="body-fixed" style="gap: 0">
+    <div class="ob-steps" role="progressbar" aria-label="Step 5 of 9" aria-valuenow="5" aria-valuemin="1" aria-valuemax="9"><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i></div>
+
+    <div class="ob-scroll" style="gap: var(--s6); padding-top: var(--s6)">
+      <h1 class="ob-display">Secure <span class="ob-hl">Local Network</span> Connection</h1>
+
+      <div class="ob-hero kb3-m5-permission-hero">
+        <img class="art ob-hero-img" src="/images/ob_hero_permission_network.png" width="246" height="328" alt="ob_hero_permission_network" data-asset="ob_hero_permission_network" />
+        <span class="ob-float" style="top: var(--s8); left: calc(-1 * var(--s8))">
+          <span class="kb3-m5-permission-glyph"><span class="icon icon-xs" data-symbol="wifi"></span></span>
+          Local Network
+        </span>
+      </div>
+
+      <div class="col" style="gap: var(--s3)">
+        <p class="ob-lead kb3-m5-permission-lead">SmartCast needs <b>Local Network</b> to find TVs around you. <b>Photos</b> and <b>Camera</b> are asked only when you use them.</p>
+        <div class="kb3-m5-permission-note">
+          <span class="icon icon-sm" data-symbol="lock.fill" style="color: var(--accent)"></span>
+          <span class="t-subhead">Your data stays private on your device.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ob-foot">
+      <button class="ob-cta">Allow &amp; Scan for TVs <span class="icon icon-sm" data-symbol="arrow.right"></span></button>
+    </div>
+  </div>
+</div>

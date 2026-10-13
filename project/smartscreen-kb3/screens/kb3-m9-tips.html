@@ -1,0 +1,82 @@
+<!-- pc {"title":"KB3 · 9 Tips"} -->
+<!--
+  T3 – Mẹo nhanh & vào app (màn sáng, kết thúc onboarding). Ảnh 16:9 là sân
+  khấu; 3 dòng mẹo glyph + tiêu đề + mô tả sửa lỗi kết nối lần đầu (nguyên
+  nhân gỡ app phổ biến). Danh sách giãn đầy khung như m3 (nhất quán hai màn
+  danh sách của phễu). Mẹo 3 là copy TẠM đã duyệt (bản gốc chỉ có 2 mẹo nhưng
+  tiêu đề "3 Tips" — L9): "Keep your TV on".
+  Ảnh: ob_hero_tips — ĐÃ CÓ (master: project/smartscreen-kb3/assets/ob_hero_tips.png;
+  bản hiển thị: public/images/ob_hero_tips.png, 1376×768 = chuẩn nhà cho ảnh
+  ngang như ob_hero_paywall_pro).
+  CTA "Enter App →" vào màn chính (Pro nếu đã mua, miễn phí nếu No thanks m7).
+  Tiến trình 9 đoạn đủ 9 — hết phễu.
+-->
+<style>
+.kb3-m9-tips-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.kb3-m9-tips-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  flex: 1 1 0;
+  min-height: 64px;
+}
+.kb3-m9-tips-glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-md);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+</style>
+<div class="screen" style="background-color: var(--bg)">
+  <div class="body-fixed" style="gap: 0">
+    <div class="ob-steps" role="progressbar" aria-label="Step 9 of 9" aria-valuenow="9" aria-valuemin="1" aria-valuemax="9"><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i></div>
+
+    <div class="ob-scroll" style="gap: var(--s6); padding-top: var(--s6)">
+      <h1 class="ob-display">3 Tips for a <span class="ob-hl">Smooth</span> Connection</h1>
+
+      <img class="art ob-hero-img" src="/images/ob_hero_tips.png" width="342" height="192" alt="ob_hero_tips" data-asset="ob_hero_tips" />
+
+      <div class="kb3-m9-tips-list">
+        <div class="kb3-m9-tips-row">
+          <span class="kb3-m9-tips-glyph"><span class="icon" data-symbol="wifi"></span></span>
+          <div class="grow col" style="gap: 0">
+            <span class="t-headline">Same Wi-Fi network</span>
+            <span class="t-subhead t-secondary">Connect your iPhone and TV to the same Wi-Fi, 5GHz works best.</span>
+          </div>
+        </div>
+
+        <div class="kb3-m9-tips-row">
+          <span class="kb3-m9-tips-glyph"><span class="icon" data-symbol="shield.fill"></span></span>
+          <div class="grow col" style="gap: 0">
+            <span class="t-headline">Turn off VPN</span>
+            <span class="t-subhead t-secondary">A VPN can hide your TV from SmartCast.</span>
+          </div>
+        </div>
+
+        <div class="kb3-m9-tips-row">
+          <span class="kb3-m9-tips-glyph"><span class="icon" data-symbol="tv"></span></span>
+          <div class="grow col" style="gap: 0">
+            <span class="t-headline">Keep your TV on</span>
+            <span class="t-subhead t-secondary">Make sure your TV is on and its screen-sharing feature is enabled.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ob-foot">
+      <button class="ob-cta">Enter App <span class="icon icon-sm" data-symbol="arrow.right"></span></button>
+    </div>
+  </div>
+</div>

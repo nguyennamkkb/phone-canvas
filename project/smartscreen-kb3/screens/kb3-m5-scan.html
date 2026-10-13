@@ -1,0 +1,157 @@
+<!-- pc {"title":"KB3 · 5b Scan"} -->
+<!--
+  T4 – Quét thiết bị (5b "đã tìm thấy"), dùng lại radar vẽ bằng code của KB1-M5
+  (doc: "dùng lại KB1-M5"): vòng lồng nhau + chip thiết bị bật ra trên vòng,
+  thẻ web + QR, dòng trợ giúp. Radar là COMPONENT của app — giữ nguyên hình
+  dáng (A/B so sánh luồng, không so giao diện); chất riêng KB3 nằm ở dữ liệu:
+  thiết bị thuộc HÃNG ĐÃ CHỌN Ở M2 được đẩy lên đầu + tick sẵn (mock: Samsung
+  vì m2 chọn Samsung — đổi brand ở m2 thì đổi chip đầu). Khác KB1: có foot
+  CTA "Continue →" (doc: "chạm thiết bị hoặc Continue → Màn 6").
+  TRẠNG THÁI TỪ CHỐI QUYỀN (L-note, cùng màn này): không có chip thiết bị;
+  thay tiêu đề phụ bằng "Can't see your TV" + nút mở Settings của hệ thống
+  (UIApplication.openSettingsURLString) + vẫn giữ Continue — KHÔNG chặn phễu.
+  Ảnh: không (radar là code).
+-->
+<style>
+.kb3-m5-scan-radar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 312px;
+}
+.kb3-m5-scan-ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-full);
+}
+.kb3-m5-scan-ring.is-1 {
+  width: 280px;
+  height: 280px;
+  border: 1.5px dashed var(--accent-line);
+}
+.kb3-m5-scan-ring.is-2 {
+  width: 204px;
+  height: 204px;
+  background: var(--accent-soft);
+}
+.kb3-m5-scan-ring.is-3 {
+  width: 128px;
+  height: 128px;
+  background: var(--accent-line);
+}
+.kb3-m5-scan-ring.is-core {
+  width: 60px;
+  height: 60px;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.kb3-m5-scan-device {
+  height: var(--touch-min);
+  border: 0;
+  font-family: var(--font);
+  cursor: pointer;
+}
+.kb3-m5-scan-device.is-on {
+  background: var(--label);
+  color: var(--bg);
+}
+.kb3-m5-scan-web {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  width: 100%;
+  padding: var(--s3) var(--s3) var(--s3) var(--s4);
+  border: 0;
+  border-radius: var(--r-xl);
+  background: var(--bg-grouped);
+  color: var(--label);
+  font-family: var(--font);
+  text-align: left;
+  cursor: pointer;
+}
+.kb3-m5-scan-qr {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--r-lg);
+  background: var(--bg);
+  color: var(--label);
+}
+.kb3-m5-scan-help {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  min-height: var(--touch-min);
+  border: 0;
+  background: transparent;
+  color: var(--label-2);
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  cursor: pointer;
+}
+</style>
+<div class="screen" style="background-color: var(--bg)">
+  <div class="body-fixed" style="gap: 0">
+    <div class="ob-steps" role="progressbar" aria-label="Step 5 of 9" aria-valuenow="5" aria-valuemin="1" aria-valuemax="9"><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i></div>
+
+    <div class="ob-scroll" style="gap: var(--s5); padding-top: var(--s5)">
+      <div class="col" style="gap: var(--s2)">
+        <h1 class="ob-display">Your <span class="ob-hl">TV</span> is ready</h1>
+        <p class="ob-lead">Choose your TV to continue</p>
+      </div>
+
+      <div class="kb3-m5-scan-radar">
+        <div class="kb3-m5-scan-ring is-1" role="img" aria-label="Scanning for devices">
+          <div class="kb3-m5-scan-ring is-2">
+            <div class="kb3-m5-scan-ring is-3">
+              <div class="kb3-m5-scan-ring is-core">
+                <span class="icon icon-lg" data-symbol="wifi"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="ob-float kb3-m5-scan-device is-on" style="top: var(--s4); left: 0">
+          <span class="icon icon-sm" data-symbol="tv"></span>
+          Samsung QLED 7 Series
+          <span class="icon icon-xs" data-symbol="checkmark"></span>
+        </button>
+        <button class="ob-float kb3-m5-scan-device" style="top: 132px; right: 0">
+          <span class="icon icon-sm" data-symbol="tv"></span>
+          LG TV
+        </button>
+        <button class="ob-float kb3-m5-scan-device" style="bottom: var(--s2); left: var(--s4)">
+          <span class="icon icon-sm" data-symbol="laptopcomputer"></span>
+          MacBook
+        </button>
+      </div>
+
+      <button class="kb3-m5-scan-web">
+        <span class="icon" data-symbol="globe"></span>
+        <div class="grow col" style="gap: 2px">
+          <span class="t-headline">Mirror to Web Browser</span>
+          <span class="t-subhead t-secondary">web.smartcast.app</span>
+        </div>
+        <span class="kb3-m5-scan-qr" data-asset="qr_web_mirror">
+          <span class="icon icon-lg" data-symbol="qrcode"></span>
+        </span>
+      </button>
+
+      <button class="kb3-m5-scan-help">
+        <span class="icon icon-sm" data-symbol="info.circle"></span>
+        Don't see your TV? Join the same Wi-Fi network
+      </button>
+    </div>
+
+    <div class="ob-foot">
+      <button class="ob-cta">Continue <span class="icon icon-sm" data-symbol="arrow.right"></span></button>
+    </div>
+  </div>
+</div>

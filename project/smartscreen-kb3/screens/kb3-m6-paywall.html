@@ -1,0 +1,263 @@
+<!-- pc {"title":"KB3 · 6 Paywall","lightStatusBar":true} -->
+<!--
+  T5 – Paywall CHỨNG THỰC XÃ HỘI (da tối, giải phẫu paywall-kit/ai-chat như
+  KB1-M7). Chất riêng KB3: khối social proof THAY lưới quyền lợi 2×2 — thẻ
+  "4.8 ★★★★★ · App Store rating" (sao = gold, đúng vùng Pro) + một review.
+  [X] GÓC TRÊN-TRÁI HIỆN TRỄ 3s rồi mờ 60% (chốt 2026-10-12: như KB1) → chạm
+  [X] sang m7 Exit Offer. Restore góc trên-phải. Gói: Năm (Best Value + tag
+  gold) + Tuần decoy — như KB1 (chốt 2026-10-12). Toggle trial 3 ngày.
+  Giá: TODO price — StoreKit; chưa có thì $—.—— (L5). 4.8 / 5M / tên reviewer
+  là hằng số/remote config CHƯA KIỂM CHỨNG (Guideline 2.3.1/5.6 — doc ⚠).
+  Review copy đã duyệt (2026-10-12). Banner: ob_hero_paywall_pro — dùng lại KB1.
+  Nhịp dọc thắt chặt có chủ đích để ĐỦ trong khung 844 (social proof cao hơn
+  lưới quyền lợi KB1 ~90pt): gap 8, plan 64, trial row 32, rating 44 (một
+  dòng "4.8 ★★★★★ · App Store rating" — đúng format doc), review card 78,
+  note dưới CTA 2 DÒNG CĂN GIỮA, bỏ icon khiên (duyệt 2026-10-13 — icon +
+  chữ xuống hàng lệch trái trông như chữ wrap, không như 2 dòng thiết kế):
+  "No payment now · 3 days free" / "then $—.——/year" — banner giữ nguyên
+  21:9 / 390×167 theo doc; 16 Pro 874 thoáng hơn.
+-->
+<style>
+.kb3-m6-paywall-banner {
+  margin: 0 calc(-1 * var(--ob-gutter));
+}
+.kb3-m6-paywall-hero {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 21 / 9;
+  object-fit: cover;
+}
+/* [X] hiện trễ 3s, mờ 60% (như KB1-M7) */
+.kb3-m6-paywall-close {
+  position: absolute;
+  top: var(--s2);
+  left: var(--s4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--pro-scrim);
+  color: var(--pro-ink-2);
+  opacity: 0.6;
+  cursor: pointer;
+}
+.kb3-m6-paywall-restore {
+  position: absolute;
+  top: var(--s2);
+  right: var(--s4);
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--s4);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--pro-top);
+  color: var(--pro-ink-2);
+  font-family: var(--font);
+  font-size: var(--t-subhead);
+  cursor: pointer;
+}
+.kb3-m6-paywall-hl {
+  color: var(--accent-line);
+}
+.kb3-m6-paywall-rating {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s2) var(--s4);
+  border-radius: var(--r-lg);
+  background: var(--pro-card);
+}
+.kb3-m6-paywall-score {
+  font-size: var(--t-title2);
+  font-weight: 700;
+  line-height: 28px;
+  letter-spacing: -0.4px;
+}
+.kb3-m6-paywall-stars {
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
+}
+.kb3-m6-paywall-review {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: var(--s1) var(--s4);
+  border-radius: var(--r-lg);
+  background: var(--pro-card);
+}
+.kb3-m6-paywall-quote {
+  font-size: var(--t-footnote);
+  line-height: 18px;
+  color: var(--pro-ink);
+}
+.kb3-m6-paywall-trial {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  min-height: 32px;
+}
+.kb3-m6-paywall-toggle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+  width: 51px;
+  height: 31px;
+  padding: 2px;
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--accent);
+}
+.kb3-m6-paywall-knob {
+  width: 27px;
+  height: 27px;
+  border-radius: var(--r-full);
+  background: var(--pro-ink);
+}
+.kb3-m6-paywall-plan {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  width: 100%;
+  min-height: 64px;
+  padding: var(--s3) var(--s4);
+  border: 1.5px solid var(--pro-line);
+  border-radius: var(--r-lg);
+  background: var(--pro-card);
+  color: var(--pro-ink);
+  font-family: var(--font);
+  text-align: left;
+  cursor: pointer;
+}
+.kb3-m6-paywall-plan.is-on {
+  border: 2px solid var(--accent);
+}
+/* nhãn vắt mép trên thẻ: absolute top 0 + margin âm nửa chiều cao (rule 5) */
+.kb3-m6-paywall-tag {
+  position: absolute;
+  top: 0;
+  right: var(--s4);
+  margin-top: -12px;
+  display: flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 var(--s3);
+  border-radius: var(--r-full);
+  background: var(--gold);
+  color: var(--pro-top);
+  font-size: var(--t-caption);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.kb3-m6-paywall-price {
+  font-size: var(--t-title1);
+  font-weight: 700;
+  line-height: 32px;
+  letter-spacing: -0.4px;
+  white-space: nowrap;
+}
+.kb3-m6-paywall-legal {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--s1);
+  border: 0;
+  background: transparent;
+  color: var(--pro-ink-2);
+  font-family: var(--font);
+  font-size: var(--t-caption);
+  text-decoration: underline;
+  cursor: pointer;
+}
+</style>
+<div class="screen" style="color: var(--pro-ink); background-color: var(--pro-top); background-image: linear-gradient(180deg, var(--pro-top) 0%, var(--pro-bottom) 100%)">
+  <div class="body-fixed" style="gap: 0">
+    <div class="ob-scroll" style="gap: var(--s2); padding-top: 0; padding-bottom: 0">
+      <div class="ob-hero kb3-m6-paywall-banner">
+        <img class="art kb3-m6-paywall-hero" src="/images/ob_hero_paywall_pro.png" width="390" height="167" alt="ob_hero_paywall_pro" data-asset="ob_hero_paywall_pro" />
+        <button class="kb3-m6-paywall-close" aria-label="Close">
+          <span class="icon icon-sm" data-symbol="xmark"></span>
+        </button>
+        <button class="kb3-m6-paywall-restore">Restore</button>
+      </div>
+
+      <h1 class="ob-display" style="margin-top: var(--s1)">Join <span class="kb3-m6-paywall-hl">5 Million</span> SmartCast Users Today</h1>
+
+      <div class="kb3-m6-paywall-rating">
+        <span class="kb3-m6-paywall-score">4.8</span>
+        <div class="kb3-m6-paywall-stars" role="img" aria-label="Rated 4.8 out of 5 on the App Store">
+          <span class="icon icon-xs" data-symbol="star.fill" style="color: var(--gold)"></span>
+          <span class="icon icon-xs" data-symbol="star.fill" style="color: var(--gold)"></span>
+          <span class="icon icon-xs" data-symbol="star.fill" style="color: var(--gold)"></span>
+          <span class="icon icon-xs" data-symbol="star.fill" style="color: var(--gold)"></span>
+          <span class="icon icon-xs" data-symbol="star.fill" style="color: var(--gold)"></span>
+        </div>
+        <span class="t-caption" style="color: var(--pro-ink-2)">·</span>
+        <span class="t-caption" style="color: var(--pro-ink-2)">App Store rating</span>
+      </div>
+
+      <div class="kb3-m6-paywall-review">
+        <p class="kb3-m6-paywall-quote">“The smoothest mirroring app I've used. Whiteboard and Live Camera are perfect for teaching!”</p>
+        <span class="t-caption" style="color: var(--pro-ink-2)">Minh Tuấn · App Store review</span>
+      </div>
+
+      <div class="kb3-m6-paywall-trial">
+        <span class="grow t-headline">3-Day Free Trial Enabled</span>
+        <button class="kb3-m6-paywall-toggle" role="switch" aria-checked="true" aria-label="3-Day Free Trial Enabled">
+          <span class="kb3-m6-paywall-knob"></span>
+        </button>
+      </div>
+
+      <div class="col" role="radiogroup" aria-label="Choose a plan" style="gap: var(--s3)">
+        <button class="kb3-m6-paywall-plan is-on" role="radio" aria-checked="true">
+          <span class="kb3-m6-paywall-tag">BEST VALUE · SAVE 80%</span>
+          <div class="grow col" style="gap: 0">
+            <span class="t-headline">Yearly</span>
+            <span class="t-footnote" style="color: var(--pro-ink-2)">≈ $—.——/week</span>
+          </div>
+          <div class="row" style="gap: 2px; align-items: baseline">
+            <span class="kb3-m6-paywall-price">$—.——</span>
+            <span class="t-subhead">/year</span>
+          </div>
+        </button>
+        <button class="kb3-m6-paywall-plan" role="radio" aria-checked="false">
+          <div class="grow col" style="gap: 0">
+            <span class="t-headline">Weekly</span>
+            <span class="t-footnote" style="color: var(--pro-ink-2)">No free trial</span>
+          </div>
+          <div class="row" style="gap: 2px; align-items: baseline">
+            <span class="kb3-m6-paywall-price">$—.——</span>
+            <span class="t-subhead">/week</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <div class="ob-foot" style="gap: var(--s2)">
+      <button class="ob-cta">
+        Start 3-Day Free Trial
+        <span class="icon icon-sm" data-symbol="arrow.right"></span>
+      </button>
+      <div class="col" style="gap: 0; align-items: center">
+        <span class="t-footnote" style="color: var(--pro-ink-2)">No payment now · 3 days free</span>
+        <span class="t-footnote" style="color: var(--pro-ink-2)">then $—.——/year</span>
+      </div>
+      <div class="row" style="gap: var(--s1); justify-content: center; margin: calc(-1 * var(--s2)) 0">
+        <button class="kb3-m6-paywall-legal">Terms of Use</button>
+        <span class="t-caption" style="color: var(--pro-ink-2)">·</span>
+        <button class="kb3-m6-paywall-legal">Privacy Policy</button>
+      </div>
+    </div>
+  </div>
+</div>

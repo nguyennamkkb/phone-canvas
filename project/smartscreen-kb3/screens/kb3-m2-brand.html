@@ -1,0 +1,132 @@
+<!-- pc {"title":"KB3 · 2 Brand"} -->
+<!--
+  T2 – Quiz chọn hãng (dạng LƯỚI 2 cột, design-direction §5). Chọn MỘT thẻ →
+  lưu device_brand → tự sang m3 sau 300ms (không CTA — như KB1-M1). Thẻ được
+  chọn: nền blue50 + viền 2pt blue500 + dấu tích (đúng T2). "Other" tràn hàng
+  cuối vì lẻ 9 mục — đọc như "phần còn lại", không phải ô trống.
+  Hãng là CHỮ, không logo (rủi ro nhãn hiệu — design-direction §9; L-chốt
+  2026-10-12). Thứ tự hãng theo độ phổ biến ở thị trường chính: Samsung, LG,
+  Sony, TCL, Roku, Chromecast, Fire TV, Mac / PC, Other.
+  Màn này không có chân CTA: chạm 1 thẻ là hành động duy nhất.
+  Bàn giao: device_brand = tên hãng; m5b đẩy thiết bị đúng hãng lên đầu radar;
+  m4 nhắc lại hãng trong dòng "Matching settings for {brand}".
+-->
+<style>
+/* Lưới giãn đầy khung: 9 thẻ không đủ cao để lấp màn, để trống ~200pt dưới
+   "Other" trông như màn dở. Hàng nhận flex: 1 nên các thẻ chia đều trọn vùng
+   còn lại — vùng chọn đọc như một picker, không phải danh sách bỏ lửng.
+   Máy thấp (SE) thì hàng co về sàn 72pt và ob-scroll tự cuộn. */
+.kb3-m2-brand-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.kb3-m2-brand-row {
+  display: flex;
+  flex-direction: row;
+  gap: var(--s3);
+  flex: 1 1 0;
+  min-height: 0;
+}
+.kb3-m2-brand-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 72px;
+  padding: var(--s3) var(--s3);
+  border: 2px solid transparent;
+  border-radius: var(--r-xl);
+  background: var(--bg-grouped);
+  color: var(--label);
+  font-family: var(--font);
+  text-align: left;
+  cursor: pointer;
+}
+.kb3-m2-brand-card.is-on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.kb3-m2-brand-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--accent-line);
+  border-radius: var(--r-full);
+  color: var(--on-accent);
+}
+.kb3-m2-brand-card.is-on .kb3-m2-brand-check {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+</style>
+<div class="screen" style="background-color: var(--bg)">
+  <div class="body-fixed" style="gap: 0">
+    <div class="ob-steps" role="progressbar" aria-label="Step 2 of 9" aria-valuenow="2" aria-valuemin="1" aria-valuemax="9"><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i></div>
+
+    <div class="ob-scroll" style="gap: var(--s6); padding-top: var(--s6)">
+      <h1 class="ob-display">Which <span class="ob-hl">TV</span> or PC brand do you own?</h1>
+
+      <div class="kb3-m2-brand-grid" role="radiogroup" aria-label="TV or PC brand">
+        <div class="kb3-m2-brand-row">
+          <button class="kb3-m2-brand-card is-on" role="radio" aria-checked="true">
+            <span class="t-headline">Samsung</span>
+            <span class="kb3-m2-brand-check"><span class="icon icon-xs" data-symbol="checkmark"></span></span>
+          </button>
+          <button class="kb3-m2-brand-card" role="radio" aria-checked="false">
+            <span class="t-headline">LG</span>
+            <span class="kb3-m2-brand-check"></span>
+          </button>
+        </div>
+
+        <div class="kb3-m2-brand-row">
+          <button class="kb3-m2-brand-card" role="radio" aria-checked="false">
+            <span class="t-headline">Sony</span>
+            <span class="kb3-m2-brand-check"></span>
+          </button>
+          <button class="kb3-m2-brand-card" role="radio" aria-checked="false">
+            <span class="t-headline">TCL</span>
+            <span class="kb3-m2-brand-check"></span>
+          </button>
+        </div>
+
+        <div class="kb3-m2-brand-row">
+          <button class="kb3-m2-brand-card" role="radio" aria-checked="false">
+            <span class="t-headline">Roku</span>
+            <span class="kb3-m2-brand-check"></span>
+          </button>
+          <button class="kb3-m2-brand-card" role="radio" aria-checked="false">
+            <span class="t-headline">Chromecast</span>
+            <span class="kb3-m2-brand-check"></span>
+          </button>
+        </div>
+
+        <div class="kb3-m2-brand-row">
+          <button class="kb3-m2-brand-card" role="radio" aria-checked="false">
+            <span class="t-headline">Fire TV</span>
+            <span class="kb3-m2-brand-check"></span>
+          </button>
+          <button class="kb3-m2-brand-card" role="radio" aria-checked="false">
+            <span class="t-headline">Mac / PC</span>
+            <span class="kb3-m2-brand-check"></span>
+          </button>
+        </div>
+
+        <div class="kb3-m2-brand-row">
+          <button class="kb3-m2-brand-card" role="radio" aria-checked="false">
+            <span class="t-headline">Other</span>
+            <span class="kb3-m2-brand-check"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

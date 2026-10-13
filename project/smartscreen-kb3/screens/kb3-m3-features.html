@@ -1,0 +1,121 @@
+<!-- pc {"title":"KB3 · 3 Features"} -->
+<!--
+  T2 – Quiz CHỌN NHIỀU (multi-select). Khác m2 (chọn 1, tự sang màn): 4 thẻ
+  checkbox nên có CTA "Continue →"; CTA MỜ đến khi chọn ≥1 — bản dựng này ở
+  trạng thái đã chọn 2 (Whiteboard + Photo Library) + CTA bật, đúng nhịp phễu;
+  style .is-off giữ sẵn cho trạng thái 0 chọn (SwiftUI: .disabled + opacity).
+  Glyph nằm trong ô blue50 (design-direction T2); thẻ được chọn đảo ô glyph
+  sang blue500 + icon trắng — vì nền thẻ chọn cũng blue50, ô cùng màu sẽ biến mất.
+  Chọn 2 thẻ khớp dàn ý m4 "Preparing Whiteboard and Photos": đây là
+  primary_features[] chảy vào m4 (dòng tick) và m9 (mẹo may mắn liên quan).
+  Glyph: play.fill · globe · pencil · camera (đều có trong SYMBOLS).
+-->
+<style>
+/* Vùng chọn 4 thẻ giãn đều để lấp khung (như lưới m2) — không để lại một
+   khoảng trống lớn giữa thẻ cuối và CTA. Máy thấp: thẻ co về sàn 84pt và
+   ob-scroll cuộn. */
+.kb3-m3-features-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.kb3-m3-features-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  width: 100%;
+  flex: 1 1 0;
+  min-height: 84px;
+  padding: var(--s3) var(--s4) var(--s3) var(--s3);
+  border: 2px solid transparent;
+  border-radius: var(--r-xl);
+  background: var(--bg-grouped);
+  color: var(--label);
+  font-family: var(--font);
+  text-align: left;
+  cursor: pointer;
+}
+.kb3-m3-features-card.is-on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.kb3-m3-features-glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-md);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.kb3-m3-features-card.is-on .kb3-m3-features-glyph {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.kb3-m3-features-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--accent-line);
+  border-radius: var(--r-full);
+  color: var(--on-accent);
+}
+.kb3-m3-features-card.is-on .kb3-m3-features-check {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+/* CTA mờ khi chưa chọn gì (doc: "mờ đến khi chọn >= 1") */
+.kb3-m3-features-cta.is-off {
+  opacity: 0.4;
+}
+</style>
+<div class="screen" style="background-color: var(--bg)">
+  <div class="body-fixed" style="gap: 0">
+    <div class="ob-steps" role="progressbar" aria-label="Step 3 of 9" aria-valuenow="3" aria-valuemin="1" aria-valuemax="9"><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step is-done"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i><i class="ob-step"></i></div>
+
+    <div class="ob-scroll" style="gap: var(--s6); padding-top: var(--s6)">
+      <div class="col" style="gap: var(--s1)">
+        <h1 class="ob-display">Which <span class="ob-hl">features</span> matter most to you?</h1>
+        <p class="ob-lead">Pick all that apply</p>
+      </div>
+
+      <div class="kb3-m3-features-list" role="group" aria-label="Features that matter most">
+        <button class="kb3-m3-features-card is-on" role="checkbox" aria-checked="true">
+          <span class="kb3-m3-features-glyph"><span class="icon icon-lg" data-symbol="play.fill"></span></span>
+          <span class="grow t-headline">Movies &amp; Photo Library</span>
+          <span class="kb3-m3-features-check"><span class="icon icon-xs" data-symbol="checkmark"></span></span>
+        </button>
+
+        <button class="kb3-m3-features-card" role="checkbox" aria-checked="false">
+          <span class="kb3-m3-features-glyph"><span class="icon icon-lg" data-symbol="globe"></span></span>
+          <span class="grow t-headline">Web Browser Mirroring</span>
+          <span class="kb3-m3-features-check"></span>
+        </button>
+
+        <button class="kb3-m3-features-card is-on" role="checkbox" aria-checked="true">
+          <span class="kb3-m3-features-glyph"><span class="icon icon-lg" data-symbol="pencil"></span></span>
+          <span class="grow t-headline">Whiteboard</span>
+          <span class="kb3-m3-features-check"><span class="icon icon-xs" data-symbol="checkmark"></span></span>
+        </button>
+
+        <button class="kb3-m3-features-card" role="checkbox" aria-checked="false">
+          <span class="kb3-m3-features-glyph"><span class="icon icon-lg" data-symbol="camera"></span></span>
+          <span class="grow t-headline">Live Camera</span>
+          <span class="kb3-m3-features-check"></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="ob-foot">
+      <button class="ob-cta">Continue <span class="icon icon-sm" data-symbol="arrow.right"></span></button>
+    </div>
+  </div>
+</div>

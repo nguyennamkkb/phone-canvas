@@ -1,0 +1,210 @@
+<!-- pc {"title":"KB3 · 7 Exit Offer","lightStatusBar":true} -->
+<!--
+  T6 – Exit Offer dạng VÉ GIẢM GIÁ — dùng lại vé KB1-M7b (doc: "Dùng lại vé
+  giảm giá KB1-M7b"): huy chương quà trồi khỏi mép vé, khía hai bên + đường xé
+  nét đứt, đồng hồ ô số. Đỏ --urgency CHỈ ở nhãn ONE-TIME OFFER, "50% OFF",
+  dấu hai chấm đồng hồ và số đếm (design-direction §2; L6: KHÔNG phủ đỏ cả
+  pop-up như bản gốc). [X] nằm TRÊN VÉ (góc phải trên).
+
+  HÀNH ĐỘNG (duyệt 2026-10-13): Claim → MỞ THẲNG SHEET THANH TOÁN CỦA APPLE
+  (StoreKit) — màn 8 "Xác nhận ưu đãi" đã BỎ; bước 8 của phễu giờ là sheet hệ
+  thống, không phải màn của app; Face ID là của sheet (L7 — app không vẽ).
+  Tiến trình 9 đoạn của phễu giữ nguyên (khu Pro không hiện thanh).
+  Vì m8 bỏ, màn này TỰ GÁNH minh bạch giá 3.1.2: giá gốc gạch ngang + giá mới
+  + "then renews at $—.——/year" (dòng gia hạn chuyển từ m8 về đây).
+  No thanks / [X] → m9 bản miễn phí (L10). "One-time" phải THẬT một lần.
+
+  Copy theo doc: ONE-TIME OFFER · "50% OFF" 64pt · "Wait! One-Time Special
+  Offer" · "50% OFF the Yearly plan" · "Claim 50% Off Now →" · "No thanks,
+  I'll miss this offer". Giá $—.—— (L5: TODO price — StoreKit).
+  Khung vé sống trong file này (m8 bỏ nên chỉ một màn dùng — không promote).
+-->
+<style>
+.kb3-m7-exit-offer-medal {
+  position: relative;
+  z-index: 1;
+  align-self: center;
+  width: 128px;
+  height: 128px;
+  margin-bottom: -64px;
+  object-fit: cover;
+  border: 6px solid var(--pro-top);
+  border-radius: var(--r-full);
+}
+.kb3-m7-exit-offer-top {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s2);
+  padding: 72px var(--s5) var(--s4);
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  background: var(--pro-bottom);
+}
+.kb3-m7-exit-offer-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--s4);
+  padding: var(--s4) var(--s5) var(--s2);
+  border-radius: 0 0 var(--r-xl) var(--r-xl);
+  background: var(--pro-bottom);
+}
+.kb3-m7-exit-offer-close {
+  position: absolute;
+  top: var(--s2);
+  right: var(--s2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-full);
+  background: transparent;
+  color: var(--pro-ink-2);
+  cursor: pointer;
+}
+.kb3-m7-exit-offer-tag {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 var(--s3);
+  border-radius: var(--r-full);
+  background: var(--urgency);
+  color: var(--pro-ink);
+  font-size: var(--t-caption);
+  font-weight: 700;
+  letter-spacing: 0.6px;
+}
+.kb3-m7-exit-offer-big {
+  color: var(--urgency);
+  font-weight: 800;
+}
+/* đường xé: hai khía tròn màu nền màn + nét đứt */
+.kb3-m7-exit-offer-tear {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+  background: var(--pro-bottom);
+}
+.kb3-m7-exit-offer-cut {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--r-full);
+  background: var(--pro-top);
+}
+.kb3-m7-exit-offer-cut.is-left {
+  margin-left: -12px;
+}
+.kb3-m7-exit-offer-cut.is-right {
+  margin-right: -12px;
+}
+.kb3-m7-exit-offer-dash {
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0 var(--s3);
+  border-top: 2px dashed var(--pro-line);
+}
+.kb3-m7-exit-offer-was {
+  color: var(--pro-ink-2);
+  font-size: var(--t-body);
+  text-decoration: line-through;
+}
+.kb3-m7-exit-offer-now {
+  font-size: var(--t-title1);
+  font-weight: 700;
+  line-height: 32px;
+  white-space: nowrap;
+}
+.kb3-m7-exit-offer-clock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-md);
+  background: var(--pro-card);
+  color: var(--urgency);
+  font-size: var(--t-title2);
+  font-weight: 700;
+  line-height: 24px;
+  font-variant-numeric: tabular-nums;
+}
+.kb3-m7-exit-offer-unit {
+  color: var(--pro-ink-2);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 12px;
+}
+.kb3-m7-exit-offer-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 var(--s1);
+  border: 0;
+  background: transparent;
+  white-space: nowrap;
+  color: var(--pro-ink-2);
+  font-family: var(--font);
+  font-size: var(--t-caption);
+  cursor: pointer;
+}
+</style>
+<div class="screen" style="color: var(--pro-ink); background-color: var(--pro-top)">
+  <div class="body-fixed" style="justify-content: center; gap: 0; padding: var(--s2) var(--s5) calc(var(--s2) + var(--safe-bottom))">
+    <div class="col" role="dialog" aria-label="One-time special offer" style="gap: 0">
+      <img class="art kb3-m7-exit-offer-medal" src="/images/ob_hero_exit_gift.png" width="128" height="128" alt="ob_hero_exit_gift" data-asset="ob_hero_exit_gift" />
+
+      <div class="kb3-m7-exit-offer-top">
+        <button class="kb3-m7-exit-offer-close" aria-label="Close offer">
+          <span class="icon icon-sm" data-symbol="xmark"></span>
+        </button>
+        <span class="kb3-m7-exit-offer-tag">ONE-TIME OFFER</span>
+        <span class="t-score kb3-m7-exit-offer-big">50% OFF</span>
+        <h1 class="ob-title">Wait! One-Time Special Offer</h1>
+        <p class="ob-desc" style="color: var(--pro-ink-2)">50% OFF the Yearly plan</p>
+      </div>
+
+      <div class="kb3-m7-exit-offer-tear" aria-hidden="true">
+        <i class="kb3-m7-exit-offer-cut is-left"></i>
+        <i class="kb3-m7-exit-offer-dash"></i>
+        <i class="kb3-m7-exit-offer-cut is-right"></i>
+      </div>
+
+      <div class="kb3-m7-exit-offer-bottom">
+        <div class="row" style="justify-content: space-between; align-items: flex-start">
+          <div class="col" style="gap: 0">
+            <span class="kb3-m7-exit-offer-was">$—.——/year</span>
+            <span class="kb3-m7-exit-offer-now">$—.——/year</span>
+            <span class="t-caption" style="color: var(--pro-ink-2)">then renews at $—.——/year</span>
+          </div>
+          <div class="row" style="gap: var(--s1)" role="timer" aria-label="Offer ends in 5 minutes">
+            <span class="kb3-m7-exit-offer-clock">05<span class="kb3-m7-exit-offer-unit">MIN</span></span>
+            <span class="t-title3" style="color: var(--urgency)">:</span>
+            <span class="kb3-m7-exit-offer-clock">00<span class="kb3-m7-exit-offer-unit">SEC</span></span>
+          </div>
+        </div>
+
+        <button class="ob-cta">Claim 50% Off Now <span class="icon icon-sm" data-symbol="arrow.right"></span></button>
+
+        <div class="col" style="align-items: center; gap: 0">
+          <button class="kb3-m7-exit-offer-link" style="font-size: var(--t-footnote)">No thanks, I'll miss this offer</button>
+          <div class="row" style="gap: 0">
+            <button class="kb3-m7-exit-offer-link">Restore Purchases</button>
+            <span class="t-caption" style="color: var(--pro-ink-2)">·</span>
+            <button class="kb3-m7-exit-offer-link">Terms of Use</button>
+            <span class="t-caption" style="color: var(--pro-ink-2)">·</span>
+            <button class="kb3-m7-exit-offer-link">Privacy Policy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
