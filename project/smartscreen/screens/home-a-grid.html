@@ -1,0 +1,174 @@
+<!-- pc {"title":"Home · A Lưới gọn"} -->
+<!--
+  Phương án A — "Lưới gọn": giữ nguyên kiến trúc màn hiện tại (header →
+  trạng thái kết nối → khối Mirror → lưới tính năng) nên rủi ro và công dev
+  thấp nhất, chỉ sửa những chỗ đang sai:
+  1. Kết nối là việc đầu tiên phải làm → thẻ trắng riêng, nút Connect đặc
+     44pt (bản cũ: chữ xám + nút viền 31pt, dưới mức chạm).
+  2. Hai thẻ hero cũ là CÙNG một việc (mirror) khác đích → gộp thành 1 thẻ,
+     2 nút đích: TV (chính) / trình duyệt Mac-PC (phụ).
+  3. 5 ô màu ngẫu nhiên + 1 ô mồ côi → 4 ô 2×2, một màu accent; Photo + Video
+     gộp "Photos & Videos" (PhotosPicker chọn được cả hai — cùng tên ô ở
+     KB1-M8 Welcome). Sửa lỗi copy White Board.
+  4. Ngôn ngữ thiết kế nối tiếp onboarding: tên SmartCast, ảnh line-art của
+     onboarding (ob_hero_mirror_tv_web), token --accent / --accent-soft.
+  5. Lối vào Pro (vương miện, chỉ hiện với người dùng Free).
+-->
+<style>
+.home-a-pad {
+  gap: 0;
+  padding: var(--s2) var(--s4) calc(var(--s6) + var(--safe-bottom));
+}
+.home-a-card {
+  display: flex;
+  border-radius: var(--r-lg);
+  background: var(--bg);
+}
+.home-a-connect {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s3) var(--s3) var(--s3) var(--s3);
+}
+.home-a-glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-md);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.home-a-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  flex: 0 0 auto;
+  height: 44px;
+  padding: 0 var(--s4);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font);
+  font-size: var(--t-subhead);
+  font-weight: 600;
+  cursor: pointer;
+}
+.home-a-btn.is-soft {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.home-a-section {
+  margin-top: var(--s5);
+  margin-bottom: var(--s3);
+}
+.home-a-mirror {
+  flex-direction: row;
+  align-items: stretch;
+  overflow: hidden;
+}
+.home-a-mirror-copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  flex: 1 1 0;
+  min-width: 0;
+  padding: var(--s4) var(--s3) var(--s4) var(--s4);
+}
+.home-a-mirror-art {
+  align-self: flex-end;
+  flex: 0 0 auto;
+  width: 128px;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+}
+.home-a-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s1);
+  flex: 1 1 0;
+  min-width: 0;
+  padding: var(--s4);
+  border: 0;
+  border-radius: var(--r-lg);
+  background: var(--bg);
+  color: var(--label);
+  font-family: var(--font);
+  text-align: left;
+  cursor: pointer;
+}
+.home-a-tile .home-a-glyph {
+  width: 40px;
+  height: 40px;
+  margin-bottom: var(--s2);
+}
+</style>
+<div class="screen" style="background-color: var(--bg-grouped)">
+  <div class="body home-a-pad">
+    <div class="row" style="justify-content: space-between; padding-top: var(--s2)">
+      <h1 class="t-large">SmartCast</h1>
+      <div class="row" style="gap: var(--s1)">
+        <button class="home-pro" aria-label="Upgrade to Pro"><span class="home-pro-pill"><span class="icon icon-xs" data-symbol="sc.crown" style="color: var(--gold)"></span>PRO</span></button>
+        <button class="home-gear" aria-label="Settings"><span class="icon" data-symbol="sc.gear"></span></button>
+      </div>
+    </div>
+
+    <div class="home-a-card home-a-connect" style="margin-top: var(--s3)">
+      <span class="home-a-glyph"><span class="icon" data-symbol="sc.tv"></span></span>
+      <div class="grow col" style="gap: 2px">
+        <span class="t-headline">No TV connected</span>
+        <span class="t-footnote t-secondary">Same Wi-Fi as your TV</span>
+      </div>
+      <button class="home-a-btn">Connect</button>
+    </div>
+
+    <h2 class="t-title3 home-a-section">Mirror your screen</h2>
+    <div class="home-a-card home-a-mirror">
+      <div class="home-a-mirror-copy">
+        <div class="col" style="gap: var(--s1)">
+          <span class="t-headline">Screen Mirror</span>
+          <span class="t-footnote t-secondary">Everything on your iPhone, live on a bigger screen.</span>
+        </div>
+        <div class="spacer"></div>
+        <button class="home-a-btn"><span class="icon icon-sm" data-symbol="sc.tv"></span>To TV</button>
+        <button class="home-a-btn is-soft"><span class="icon icon-sm" data-symbol="sc.laptop"></span>To Mac or PC</button>
+      </div>
+      <img class="art home-a-mirror-art" src="/project/smartscreen/assets/ob_hero_mirror_tv_web.png" width="128" height="171" alt="ob_hero_mirror_tv_web" data-asset="ob_hero_mirror_tv_web" />
+    </div>
+
+    <h2 class="t-title3 home-a-section">Cast &amp; create</h2>
+    <div class="col" style="gap: var(--s3)">
+      <div class="row" style="align-items: stretch; gap: var(--s3)">
+        <button class="home-a-tile">
+          <span class="home-a-glyph"><span class="icon" data-symbol="sc.photo"></span></span>
+          <span class="t-headline">Photos &amp; Videos</span>
+          <span class="t-footnote t-secondary">From your library</span>
+        </button>
+        <button class="home-a-tile">
+          <span class="home-a-glyph"><span class="icon" data-symbol="sc.globe"></span></span>
+          <span class="t-headline">Online Images</span>
+          <span class="t-footnote t-secondary">Search the web, cast</span>
+        </button>
+      </div>
+      <div class="row" style="align-items: stretch; gap: var(--s3)">
+        <button class="home-a-tile">
+          <span class="home-a-glyph"><span class="icon" data-symbol="sc.camera"></span></span>
+          <span class="t-headline">Live Camera</span>
+          <span class="t-footnote t-secondary">Stream your camera</span>
+        </button>
+        <button class="home-a-tile">
+          <span class="home-a-glyph"><span class="icon" data-symbol="sc.whiteboard"></span></span>
+          <span class="t-headline">Whiteboard</span>
+          <span class="t-footnote t-secondary">Draw live on the TV</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

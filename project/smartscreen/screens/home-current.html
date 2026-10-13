@@ -1,0 +1,141 @@
+<!-- pc {"title":"Home · Hiện tại (Main.svg)"} -->
+<!--
+  Bản dựng lại 1:1 của assets/Main.svg (Figma 375×812) để đối chiếu với 3
+  phương án home-a / home-b / home-c. Số đo lấy thẳng từ SVG:
+  - lề 16; thẻ hero 165×202 bo 20, cách nhau 13.
+  - nút Connect 82.5×30.5 viền 1.5 accent bo 9.25 (dưới mức chạm 44 — giữ
+    nguyên để đối chiếu, các phương án đã sửa).
+  - minh hoạ trong 2 thẻ hero = ảnh render lại từ chính SVG (đã gỡ chữ), chữ
+    là label của app.
+  Màu ngoài bảng design-direction (xám chữ phụ) nằm ở nhóm --home-*
+  trong tokens.css, chỉ màn này dùng.
+  2026-10-13: bỏ lưới 5 ô tính năng (Live Camera / Online Images / Video /
+  Photo / White Board) — thay bằng Quick cast + Ideas của home-b-stage (lớp
+  .home-quick / .home-idea* dùng chung trong tokens.css). Phần đầu màn
+  (CastTV, Connect, 2 thẻ mirror) giữ nguyên bản gốc.
+-->
+<style>
+.home-current-pad {
+  gap: 0;
+  padding: var(--s2) var(--s4) calc(var(--s4) + var(--safe-bottom));
+}
+.home-current-connect {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 83px;
+  height: 31px;
+  padding: 0;
+  border: 1.5px solid var(--accent);
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--accent);
+  font-family: var(--font);
+  font-size: var(--t-body);
+  font-weight: 500;
+  cursor: pointer;
+}
+.home-current-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 202px;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+}
+.home-current-hero-art {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.home-current-hero-copy {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  padding: var(--s4) var(--s5) var(--s4) var(--s4);
+}
+.home-current-hero-title {
+  font-size: var(--t-callout);
+  font-weight: 800;
+  line-height: 22px;
+  letter-spacing: -0.3px;
+}
+.home-current-hero-desc {
+  font-size: var(--t-caption);
+  line-height: 13px;
+  letter-spacing: -0.3px;
+}
+</style>
+<div class="screen" style="background-color: var(--bg-grouped)">
+  <div class="body home-current-pad">
+    <div class="row" style="justify-content: space-between; padding-top: var(--s2)">
+      <h1 class="t-large">CastTV</h1>
+      <span class="icon" data-symbol="sc.gear" style="color: var(--home-ink-2)" aria-label="Settings"></span>
+    </div>
+
+    <div class="row" style="margin-top: var(--s2); gap: var(--s3)">
+      <div class="grow col" style="gap: 0">
+        <span class="t-headline" style="font-weight: 500; color: var(--home-ink-2)">No Device Connected</span>
+        <span class="t-subhead" style="color: var(--home-ink-2)">Tap to connect</span>
+      </div>
+      <button class="home-current-connect">Connect</button>
+    </div>
+
+    <div class="row" style="margin-top: var(--s6); align-items: stretch; gap: 13px">
+      <div class="home-current-hero">
+        <img class="art home-current-hero-art" src="/project/smartscreen/assets/home_card_mirror_tv.png" width="165" height="202" alt="home_card_mirror_tv" data-asset="home_card_mirror_tv" />
+        <div class="home-current-hero-copy" style="color: var(--label)">
+          <span class="home-current-hero-title">Screen Mirror to TV</span>
+          <span class="home-current-hero-desc">Wirelessly mirror your phone screen to your TV over Wi-Fi</span>
+        </div>
+      </div>
+      <div class="home-current-hero">
+        <img class="art home-current-hero-art" src="/project/smartscreen/assets/home_card_mirror_pc.png" width="165" height="202" alt="home_card_mirror_pc" data-asset="home_card_mirror_pc" />
+        <div class="home-current-hero-copy" style="color: var(--on-accent)">
+          <span class="home-current-hero-title">Screen Mirroring Mac, PC, Desktop</span>
+          <span class="home-current-hero-desc">Mirror your iPhone or iPad to Mac or Windows PC.</span>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="t-title3 home-section">Quick cast</h2>
+    <div class="row" style="align-items: flex-start; gap: var(--s2)">
+      <button class="home-quick"><span class="home-quick-glyph"><span class="icon" data-symbol="sc.photo"></span></span>Photos</button>
+      <button class="home-quick"><span class="home-quick-glyph"><span class="icon" data-symbol="sc.web.image"></span></span>Web Images</button>
+      <button class="home-quick"><span class="home-quick-glyph"><span class="icon" data-symbol="sc.camera"></span></span>Live Camera</button>
+      <button class="home-quick"><span class="home-quick-glyph"><span class="icon" data-symbol="sc.whiteboard"></span></span>Whiteboard</button>
+    </div>
+
+    <h2 class="t-title3 home-section">Ideas for the big screen</h2>
+    <div class="home-ideas">
+      <button class="home-idea">
+        <img class="art home-idea-art" src="/project/smartscreen/assets/home_idea_movie_night.png" width="156" height="117" alt="home_idea_movie_night" data-asset="home_idea_movie_night" />
+        <div class="home-idea-copy">
+          <span class="t-footnote" style="font-weight: 600">Family movie night</span>
+          <span class="t-caption t-secondary">Photos &amp; Videos</span>
+        </div>
+      </button>
+      <button class="home-idea">
+        <img class="art home-idea-art" src="/project/smartscreen/assets/home_idea_present.png" width="156" height="117" alt="home_idea_present" data-asset="home_idea_present" />
+        <div class="home-idea-copy">
+          <span class="t-footnote" style="font-weight: 600">Present your slides</span>
+          <span class="t-caption t-secondary">Screen Mirror</span>
+        </div>
+      </button>
+      <button class="home-idea">
+        <img class="art home-idea-art" src="/project/smartscreen/assets/home_idea_live_camera.png" width="156" height="117" alt="home_idea_live_camera" data-asset="home_idea_live_camera" />
+        <div class="home-idea-copy">
+          <span class="t-footnote" style="font-weight: 600">Go live on TV</span>
+          <span class="t-caption t-secondary">Live Camera</span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>

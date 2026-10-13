@@ -44,6 +44,10 @@
   --pro-scrim: rgba(7, 11, 31, 0.72); /* --pro-top @ 72% */
   --gold: #ffc83d; /* chỉ khu Pro: vương miện, sao, Best Value */
   --urgency: #ff4d3a; /* chỉ Exit Offer: đồng hồ, nhãn giảm giá */
+
+  /* ---- Home hiện tại (assets/Main.svg) — CHỈ màn home-current dùng để đối
+     chiếu; ngoài bảng design-direction nên các phương án home-* không dùng ---- */
+  --home-ink-2: #464646; /* chữ phụ */
 }
 
 :root[data-theme='dark'] {
@@ -287,4 +291,294 @@
   border: 2px solid var(--accent-soft);
   border-radius: var(--r-hero);
   object-fit: cover;
+}
+
+/* ------------------------------------------------------------------ home -- */
+/* header Home (home-a / -b / -c): nút PRO (chỉ hiện với người dùng Free) +
+   nút cài đặt 44pt. Vùng chạm 44pt, viên thuốc nhìn thấy 32pt. Vương miện gold = lối vào khu Pro. */
+.home-pro {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: var(--font);
+  cursor: pointer;
+}
+.home-pro-pill {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s1);
+  height: 32px;
+  padding: 0 var(--s3);
+  border-radius: var(--r-full);
+  background: var(--pro-top);
+  color: var(--pro-ink);
+  font-size: var(--t-footnote);
+  font-weight: 700;
+}
+.home-gear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-right: calc(-1 * var(--s2));
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--label);
+  cursor: pointer;
+}
+
+/* ----------------------------------------------------------- cast sheet -- */
+/* sheet nổi sau khi cast (cast-photo-check, cast-photo-sale): thẻ trắng bo
+   đủ 4 góc, cách mép màn --s2, nằm trên home indicator. Đầu sheet: tiêu đề
+   nhỏ giữa + nút X tròn; thân căn giữa; 2 nút viên thuốc (chính accent,
+   phụ xám nhạt). SwiftUI: .sheet + .presentationDetents([.height]) +
+   .presentationBackground(.clear), nội dung là thẻ có padding ngoài. */
+.cast-sheet {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s5);
+  margin: 0 var(--s2) calc(var(--s1) + var(--safe-bottom));
+  padding: var(--s3) var(--s4) var(--s4);
+  border-radius: var(--r-xl);
+  background: var(--bg);
+}
+.cast-sheet-head {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+}
+.cast-sheet-head .t-subhead {
+  flex: 1 1 0;
+  text-align: center;
+  font-weight: 600;
+}
+.cast-sheet-x {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  margin: calc(-1 * var(--s1));
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--label);
+  cursor: pointer;
+}
+/* vùng chạm 44pt, vòng tròn nhìn thấy 36pt */
+.cast-sheet-x-dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-full);
+  background: var(--bg-grouped);
+}
+.cast-sheet-x.is-ghost {
+  visibility: hidden;
+}
+/* hình giữa sheet: minh hoạ 4:3 cỡ nhỏ, cùng kích thước ở 2 sheet để khi đổi
+   nội dung hình chỉ "thay" tại chỗ (cast_check_tv → cast_sale_pro) */
+.cast-sheet-art {
+  align-self: center;
+  width: 140px;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r-md);
+}
+.cast-sheet-title {
+  font-size: var(--t-title3);
+  font-weight: 700;
+  line-height: 26px;
+  letter-spacing: -0.4px;
+  text-align: center;
+}
+.cast-sheet-btn2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: var(--ob-cta-h);
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-xl);
+  background: var(--bg-grouped);
+  color: var(--label);
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Home — Quick cast (4 nút tròn) + Ideas (thẻ tình huống 4:3, tràn mép phải =
+   peek). Dùng ở home-b-stage và home-current. */
+.home-section {
+  margin-top: var(--s6);
+  margin-bottom: var(--s3);
+}
+.home-quick {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s2);
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--label);
+  font-family: var(--font);
+  font-size: var(--t-caption);
+  font-weight: 500;
+  line-height: 16px;
+  text-align: center;
+  cursor: pointer;
+}
+.home-quick-glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--r-full);
+  background: var(--bg);
+  color: var(--accent);
+}
+.home-ideas {
+  display: flex;
+  flex-direction: row;
+  gap: var(--s3);
+  margin-right: calc(-1 * var(--s4));
+  overflow: hidden;
+}
+.home-idea {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  flex: 0 0 156px;
+  padding: 0 0 var(--s3);
+  border: 0;
+  border-radius: var(--r-lg);
+  background: var(--bg);
+  color: var(--label);
+  font-family: var(--font);
+  text-align: left;
+  overflow: hidden;
+  cursor: pointer;
+}
+.home-idea-art {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+.home-idea-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 var(--s3);
+}
+
+/* -------------------------------------------------------- cast screens -- */
+/* khung chung Cast Photo / Cast Video: nút Pro tròn,
+   sân khấu trắng, thẻ điều khiển (Quality · Auto Next), dải thumbnail. */
+.cast-pro {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.cast-pro-dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-full);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.cast-pad {
+  gap: var(--s3);
+  padding: var(--s2) var(--s4) var(--s3);
+}
+.cast-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  min-height: 0;
+  padding: var(--s3);
+  border-radius: var(--r-lg);
+  background: var(--bg);
+}
+.cast-main {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--r-md);
+}
+.cast-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  padding: var(--s3);
+  border-radius: var(--r-lg);
+  background: var(--bg);
+}
+.cast-control {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s2);
+  height: 44px;
+  padding: 0 var(--s3) 0 var(--s4);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--accent-soft);
+  color: var(--label);
+  font-family: var(--font);
+  font-size: var(--t-subhead);
+  font-weight: 600;
+  cursor: pointer;
+}
+.cast-control .is-value {
+  color: var(--accent);
+}
+.cast-thumbs {
+  display: flex;
+  flex-direction: row;
+  gap: var(--s2);
+  overflow: hidden;
+}
+.cast-thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 56px;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--r-md);
+  background: var(--bg-grouped);
+  color: var(--label-3);
+}
+img.cast-thumb {
+  object-fit: cover;
+  border: 2px solid var(--accent);
 }

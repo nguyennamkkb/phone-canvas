@@ -1,0 +1,158 @@
+<!-- pc {"title":"Home · B Sân khấu TV"} -->
+<!--
+  Phương án B — "Sân khấu TV": home xoay quanh MỘT việc. Chưa kết nối thì
+  việc đó là Connect; kết nối rồi thì là Mirror. Mọi thứ khác lùi xuống.
+  - Sân khấu: TV vẽ bằng code (.ob-tv, cùng TV của KB1-M6) — màn TV phản
+    ánh trạng thái thật: chưa kết nối = vòng sóng chờ + chip "No TV
+    connected"; kết nối rồi = SwiftUI thay bằng ảnh xem trước + chip tên TV
+    và CTA đổi thành "Start Mirroring".
+  - CTA 56pt duy nhất trên màn; đích phụ (trình duyệt Mac/PC qua QR) là dòng
+    chữ ngay dưới, không tranh với CTA.
+  - "Quick cast": 4 nút tròn kiểu Control Center (Photos = ảnh + video,
+    PhotosPicker chọn được cả hai). Mirror không nằm ở đây — nó là CTA.
+  - "Ideas": thẻ gợi ý, 3 ảnh MỚI 4:3 (đã duyệt + gắn; prompt ở
+    docs/home/home-redesign.md) — người dùng thấy
+    tình huống (xem phim cả nhà, trình chiếu, quay trực tiếp) thay vì tên
+    tính năng; chạm thẻ = mở tính năng tương ứng. Dải thẻ tràn mép phải
+    (peek) báo hiệu cuộn ngang.
+-->
+<style>
+.home-b-pad {
+  gap: 0;
+  padding: var(--s2) var(--s4) calc(var(--s6) + var(--safe-bottom));
+}
+.home-b-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--s4);
+  margin-top: var(--s3);
+  padding: var(--s8) var(--s4) var(--s2);
+  border-radius: var(--r-xl);
+  background: var(--bg);
+}
+.home-b-tv {
+  position: relative;
+  padding: 0 var(--s10);
+}
+.home-b-screen {
+  background: var(--accent-soft);
+}
+.home-b-ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  border-radius: var(--r-full);
+}
+.home-b-ring.is-1 {
+  width: 92px;
+  height: 92px;
+  border: 1.5px dashed var(--accent-line);
+}
+.home-b-ring.is-2 {
+  width: 64px;
+  height: 64px;
+  background: var(--accent-line);
+}
+.home-b-ring.is-core {
+  width: 40px;
+  height: 40px;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.home-b-status {
+  top: calc(-0.5 * var(--ob-float-h));
+  left: 50%;
+  margin-left: -76px;
+  width: 152px;
+  justify-content: center;
+}
+.home-b-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-full);
+  background: var(--label-3);
+}
+.home-b-alt {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  font-family: var(--font);
+  font-size: var(--t-subhead);
+  font-weight: 600;
+  cursor: pointer;
+}
+</style>
+<div class="screen" style="background-color: var(--bg-grouped)">
+  <div class="body home-b-pad">
+    <div class="row" style="justify-content: space-between; padding-top: var(--s2)">
+      <h1 class="t-large">SmartCast</h1>
+      <div class="row" style="gap: var(--s1)">
+        <button class="home-pro" aria-label="Upgrade to Pro"><span class="home-pro-pill"><span class="icon icon-xs" data-symbol="sc.crown" style="color: var(--gold)"></span>PRO</span></button>
+        <button class="home-gear" aria-label="Settings"><span class="icon" data-symbol="sc.gear"></span></button>
+      </div>
+    </div>
+
+    <div class="home-b-stage">
+      <div class="ob-tv home-b-tv">
+        <div class="ob-tv-bezel">
+          <div class="ob-tv-screen home-b-screen" role="img" aria-label="No TV connected">
+            <div class="home-b-ring is-1">
+              <div class="home-b-ring is-2">
+                <div class="home-b-ring is-core"><span class="icon" data-symbol="sc.wifi"></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <i class="ob-tv-neck"></i>
+        <i class="ob-tv-base"></i>
+        <span class="ob-float home-b-status"><i class="home-b-dot"></i>No TV connected</span>
+      </div>
+      <div class="col" style="gap: 0">
+        <button class="ob-cta">Connect a TV <span class="icon icon-sm" data-symbol="sc.arrow.right"></span></button>
+        <button class="home-b-alt"><span class="icon icon-sm" data-symbol="sc.qrcode"></span>No TV? Mirror to any browser</button>
+      </div>
+    </div>
+
+    <h2 class="t-title3 home-section">Quick cast</h2>
+    <div class="row" style="align-items: flex-start; gap: var(--s2)">
+      <button class="home-quick"><span class="home-quick-glyph"><span class="icon" data-symbol="sc.photo"></span></span>Photos</button>
+      <button class="home-quick"><span class="home-quick-glyph"><span class="icon" data-symbol="sc.web.image"></span></span>Web Images</button>
+      <button class="home-quick"><span class="home-quick-glyph"><span class="icon" data-symbol="sc.camera"></span></span>Live Camera</button>
+      <button class="home-quick"><span class="home-quick-glyph"><span class="icon" data-symbol="sc.whiteboard"></span></span>Whiteboard</button>
+    </div>
+
+    <h2 class="t-title3 home-section">Ideas for the big screen</h2>
+    <div class="home-ideas">
+      <button class="home-idea">
+        <img class="art home-idea-art" src="/project/smartscreen/assets/home_idea_movie_night.png" width="156" height="117" alt="home_idea_movie_night" data-asset="home_idea_movie_night" />
+        <div class="home-idea-copy">
+          <span class="t-footnote" style="font-weight: 600">Family movie night</span>
+          <span class="t-caption t-secondary">Photos &amp; Videos</span>
+        </div>
+      </button>
+      <button class="home-idea">
+        <img class="art home-idea-art" src="/project/smartscreen/assets/home_idea_present.png" width="156" height="117" alt="home_idea_present" data-asset="home_idea_present" />
+        <div class="home-idea-copy">
+          <span class="t-footnote" style="font-weight: 600">Present your slides</span>
+          <span class="t-caption t-secondary">Screen Mirror</span>
+        </div>
+      </button>
+      <button class="home-idea">
+        <img class="art home-idea-art" src="/project/smartscreen/assets/home_idea_live_camera.png" width="156" height="117" alt="home_idea_live_camera" data-asset="home_idea_live_camera" />
+        <div class="home-idea-copy">
+          <span class="t-footnote" style="font-weight: 600">Go live on TV</span>
+          <span class="t-caption t-secondary">Live Camera</span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>

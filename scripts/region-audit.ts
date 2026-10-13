@@ -74,6 +74,11 @@ const EXEMPTIONS: Array<{ match: string; reason: string }> = [
     reason:
       'track is 28 pt tall; the hit region is the whole .action-row (46 pt) that contains it',
   },
+  {
+    match: '.home-current-connect',
+    reason:
+      'smartscreen/home-current is a 1:1 replica of the shipped Home (assets/Main.svg) kept for comparison; the 31 pt button is the defect home-a/b/c fix',
+  },
 ]
 
 type Rect = { x: number; y: number; w: number; h: number }
