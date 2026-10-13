@@ -1,0 +1,71 @@
+<!-- pc {"title":"Cast · Photo"} -->
+<!--
+  Màn Cast Photo — đồng bộ UI SmartCast (Home B, sheet cast): nền
+  --bg-grouped, khối trắng bo --r-lg, accent, bộ icon sc.*, nút 44pt.
+  Bố cục trên → dưới:
+  1. Thanh điều hướng gọn: back · "Cast Photo" · một nút vương miện tròn
+     xanh nhạt (lối vào Pro, chỉ hiện với người dùng Free). Không hiện tên
+     TV / icon cast trên màn (bỏ theo yêu cầu 2026-10-13).
+  2. Sân khấu: ảnh đang chiếu (ảnh thật từ PhotosPicker; board dùng
+     ob_demo_user_photo — demo, không ship), aspectFit trong khung trắng.
+  3. Thanh điều khiển (thẻ trắng): Quality (mở sheet cast-photo-quality) ·
+     Auto Next (bật/tắt, Pro — chỉ một vương miện nhỏ màu accent, không khối nền) — cùng hàng nút viên thuốc 44pt.
+  4. Dải ảnh thư viện (ảnh thật của người dùng → ô trống có glyph), ảnh đang
+     chiếu viền accent 2pt.
+  5. Banner quảng cáo do SDK vẽ (chỉ người dùng Free) → giữ khung 56pt.
+  Sau lần cast thành công đầu tiên với một TV → sheet cast-photo-check.
+-->
+<style>
+.cast-photo-ad {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  padding-bottom: var(--safe-bottom);
+  box-sizing: content-box;
+  border-top: 1px solid var(--separator);
+  background: var(--bg);
+  color: var(--label-3);
+  font-family: var(--font-mono);
+  font-size: var(--t-caption);
+}
+</style>
+<div class="screen" style="background-color: var(--bg-grouped)">
+  <span data-slot="back" aria-label="Back"><span class="icon" data-symbol="chevron.left" style="color: var(--accent)"></span></span>
+  <span data-slot="title" class="t-headline">Cast Photo</span>
+  <button data-slot="right" class="cast-pro" aria-label="Upgrade to Pro"><span class="cast-pro-dot"><span class="icon icon-sm" data-symbol="sc.crown"></span></span></button>
+
+  <div class="body-fixed" style="gap: 0">
+    <div class="col grow cast-pad" style="min-height: 0">
+      <div class="cast-stage">
+        <img class="art cast-main" src="/project/smartscreen/assets/ob_demo_user_photo.png" width="334" height="188" alt="user_picked_photo" data-asset="user_picked_photo" />
+      </div>
+
+      <div class="cast-panel">
+        <div class="row" style="gap: var(--s2)">
+          <button class="cast-control grow" aria-label="Photo quality: Basic">
+            <span class="icon icon-sm" data-symbol="sc.sparkles" style="color: var(--accent)"></span>
+            <span class="grow" style="text-align: left">Quality</span>
+            <span class="is-value">Basic</span>
+            <span class="icon icon-xs" data-symbol="sc.chevron.down" style="color: var(--accent)"></span>
+          </button>
+          <button class="cast-control" aria-label="Auto Next, Pro">
+            Auto Next
+            <span class="icon icon-xs" data-symbol="sc.crown" style="color: var(--accent)"></span>
+          </button>
+        </div>
+        <div class="cast-thumbs" aria-label="Your photos">
+          <img class="art cast-thumb" src="/project/smartscreen/assets/ob_demo_user_photo.png" width="56" height="56" alt="user_picked_photo" data-asset="user_picked_photo" />
+          <div class="cast-thumb" data-asset="user_library_photo"><span class="icon icon-sm" data-symbol="sc.photo"></span></div>
+          <div class="cast-thumb" data-asset="user_library_photo"><span class="icon icon-sm" data-symbol="sc.photo"></span></div>
+          <div class="cast-thumb" data-asset="user_library_photo"><span class="icon icon-sm" data-symbol="sc.photo"></span></div>
+          <div class="cast-thumb" data-asset="user_library_photo"><span class="icon icon-sm" data-symbol="sc.photo"></span></div>
+          <div class="cast-thumb" data-asset="user_library_photo"><span class="icon icon-sm" data-symbol="sc.photo"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cast-photo-ad">AD · banner 320×50 (ad SDK)</div>
+  </div>
+</div>

@@ -1,0 +1,127 @@
+<!-- pc {"title":"Cast · Sheet Chất lượng ảnh"} -->
+<!--
+  Sheet chọn chất lượng ảnh — mở từ nút "Quality · Basic" trên cast-photo.
+  Cùng khung .cast-sheet (tokens.css) với cast-photo-check / cast-photo-sale:
+  tiêu đề nhỏ + X → thân → nút viên thuốc.
+  - 3 mức, chọn 1 (radio): Basic (Free, mặc định) · HD (Pro) · Full HD (Pro).
+    Dòng đang chọn: nền accent-soft + viền accent 2pt + vòng tích.
+  - Mức Pro có nhãn nhẹ: vương miện nhỏ + chữ "Pro" màu accent, không khối nền
+    (cùng kiểu vương miện ở nút Auto Next).
+    Người dùng Free chạm mức Pro → mở sheet Sale (cast-photo-sale) thay vì
+    chọn; người dùng Pro chọn bình thường.
+  - Mô tả mỗi mức nói LỢI ÍCH + đánh đổi, không hứa số (không "4K",
+    "0 độ trễ" — xem design-direction §10).
+  - Done = áp dụng + đóng. Gợi ý Wi-Fi ở chân vì mức cao cần mạng khoẻ.
+  SwiftUI: .sheet + .presentationDetents([.height]), List kiểu inset với
+  Button cho từng dòng; dòng Pro hiện badge khi !isPro.
+-->
+<style>
+.cast-photo-quality-backdrop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  min-height: 0;
+  padding: var(--s4);
+}
+.cast-photo-quality-backdrop-img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--r-md);
+}
+.cast-photo-quality-opt {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  min-height: 64px;
+  padding: var(--s3) var(--s4);
+  border: 2px solid transparent;
+  border-radius: var(--r-lg);
+  background: var(--bg-grouped);
+  color: var(--label);
+  font-family: var(--font);
+  text-align: left;
+  cursor: pointer;
+}
+.cast-photo-quality-opt.is-on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.cast-photo-quality-radio {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--label-3);
+  border-radius: var(--r-full);
+  color: var(--on-accent);
+}
+.cast-photo-quality-opt.is-on .cast-photo-quality-radio {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+.cast-photo-quality-pro {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s1);
+  flex: 0 0 auto;
+  color: var(--accent);
+  font-size: var(--t-footnote);
+  font-weight: 600;
+}
+</style>
+<div class="screen" style="background-color: var(--bg-grouped)">
+  <div class="body-fixed" style="gap: 0">
+    <div class="cast-photo-quality-backdrop" aria-hidden="true">
+      <img class="art cast-photo-quality-backdrop-img" src="/project/smartscreen/assets/ob_demo_user_photo.png" width="358" height="201" alt="user_picked_photo" data-asset="user_picked_photo" />
+    </div>
+    <div class="scrim"></div>
+
+    <div class="cast-sheet">
+      <div class="cast-sheet-head">
+        <i class="cast-sheet-x is-ghost"></i>
+        <span class="t-subhead">Photo quality</span>
+        <button class="cast-sheet-x" aria-label="Close"><span class="cast-sheet-x-dot"><span class="icon icon-xs" data-symbol="sc.xmark"></span></span></button>
+      </div>
+
+      <div class="col" style="gap: var(--s2)" role="radiogroup" aria-label="Photo quality">
+        <button class="cast-photo-quality-opt is-on" role="radio" aria-checked="true">
+          <span class="cast-photo-quality-radio"><span class="icon icon-xs" data-symbol="sc.checkmark"></span></span>
+          <div class="grow col" style="gap: 2px">
+            <span class="t-headline">Basic</span>
+            <span class="t-footnote t-secondary">Fast on any Wi-Fi</span>
+          </div>
+        </button>
+        <button class="cast-photo-quality-opt" role="radio" aria-checked="false">
+          <span class="cast-photo-quality-radio"></span>
+          <div class="grow col" style="gap: 2px">
+            <span class="t-headline">HD</span>
+            <span class="t-footnote t-secondary">Sharper photos on most TVs</span>
+          </div>
+          <span class="cast-photo-quality-pro"><span class="icon icon-xs" data-symbol="sc.crown"></span>Pro</span>
+        </button>
+        <button class="cast-photo-quality-opt" role="radio" aria-checked="false">
+          <span class="cast-photo-quality-radio"></span>
+          <div class="grow col" style="gap: 2px">
+            <span class="t-headline">Full HD</span>
+            <span class="t-footnote t-secondary">Best detail on big screens</span>
+          </div>
+          <span class="cast-photo-quality-pro"><span class="icon icon-xs" data-symbol="sc.crown"></span>Pro</span>
+        </button>
+      </div>
+
+      <div class="row" style="justify-content: center; gap: var(--s1); margin: calc(-1 * var(--s1)) 0">
+        <span class="icon icon-xs" data-symbol="sc.wifi" style="color: var(--label-3)"></span>
+        <span class="t-caption" style="color: var(--label-2)">Higher quality works best on strong Wi-Fi</span>
+      </div>
+
+      <button class="ob-cta">Done</button>
+    </div>
+  </div>
+</div>

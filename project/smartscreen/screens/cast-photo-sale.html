@@ -1,0 +1,79 @@
+<!-- pc {"title":"Cast · Sheet 2 Thành công + Sale"} -->
+<!--
+  Sheet 2/2 — sau khi bấm "Yes, I see it" ở cast-photo-check. CÙNG một sheet,
+  chỉ đổi nội dung (transition mờ dần) → chuyển nhẹ nhàng, cùng khung
+  .cast-sheet: tiêu đề nhỏ + X → hình nhỏ → tiêu đề đậm → mô tả → 2 nút.
+
+  PORT TỪ paywall-kit/seasonal-sale (theo quy tắc paywall của dự án), rút gọn tối đa:
+  tag SALE → tiêu đề → giá (gạch + mới) → CTA "Claim 50% Off" → công bố giá.
+  Bỏ hàng Terms · Privacy · Restore theo yêu cầu (2026-10-13) — xem ghi chú
+  Guideline 3.1.2 trong docs/cast/cast-sheets.md. Bỏ có chủ đích: đồng hồ đếm ngược (không có hạn
+  thật → rủi ro Guideline 3.1.2/5.6), thẻ gói, lưới quyền lợi, nền tối / gold.
+  Quyền lợi gói vào mô tả = đúng 3 thứ đang khoá trên Cast Photo phía sau
+  (Full HD, Auto Next, không quảng cáo).
+  Hình: ảnh MỚI cast_sale_pro (đã duyệt, đã gắn) — prompt ở docs/cast/cast-sheets.md.
+  Giá $—.—— chờ StoreKit (như KB1-M7). Maybe later / X / kéo xuống = đóng.
+-->
+<style>
+.cast-photo-sale-backdrop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  min-height: 0;
+  padding: var(--s4);
+}
+.cast-photo-sale-backdrop-img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--r-md);
+}
+.cast-photo-sale-tag {
+  align-self: center;
+  display: flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 var(--s3);
+  border-radius: var(--r-full);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: var(--t-caption);
+  font-weight: 700;
+}
+.cast-photo-sale-was {
+  color: var(--label-3);
+  text-decoration: line-through;
+}
+</style>
+<div class="screen" style="background-color: var(--bg-grouped)">
+  <div class="body-fixed" style="gap: 0">
+    <div class="cast-photo-sale-backdrop" aria-hidden="true">
+      <img class="art cast-photo-sale-backdrop-img" src="/project/smartscreen/assets/ob_demo_user_photo.png" width="358" height="201" alt="user_picked_photo" data-asset="user_picked_photo" />
+    </div>
+    <div class="scrim"></div>
+
+    <div class="cast-sheet">
+      <div class="cast-sheet-head">
+        <i class="cast-sheet-x is-ghost"></i>
+        <span class="t-subhead">You're all set</span>
+        <button class="cast-sheet-x" aria-label="Close"><span class="cast-sheet-x-dot"><span class="icon icon-xs" data-symbol="sc.xmark"></span></span></button>
+      </div>
+
+      <img class="art cast-sheet-art" src="/project/smartscreen/assets/cast_sale_pro.png" width="140" height="105" alt="cast_sale_pro" data-asset="cast_sale_pro" style="object-fit: cover" />
+
+      <div class="col" style="gap: var(--s2)">
+        <span class="cast-photo-sale-tag">50% OFF · LIMITED OFFER</span>
+        <h2 class="cast-sheet-title">Casting works! Get Pro<br />for half the price</h2>
+        <p class="ob-desc">Full HD, Auto Next and no ads.<br /><span class="cast-photo-sale-was">$—.——</span> $—.—— first year, then $—.——/year.</p>
+      </div>
+
+      <div class="col" style="gap: var(--s2)">
+        <button class="ob-cta">Claim 50% Off</button>
+        <button class="cast-sheet-btn2">Maybe later</button>
+      </div>
+
+    </div>
+  </div>
+</div>

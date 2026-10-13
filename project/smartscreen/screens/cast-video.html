@@ -1,0 +1,153 @@
+<!-- pc {"title":"Cast · Video"} -->
+<!--
+  Màn Cast Video — làm lại từ ảnh chụp app đang chạy (2026-10-13), cùng khung
+  với cast-photo (lớp .cast-* trong tokens.css): back · "Cast Video" · nút Pro
+  tròn; sân khấu trắng; thẻ Quality · Auto Next + dải video.
+  Thêm THẺ TRÌNH PHÁT (điều khiển video đang phát trên TV):
+  - hàng 1: tên file · âm lượng (− · tắt tiếng · +), nút 44pt.
+  - hàng 2: thời gian 0:00 · thanh tua (phần đã phát accent + núm trắng) · 0:20.
+  - hàng 3: video trước · lùi 15s · PHÁT (tròn accent 56pt) · tới 15s · video sau.
+  Khác bản gốc có chủ đích: nút tắt tiếng đỏ → xám (đỏ chỉ dành Exit Offer);
+  bộ icon sc.* (icon trình phát vẽ thêm cùng quy cách); vương miện xanh-lục →
+  nút tròn xanh nhạt; Quality / Auto Next cùng kiểu với Cast Photo.
+  Video đang chiếu = video thật từ PhotosPicker; board dùng khung hình demo
+  ob_demo_user_photo (không ship). Dải video = thư viện người dùng → ô trống.
+  Sau lần cast thành công đầu tiên → cùng sheet cast-photo-check (đổi chữ
+  "photo" → "video").
+-->
+<style>
+.cast-video-player {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  padding: var(--s3) var(--s3) var(--s2);
+  border-radius: var(--r-lg);
+  background: var(--bg);
+}
+.cast-video-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-full);
+  background: transparent;
+  color: var(--label);
+  cursor: pointer;
+}
+.cast-video-btn.is-muted {
+  color: var(--label-2);
+}
+.cast-video-play {
+  width: 56px;
+  height: 56px;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.cast-video-time {
+  flex: 0 0 auto;
+  font-size: var(--t-caption);
+  line-height: 16px;
+  color: var(--label-2);
+  font-variant-numeric: tabular-nums;
+}
+.cast-video-track {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 20px;
+}
+.cast-video-rail {
+  flex: 1 1 0;
+  height: 4px;
+  border-radius: var(--r-full);
+  background: var(--accent-soft);
+}
+.cast-video-played {
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 35%;
+  height: 4px;
+  border-radius: var(--r-full);
+  background: var(--accent);
+}
+.cast-video-knob {
+  position: absolute;
+  left: 35%;
+  top: 0;
+  margin-left: -10px;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--r-full);
+  background: var(--bg);
+  box-shadow: 0 2px 8px var(--ob-shadow);
+}
+</style>
+<div class="screen" style="background-color: var(--bg-grouped)">
+  <span data-slot="back" aria-label="Back"><span class="icon" data-symbol="chevron.left" style="color: var(--accent)"></span></span>
+  <span data-slot="title" class="t-headline">Cast Video</span>
+  <button data-slot="right" class="cast-pro" aria-label="Upgrade to Pro"><span class="cast-pro-dot"><span class="icon icon-sm" data-symbol="sc.crown"></span></span></button>
+
+  <div class="body-fixed" style="gap: 0">
+    <div class="col grow cast-pad" style="min-height: 0; padding-bottom: calc(var(--s3) + var(--safe-bottom))">
+      <div class="cast-stage">
+        <img class="art cast-main" src="/project/smartscreen/assets/ob_demo_user_photo.png" width="334" height="188" alt="user_picked_video" data-asset="user_picked_video" />
+      </div>
+
+      <div class="cast-video-player">
+        <div class="row" style="gap: 0">
+          <span class="grow t-subhead" style="font-weight: 600">20251103_798235</span>
+          <button class="cast-video-btn" aria-label="Volume down"><span class="icon icon-sm" data-symbol="sc.minus"></span></button>
+          <button class="cast-video-btn is-muted" aria-label="Unmute"><span class="icon icon-sm" data-symbol="sc.speaker.slash"></span></button>
+          <button class="cast-video-btn" aria-label="Volume up"><span class="icon icon-sm" data-symbol="sc.plus"></span></button>
+        </div>
+        <div class="row" style="gap: var(--s3)">
+          <span class="cast-video-time">0:07</span>
+          <div class="cast-video-track" role="slider" aria-label="Playback position" aria-valuenow="7" aria-valuemin="0" aria-valuemax="20">
+            <i class="cast-video-rail"></i>
+            <i class="cast-video-played"></i>
+            <i class="cast-video-knob"></i>
+          </div>
+          <span class="cast-video-time">0:20</span>
+        </div>
+        <div class="row" style="justify-content: space-between; gap: 0">
+          <button class="cast-video-btn" aria-label="Previous video"><span class="icon icon-sm" data-symbol="sc.backward.fill"></span></button>
+          <button class="cast-video-btn" aria-label="Back 15 seconds"><span class="icon" data-symbol="sc.gobackward.15"></span></button>
+          <button class="cast-video-btn cast-video-play" aria-label="Play"><span class="icon" data-symbol="sc.play.fill"></span></button>
+          <button class="cast-video-btn" aria-label="Forward 15 seconds"><span class="icon" data-symbol="sc.goforward.15"></span></button>
+          <button class="cast-video-btn" aria-label="Next video"><span class="icon icon-sm" data-symbol="sc.forward.fill"></span></button>
+        </div>
+      </div>
+
+      <div class="cast-panel">
+        <div class="row" style="gap: var(--s2)">
+          <button class="cast-control grow" aria-label="Video quality: Basic">
+            <span class="icon icon-sm" data-symbol="sc.sparkles" style="color: var(--accent)"></span>
+            <span class="grow" style="text-align: left">Quality</span>
+            <span class="is-value">Basic</span>
+            <span class="icon icon-xs" data-symbol="sc.chevron.down" style="color: var(--accent)"></span>
+          </button>
+          <button class="cast-control" aria-label="Auto Next, Pro">
+            Auto Next
+            <span class="icon icon-xs" data-symbol="sc.crown" style="color: var(--accent)"></span>
+          </button>
+        </div>
+        <div class="cast-thumbs" aria-label="Your videos">
+          <img class="art cast-thumb" src="/project/smartscreen/assets/ob_demo_user_photo.png" width="56" height="56" alt="user_picked_video" data-asset="user_picked_video" />
+          <div class="cast-thumb" data-asset="user_library_video"><span class="icon icon-sm" data-symbol="sc.video"></span></div>
+          <div class="cast-thumb" data-asset="user_library_video"><span class="icon icon-sm" data-symbol="sc.video"></span></div>
+          <div class="cast-thumb" data-asset="user_library_video"><span class="icon icon-sm" data-symbol="sc.video"></span></div>
+          <div class="cast-thumb" data-asset="user_library_video"><span class="icon icon-sm" data-symbol="sc.video"></span></div>
+          <div class="cast-thumb" data-asset="user_library_video"><span class="icon icon-sm" data-symbol="sc.video"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

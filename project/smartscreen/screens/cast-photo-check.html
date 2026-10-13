@@ -1,0 +1,62 @@
+<!-- pc {"title":"Cast · Sheet 1 Đã lên TV?"} -->
+<!--
+  Sheet 1/2 sau lần cast ảnh / video THÀNH CÔNG ĐẦU TIÊN (app nhận ack từ TV).
+  Hỏi người dùng xác nhận bằng mắt — app biết đã gửi, chỉ người dùng biết
+  TV có hiện hay không (sai input, TV ngủ, app TV chặn…).
+  Dạng sheet nổi đơn giản (.cast-sheet, tokens.css): tiêu đề nhỏ + X →
+  hình nhỏ giữa → tiêu đề đậm → mô tả → 2 nút viên thuốc.
+  - Yes, I see it → đổi nội dung sang sheet 2 cast-photo-sale (cùng sheet,
+    transition mờ dần). Đây là lúc hài lòng nhất → lúc mời mua.
+  - No, it's not showing → màn khắc phục (cùng Wi-Fi, tắt VPN, chọn lại TV)
+    — KHÔNG mời mua khi người dùng đang gặp lỗi.
+  - X / kéo xuống = "để sau", không hỏi lại trong phiên.
+  Chỉ hỏi 1 lần / TV (lần cast thành công đầu), không hỏi mỗi lần.
+  Hình: ảnh MỚI cast_check_tv (đã duyệt, đã gắn; prompt ở docs/cast/cast-sheets.md) —
+  thay TV vẽ bằng code chứa ảnh thật của người dùng (ghép ảnh thật vào khung
+  TV nhỏ khó, ảnh dọc/ngang lệch tỉ lệ). Cùng cỡ + cùng TV với cast_sale_pro.
+-->
+<style>
+.cast-photo-check-backdrop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  min-height: 0;
+  padding: var(--s4);
+}
+.cast-photo-check-backdrop-img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--r-md);
+}
+</style>
+<div class="screen" style="background-color: var(--bg-grouped)">
+  <div class="body-fixed" style="gap: 0">
+    <div class="cast-photo-check-backdrop" aria-hidden="true">
+      <img class="art cast-photo-check-backdrop-img" src="/project/smartscreen/assets/ob_demo_user_photo.png" width="358" height="201" alt="user_picked_photo" data-asset="user_picked_photo" />
+    </div>
+    <div class="scrim"></div>
+
+    <div class="cast-sheet">
+      <div class="cast-sheet-head">
+        <i class="cast-sheet-x is-ghost"></i>
+        <span class="t-subhead">Cast Photo</span>
+        <button class="cast-sheet-x" aria-label="Close"><span class="cast-sheet-x-dot"><span class="icon icon-xs" data-symbol="sc.xmark"></span></span></button>
+      </div>
+
+      <img class="art cast-sheet-art" src="/project/smartscreen/assets/cast_check_tv.png" width="140" height="105" alt="cast_check_tv" data-asset="cast_check_tv" style="object-fit: cover" />
+
+      <div class="col" style="gap: var(--s2)">
+        <h2 class="cast-sheet-title">Is the photo showing on your TV?</h2>
+        <p class="ob-desc">Take a look at your Samsung QLED 7 Series. It can take a few seconds.</p>
+      </div>
+
+      <div class="col" style="gap: var(--s2)">
+        <button class="ob-cta">Yes, I see it</button>
+        <button class="cast-sheet-btn2">No, it's not showing</button>
+      </div>
+    </div>
+  </div>
+</div>
