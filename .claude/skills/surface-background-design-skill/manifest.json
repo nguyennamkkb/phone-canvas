@@ -1,0 +1,6 @@
+{
+  "name": "surface-background-design",
+  "version": "1.0.0",
+  "description": "Design-system skill for semantic component surfaces, background treatments, depth, and anti-AI-slop visual QA in mobile HTML UI.",
+  "entry": "SKILL.md"
+}

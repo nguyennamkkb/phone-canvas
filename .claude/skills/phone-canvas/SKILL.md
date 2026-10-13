@@ -1,0 +1,248 @@
+---
+name: phone-canvas
+description: Design, build, verify, and hand off phone screens on the phone-canvas board — author a screen as constrained HTML/CSS, render it in an iPhone frame, read per-element specs off the live DOM for SwiftUI, export screens to PNG, crop or golden a single element, and compare specs between screens. Use when asked to create or change a phone screen in this project, to turn a screenshot or mockup into a screen ("tái hiện màn hình này", "dựng màn hình này lên canvas"), to add or fix an icon or illustration asset, to export screens to images, to export or golden one element/component, or to produce SwiftUI specs from a design. Covers the CSS subset, the icon and illustration pipelines, the export-and-look verification loop, and the known silent failure modes.
+---
+
+# Phone Canvas
+
+The board holds phone screens as **real HTML** inside a sandboxed iframe, measures
+every element off the live DOM, and reports the numbers you need to write SwiftUI.
+
+Two artefacts matter, and they are not the same thing:
+
+- **the screen** — `project/<project>/<name>.html`, what you author
+- **the spec** — what the panel reads off it, and the actual deliverable
+
+A screen that looks right but reports `Block (out of subset)` is **not finished**.
+A screen with a clean spec that looks wrong is **not finished either**. Both
+gates, every time.
+
+## The loop
+
+Every screen is made the same way. Steps 3 and 6 are the ones people skip and
+then pay for.
+
+1. **Inspect** — read the project's own `project/<id>/tokens.css` (its design
+   system — see `recipes/design-tokens.md`), the region contract in
+   `openspec/specs/screen-regions` (bands + who owns each; numbers in
+   `src/screens/core.css` vars, sizes in `src/frame/devices.ts`,
+   migration notes in `docs/upgrade-core/02_PLATFORM_RULES.md` +
+   `03_REGION_SYSTEM.md`), and two or three existing screens. A new screen joins a design system; it does not invent one.
+   Design guidance has an order too: a new screen in an existing product reads
+   `mobile-ui-style-engine` first (Design DNA); number audits read the Apple /
+   fundamentals skills; a reference image goes through `clone-ui` first. Where
+   any of them conflicts with the board subset, `references/design-skills.md`
+   wins.
+
+2. **Model** — before any markup, write down: purpose, primary action, primary
+   information, persistent controls, what scrolls. If you cannot name the
+   primary action, you do not understand the screen yet.
+3. **Compose** — build the skeleton and render it *empty* first. Get the bands
+   right (nav / body / bottom) before a single piece of content.
+4. **Fill** — vocabulary class first, tokens for every value, assets last.
+5. **Lint** — read the panel. Zero red `Block` warnings, zero unmapped symbols,
+   zero external masks. See `references/failure-modes.md`.
+6. **Measure** — `npm run export`. Check the PNG dimensions. The height is
+   content-driven: if it is not the height you intended, something is too tall
+   or too short, and you find it by measuring, never by guessing. For one
+   component, crop it instead of the whole screen: select it in the panel and use
+   **Xuất element này** / **Xuất children**, or `npm run locate -- --box …`.
+7. **Look** — actually read the exported PNG. Compare it against the intent or
+   the reference. Numbers cannot tell you a layout reads wrong.
+8. **Repair** — fix the highest-severity problem, re-export, look again. Bound it
+   to ~3 rounds; if you are still moving, say what is unresolved rather than
+   declaring done. If you changed a pinned component, `npm run golden:check` must
+   be green before you call it done (it fails on a moved crop **or** a moved spec).
+9. **Hand off** — the panel is the deliverable. Read the tree, `Copy JSON`, and
+   write the SwiftUI from `references/spec-to-swiftui.md`. **Xuất element này**
+   writes the same spec next to a PNG of the exact element, which is what a
+   handoff for one component looks like.
+
+## Read these when the loop sends you there
+
+| | |
+|---|---|
+| `openspec/specs/screen-regions` + `src/screens/core.css` + `palettes.css` + `vocab.css` + `src/frame/devices.ts` (repo; migration notes `docs/upgrade-core/02_PLATFORM_RULES.md`, `03_REGION_SYSTEM.md`) | **The region contract.** Which band every screen owes, who owns it (shell vs author), the shared region classes, and every fixed measure. Read before authoring anything. |
+| `references/tooling.md` | Commands, the board's modes, the icon pipeline, the generator. |
+| `references/failure-modes.md` | The silent failures. An icon that vanished, a column that widened, a spec that lied. |
+| `references/spec-to-swiftui.md` | What the panel reports and the SwiftUI it maps to. |
+| `references/design-skills.md` | Adapter from the generic design skills to the board subset (what to write instead) + reading order. Wins on conflict. |
+| `recipes/*.md` | Screen archetypes: onboarding, list, dashboard. |
+
+## Project workflows
+
+These are the commands an agent runs to manage the project itself (screens,
+board state, verification) — separate from the screen-authoring loop above.
+
+### Screen lifecycle (one entry)
+
+```bash
+npm run screen -- add --project <id> --name <name> --title "..." [--device <id>]
+npm run screen -- rename --id <old> --to <new>
+npm run screen -- remove --id <screen-id> [--force]
+npm run screen -- list [--project <id>]
+npm run screen -- gate                # tsc + lint, auto-runs after add/rename/remove
+npm run gate           # + audit:regions (measures regions in Chrome) + vitest
+```
+
+Old habits keep working — thin aliases over the same scripts:
+
+```bash
+npm run new-screen -- --project <id> --name <name> --title "..." [--kind push]
+npm run rename-screen -- --id <old> --to <new>
+npm run delete-screen -- --id <screen-id> [--force]
+npm run screen -- gate          # tsc --noEmit + npm run lint
+```
+
+- `new-screen` writes the HTML file and nothing else — the file's
+  `<!-- pc {...} -->` header *is* the entry, so there is no manifest, no
+  generated registry and no codegen to keep in step. Round-trip with
+  `delete-screen` must leave the repo byte-identical.
+- `--kind` picks the chrome shape, and the screen is **born passing lint**:
+  `root` (tab bar, màn tự khai nav — cần `components/app-tabs.html`),
+  `push` (back + tiêu đề, mặc định), `modal` (Hủy + tiêu đề, cần
+  `components/app-nav.html`), `bare` (không band: splash, full-bleed). `kind`
+  là tiện ích của generator, **không** được ghi vào file — thứ trong file
+  (slot nào, include gì) mới là bằng chứng về dạng chrome của nó. Thiếu
+  component thì lệnh từ chối và **không ghi gì**, thay vì sinh ra màn đỏ.
+- `rename-screen` moves the file and rewrites the `<!-- pc -->` header, plus any
+  on-disk `board.json` references (nodes, removed, trash) with rollback on write
+  failure. Browser localStorage boards prune reader-side on open.
+- `delete-screen` removes the file. Without `--force` it aborts if any saved
+  board still references the id.
+- All three refuse bad input without writing; `--force` overrides board-references checks.
+- Every command prints files changed + boards/trash touched; via `screen --`
+  the gate (tsc + lint) runs automatically after.
+- iPad: `new-screen -- --device ipad-11` scaffolds a 2-column template and
+  records `deviceId` in the manifest so fresh boards open it at the tablet width.
+  Write screens fluid (token classes, no px per width); a fundamentally
+  different tablet layout is a separate screen, never `if-device` in one file.
+- Devices (sizes in `src/frame/devices.ts`, rules in `openspec/specs/screen-regions`): `reference` (default), `iphone-16-pro`,
+  `iphone-se`, `ipad-11`, `ipad-mini`, `duo-cover`,
+  `duo-inner` landscape. Each device declares a `form` (phone / tablet /
+  cover / inner) shown as a chip on the board label — phone is chipless.
+  A node follows its manifest `deviceId`, overridable per-node in the panel's
+  **Thiết bị** dropdown; export renders whatever `--device` it is given
+  (`--device` named explicitly keeps a `-<device>` filename suffix).
+
+### Board state: trash & export/import
+
+- **Trash** is per-project. Deleting a screen from the board moves it to the
+  trash dialog (🗑 badge). Restore puts it back at the old position with edges.
+  Emptying the trash and permanent delete (`delete-screen --force`) are the two
+  ways to remove it from disk.
+- A board arrangement lives in exactly **one** place: the localStorage record
+  `pc.board.<projectId>` (v5). The old `pc.statefile.*` "imported file" marker is
+  gone — a surviving one is migrated once, then deleted.
+- **Export** (`Xuất` button) downloads `project-id-board.json`
+  (`{ v: 1, projectId, exportedAt, board }`).
+- **Import** (`Nhập` button) validates the file (version, projectId, schema).
+  Invalid → alert, current state untouched. Valid → written straight into the
+  record + reload; its fresh `savedAt` then outranks the freeze.
+
+### Verification gate
+
+Run before claiming any board change works:
+
+```bash
+npm run gate        # lint + audit:regions (measures regions in Chrome) + vitest — matches package.json exactly
+```
+
+Or step by step: `npm run typecheck && npm run lint && npm run audit:regions && npm test`.
+
+The board also boots via `npm run dev` — open http://localhost:5273 and
+confirm no runtime errors in the console.
+
+### Verify with the browser
+
+Use the live board to confirm observable behavior:
+
+1. Open the project; confirm all registered screens render.
+2. Create via `new-screen`, delete to trash (confirm the 🗑 badge updates),
+   restore (confirm position + edges), then `delete-screen --force` (confirm
+   the file is gone and registry clean — grep the id).
+3. Export → import the downloaded file → confirm board + trash restored.
+
+### E-track additions (one-liners with pointers)
+
+- **Single-screen check** — every lint takes `--screen <id>` (`scripts/screen-filter.ts`): `npm run lint:regions -- --screen today`. Unknown id exits 1, never a green zero.
+- **Goldens** — `npm run export -- --all-devices --golden` renders every width in `DEVICES` and writes versioned PNGs + sha256 records (`scripts/export/cli.ts`, `scripts/export/golden.ts`; manifest `goldens.json`). The node label shows `khớp golden` / `lệch golden` / `chưa có golden` (read-only — `src/inspect/badges.ts`).
+- **Element goldens + CI** — `--golden --element <stem|class.set>` pins ONE component inside a screen (crop hash + geometry-free spec digest); `--element-check` compares without writing and exits 1 on drift; `npm run golden:check` runs the pinned list (`scripts/golden-check.ts`) and `.github/workflows/gate.yml` runs it after `npm run gate`. The panel's **So sánh golden** / **Ghi golden** does the same for the selected element, with before/after side by side. A dot-separated query (`pw-card.fp-plan.is-best`) is how you pin one of several same-family elements on a screen.
+- **Element crop** — `scripts/export/element.ts` is the one crop pipeline (board panel over `/__pc/element/*`, `npm run locate`, children batches). `--pad-pct` pads by a fraction of the larger side, `--ancestors 1` widens to the parent, `--children` writes one file per direct child named from `data-asset`/class.
+- **Spec drift** — the panel's **So lệch hai màn** diffs two mounted screens' specs by kind (`src/inspect/compare/`), collapsed by default.
+- **Shared components need anatomy** — every `project/<id>/components/*.html` opens with an 11-item `<!-- @anatomy … -->` header (`scripts/component-anatomy.ts`); `lint:components` BLOCKS when it is missing. Scaffold one born-passing: `npm run new-screen -- --project <id> --component <slug> --title "…"`.
+- **Board seed** — `npm run project -- freeze <id>` writes `project/<id>/board.json` (`scripts/board-freeze.ts`, keeps the old file as `.bak`); the board `fetch`es it once per project (`seedBoard`, `src/projects/storage.ts`) and applies it **only when it is newer than the saved record** — localStorage wins. It never replaces Xuất/Nhập.
+- **Handoff is versioned** — Copy JSON rides the Spec IR v1 envelope (`irVersion`, `src/spec/ir.ts`, `src/spec/types.ts`). Old readers ignore unknown fields.
+- **Upgrade background** — `docs/upgrade-core/04_COMPONENT_SYSTEM.md` §3 (anatomy), `09_QUALITY_GATES.md` (gates), `11_GOLDEN_REFERENCES.md` (goldens), `13_NODE_LABEL_PROPOSAL.md` (label rows). `docs/core-review.md` §0 tracks what the core-upgrade change closed, with the verification behind each.
+
+## Hard rules
+
+1. **One container per idea.** Reach for `.row`, `.col`, `.grow`, `.spacer`
+   before writing CSS. Every container you add becomes a `VStack`/`HStack` in the
+   output — spacer-only divs are noise someone has to read past in SwiftUI.
+2. **Tokens, never literals.** No `13px`, no `#333`. If a value has no token, the
+   design system is missing a token — add it there, not inline in the screen.
+3. **Icons are declared once.** Drop the SVG in `public/icons/`, add one line to
+   `SYMBOLS` in `scripts/icons.ts`, run `npm run icons`. Never hand-write
+   `style="--icon: url(…)"`. See failure mode 1.
+4. **Full-colour art is `<img class="art">`**; a monochrome glyph is `.icon`.
+   Getting this backwards is why icons come out black.
+5. **Coordinates only inside a composite graphic.** `position: absolute` is legal
+   in `.ring` / `.card-assistant`-style containers and nowhere else, and never
+   with `transform: translate(-50%,-50%)` — a transform is invisible to the
+   layout engine and the spec will report the wrong box. An edge-straddling
+   tag is the same pattern: `absolute; top: 0` + negative half-height margin
+   on a `relative` card, with headroom padding on the parent column for the
+   half that sticks out (SwiftUI: `overlay` + `offset`).
+6. **The shell owns the bands.** Never write a status bar, home indicator,
+   navbar or tab bar: `src/extractor/compose.ts` places all of them. Declare the
+   nav/tab content with `data-slot="back|title|right"`; the destination list
+   lives in `project/<id>/components/app-tabs.html` with a slug per tab
+   (`data-tab="home"`), and the screen names the open one once with
+   `data-tab-active="home"` on `.screen`. The shell centres the title on the
+   bar width by balancing both sides (`flex: 1` each, overlong titles get an
+   ellipsis), auto-wraps bare `back`/`right` content into touch-floor buttons
+   (never the title, never anything already containing a control), and floors
+   the band at the spec minimum (`--navbar-min-h` in `src/screens/core.css`; the value lives in `openspec/specs/screen-regions/`).
+7. **The frame is fixed and the body scrolls.** `.device` is exactly the device
+   height, so a screen has exactly ONE vertical scroller: `.body` for content
+   taller than the frame, `.body-fixed` for a page that fits. A `.body-fixed`
+   that overflows is a bug the measured audit reports, not a hidden scrollbar.
+8. **No emoji.** They do not map to SwiftUI. Use the symbol that does.
+9. **State the deviation.** When you cannot match a reference — artwork you had
+   to draw, an icon set you only approximated, a detail you chose to change —
+   say so plainly in your final response. Silent approximation is the one thing
+   that makes this tool untrustworthy.
+
+## Completion threshold
+
+Do not report a screen as done while any of these is true:
+
+- the panel shows a red `Block (out of subset)` row
+- an `unmappedSymbol` or `externalMask` warning is present
+- a glyph is an inline `<svg>` — it has no name and cannot be handed off
+- the exported height is not the height you intended, and you have not explained
+  why
+- you have not looked at the exported PNG
+- the SwiftUI for the primary action is not derivable from the spec
+- `npm run lint:tokens` reports an error
+
+## Recipes
+
+Pick the closest archetype before starting; each one names its structure and the
+classes it uses.
+
+| Screen | Recipe |
+|---|---|
+| welcome / intro / permission primer | `recipes/onboarding.md` |
+| browse, inbox, settings, search results | `recipes/list-screen.md` |
+| score, stats, overview, anything with a chart | `recipes/dashboard.md` |
+| modal action menu, preview, short form, filter | `recipes/bottom-sheet.md` |
+| per-screen background color / image / dark stage | `recipes/screen-background.md` |
+| one-off per-screen CSS (own `<style>` block, not tokens.css) | `recipes/screen-style.md` |
+| free-style catalogue of tokens + components | `recipes/showcase.md` |
+| new project palette, token edit, dark mode, handoff | `recipes/design-tokens.md` |
+| any screen, before you write its top or bottom band | `recipes/regions.md` |
+| iPad sidebar + split (tablet bands are author-owned) | `recipes/tablet.md` |
+| Watch face: top bar + metric + action, no scroll | `recipes/watch.md` |
+| Widget glance: no scroll, no input, no bands | `recipes/widget.md` |

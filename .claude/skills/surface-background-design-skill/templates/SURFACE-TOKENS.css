@@ -1,0 +1,29 @@
+:root {
+  /* Semantic surfaces */
+  --surface-page: ...;
+  --surface-section: ...;
+  --surface-primary: ...;
+  --surface-secondary: ...;
+  --surface-control: ...;
+  --surface-selected: ...;
+  --surface-elevated: ...;
+  --surface-inverse: ...;
+
+  /* Surface geometry */
+  --radius-sm: ...;
+  --radius-md: ...;
+  --radius-lg: ...;
+  --radius-xl: ...;
+  --radius-pill: 999px;
+
+  /* Semantic depth */
+  --elevation-subtle: none;
+  --elevation-raised: ...;
+  --elevation-floating: ...;
+  --elevation-overlay: ...;
+
+  /* Optional treatment tokens */
+  --brand-ambient: ...;
+  --brand-glow: ...;
+  --surface-texture: ...;
+}

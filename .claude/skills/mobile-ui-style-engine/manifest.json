@@ -1,0 +1,8 @@
+{
+  "name": "mobile-ui-style-engine",
+  "version": "1.0.0",
+  "purpose": "Design-memory and visual-consistency skill for mobile HTML UI",
+  "entrypoint": "SKILL.md",
+  "supports": ["mobile-html", "html-css", "agentic-ui-generation"],
+  "core_modes": ["bootstrap", "new-screen", "audit", "repair"]
+}
