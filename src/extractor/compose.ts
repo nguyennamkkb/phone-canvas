@@ -92,6 +92,9 @@ html, body { width: var(--device-w); height: var(--device-h); }
   display: flex; flex-direction: column;
   width: var(--device-w); height: var(--device-h);
   background: var(--bg);
+  /* Cùng hệ toạ độ nền với .screen (vocab.css): cả hai neo viewport, để band
+     status/nav/tab nổi trên MỘT lớp nền liền mạch thay vì hai lần vẽ lệch. */
+  background-attachment: fixed;
   overflow: hidden;
 }
 /* component preview: no chrome, hug the component's own height */
