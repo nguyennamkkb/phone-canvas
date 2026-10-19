@@ -80,7 +80,15 @@ type Rect = { x: number; y: number; w: number; h: number }
 type Interactive = Rect & { label: string; tag: string }
 type Probe = {
   chrome: { statusbars: number; homeIndicators: number; insideViewport: number }
-  paint: { device: string; screen: string; deviceImage: string; screenImage: string }
+  paint: {
+    device: string
+    screen: string
+    deviceImage: string
+    screenImage: string
+    deviceAttachment: string
+    screenAttachment: string
+  }
+  bgGeom: { device: Rect; screen: Rect | null; viewport: { w: number; h: number } }
   interactive: Interactive[]
   regions: {
     nav: Rect | null
@@ -128,7 +136,7 @@ const PROBE = `(() => {
     const el = q(sel)
     if (!el) return null
     const cs = getComputedStyle(el)
-    return { color: cs.backgroundColor, image: cs.backgroundImage }
+    return { color: cs.backgroundColor, image: cs.backgroundImage, attachment: cs.backgroundAttachment }
   }
   const device = style('.device')
   const screen = style('.screen')
@@ -154,6 +162,13 @@ const PROBE = `(() => {
         .map(rectOf)
         .filter(Boolean)
     : []
+  // where each painter anchors its background: equal areas mean one continuous
+  // layer, different areas mean a seam at the band boundary
+  const bgGeom = {
+    device: rectOf(q('.device')),
+    screen: rectOf(q('.screen')),
+    viewport: { w: document.documentElement.clientWidth, h: document.documentElement.clientHeight },
+  }
   return {
     chrome: {
       statusbars: qa('.statusbar').length,
@@ -163,9 +178,12 @@ const PROBE = `(() => {
     paint: {
       device: device ? device.color : 'none',
       deviceImage: device ? device.image : 'none',
+      deviceAttachment: device ? device.attachment : 'none',
       screen: screen ? screen.color : 'none',
       screenImage: screen ? screen.image : 'none',
+      screenAttachment: screen ? screen.attachment : 'none',
     },
+    bgGeom: bgGeom,
     interactive: interactive,
     regions: {
       nav: rectOf(q('.region-nav')),
@@ -231,6 +249,52 @@ function exempt(label: string): string | null {
   return EXEMPTIONS.find((e) => label.includes(e.match.slice(1)))?.reason ?? null
 }
 
+const BG_RECT_TOL = 1
+const fmtRect = (r: Rect) => `${Math.round(r.x)},${Math.round(r.y)} ${Math.round(r.w)}×${Math.round(r.h)}`
+
+/**
+ * The background contract, as a pure function so it can be unit-tested without a
+ * browser. Two separate concerns:
+ *  1. value parity — `.device` and `.screen` must declare the same paint (the
+ *     longhand replay), so no chrome strip shows the project default as a seam;
+ *  2. geometry parity — with a background IMAGE, both painters must anchor to the
+ *     same area. Equal areas mean ONE continuous layer behind the transparent
+ *     bands; different areas mean the image is drawn twice at different scales and
+ *     a seam appears at the nav/content boundary.
+ */
+export function backgroundFindings(id: string, probe: Pick<Probe, 'paint' | 'bgGeom'>): Finding[] {
+  const out: Finding[] = []
+  const { paint, bgGeom } = probe
+  if (paint.device !== paint.screen || paint.deviceImage !== paint.screenImage) {
+    out.push({
+      screen: id,
+      check: 'background',
+      detail: `.device ${paint.device}/${paint.deviceImage} ≠ .screen ${paint.screen}/${paint.screenImage} — dải OS sẽ lệch màu ruột màn`,
+    })
+  }
+  const hasImage = (v: string) => v !== '' && v !== 'none'
+  if (!hasImage(paint.deviceImage) && !hasImage(paint.screenImage)) return out
+  const bothFixed = paint.deviceAttachment === 'fixed' && paint.screenAttachment === 'fixed'
+  const s = bgGeom.screen
+  const sameRect =
+    s !== null &&
+    Math.abs(bgGeom.device.x - s.x) <= BG_RECT_TOL &&
+    Math.abs(bgGeom.device.y - s.y) <= BG_RECT_TOL &&
+    Math.abs(bgGeom.device.w - s.w) <= BG_RECT_TOL &&
+    Math.abs(bgGeom.device.h - s.h) <= BG_RECT_TOL
+  if (!bothFixed && !sameRect) {
+    out.push({
+      screen: id,
+      check: 'background',
+      detail:
+        `hai hệ toạ độ nền khác nhau — .device attachment=${paint.deviceAttachment} rect ${fmtRect(bgGeom.device)}` +
+        ` vs .screen attachment=${paint.screenAttachment} rect ${s ? fmtRect(s) : 'none'}` +
+        ` — cần cả hai neo viewport (background-attachment: fixed) hoặc hai rect bằng nhau`,
+    })
+  }
+  return out
+}
+
 type Finding = { screen: string; check: string; detail: string }
 
 async function measure(cdp: import('./export/cdp.ts').Cdp, url: string, device: Device) {
@@ -278,13 +342,7 @@ function checkScreen(id: string, device: Device, probe: Probe): Finding[] {
     })
   }
 
-  if (probe.paint.device !== probe.paint.screen || probe.paint.deviceImage !== probe.paint.screenImage) {
-    out.push({
-      screen: id,
-      check: 'background',
-      detail: `.device ${probe.paint.device}/${probe.paint.deviceImage} ≠ .screen ${probe.paint.screen}/${probe.paint.screenImage} — dải OS sẽ lệch màu ruột màn`,
-    })
-  }
+  out.push(...backgroundFindings(id, probe))
 
   for (const el of probe.interactive) {
     if (el.w >= TOUCH_MIN && el.h >= TOUCH_MIN) continue
