@@ -4,7 +4,7 @@ import { promisify } from 'node:util'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 
-import { describeMissingChrome } from './region-audit.ts'
+import { backgroundFindings, describeMissingChrome } from './region-audit.ts'
 import { SCREENS } from '../src/projects/registry'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -69,5 +69,51 @@ describe('audit:regions without a browser (2.2/2.3)', () => {
     expect(failed.code).toBe(1)
     expect(failed.stderr).toContain('no screen matched')
     expect(failed.stderr).not.toContain('MISSING CHROME')
+  })
+})
+
+const rect = (x: number, y: number, w: number, h: number) => ({ x, y, w, h })
+const bgProbe = () => ({
+  paint: {
+    device: 'rgb(1,1,1)', screen: 'rgb(1,1,1)',
+    deviceImage: 'url("/a.png")', screenImage: 'url("/a.png")',
+    deviceAttachment: 'fixed', screenAttachment: 'fixed',
+  },
+  bgGeom: { device: rect(0, 0, 390, 844), screen: rect(0, 59, 390, 785), viewport: { w: 390, h: 844 } },
+})
+
+describe('backgroundFindings (nền chung một hệ toạ độ)', () => {
+  it('passes when both painters anchor to the viewport', () => {
+    expect(backgroundFindings('x', bgProbe())).toEqual([])
+  })
+
+  it('flags two coordinate spaces when only one painter is viewport-anchored', () => {
+    const probe = bgProbe()
+    const out = backgroundFindings('x', { ...probe, paint: { ...probe.paint, screenAttachment: 'scroll' } })
+    expect(out.some((f) => f.check === 'background' && f.detail.includes('hai hệ toạ độ'))).toBe(true)
+  })
+
+  it('passes when rects are equal even without fixed anchoring', () => {
+    const probe = bgProbe()
+    const out = backgroundFindings('x', {
+      paint: { ...probe.paint, deviceAttachment: 'scroll', screenAttachment: 'scroll' },
+      bgGeom: { ...probe.bgGeom, screen: rect(0, 0, 390, 844) },
+    })
+    expect(out).toEqual([])
+  })
+
+  it('ignores a screen with no background image', () => {
+    const probe = bgProbe()
+    const out = backgroundFindings('x', {
+      ...probe,
+      paint: { ...probe.paint, deviceImage: 'none', screenImage: 'none', screenAttachment: 'scroll' },
+    })
+    expect(out).toEqual([])
+  })
+
+  it('keeps the value mismatch check', () => {
+    const probe = bgProbe()
+    expect(backgroundFindings('x', { ...probe, paint: { ...probe.paint, screen: 'rgb(2,2,2)' } })
+      .some((f) => f.check === 'background')).toBe(true)
   })
 })
