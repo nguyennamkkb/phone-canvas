@@ -1,10 +1,10 @@
 <!-- pc {"title":"Little Pumpkin 99% Off","lightStatusBar":false} -->
-<div class="screen" style="background-color: var(--ct-bg); background-image: url(/project/paywall-kit/assets/cute-sky.png); background-size: cover; background-position: center; background-repeat: no-repeat">
+<div class="screen halloween-cute" style="background-color: var(--ct-bg); background-image: url(/project/paywall-kit/assets/cute-sky.png); background-size: cover; background-position: center; background-repeat: no-repeat">
   <button class="hw-x ct-x" data-slot="right" aria-label="Close">
     <span class="icon icon-xs" data-symbol="xmark"></span>
   </button>
 
-  <div class="body-fixed" style="padding: 0; gap: 0">
+  <div class="body-fixed" style="padding: var(--s4) var(--s4) calc(var(--safe-bottom) + var(--s3)); gap: var(--s3)">
     <!-- Title block sits on the pale sky top, dark plum ink reads fine. -->
     <div class="ct-kicker">Little Pumpkin</div>
 
@@ -13,45 +13,46 @@
       <div class="ct-sub">Unlock every story, game and sticker — ad-free for your little one.</div>
     </div>
 
-    <!-- Mascots: pumpkin + smiling star, keyed real-alpha stickers. -->
-    <div class="ct-mascots" style="padding-top: var(--s2)">
-      <img class="art" src="/project/paywall-kit/assets/cute-pumpkin.png" width="150" height="155" alt="PumpkinFriend" />
-      <img class="art" src="/project/paywall-kit/assets/cute-star.png" width="104" height="101" alt="SmilingStar" />
-    </div>
-
     <div class="spacer"></div>
 
-    <!-- Cream panel: offer copy on a calm field. -->
+    <!-- Mascots: pumpkin + smiling star, keyed real-alpha stickers. -->
+    <div class="ct-mascots">
+      <img class="art ct-pumpkin" src="/project/paywall-kit/assets/cute-pumpkin.png" width="132" height="136" alt="PumpkinFriend" />
+      <img class="art ct-star" src="/project/paywall-kit/assets/cute-star.png" width="88" height="86" alt="SmilingStar" />
+    </div>
+
+    <!-- Cream panel: offer copy on a calm field. Anatomy inherited from the hw
+         family, re-coloured by the ct-* overrides. -->
     <div class="ct-panel">
       <div class="col" style="gap: 0; align-items: center">
-        <div class="ct-price">Only <span class="ct-accent">$0.99</span> for the first week</div>
-        <div class="ct-price-sm">then <span class="ct-accent">$24.99</span>/week</div>
+        <div class="hw-price ct-price">Only <span class="ct-accent">$0.99</span> for the first week</div>
+        <div class="hw-price-sm ct-price-sm">then <span class="ct-accent">$24.99</span>/week</div>
       </div>
 
-      <div class="col" style="gap: var(--s2); align-items: center; padding-top: var(--s1)">
-        <div class="ct-offer">Offer ends in</div>
+      <div class="col" style="gap: var(--s2); align-items: center">
+        <div class="hw-offer ct-offer">Offer ends in</div>
         <div class="row" style="gap: 0; justify-content: center">
-          <div class="ct-cell">
-            <div class="ct-num">02</div>
-            <div class="ct-cap">hours</div>
+          <div class="hw-cell ct-cell">
+            <div class="hw-num ct-num">02</div>
+            <div class="hw-cap ct-cap">hours</div>
           </div>
-          <div class="ct-colon">:</div>
-          <div class="ct-cell">
-            <div class="ct-num">14</div>
-            <div class="ct-cap">minutes</div>
+          <div class="hw-colon ct-colon">:</div>
+          <div class="hw-cell ct-cell">
+            <div class="hw-num ct-num">14</div>
+            <div class="hw-cap ct-cap">minutes</div>
           </div>
-          <div class="ct-colon">:</div>
-          <div class="ct-cell">
-            <div class="ct-num">59</div>
-            <div class="ct-cap">seconds</div>
+          <div class="hw-colon ct-colon">:</div>
+          <div class="hw-cell ct-cell">
+            <div class="hw-num ct-num">59</div>
+            <div class="hw-cap ct-cap">seconds</div>
           </div>
         </div>
       </div>
 
-      <div class="col" style="gap: var(--s1); padding-top: var(--s1)">
-        <button class="ct-cta">Claim Limited Offer</button>
-        <div class="ct-legal">The subscription renews automatically till you turn it off.</div>
-        <div class="ct-legal">Please see our <b>Privacy Policy</b> and <b>EULA</b></div>
+      <div class="col" style="gap: var(--s1)">
+        <button class="hw-cta ct-cta">Claim Limited Offer</button>
+        <div class="hw-legal ct-legal">The subscription renews automatically till you turn it off.</div>
+        <div class="hw-legal ct-legal">Please see our <b>Privacy Policy</b> and <b>EULA</b></div>
       </div>
     </div>
   </div>

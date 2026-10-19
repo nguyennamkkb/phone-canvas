@@ -3955,3 +3955,157 @@
   color: var(--jk-legal-ink);
   font-weight: 700;
 }
+
+/* Halloween cute — pastel storybook paywall for kids over a baked sky asset.
+   Reuses the hw/pw control anatomy and only overrides palette + geometry:
+   plum ink on a pale lavender sky, a cream offer card, pumpkin-orange CTA. */
+:root,
+:root[data-theme='dark'] {
+  --ct-bg: #f3e6f5;
+  --ct-ink: #4a2b45;
+  --ct-ink-soft: #7b5a72;
+  --ct-card: #fff7ec;
+  --ct-card-line: rgba(120, 70, 100, 0.16);
+  --ct-accent: #f0782a;
+  --ct-cell: #ffe9d2;
+  --ct-cell-cap: #7b5a72;
+  --ct-cta-ink: #fff9f2;
+  --ct-x-bg: rgba(255, 255, 255, 0.74);
+  --ct-x-disc: 36px;
+  --ct-shadow: 0 18px 40px rgba(120, 70, 100, 0.18);
+  --ct-cta-1: #ffb24a;
+  --ct-cta-2: #ff8f3d;
+  --ct-cta-3: #f0782a;
+  --ct-num: 24px;
+  --ct-cell-w: 72px;
+  --ct-cell-h: 64px;
+  --ct-colon-w: 24px;
+  --ct-cta-h: 58px;
+  --ct-mascot-pumpkin-w: 132px;
+  --ct-mascot-pumpkin-h: 136px;
+  --ct-mascot-star-w: 88px;
+  --ct-mascot-star-h: 86px;
+}
+
+/* Dismiss: pale glass disc, plum glyph (overrides the night-art glass). */
+.ct-x {
+  padding: calc((var(--touch-min) - var(--ct-x-disc)) / 2);
+  background: var(--ct-x-bg);
+  color: var(--ct-ink);
+}
+
+/* Storybook header: tiny candy pill, two-line title, soft sub. */
+.ct-kicker {
+  align-self: center;
+  padding: var(--s1) var(--s3);
+  border-radius: var(--r-full);
+  background: var(--ct-x-bg);
+  color: var(--ct-ink);
+  font-family: var(--font);
+  font-size: var(--t-caption);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.ct-title {
+  font-family: var(--font);
+  font-size: var(--t-title1);
+  font-weight: 800;
+  line-height: 32px;
+  letter-spacing: -0.4px;
+  color: var(--ct-ink);
+  text-align: center;
+}
+
+.ct-sub {
+  max-width: 300px;
+  font-family: var(--font);
+  font-size: var(--t-subhead);
+  font-weight: 500;
+  line-height: 21px;
+  color: var(--ct-ink-soft);
+  text-align: center;
+}
+
+/* Mascot pair: bottoms aligned, peeking over the card's top edge. The negative
+   margin pulls the card under the pair; z-index keeps the stickers on top. */
+.ct-mascots {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: center;
+  gap: var(--s4);
+  position: relative;
+  z-index: 1;
+  margin-bottom: calc(-1 * var(--s8));
+}
+
+.ct-mascots .ct-pumpkin {
+  width: var(--ct-mascot-pumpkin-w);
+  height: var(--ct-mascot-pumpkin-h);
+}
+
+.ct-mascots .ct-star {
+  width: var(--ct-mascot-star-w);
+  height: var(--ct-mascot-star-h);
+}
+
+/* Cream offer card: calm field for the decision, clear of the sticker overlap. */
+.ct-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  padding: calc(var(--s6) + var(--s2)) var(--s5) var(--s5);
+  border: 1px solid var(--ct-card-line);
+  border-radius: var(--r-xl);
+  background: var(--ct-card);
+  box-shadow: var(--ct-shadow);
+}
+
+/* hw anatomy re-coloured for the pale card. */
+.ct-price {
+  color: var(--ct-ink);
+}
+.ct-price-sm {
+  font-size: var(--t-subhead);
+  color: var(--ct-ink-soft);
+}
+.ct-accent {
+  color: var(--ct-accent);
+}
+.ct-offer {
+  font-size: var(--t-caption);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ct-accent);
+}
+.ct-cell {
+  width: var(--ct-cell-w);
+  height: var(--ct-cell-h);
+  background: var(--ct-cell);
+}
+.ct-num {
+  font-size: var(--ct-num);
+  color: var(--ct-ink);
+}
+.ct-cap {
+  color: var(--ct-cell-cap);
+}
+.ct-colon {
+  width: var(--ct-colon-w);
+  height: var(--ct-cell-h);
+  color: var(--ct-ink-soft);
+}
+.ct-cta {
+  height: var(--ct-cta-h);
+  background: linear-gradient(96deg, var(--ct-cta-1) 0%, var(--ct-cta-2) 55%, var(--ct-cta-3) 100%);
+  color: var(--ct-cta-ink);
+}
+.ct-legal {
+  color: var(--ct-ink-soft);
+}
+.ct-legal b {
+  color: var(--ct-ink);
+  font-weight: 700;
+}
