@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  backgroundGeometryErrors,
   darkBlockViolations,
   leftoverHardColors,
   noLiteralViolations,
@@ -13,6 +14,34 @@ const ENTRIES: Array<[string, string]> = [
   ['--bg', '#ffffff'],
   ['--label', '#000000'],
 ]
+
+describe('backgroundGeometryErrors', () => {
+  const bg = (over: Partial<Record<'image' | 'size' | 'position' | 'repeat', string>> = {}) => ({
+    image: 'url(/project/x/assets/a.png)',
+    size: 'cover',
+    position: 'center',
+    repeat: 'no-repeat',
+    ...over,
+  })
+
+  it('accepts the mandated geometry', () => {
+    expect(backgroundGeometryErrors(bg())).toEqual([])
+  })
+
+  it('ignores a screen with no root background image', () => {
+    expect(backgroundGeometryErrors(bg({ image: 'none' }))).toEqual([])
+  })
+
+  it('requires background-position: center (otherwise .screen offsets against .device)', () => {
+    expect(backgroundGeometryErrors(bg({ position: 'top' })).join(' ')).toContain('position: center')
+    expect(backgroundGeometryErrors(bg({ position: '' })).join(' ')).toContain('position: center')
+  })
+
+  it('requires cover and no-repeat', () => {
+    expect(backgroundGeometryErrors(bg({ size: 'contain' })).join(' ')).toContain('size: cover')
+    expect(backgroundGeometryErrors(bg({ repeat: 'repeat' })).join(' ')).toContain('repeat: no-repeat')
+  })
+})
 
 describe('parseModeVars', () => {
   it('splits light vars from every dark block, keeping file lines', () => {

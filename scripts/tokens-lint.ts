@@ -107,6 +107,38 @@ function rootBackgroundOf(html) {
   }
 }
 
+/* ---------------------------------- root background geometry (exported) ------ */
+
+/**
+ * Geometry the shell replays VERBATIM onto `.device` (compose.ts hard-codes
+ * `cover / center / no-repeat`). Every one of the three must therefore match, or
+ * the two painters scale/offset the picture differently and a seam appears at the
+ * band boundary — `position` included: `.device` is hard-coded `center`, so a root
+ * `background-position: top` (or omitting it, which defaults to `0% 0%`) leaves
+ * `.screen`'s picture offset against `.device`'s. Returns one message per missing
+ * or wrong value; empty when the geometry is right or there is no image.
+ */
+export function backgroundGeometryErrors(rootBg: {
+  image: string
+  size: string
+  position: string
+  repeat: string
+}): string[] {
+  const out: string[] = []
+  const image = rootBg.image.trim().toLowerCase()
+  if (!image || image === 'none') return out
+  if (!/^cover$/i.test(rootBg.size.trim())) {
+    out.push('ảnh nền root phải background-size: cover (để .device lan đúng)')
+  }
+  if (!/^center$/i.test(rootBg.position.trim())) {
+    out.push('ảnh nền root phải background-position: center (để .device và .screen cùng hệ toạ độ nền)')
+  }
+  if (!/^no-repeat$/i.test(rootBg.repeat.trim())) {
+    out.push('ảnh nền root phải background-repeat: no-repeat')
+  }
+  return out
+}
+
 /* ---------------------------------- token-layers rules (exported for tests) -- */
 
 /** spacing scale values with the token to use instead of the literal */
@@ -553,12 +585,8 @@ async function main() {
           )
           errors += 1
         }
-        if (rootBg.size && !/^cover$/i.test(rootBg.size)) {
-          console.error(`error  ${screen.file}:${rootLine}  ảnh nền root phải background-size: cover (để .device lan đúng)`)
-          errors += 1
-        }
-        if (rootBg.repeat && !/^no-repeat$/i.test(rootBg.repeat)) {
-          console.error(`error  ${screen.file}:${rootLine}  ảnh nền root phải background-repeat: no-repeat`)
+        for (const msg of backgroundGeometryErrors(rootBg)) {
+          console.error(`error  ${screen.file}:${rootLine}  ${msg}`)
           errors += 1
         }
       }

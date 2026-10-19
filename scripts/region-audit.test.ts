@@ -102,6 +102,24 @@ describe('backgroundFindings (nền chung một hệ toạ độ)', () => {
     expect(out).toEqual([])
   })
 
+  it('flags mixed attachments when the equal rect is not the viewport', () => {
+    const probe = bgProbe()
+    const out = backgroundFindings('x', {
+      paint: { ...probe.paint, deviceAttachment: 'fixed', screenAttachment: 'scroll' },
+      bgGeom: { device: rect(0, 0, 390, 844), screen: rect(0, 0, 390, 844), viewport: { w: 800, h: 1200 } },
+    })
+    expect(out.some((f) => f.check === 'background' && f.detail.includes('hai hệ toạ độ'))).toBe(true)
+  })
+
+  it('passes when a mixed-attachment element rect fills the viewport', () => {
+    const probe = bgProbe()
+    const out = backgroundFindings('x', {
+      paint: { ...probe.paint, deviceAttachment: 'fixed', screenAttachment: 'scroll' },
+      bgGeom: { device: rect(0, 0, 390, 844), screen: rect(0, 0, 390, 844), viewport: { w: 390, h: 844 } },
+    })
+    expect(out).toEqual([])
+  })
+
   it('ignores a screen with no background image', () => {
     const probe = bgProbe()
     const out = backgroundFindings('x', {

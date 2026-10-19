@@ -88,7 +88,7 @@ type Probe = {
     deviceAttachment: string
     screenAttachment: string
   }
-  bgGeom: { device: Rect; screen: Rect | null; viewport: { w: number; h: number } }
+  bgGeom: { device: Rect | null; screen: Rect | null; viewport: { w: number; h: number } }
   interactive: Interactive[]
   regions: {
     nav: Rect | null
@@ -274,22 +274,30 @@ export function backgroundFindings(id: string, probe: Pick<Probe, 'paint' | 'bgG
   }
   const hasImage = (v: string) => v !== '' && v !== 'none'
   if (!hasImage(paint.deviceImage) && !hasImage(paint.screenImage)) return out
-  const bothFixed = paint.deviceAttachment === 'fixed' && paint.screenAttachment === 'fixed'
-  const s = bgGeom.screen
-  const sameRect =
-    s !== null &&
-    Math.abs(bgGeom.device.x - s.x) <= BG_RECT_TOL &&
-    Math.abs(bgGeom.device.y - s.y) <= BG_RECT_TOL &&
-    Math.abs(bgGeom.device.w - s.w) <= BG_RECT_TOL &&
-    Math.abs(bgGeom.device.h - s.h) <= BG_RECT_TOL
-  if (!bothFixed && !sameRect) {
+  // Each painter's background positioning AREA: the viewport when the attachment
+  // is `fixed`, otherwise the element's own box. One shared area = one continuous
+  // layer; two different areas = the image is drawn twice at different scales and
+  // a seam appears at the band boundary. Comparing the areas (not the rects) is
+  // what makes the mixed-attachment case correct: equal rects only prove parity
+  // when both are the same kind, or when the box IS the viewport.
+  const viewport: Rect = { x: 0, y: 0, w: bgGeom.viewport.w, h: bgGeom.viewport.h }
+  const areaOf = (attachment: string, rect: Rect | null): Rect | null =>
+    attachment === 'fixed' ? viewport : rect
+  const areasEqual = (a: Rect | null, b: Rect | null): boolean =>
+    a !== null &&
+    b !== null &&
+    Math.abs(a.x - b.x) <= BG_RECT_TOL &&
+    Math.abs(a.y - b.y) <= BG_RECT_TOL &&
+    Math.abs(a.w - b.w) <= BG_RECT_TOL &&
+    Math.abs(a.h - b.h) <= BG_RECT_TOL
+  if (!areasEqual(areaOf(paint.deviceAttachment, bgGeom.device), areaOf(paint.screenAttachment, bgGeom.screen))) {
     out.push({
       screen: id,
       check: 'background',
       detail:
-        `hai hệ toạ độ nền khác nhau — .device attachment=${paint.deviceAttachment} rect ${fmtRect(bgGeom.device)}` +
-        ` vs .screen attachment=${paint.screenAttachment} rect ${s ? fmtRect(s) : 'none'}` +
-        ` — cần cả hai neo viewport (background-attachment: fixed) hoặc hai rect bằng nhau`,
+        `hai hệ toạ độ nền khác nhau — .device attachment=${paint.deviceAttachment} rect ${bgGeom.device ? fmtRect(bgGeom.device) : 'none'}` +
+        ` vs .screen attachment=${paint.screenAttachment} rect ${bgGeom.screen ? fmtRect(bgGeom.screen) : 'none'}` +
+        ` — cần cả hai neo viewport (background-attachment: fixed) hoặc hai vùng định vị bằng nhau`,
     })
   }
   return out
