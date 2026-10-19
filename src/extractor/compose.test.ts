@@ -22,6 +22,11 @@ describe('composeScreenDoc', () => {
     expect(b).toBeGreaterThan(a)
   })
 
+  it('anchors .device to the viewport so its background shares .screen coordinate space', () => {
+    const html = composeScreenDoc({ html: '<div class="screen"></div>', device, stylesheets: [] })
+    expect(html).toMatch(/\.device\s*\{[^}]*background-attachment:\s*fixed/)
+  })
+
   it('omits the bridge for exports and inlines it for the app', () => {
     const clean = composeScreenDoc({ html: '', device, stylesheets: [], bridgeJs: null })
     expect(clean).not.toContain('data-pc-id')
