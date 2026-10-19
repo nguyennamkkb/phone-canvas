@@ -3288,3 +3288,670 @@
   --sp-glyph: #2f7cf6;
   --sp-line: rgba(255, 255, 255, 0.55);
 }
+
+/* Halloween offer — 99% off seasonal paywall. The night sky is a layered CSS
+   gradient (four-stop sky + a soft top-left moon glow), not a baked photo, so
+   the sky colours live here as tokens. Foreground roles: pumpkin accent, glass
+   countdown cell, dim legal ink. */
+:root,
+:root[data-theme='dark'] {
+  --hw-bg: #140f33;
+  --hw-sky-1: #3a1c3f;
+  --hw-sky-2: #241547;
+  --hw-sky-3: #171038;
+  --hw-sky-4: #0b0a24;
+  --hw-moon-glow: rgba(255, 238, 199, 0.12);
+  --hw-orange: #ff9c19;
+  --hw-cell: rgba(232, 226, 255, 0.12);
+  --hw-cell-cap: #a9a3c4;
+  --hw-legal: #8b86a6;
+  --hw-legal-ink: #f2f2f2;
+  --hw-x-bg: rgba(255, 255, 255, 0.14);
+  --hw-x-disc: 32px;
+  --hw-cta-1: #fa9e3f;
+  --hw-cta-2: #e3526d;
+  --hw-cta-3: #8752cd;
+  --hw-num: 26px;
+  --hw-cell-w: 63px;
+  --hw-cell-h: 80px;
+  --hw-colon-w: 36px;
+  --hw-ticket-w: 326px;
+  --hw-ticket-h: 187px;
+  --hw-logo-w: 244px;
+  --hw-logo-h: 79px;
+}
+
+/* Dismiss: 44 pt round glass button, white glyph on the night art. */
+.hw-x {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  /* 44 pt touch target; background-clip keeps the visible glass disc at
+     --hw-x-disc while the hit region stays on the floor. The padding must be
+     exactly (target - disc) / 2 or the 16 pt glyph overflows the disc. */
+  width: var(--touch-min);
+  height: var(--touch-min);
+  padding: calc((var(--touch-min) - var(--hw-x-disc)) / 2);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--hw-x-bg);
+  background-clip: content-box;
+  color: var(--label);
+  cursor: pointer;
+}
+
+/* Logo + one-line qualifier sit as one centred block under the dismiss row. */
+.hw-sub {
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 600;
+  line-height: 22px;
+  color: var(--label);
+  text-align: center;
+}
+
+/* Price pair: big first-week price, smaller renewal line, accent on numbers. */
+.hw-price {
+  font-family: var(--font);
+  font-size: var(--t-title2);
+  font-weight: 800;
+  line-height: 30px;
+  color: var(--label);
+  text-align: center;
+}
+.hw-price-sm {
+  font-family: var(--font);
+  font-size: var(--t-title3);
+  font-weight: 700;
+  line-height: 26px;
+  color: var(--label);
+  text-align: center;
+}
+.hw-accent {
+  color: var(--hw-orange);
+}
+
+/* Countdown: three glass cells, colon in the gap between them. */
+.hw-offer {
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 700;
+  line-height: 24px;
+  color: var(--hw-orange);
+  text-align: center;
+}
+.hw-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  gap: var(--s1);
+  width: var(--hw-cell-w);
+  height: var(--hw-cell-h);
+  border-radius: var(--r-lg);
+  background: var(--hw-cell);
+}
+.hw-num {
+  font-family: var(--font);
+  font-size: var(--hw-num);
+  font-weight: 800;
+  line-height: 30px;
+  color: var(--label);
+}
+.hw-cap {
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  font-weight: 500;
+  line-height: 16px;
+  color: var(--hw-cell-cap);
+}
+.hw-colon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--hw-colon-w);
+  height: var(--hw-cell-h);
+  font-family: var(--font);
+  font-size: var(--t-title3);
+  font-weight: 800;
+  line-height: 24px;
+  color: var(--label);
+}
+
+/* Claim CTA: sunset gradient pill, white label. */
+.hw-cta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 56px;
+  padding: 0 var(--s5);
+  border: 0;
+  border-radius: var(--r-full);
+  background: linear-gradient(96deg, var(--hw-cta-1) 0%, var(--hw-cta-2) 52%, var(--hw-cta-3) 100%);
+  color: var(--label);
+  font-family: var(--font);
+  font-size: var(--t-title3);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Renewal disclosure + legal links. */
+.hw-legal {
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--hw-legal);
+  text-align: center;
+}
+.hw-legal b {
+  color: var(--hw-legal-ink);
+  font-weight: 700;
+}
+
+/* Halloween potion — "Midnight Brew" witchy apothecary variant. Emerald/teal
+   night sky over a generated lab backdrop; lime potion accent, frosted teal
+   countdown cell, mint legal ink. CTA is an emerald->teal gradient pill. */
+:root,
+:root[data-theme='dark'] {
+  --po-bg: #04160f;
+  --po-accent: #7dffb0;
+  --po-cell: rgba(125, 255, 176, 0.12);
+  --po-cell-cap: #8fd6b0;
+  --po-legal: #6f9c86;
+  --po-legal-ink: #eafff2;
+  --po-num: 26px;
+  --po-cell-w: 63px;
+  --po-cell-h: 80px;
+  --po-colon-w: 36px;
+}
+
+/* Dismiss: 44 pt round frosted disc, inherited from the hw glass language. */
+.hw-x.po-x {
+  background: rgba(6, 40, 26, 0.55);
+}
+
+/* Sub-qualifier under the wordmark. */
+.po-sub {
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 600;
+  line-height: 22px;
+  color: var(--po-legal-ink);
+  text-align: center;
+}
+
+/* Price pair: accent the numbers in potion lime. */
+.po-price {
+  font-family: var(--font);
+  font-size: var(--t-title2);
+  font-weight: 800;
+  line-height: 30px;
+  color: #ffffff;
+  text-align: center;
+}
+.po-price-sm {
+  font-family: var(--font);
+  font-size: var(--t-title3);
+  font-weight: 700;
+  line-height: 26px;
+  color: #ffffff;
+  text-align: center;
+}
+.po-accent {
+  color: var(--po-accent);
+}
+
+/* Countdown: three frosted teal cells, colon in the gap. */
+.po-offer {
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 700;
+  line-height: 24px;
+  color: var(--po-accent);
+  text-align: center;
+}
+.po-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  gap: var(--s1);
+  width: var(--po-cell-w);
+  height: var(--po-cell-h);
+  border-radius: var(--r-lg);
+  background: var(--po-cell);
+}
+.po-num {
+  font-family: var(--font);
+  font-size: var(--po-num);
+  font-weight: 800;
+  line-height: 30px;
+  color: #ffffff;
+}
+.po-cap {
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  font-weight: 500;
+  line-height: 16px;
+  color: var(--po-cell-cap);
+}
+.po-colon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--po-colon-w);
+  height: var(--po-cell-h);
+  font-family: var(--font);
+  font-size: var(--t-title3);
+  font-weight: 800;
+  line-height: 24px;
+  color: var(--po-accent);
+}
+
+/* Claim CTA: emerald->teal gradient pill, dark ink for contrast on the bright
+   lime head of the ramp. */
+.po-cta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 56px;
+  padding: 0 var(--s5);
+  border: 0;
+  border-radius: var(--r-full);
+  background: linear-gradient(96deg, #7dffb0 0%, #2fd4a2 52%, #17a49a 100%);
+  color: #04160f;
+  font-family: var(--font);
+  font-size: var(--t-title3);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* Renewal disclosure + legal links. */
+.po-legal {
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--po-legal);
+  text-align: center;
+}
+.po-legal b {
+  color: var(--po-legal-ink);
+  font-weight: 700;
+}
+
+/* Halloween candy — "Trick or Treat" carnival variant. Aubergine night over a
+   generated candy backdrop; candy-corn orange accent, warm frosted cell, cream
+   legal ink. CTA is an orange->magenta gradient pill. Playful, not spooky. */
+:root,
+:root[data-theme='dark'] {
+  --cy-bg: #1b0a24;
+  --cy-accent: #ffb02e;
+  --cy-cell: rgba(255, 176, 46, 0.14);
+  --cy-cell-cap: #e0a76b;
+  --cy-legal: #a98bb0;
+  --cy-legal-ink: #fff3e2;
+  --cy-num: 26px;
+  --cy-cell-w: 63px;
+  --cy-cell-h: 80px;
+  --cy-colon-w: 36px;
+}
+
+/* Dismiss: 44 pt round warm disc over the candy night art. */
+.hw-x.cy-x {
+  background: rgba(52, 16, 60, 0.55);
+}
+
+/* Sub-qualifier under the wordmark. */
+.cy-sub {
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 600;
+  line-height: 22px;
+  color: var(--cy-legal-ink);
+  text-align: center;
+}
+
+/* Price pair: accent the numbers in candy orange. */
+.cy-price {
+  font-family: var(--font);
+  font-size: var(--t-title2);
+  font-weight: 800;
+  line-height: 30px;
+  color: #ffffff;
+  text-align: center;
+}
+.cy-price-sm {
+  font-family: var(--font);
+  font-size: var(--t-title3);
+  font-weight: 700;
+  line-height: 26px;
+  color: #ffffff;
+  text-align: center;
+}
+.cy-accent {
+  color: var(--cy-accent);
+}
+
+/* Countdown: three warm frosted cells, colon in the gap. */
+.cy-offer {
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 700;
+  line-height: 24px;
+  color: var(--cy-accent);
+  text-align: center;
+}
+.cy-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  gap: var(--s1);
+  width: var(--cy-cell-w);
+  height: var(--cy-cell-h);
+  border-radius: var(--r-lg);
+  background: var(--cy-cell);
+}
+.cy-num {
+  font-family: var(--font);
+  font-size: var(--cy-num);
+  font-weight: 800;
+  line-height: 30px;
+  color: #ffffff;
+}
+.cy-cap {
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  font-weight: 500;
+  line-height: 16px;
+  color: var(--cy-cell-cap);
+}
+.cy-colon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--cy-colon-w);
+  height: var(--cy-cell-h);
+  font-family: var(--font);
+  font-size: var(--t-title3);
+  font-weight: 800;
+  line-height: 24px;
+  color: var(--cy-accent);
+}
+
+/* Claim CTA: orange->magenta gradient pill, deep plum ink. */
+.cy-cta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 56px;
+  padding: 0 var(--s5);
+  border: 0;
+  border-radius: var(--r-full);
+  background: linear-gradient(96deg, #ffcf5c 0%, #ff8a3d 50%, #e6498f 100%);
+  color: #2b0a33;
+  font-family: var(--font);
+  font-size: var(--t-title3);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* Renewal disclosure + legal links. */
+.cy-legal {
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--cy-legal);
+  text-align: center;
+}
+.cy-legal b {
+  color: var(--cy-legal-ink);
+  font-weight: 700;
+}
+
+/* Halloween jackpot — "99% OFF" comic pop-art variant. The discount IS the
+   hero: a keyed comic starburst (real alpha, forge_matte) holds a live-text
+   99% OFF so the number is real text, never AI-drawn glyphs. Sunburst navy→
+   magenta backdrop, comic yellow accent, hard black ink outline (text-shadow
+   — in subset; only grid/float/transform/clip-path/filter are banned). */
+:root,
+:root[data-theme='dark'] {
+  --jk-bg: #1b0f3a;
+  --jk-accent: #ffd21e;
+  --jk-ink: #12002e;
+  --jk-cell: rgba(18, 0, 46, 0.72);
+  --jk-cell-cap: #ff9ec4;
+  --jk-legal: #c9a8e8;
+  --jk-legal-ink: #ffffff;
+  --jk-num: 26px;
+  --jk-cell-w: 63px;
+  --jk-cell-h: 80px;
+  --jk-colon-w: 36px;
+  --jk-burst: 218px;
+}
+
+/* Bottom-sheet split: the lower half is a solid ink panel so the offer copy,
+   countdown and legal sit on a calm field instead of the raw sunburst. Solid
+   background-color (alpha ok) is allowed anywhere; only background-image is
+   locked to .screen root. Rounded top, panel paints above the stage. */
+.jk-sheet {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  padding: var(--s6) var(--s4) calc(var(--safe-bottom) + var(--s4));
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  background-color: rgba(16, 2, 40, 0.95);
+}
+
+/* Headroom so the straddling burst's top half clears the stage kicker. */
+.jk-stage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  align-items: center;
+  padding: var(--s8) var(--s4) 0;
+}
+
+/* Dismiss: 44 pt round ink disc, white glyph. */
+.hw-x.jk-x {
+  background: rgba(18, 0, 46, 0.7);
+}
+
+/* Comic headline above the burst: hard black outline + offset shadow. */
+.jk-kicker {
+  font-family: var(--font);
+  font-size: var(--t-title2);
+  font-weight: 900;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  line-height: 30px;
+  color: #ffffff;
+  text-shadow: 2px 2px 0 var(--jk-ink), -2px -2px 0 var(--jk-ink), 2px -2px 0 var(--jk-ink), -2px 2px 0 var(--jk-ink), 0 3px 0 var(--jk-ink);
+  text-align: center;
+}
+
+/* Composite graphic: the keyed burst sits behind a live-text 99% OFF.
+   position:absolute is the sanctioned composite pattern (ZStack + offset);
+   the text is vertically centred on the burst with a top offset, no transform. */
+.jk-burst-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  /* Edge-straddle (skill rule 5): the burst is the sheet's first child with a
+     negative top margin so it breaks the sheet's top edge; the sheet's padding
+     reserves headroom for the half that sticks up into the stage. */
+  margin-top: calc(var(--jk-burst) / -2);
+}
+.jk-burst-art {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  margin-left: calc(var(--jk-burst) / -2);
+  width: var(--jk-burst);
+  height: auto;
+}
+.jk-burst-txt {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: var(--jk-burst);
+  height: var(--jk-burst);
+  padding-top: var(--s2);
+}
+.jk-pct {
+  font-family: var(--font);
+  font-size: 62px;
+  font-weight: 900;
+  line-height: 60px;
+  color: #ffffff;
+  text-shadow: 3px 3px 0 var(--jk-ink), -1px -1px 0 var(--jk-ink), 1px -1px 0 var(--jk-ink), -1px 1px 0 var(--jk-ink);
+}
+.jk-off {
+  font-family: var(--font);
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 6px;
+  line-height: 28px;
+  color: var(--jk-ink);
+  text-shadow: 1px 1px 0 #ffffff;
+}
+
+/* Price pair: comic ink outline, accent yellow numbers. */
+.jk-price {
+  font-family: var(--font);
+  font-size: var(--t-title2);
+  font-weight: 900;
+  line-height: 30px;
+  color: #ffffff;
+  text-shadow: 2px 2px 0 var(--jk-ink);
+  text-align: center;
+}
+.jk-price-sm {
+  font-family: var(--font);
+  font-size: var(--t-title3);
+  font-weight: 800;
+  line-height: 26px;
+  color: #ffffff;
+  text-shadow: 2px 2px 0 var(--jk-ink);
+  text-align: center;
+}
+.jk-accent {
+  color: var(--jk-accent);
+}
+
+/* Countdown: three solid ink cells, yellow colon. */
+.jk-offer {
+  font-family: var(--font);
+  font-size: var(--t-headline);
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  line-height: 24px;
+  color: var(--jk-accent);
+  text-shadow: 2px 2px 0 var(--jk-ink);
+  text-align: center;
+}
+.jk-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  gap: var(--s1);
+  width: var(--jk-cell-w);
+  height: var(--jk-cell-h);
+  border-radius: var(--r-lg);
+  background: var(--jk-cell);
+}
+.jk-num {
+  font-family: var(--font);
+  font-size: var(--jk-num);
+  font-weight: 900;
+  line-height: 30px;
+  color: #ffffff;
+}
+.jk-cap {
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  font-weight: 600;
+  line-height: 16px;
+  color: var(--jk-cell-cap);
+}
+.jk-colon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--jk-colon-w);
+  height: var(--jk-cell-h);
+  font-family: var(--font);
+  font-size: var(--t-title3);
+  font-weight: 900;
+  line-height: 24px;
+  color: var(--jk-accent);
+  text-shadow: 2px 2px 0 var(--jk-ink);
+}
+
+/* CTA: comic yellow→orange gradient pill with a hard ink border and offset
+   shadow (border + text-shadow are both in subset; no filter/box-shadow cast
+   on the element itself beyond a static border). */
+.jk-cta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 56px;
+  padding: 0 var(--s5);
+  border: 3px solid var(--jk-ink);
+  border-radius: var(--r-full);
+  background: linear-gradient(96deg, #ffe15c 0%, #ffb02e 52%, #ff5f8f 100%);
+  color: var(--jk-ink);
+  font-family: var(--font);
+  font-size: var(--t-title3);
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  text-shadow: 1px 1px 0 #ffffff;
+  cursor: pointer;
+}
+
+/* Renewal disclosure + legal links. */
+.jk-legal {
+  font-family: var(--font);
+  font-size: var(--t-footnote);
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--jk-legal);
+  text-align: center;
+  text-shadow: 1px 1px 0 var(--jk-ink);
+}
+.jk-legal b {
+  color: var(--jk-legal-ink);
+  font-weight: 700;
+}
