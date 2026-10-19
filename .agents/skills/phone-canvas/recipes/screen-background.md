@@ -45,6 +45,14 @@ Rules:
 6. Review both themes: `npm run export -- --screen <id>` renders light AND
    dark — look at both PNGs. One picture serves both modes.
 
+## Cơ chế: nền là một lớp full-bleed
+
+`.device` và `.screen` **cùng neo viewport** (`background-attachment: fixed`, shell
+CSS). Nhờ vậy ảnh/gradient được vẽ trong **một hệ toạ độ duy nhất**: dải status,
+band nav và tab bar trong suốt nổi trên cùng một lớp nền, không có seam ở đáy band
+nav. Shell chịu trách nhiệm hệ toạ độ này — tác giả **không** khai
+`background-attachment` trong file màn, và cách viết nền ở trên không đổi.
+
 ## Limits
 
 * The background lives in the screen FILE, so every board node with that

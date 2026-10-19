@@ -62,6 +62,16 @@ figure {
   width: 100%;
   min-height: 0;
   background: var(--bg);
+  /* Nền ảnh/gradient phải nằm CÙNG một hệ toạ độ với `.device` (compose replay
+     longhand nền của root lên `.device` để dải status/home nối liền). Mặc định
+     `background-attachment: local/scroll` neo nền vào hộp `.screen` — hộp này
+     ngắn hơn `.device` đúng bằng band nav, nên gradient bị co lại và lệch màu
+     ngay dưới band nav (seam đo được ở đáy nav). `fixed` neo nền vào viewport
+     (= `.device`, cùng kích thước), nên phần nền do `.screen` vẽ trùng khít phần
+     do `.device` vẽ; band nav/status trong suốt nổi trên MỘT ảnh nền liền mạch.
+     `.screen` không cuộn (overflow hidden; cuộn là việc của `.body`), nên `fixed`
+     không đổi hành vi cuộn — chỉ đổi hệ quy chiếu của nền. */
+  background-attachment: fixed;
   /* Chữ mặc định ăn token --label, như nền ăn --bg: theme tối mà chữ vẫn
      đen mặc định của UA thì mọi màn tối đều hỏng mà gate không bắt được. */
   color: var(--label);
