@@ -1,0 +1,62 @@
+<!-- pc {"title":"Halloween Jackpot 99% Off","lightStatusBar":true} -->
+<div class="screen" style="background-color: var(--jk-bg); background-image: url(/project/paywall-kit/assets/sale-night.png); background-size: cover; background-position: center; background-repeat: no-repeat">
+  <button class="hw-x jk-x" data-slot="right" aria-label="Close">
+    <span class="icon icon-xs" data-symbol="xmark"></span>
+  </button>
+
+  <div class="body-fixed" style="padding: 0; gap: 0">
+    <!-- Stage: the raw pop-art sunburst shows through here. No background-image
+         on .body-fixed — background images are locked to the .screen root. -->
+    <div class="jk-stage">
+      <div class="jk-kicker">Halloween</div>
+      <div class="jk-kicker">Jackpot</div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <!-- Sheet: solid ink panel holds the offer so copy sits on a calm field.
+         The keyed burst straddles its top edge (negative margin, first child). -->
+    <div class="jk-sheet">
+      <div class="jk-burst-wrap">
+        <img class="jk-burst-art" src="/project/paywall-kit/assets/sale-burst.png" width="218" height="219" alt="SaleBurst" />
+        <div class="jk-burst-txt">
+          <div class="jk-pct">99%</div>
+          <div class="jk-off">OFF</div>
+        </div>
+      </div>
+
+      <div class="col" style="gap: 0; align-items: center">
+        <div class="jk-price">Only <span class="jk-accent">$0.99</span> for the first week</div>
+        <div class="jk-price-sm">then <span class="jk-accent">$24.99</span>/week</div>
+      </div>
+
+      <div class="col" style="gap: var(--s2); align-items: center; padding-top: var(--s1)">
+        <div class="jk-offer">Offer ends in</div>
+        <div class="row" style="gap: 0; justify-content: center">
+          <div class="jk-cell">
+            <div class="jk-num">02</div>
+            <div class="jk-cap">hours</div>
+          </div>
+          <div class="jk-colon">:</div>
+          <div class="jk-cell">
+            <div class="jk-num">14</div>
+            <div class="jk-cap">minutes</div>
+          </div>
+          <div class="jk-colon">:</div>
+          <div class="jk-cell">
+            <div class="jk-num">59</div>
+            <div class="jk-cap">seconds</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+
+      <div class="col" style="gap: var(--s1)">
+        <button class="jk-cta">Claim Limited Offer</button>
+        <div class="jk-legal">The subscription renews automatically till you turn it off.</div>
+        <div class="jk-legal">Please see our <b>Privacy Policy</b> and <b>EULA</b></div>
+      </div>
+    </div>
+  </div>
+</div>

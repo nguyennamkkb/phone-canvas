@@ -7,6 +7,13 @@ project/*/exports
 .playwright-mcp/
 .agents/skills/agent-sprite-forge/
 
+# generated / machine-local scratch (never commit)
+__pycache__/
+*.pyc
+.claude/
+generated-images/
+docs/orca-paste-*.png
+
 # local agent tooling
 .opencode/
 .pi/
