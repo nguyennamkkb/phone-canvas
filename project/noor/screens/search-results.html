@@ -1,0 +1,97 @@
+<!-- pc {"title":"Results"} -->
+<!-- FS-023 Search — Results. Pushed from FS-022 carrying query + scope, or
+     from FS-024 with the scope replaced — never from a tab, because this app
+     has no tab bar (Overview.md §2 D6). Back pops and RETURNS query + scope
+     to FS-022 (refine, not restart); results are re-run, never silently
+     cached (§2).
+
+     Hierarchy follows FS-023 §8 exactly, and its Counter Hypothesis is the
+     thing being refused: the RESULT LIST is IMMEDIATE — the passage itself
+     carries the weight, because EI-005 requires the destination to outrank
+     the route. A query summary in the brightest position would spend the
+     hierarchy on something the user finished a moment ago on FS-022, and
+     produce the wall of identical snippets that makes 6,236 verses
+     unreadable. Each row shows the matched passage READABLE (not a trimmed
+     snippet) with its reference; context lines stay short.
+
+     The summary + filter are ONE pinned group (§3 grouping): the filter
+     qualifies the query that produced the set, so query text, scope, count
+     and filter state sit in one glance — the trust glance that decides
+     whether these results are believable. The filter glyph is 44×44 and
+     separated from the summary's own target by ≥12pt (§3.3): two targets,
+     two intents, no shared pixels.
+
+     NO ARCH (EI-004 rations the mihrab to FS-006 alone). No card borders.
+
+     Origin rendered: query "olive", scope Translation, 6 matches, no filter
+     active, 4 rows loaded + load-more present (offset 4 < 6, §3.4: absent —
+     never disabled — when all shown). Tap a row opens FS-005 at that verse
+     highlighted with a return path (§5). Load-more appends; it never replaces
+     (§5: replacing would discard results being read).
+
+     Band: `.body-fixed` + summary pinned above the scroller + list scrolling
+     beneath (§3.1: a result set without its query is unattributable) +
+     load-more as the list's final element clearing the home indicator. -->
+<div class="screen" style="background-color: var(--bg)">
+  <button data-slot="back" class="nr-icon-btn" aria-label="Back to the query — olive kept for refining">
+    <span class="icon icon-sm" data-symbol="chevron.left"></span>
+  </button>
+  <span data-slot="title" class="nav-title">Results</span>
+
+  <div class="body-fixed" style="gap: var(--s3); padding: var(--s2) var(--s5) calc(var(--s5) + var(--safe-bottom))">
+    <!-- SUMMARY + FILTER — one pinned group, the trust glance. The summary
+         is one 44pt target to FS-022 (query text and count do the same thing,
+         §3.2); the filter glyph is its own 44×44 target to FS-024, ≥12pt
+         away. No filter active here, so no marker — a marker with nothing to
+         say would occupy trust space for free. -->
+    <div class="row" style="gap: var(--s3)">
+      <button class="nr-card is-quiet grow" style="padding: var(--s2) var(--s4); text-align: left" aria-label="Query olive in the translation, 6 matches. Tap to refine">
+        <span class="col" style="gap: 0; min-width: 0">
+          <span class="nr-row-title">“olive” · Translation</span>
+          <span class="nr-setting-val">6 matches</span>
+        </span>
+      </button>
+      <button class="nr-icon-btn" aria-label="Filter results — no filter active">
+        <span class="icon icon-sm" data-symbol="slider.horizontal.3"></span>
+      </button>
+    </div>
+
+    <!-- THE LIST — IMMEDIATE, the one scroller. Each row is one 44pt+ target
+         to FS-005 (highlighted, with return path); a wrapping passage keeps
+         ONE target so no line boundary becomes a tap (§3.1). Passages render
+         readable — snippet + reference + surah, never snippet-only. -->
+    <div class="col nr-scroll" style="gap: var(--s2)">
+      <button class="nr-setting is-on" aria-label="Result 1 of 6 — At-Tin 95:1. And by the fig and the olive. Open in the reader">
+        <span class="grow col" style="gap: 0">
+          <span class="t-subhead">And by the fig and the <span style="color: var(--accent)">olive</span></span>
+          <span class="nr-setting-val">At-Tin · 95:1</span>
+        </span>
+      </button>
+      <button class="nr-setting is-on" aria-label="Result 2 of 6 — An-Nahl 16:11. Olives, date-palms and grapes. Open in the reader">
+        <span class="grow col" style="gap: 0">
+          <span class="t-subhead">Olives, date-palms and grapes — <span style="color: var(--accent)">olives</span> among them</span>
+          <span class="nr-setting-val">An-Nahl · 16:11</span>
+        </span>
+      </button>
+      <button class="nr-setting is-on" aria-label="Result 3 of 6 — Al-Anam 6:99. Gardens of olives and pomegranates. Open in the reader">
+        <span class="grow col" style="gap: 0">
+          <span class="t-subhead">Gardens of <span style="color: var(--accent)">olives</span> and pomegranates, alike and different</span>
+          <span class="nr-setting-val">Al-Anam · 6:99</span>
+        </span>
+      </button>
+      <button class="nr-setting is-on" aria-label="Result 4 of 6 — An-Nur 24:35. Lit from a blessed olive tree. Open in the reader">
+        <span class="grow col" style="gap: 0">
+          <span class="t-subhead">Lit from a blessed <span style="color: var(--accent)">olive</span> tree, neither east nor west</span>
+          <span class="nr-setting-val">An-Nur · 24:35</span>
+        </span>
+      </button>
+
+      <!-- LOAD MORE — SECONDARY, the list's final element (§3.4). Appends the
+           last 2; existing rows are not replaced and it shows pending, never
+           a skeleton over the list (§5). -->
+      <button class="nr-btn is-quiet is-block" aria-label="Load the last 2 results">
+        Show 2 more
+      </button>
+    </div>
+  </div>
+</div>

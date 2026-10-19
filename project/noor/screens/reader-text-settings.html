@@ -1,0 +1,118 @@
+<!-- pc {"title":"Text settings"} -->
+<!-- FS-008 Reader — Text Settings. Pushed from FS-005 (or FS-034), so it owes a
+     back affordance: `chevron.left` is the honest way back, and because settings
+     apply on change rather than on confirm, going back keeps every change —
+     which FS-008 §2 says is STATED on the screen rather than left for the user
+     to discover, so the pinned band says it.
+
+     NO ARCH HERE, and that is a deliberate refusal. The mihrab is rationed to
+     exactly one framing job — the verse-aligned translation, EI-004 — and
+     VD-001 §5.6 calls it the system's single ornate element. Spending it on a
+     settings screen would dilute the one ornament the design system has and is
+     the easiest possible way to break §5.6. Every plane below is a plain
+     `nr-card` / `nr-row`.
+
+     EI-001 governs this screen harder than any other: the reading surface is
+     the only fully lit thing, so a preview must never sit OVER the controls it
+     is previewing. It sits above them, pinned, and the controls scroll beneath
+     it (FS-008 §3.1).
+
+     Band: `.body-fixed` + one inner scroller + one pinned band.
+       · the preview is FIXED-height (`--nr-preview-h`), so raising the Arabic
+         size never pushes the controls out from under the thumb;
+       · inside the scroller the order IS the behaviour: size first, so it is
+         the LAST row to scroll away, line spacing last, so it is the FIRST
+         (FS-008 §3.2 / §3.4);
+       · the restore control is pinned with the home-indicator inset and stands
+         a full section gap clear of the steppers, so a mis-tap while adjusting
+         cannot wipe the setting being tuned (FS-008 §3.5).
+
+     The preview renders a real verse — three rendered lines, deliberately. A
+     one-line verse cannot show a line-spacing change at all, and a preview that
+     lies about the parameter it is worst at showing is worse than no preview.
+
+     NOT on this screen: theme. FS-008 §4 is explicit that theme selection is
+     `F-040` on FS-034 — "size is a legibility parameter belonging to the
+     reading act, theme is a presentation preference belonging to the app." -->
+<div class="screen" style="background-color: var(--bg)">
+  <button data-slot="back" class="nr-icon-btn" aria-label="Back">
+    <span class="icon icon-sm" data-symbol="chevron.left"></span>
+  </button>
+  <span data-slot="title" class="nav-title">Text settings</span>
+
+  <div class="body-fixed" style="gap: var(--s3); padding: var(--s3) var(--s5) calc(var(--s5) + var(--safe-bottom))">
+    <!-- COMP / PreviewRegion — the IMMEDIATE element. It is the one target of
+         its own (FS-008 §3.1): a tap moves focus to the reading region on
+         FS-005 with these settings retained. Not a plain div, so VoiceOver
+         announces the action even though no glyph advertises it: the back
+         chevron sits 40pt above this plane and reaches the same place. -->
+    <button class="nr-card" style="width: 100%; height: var(--nr-preview-h); justify-content: center; font-family: var(--font)"
+            aria-label="Continue reading Al-Imran, verse 190, with these settings">
+      <div class="row" style="gap: var(--s2)">
+        <span class="nr-row-sub">Al-Imran · 3:190</span>
+        <span class="grow"></span>
+        <span class="nr-mark">١٩٠</span>
+      </div>
+      <div class="nr-verse">إِنَّ اللَّهَ وَمَلَائِكَتَهُ يُصَلُّونَ عَلَى النَّبِيِّ يَا أَيُّهَا الَّذِينَ آمَنُوا صَلُّوا عَلَيْهِ وَسَلِّمُوا تَسْلِيمًا</div>
+    </button>
+
+    <!-- the one scroller. Three separate groups, because each parameter is
+         independently changeable and each needs its own legibility statement. -->
+    <div class="col nr-scroll" style="gap: var(--s3)">
+      <!-- size (CONTEXTUAL) + the Arabic legibility floor, stated in place -->
+      <div class="nr-card" style="gap: var(--s2); padding: var(--s3) var(--s4)">
+        <div class="row" style="gap: var(--s3)">
+          <span class="grow col" style="gap: 0">
+            <span class="nr-row-title">Arabic size</span>
+            <span class="nr-row-sub">Standard</span>
+          </span>
+          <button class="nr-icon-btn" aria-label="Smaller Arabic text">
+            <span class="icon icon-sm" data-symbol="minus"></span>
+          </button>
+          <span class="row" style="gap: var(--s1); align-items: baseline">
+            <span class="nr-numeric">26</span>
+            <span class="t-caption" style="color: var(--label-2)">pt</span>
+          </span>
+          <button class="nr-icon-btn" aria-label="Larger Arabic text">
+            <span class="icon icon-sm" data-symbol="plus"></span>
+          </button>
+        </div>
+        <span class="nr-row-sub">Uthmani's legibility floor is 20pt.</span>
+      </div>
+
+      <!-- script (CONTEXTUAL) — COMP / SegmentedControl, full width, two
+           segments so each is half the control (FS-008 §3.3) and never wraps -->
+      <div class="nr-card" style="gap: var(--s2); padding: var(--s3) var(--s4)">
+        <span class="nr-row-title">Script</span>
+        <div class="nr-modes">
+          <button class="nr-mode is-on" aria-label="Uthmani script" aria-pressed="true">Uthmani</button>
+          <button class="nr-mode" aria-label="Simple script">Simple</button>
+        </div>
+      </div>
+
+      <!-- line spacing (SECONDARY) — last in the scroller, so it is the first
+           row to go when vertical space is short (FS-008 §3.4) -->
+      <div class="nr-card" style="gap: var(--s2); padding: var(--s3) var(--s4)">
+        <div class="row" style="gap: var(--s3)">
+          <span class="grow col" style="gap: 0">
+            <span class="nr-row-title">Line spacing</span>
+          </span>
+          <button class="nr-icon-btn" aria-label="Tighter line spacing">
+            <span class="icon icon-sm" data-symbol="minus"></span>
+          </button>
+          <span class="nr-row-title">Standard</span>
+          <button class="nr-icon-btn" aria-label="Looser line spacing">
+            <span class="icon icon-sm" data-symbol="plus"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- pinned: the reset, and the apply-on-change rule stated rather than
+         left to be discovered (FS-008 §2) -->
+    <div class="col" style="gap: var(--s2)">
+      <div class="t-caption" style="color: var(--label-2); text-align: center">Changes apply as you make them, and stay in force when you go back.</div>
+      <button class="nr-btn is-quiet is-block">Restore defaults</button>
+    </div>
+  </div>
+</div>

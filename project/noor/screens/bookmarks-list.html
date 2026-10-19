@@ -1,0 +1,111 @@
+<!-- pc {"title":"Bookmarks"} -->
+<!-- FS-025 Bookmarks — List. Pushed from the reader's bookmarks destination,
+     or returned to from FS-026 carrying `bookmarkId` to scroll to the edited
+     card — never from a tab, because this app has no tab bar (Overview.md
+     §2 D6). Back pops and leaves every bookmark untouched: this screen
+     performs no change on entry or exit (§2).
+
+     Hierarchy follows FS-025 §8 exactly, and its Counter Hypothesis is the
+     thing being refused: the CARDS are IMMEDIATE — the collection is an
+     artefact the user built to feel HELD (EI-006), and most sessions only
+     read. Leading with the remove control would make kept verses feel like
+     an inbox awaiting triage, and train the reflex of tapping the largest
+     thing on a card surface — how accidental deletion happens on a screen
+     that deliberately omits confirmation (§5: no modal, disappearance IS the
+     feedback).
+
+     Each card is ONE content target to FS-005 (highlighted, with return
+     path): verse + snippet + note must never split, or a user opens one
+     bookmark and edits another (§3.1). The remove glyph sits INSIDE its card
+     at the trailing edge of the reference row — travelling with its card,
+     never pinned (§3.2) — and ≥12pt from the content target so a scroll
+     cannot delete. Note/mark are STATES of the card: present only when they
+     exist, never reserving empty space (§3 grouping); editing happens on
+     FS-026 through the card's path, never here (§4: this screen owns
+     ORDERING and nothing else).
+
+     NO ARCH (EI-004 rations the mihrab to FS-006 alone). No card borders.
+
+     Origin rendered: 4 bookmarks, newest-first, two carrying notes, two
+     carrying marks. Mark colour is a small filled dot leading the reference
+     row — positional, never the sole carrier. The note shows as the user's
+     own words under the snippet; the note indicator IS the note text (§3.3:
+     no badge needed where the words themselves are present).
+
+     Band: single `.body` scroller — cards scroll beneath the top inset, the
+     final card clears the home indicator. No pinned band: nothing here
+     reports continuously, and a pinned CTA would invent an action this
+     screen refuses to have. -->
+<div class="screen" style="background-color: var(--bg)">
+  <button data-slot="back" class="nr-icon-btn" aria-label="Back — bookmarks untouched">
+    <span class="icon icon-sm" data-symbol="chevron.left"></span>
+  </button>
+  <span data-slot="title" class="nav-title">Bookmarks</span>
+  <button data-slot="right" class="nr-icon-btn" aria-label="Order oldest first">
+    <span class="icon icon-sm" data-symbol="arrow.triangle.2.circlepath"></span>
+  </button>
+
+  <div class="body" style="gap: var(--s3); padding: var(--s4) var(--s5) calc(var(--s5) + var(--safe-bottom))">
+    <!-- CARD 1 — with note + mark. Content target opens FS-005; the trash is
+         the card's own trailing target, ≥12pt away across the reference row.
+         Two targets, two intents, one card — the grouping §3.2 requires. -->
+    <div class="nr-card" style="gap: var(--s2); padding: var(--s3) var(--s4)">
+      <button class="col" style="gap: var(--s2); text-align: left; background: transparent; border: 0; padding: 0; cursor: pointer; font: inherit; color: inherit" aria-label="Bookmark — At-Tin 95:1, with a note. Open in the reader">
+        <span class="nr-verse-sm">وَالتِّينِ وَالزَّيْتُونِ</span>
+        <span class="t-subhead">And by the fig and the olive — the oath that opens the surah.</span>
+        <span class="nr-row-sub">“Read this whenever I forget why I started.”</span>
+      </button>
+      <div class="row" style="gap: var(--s3)">
+        <span class="icon icon-xs" data-symbol="staroflife.fill" style="color: var(--accent)"></span>
+        <span class="grow nr-setting-val">At-Tin · 95:1</span>
+        <button class="nr-icon-btn" style="width: var(--touch-min); height: var(--touch-min)" aria-label="Remove the At-Tin 95:1 bookmark">
+          <span class="icon icon-sm" data-symbol="trash" style="color: var(--label-2)"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- CARD 2 — mark, no note. No empty gap where a note would be (§3). -->
+    <div class="nr-card" style="gap: var(--s2); padding: var(--s3) var(--s4)">
+      <button class="col" style="gap: var(--s2); text-align: left; background: transparent; border: 0; padding: 0; cursor: pointer; font: inherit; color: inherit" aria-label="Bookmark — An-Nur 24:35, no note. Open in the reader">
+        <span class="nr-verse-sm">اللَّهُ نُورُ السَّمَاوَاتِ وَالْأَرْضِ</span>
+        <span class="t-subhead">Allah is the Light of the heavens and the earth.</span>
+      </button>
+      <div class="row" style="gap: var(--s3)">
+        <span class="icon icon-xs" data-symbol="staroflife.fill" style="color: var(--accent)"></span>
+        <span class="grow nr-setting-val">An-Nur · 24:35</span>
+        <button class="nr-icon-btn" style="width: var(--touch-min); height: var(--touch-min)" aria-label="Remove the An-Nur 24:35 bookmark">
+          <span class="icon icon-sm" data-symbol="trash" style="color: var(--label-2)"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- CARD 3 — note, no mark. -->
+    <div class="nr-card" style="gap: var(--s2); padding: var(--s3) var(--s4)">
+      <button class="col" style="gap: var(--s2); text-align: left; background: transparent; border: 0; padding: 0; cursor: pointer; font: inherit; color: inherit" aria-label="Bookmark — Al-Baqarah 2:255, with a note. Open in the reader">
+        <span class="nr-verse-sm">اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ</span>
+        <span class="t-subhead">Allah — there is no god but He, the Living, the Sustainer.</span>
+        <span class="nr-row-sub">“Memorize before Ramadan.”</span>
+      </button>
+      <div class="row" style="gap: var(--s3)">
+        <span class="grow nr-setting-val">Al-Baqarah · 2:255</span>
+        <button class="nr-icon-btn" style="width: var(--touch-min); height: var(--touch-min)" aria-label="Remove the Al-Baqarah 2:255 bookmark">
+          <span class="icon icon-sm" data-symbol="trash" style="color: var(--label-2)"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- CARD 4 — neither note nor mark: verse + snippet + reference only. -->
+    <div class="nr-card" style="gap: var(--s2); padding: var(--s3) var(--s4)">
+      <button class="col" style="gap: var(--s2); text-align: left; background: transparent; border: 0; padding: 0; cursor: pointer; font: inherit; color: inherit" aria-label="Bookmark — Al-Fatihah 1:2, no note. Open in the reader">
+        <span class="nr-verse-sm">الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ</span>
+        <span class="t-subhead">All praise is for Allah, Lord of the worlds.</span>
+      </button>
+      <div class="row" style="gap: var(--s3)">
+        <span class="grow nr-setting-val">Al-Fatihah · 1:2</span>
+        <button class="nr-icon-btn" style="width: var(--touch-min); height: var(--touch-min)" aria-label="Remove the Al-Fatihah 1:2 bookmark">
+          <span class="icon icon-sm" data-symbol="trash" style="color: var(--label-2)"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

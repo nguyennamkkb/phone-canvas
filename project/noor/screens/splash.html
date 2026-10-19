@@ -1,0 +1,21 @@
+<!-- pc {"title":"Splash"} -->
+<!-- FS-001 Launch / Init — bare chrome: this screen resolves stored launch
+     state and hands off, so the shell builds no nav band and no tab bar.
+     Per FS-001 §6 the wordmark is the only thing that may be visible, and
+     there is no progress figure: a launch that resolves from local state does
+     not justify one. Back is inert for this screen's whole lifetime. -->
+<div class="screen" style="background-color: var(--bg)">
+  <div class="body-fixed" style="align-items: center; justify-content: center; gap: var(--s6); padding: var(--s6) var(--s5)">
+    <img class="art" src="/project/noor/assets/wordmark-crescent.svg" width="200" height="200" alt="" data-asset="WordmarkCrescent" />
+
+    <div class="col" style="align-items: center; gap: var(--s2)">
+      <!-- display serif: the wordmark role, never used above the reader -->
+      <div class="nr-display" style="color: var(--primary)">Noor</div>
+      <div class="nr-verse-sm" style="color: var(--accent)">نور</div>
+    </div>
+
+    <div class="col" style="align-items: center; gap: var(--s1); padding: 0 var(--s6)">
+      <div class="t-subhead" style="color: var(--label-2); text-align: center">The Mushaf is the room.</div>
+    </div>
+  </div>
+</div>

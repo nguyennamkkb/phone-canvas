@@ -1,0 +1,102 @@
+<!-- pc {"title":"Downloads"} -->
+<!-- FS-018 Downloads — Overview. Pushed from the reader, from FS-013's
+     download row (carrying `reciterId` to highlight), or from FS-039 after a
+     purchase — never from a tab, because this app has no tab bar
+     (Overview.md §2 D6). Back pops and leaves every download untouched; a
+     purchase arrival backing out undoes nothing (FS-018 §2).
+
+     Hierarchy follows FS-018 §8 exactly, and its Counter Hypothesis is the
+     thing being refused: the TOTAL is IMMEDIATE and the one hero figure. The
+     most common arrival is reclamation on a nearly-full phone — leading with
+     the Add control would make the screen a growth surface, which EI-003
+     forbids. Held space must read as deliberate weight, not as an invitation
+     to add more.
+
+     NO ARCH (EI-004 rations the mihrab to FS-006 alone). No card borders
+     anywhere — planes separate by tone + shadow.
+
+     Total + limit are ONE group (§3 grouping): the cap has no meaning apart
+     from the figure it bounds, so the limit row sits directly beneath the
+     total and both are pinned — the total never scrolls away (§3.1). The
+     breakdown scrolls beneath. The incomplete row carries its ring as a row
+     state at fixed size (no reflow, §3.3); the ring is a linear brass track
+     (an SVG arc is out of subset — same declared deviation as the player
+     family's `nr-track`).
+
+     Origin rendered: 1.24 GB of a 2 GB self-set limit, three reciters —
+     Mishary complete, Al-Husary incomplete at 63% (ring + resume path),
+     Ghamdi complete. Entitlement is premium, so the subscription prompt
+     (RARE) is ABSENT, not hidden — it must never occupy space with nothing
+     to say. State is never colour-alone: incomplete pairs brass + ring fill
+     + "Paused" word; removal is the row's own tap (§3.2: a row opens its
+     removal, never a nested target).
+
+     Band: `.body-fixed` + total pinned above the scroller + Add pinned below.
+     The Add control is CONTEXTUAL and thumb-zone pinned (§3.4); the final
+     breakdown row clears it. -->
+<div class="screen" style="background-color: var(--bg)">
+  <button data-slot="back" class="nr-icon-btn" aria-label="Back — downloads untouched">
+    <span class="icon icon-sm" data-symbol="chevron.left"></span>
+  </button>
+  <span data-slot="title" class="nav-title">Downloads</span>
+
+  <div class="body-fixed" style="gap: var(--s3); padding: var(--s2) var(--s5) calc(var(--s5) + var(--safe-bottom))">
+    <!-- TOTAL + LIMIT — IMMEDIATE, one group, pinned (§3 grouping + §3.1).
+         Inert report, not a target: tapping a number to open something would
+         imply a destination that does not exist here. The limit is read in
+         the SAME glance as the figure it bounds. -->
+    <div class="nr-card" style="width: 100%; gap: var(--s1); padding: var(--s3) var(--s4); align-items: center">
+      <span class="nr-eyebrow">On this device</span>
+      <span class="nr-numeric" aria-label="1.24 gigabytes of 2 gigabytes">1.24 GB</span>
+      <span class="nr-setting-val">of your 2 GB limit · set in Audio &amp; Data</span>
+      <span class="nr-track" style="width: 100%" aria-hidden="true">
+        <span class="nr-fill" style="width: 62%"></span>
+      </span>
+    </div>
+
+    <!-- BREAKDOWN — CONTEXTUAL, the one scroller. One row per reciter holding
+         audio (§4: absent-not-zero — a never-downloaded reciter is not
+         listed at all). Each row is one 44pt+ target opening its own removal;
+         the incomplete row's ring is a fixed-size row state, and its tap
+         resumes (§5 Continue) rather than removes — the row states which. -->
+    <div class="col nr-scroll" style="gap: var(--s2)">
+      <button class="nr-setting is-on" aria-label="Mishary Rashid Alafasy — 812 megabytes, complete. Tap to remove these downloads">
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">Mishary Rashid Alafasy</span>
+          <span class="nr-setting-val">812 MB · complete</span>
+        </span>
+        <span class="icon icon-sm" data-symbol="trash" style="color: var(--label-2)"></span>
+      </button>
+
+      <button class="nr-setting is-on" aria-label="Mahmoud Khalil Al-Husary — 63 percent, paused. Tap to resume the transfer">
+        <span class="grow col" style="gap: var(--s2)">
+          <span class="row" style="gap: var(--s3)">
+            <span class="grow col" style="gap: 0">
+              <span class="nr-row-title">Mahmoud Khalil Al-Husary</span>
+              <span class="nr-setting-val is-on">Paused · 63% of 388 MB</span>
+            </span>
+            <span class="icon icon-sm" data-symbol="arrow.triangle.2.circlepath" style="color: var(--accent)"></span>
+          </span>
+          <span class="nr-track" style="width: 100%" aria-hidden="true">
+            <span class="nr-fill" style="width: 63%"></span>
+          </span>
+        </span>
+      </button>
+
+      <button class="nr-setting is-on" aria-label="Saad Al-Ghamdi — 46 megabytes, complete. Tap to remove these downloads">
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">Saad Al-Ghamdi</span>
+          <span class="nr-setting-val">46 MB · complete</span>
+        </span>
+        <span class="icon icon-sm" data-symbol="trash" style="color: var(--label-2)"></span>
+      </button>
+    </div>
+
+    <!-- ADD — CONTEXTUAL, thumb-zone pinned (§3.4). Hands off to FS-019 with
+         the breakdown as context; it selects nothing itself (§5). -->
+    <button class="nr-btn is-block" aria-label="Download more — choose surahs and a reciter">
+      <span class="icon icon-sm" data-symbol="plus"></span>
+      <span>Download more</span>
+    </button>
+  </div>
+</div>

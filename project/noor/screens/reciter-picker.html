@@ -1,0 +1,138 @@
+<!-- pc {"title":"Reciter"} -->
+<!-- FS-013 Reciter Picker. Presented FROM the expanded player (FS-012) on the
+     passage identity region, or from the reader's Listen segment — never from
+     a tab, because this app has no tab bar (Overview.md §2 D6). Back dismisss
+     and restores the arrival reciter at its paused verse; auditions stop
+     (FS-013 §2). Selection restarts playback from the range's first verse — a
+     change of voice must not resume mid-word.
+
+     Hierarchy follows FS-013 §8 exactly, and its Counter Hypothesis is the
+     thing being refused: the LIST is IMMEDIATE and the only raised plane(s)
+     on the screen. The current voice is CONTEXTUAL and sits on the ambient
+     plane — a user who opened this screen dislikes what they hear, so the
+     brightest element must not be the thing they came to escape.
+
+     NO ARCH (EI-004 rations the mihrab to FS-006 alone). Every plane below is
+     a plain `nr-card` / `nr-row` / `nr-setting`.
+
+     TARGET MODEL — one honest deviation, stated here. §3.2 says the audition
+     affordance inherits the row's target (no sub-44pt control) and §3.3 says
+     the download region is "one target for the row, not two". Read together
+     with §5's two distinct actions (audition/choose vs open-downloads), the
+     consistent build is one target PER INTENT: the row body auditions (tap 1)
+     then confirms (tap 2 on the auditioning row restarts from the range
+     start), while the download state is a separate 44pt region opening
+     FS-019 pre-scoped. Collapsing both intents into one tap would make
+     choosing a voice also open downloads — the worse error.
+
+     Origin rendered here is `player` with Mishary active and an audition of
+     Abdul Rahman Al-Sudais running — acceptance #1's exact state (one voice
+     audible, active remembered by verse). The list holds ONLY the voices
+     that are not playing (FS-013 §3 grouping justification — the active
+     voice lives in the pinned region, never duplicated in the list, or a
+     user cannot tell whether its row is informational or actionable).
+     the sixth row is the `unavailable`-entitlement case (§4), which names
+     FS-038 in place and navigates nowhere (§7).
+
+     Band: `.body-fixed` + current-voice pinned above the scroller. The list
+     scrolls beneath it (FS-013 §3.2); the current voice never scrolls away,
+     because comparing against a set that changes under you mid-comparison is
+     the failure §3's grouping justification was written to prevent. -->
+<div class="screen" style="background-color: var(--bg)">
+  <button data-slot="back" class="nr-icon-btn" aria-label="Back — restore Mishary Rashid Alafasy where it paused">
+    <span class="icon icon-sm" data-symbol="chevron.left"></span>
+  </button>
+  <span data-slot="title" class="nav-title">Reciter</span>
+
+  <div class="body-fixed" style="gap: var(--s3); padding: var(--s2) var(--s5) calc(var(--s5) + var(--safe-bottom))">
+    <!-- CURRENT VOICE — CONTEXTUAL (FS-013 §8). Pinned, ambient plane. Says
+         what is under the ear right now and what happens on exit. Not a
+         second audition target: tapping it restores (stops any audition),
+         which is the SECONDARY "restore" action, not a comparison. -->
+    <div class="nr-card is-quiet" style="width: 100%; gap: var(--s1); padding: var(--s3) var(--s4)">
+      <div class="row" style="gap: var(--s2)">
+        <span class="icon icon-sm" data-symbol="speaker.wave.2" style="color: var(--accent)"></span>
+        <span class="nr-eyebrow">Now playing</span>
+      </div>
+      <div class="row" style="gap: var(--s3)">
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">Mishary Rashid Alafasy</span>
+          <span class="nr-row-sub">Hafs · paused at 2:255</span>
+        </span>
+        <button class="nr-icon-btn is-on" aria-label="Stop the audition and resume Mishary Rashid Alafasy at verse 255">
+          <span class="icon icon-sm" data-symbol="pause.fill"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- THE LIST — IMMEDIATE, the one IMMEDIATE element. Each row is one
+         44pt+ button: first tap auditions (active pauses, verse remembered),
+         second tap on the auditioning row chooses (restarts from the range
+         start). State is never colour-alone: the auditioning row pairs the
+         filled `is-on` plane with a pause glyph + `aria-pressed`; the active
+         row pairs it with a checkmark glyph. Every row's aria-label is unique
+         (a11y §6 — VoiceOver reads it verbatim). -->
+    <div class="col nr-scroll" style="gap: var(--s2)">
+      <div class="col" style="gap: var(--s2)">
+        <!-- Mishary is deliberately ABSENT from this list: it is the voice
+             under the ear, pinned above. Duplicating it here made the row
+             read as informational while behaving as a target — the exact
+             confusion §3's grouping justification forbids. -->
+        <button class="nr-setting is-on" aria-pressed="true" aria-label="Abdul Rahman Al-Sudais, Hafs, downloaded. Auditioning now — tap again to use this voice from the start of the passage">
+          <span class="grow col" style="gap: 0">
+            <span class="nr-row-title">Abdul Rahman Al-Sudais</span>
+            <span class="nr-setting-val is-on">Hafs · auditioning</span>
+          </span>
+          <span class="icon icon-sm" data-symbol="pause.fill" style="color: var(--accent)"></span>
+        </button>
+        <button class="nr-setting" aria-label="Saad Al-Ghamdi, Hafs, downloaded. Tap to audition">
+          <span class="grow col" style="gap: 0">
+            <span class="nr-row-title">Saad Al-Ghamdi</span>
+            <span class="nr-setting-val">Hafs · on this device</span>
+          </span>
+          <span class="icon icon-sm" data-symbol="play.fill" style="color: var(--label-3)"></span>
+        </button>
+        <button class="nr-setting" aria-label="Mahmoud Khalil Al-Husary, Hafs, 41 megabytes not downloaded. Tap to audition with streaming, or open downloads for this reciter below">
+          <span class="grow col" style="gap: 0">
+            <span class="nr-row-title">Mahmoud Khalil Al-Husary</span>
+            <span class="nr-setting-val">Hafs · 41 MB to download</span>
+          </span>
+          <span class="icon icon-sm" data-symbol="play.fill" style="color: var(--label-3)"></span>
+        </button>
+        <!-- the `unavailable` entitlement case (FS-013 §4): materially
+             different from "not yet downloaded". Names FS-038 in place and
+             navigates nowhere (§7) — so this row is inert info, not a
+             target. A lock glyph (not colour) carries the state. -->
+        <div class="nr-setting is-plain" style="cursor: default">
+          <span class="grow col" style="gap: 0">
+            <span class="nr-row-title">Muhammad Siddiq Al-Minshawi</span>
+            <span class="nr-setting-val">Murattal · needs Noor Plus — see Plans</span>
+          </span>
+          <span class="icon icon-sm" data-symbol="lock" style="color: var(--label-3)"></span>
+        </div>
+      </div>
+
+      <!-- DOWNLOAD REGION — the second intent's one target (§3.3): opens
+           FS-019 pre-scoped to the partially-cached reciter and the loaded
+           surah. A full-width 44pt row, never a sub-44pt glyph beside the
+           audition target. Only reciters in `none`/`partial` state get this;
+           the `complete` rows above need nothing and the `unavailable` row
+           explains in place. -->
+      <button class="nr-setting" aria-label="Download Mahmoud Khalil Al-Husary for Al-Baqarah — 41 megabytes">
+        <span class="icon icon-sm" data-symbol="download" style="color: var(--primary)"></span>
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">Download Al-Husary</span>
+          <span class="nr-setting-val">Al-Baqarah · 41 MB</span>
+        </span>
+        <span class="icon icon-sm" data-symbol="chevron.right" style="color: var(--label-3)"></span>
+      </button>
+    </div>
+
+    <!-- Foot rule, stated not inferred: choosing restarts from the first
+         verse of the range (§2), and backing out restores. Pinned with the
+         home-indicator inset, where FS-015 puts its equivalent. -->
+    <div class="t-caption" style="color: var(--label-2); text-align: center">
+      Choosing a voice restarts the passage from its first verse. Going back keeps Mishary where it paused.
+    </div>
+  </div>
+</div>

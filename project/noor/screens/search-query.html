@@ -1,0 +1,83 @@
+<!-- pc {"title":"Search"} -->
+<!-- FS-022 Search — Query. Pushed from the reader's search affordance, from
+     FS-023 carrying the previous query (refine, not retype), or from FS-009's
+     shortcut — never from a tab, because this app has no tab bar
+     (Overview.md §2 D6). Back pops and RETURNS the typed query to the caller
+     as a future recent — never discarded into a hidden store (§2).
+
+     Hierarchy follows FS-022 §8 exactly, and its Counter Hypothesis is the
+     thing being refused: the QUERY FIELD is IMMEDIATE — focused, dominant,
+     the screen's whole purpose is to receive text. Leading with the scope
+     would ask the user to decide Arabic-vs-translation before they have typed
+     the fragment that would settle it, and a wrong guess returns zero results
+     that look like the passage is not there.
+
+     This field matches the Quran's TEXT (§4 ownership: diacritic-insensitive
+     Arabic, case-insensitive translation) — deliberately distinct from
+     FS-009's name filter. A user hunting "the verse about the olive tree"
+     searches text; a user hunting "Al-Baqarah" filters names. One shared
+     field would return zero results while appearing to have searched.
+
+     NO ARCH (EI-004 rations the mihrab to FS-006 alone). No card borders.
+
+     Origin rendered: refining arrival carrying "olive" (5 chars — submit
+     ARMED, §5 enables at 2), scope Translation (last-used, §4). Because a
+     query is carried, the recent region is ABSENT — it addresses a different
+     question and only exists when no query is present (§3 grouping). The
+     empty-state variant (no query → recents + disabled submit) is a state of
+     this same screen, not a second screen.
+
+     One honest platform note: §3.1 pins the field "above the raised
+     keyboard" — the board has no software keyboard, so the field is pinned
+     below the nav as the first content band. The grouping (field + submit as
+     one act, EI-005) is preserved: submit sits directly beneath the field,
+     never in a detached bottom bar.
+
+     Band: `.body-fixed`, no scroller — field, scope, submit. Nothing here is
+     long enough to need one (the recents variant scrolls its region; this
+     variant has no region to scroll). -->
+<div class="screen" style="background-color: var(--bg)">
+  <button data-slot="back" class="nr-icon-btn" aria-label="Back — keep olive as a recent">
+    <span class="icon icon-sm" data-symbol="chevron.left"></span>
+  </button>
+  <span data-slot="title" class="nav-title">Search</span>
+
+  <div class="body-fixed" style="gap: var(--s3); padding: var(--s4) var(--s5) calc(var(--s5) + var(--safe-bottom))">
+    <!-- QUERY + SUBMIT — one group (§3 grouping: submitting is an act ON the
+         query; EI-005 forbids splitting question from action). Field is
+         COMP / SearchField in the live state (`is-on`: lifted onto the
+         raised plane, same modifier reading as `.nr-row.is-on`). The query
+         text it holds is real content, never a placeholder acting as a
+         label (§6 a11y: a label that vanishes on type is a lost context). -->
+    <div class="col" style="gap: var(--s2)">
+      <span class="nr-eyebrow">Words you remember</span>
+      <div class="nr-search is-on" style="cursor: text" role="searchbox" aria-label="Search the Quran's text — olive, translation scope">
+        <span class="icon icon-sm" data-symbol="magnifyingglass" style="color: var(--label-2)"></span>
+        <span class="grow" style="color: var(--label)">olive</span>
+        <span class="icon icon-sm" data-symbol="xmark" style="color: var(--label-3)"></span>
+      </div>
+
+      <!-- SCOPE — CONTEXTUAL. Settles what the query MEANS (Arabic fragment
+           vs English word); full-width halves so neither is a narrow target
+           (§3.2). Switching preserves the carried query (§5). -->
+      <div class="nr-modes" style="width: 100%">
+        <button class="nr-mode" style="padding: 0 var(--s1)" aria-label="Search the Arabic text">Arabic</button>
+        <button class="nr-mode is-on" style="padding: 0 var(--s1)" aria-label="Search the translation — active" aria-pressed="true">Translation</button>
+      </div>
+
+      <button class="nr-btn is-block" aria-label="Search for olive in the translation">
+        <span class="icon icon-sm" data-symbol="magnifyingglass"></span>
+        <span>Search</span>
+      </button>
+    </div>
+
+    <!-- WHERE IT SEARCHES — SECONDARY. States the corpus truthfully (§4:
+         diacritic-insensitive Arabic, case-insensitive translation, local
+         index) so a zero-result screen later reads as "not there" rather
+         than "broken". Inert info, not a target. -->
+    <div class="nr-setting is-plain" style="cursor: default; padding: var(--s1) var(--s4)">
+      <span class="icon icon-xs" data-symbol="info.circle" style="color: var(--label-2)"></span>
+      <span class="nr-setting-val">Searches the Arabic text and this translation, on this device.</span>
+    </div>
+  </div>
+</div>

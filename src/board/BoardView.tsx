@@ -13,7 +13,7 @@ import type { DockTab } from '../canvas/TokenDock'
 import { useTokenTheme, useUiTheme } from '../tokens/store'
 import type { ThemeMode } from '../tokens/tokens'
 import { DEFAULT_DEVICE_ID, isKnownDevice } from '../frame/devices'
-import { nextSlotX } from './placement'
+import { layoutRows, nextSlotX } from './placement'
 import { useInspector } from '../inspect/InspectorContext'
 import { SpecPanel } from '../inspect/SpecPanel'
 import { SCREEN_BY_ID, useRegistryVersion } from '../screens'
@@ -29,7 +29,7 @@ import {
   seedBoard,
   toStateFile,
 } from '../projects/storage'
-import type { BoardSnapshot, TrashEntry } from '../projects/storage'
+import type { ArrangementRow, BoardSnapshot, TrashEntry } from '../projects/storage'
 import { missingScreenIds } from './reconcile'
 import { TrashDialog } from './TrashDialog'
 import { ErrorBoundary } from '../shell/ErrorBoundary'
@@ -52,13 +52,13 @@ function deviceForScreen(screenId: string): string {
   return SCREEN_BY_ID.get(screenId)?.deviceId ?? DEFAULT_DEVICE_ID
 }
 
-function makeNode(projectId: string, screenId: string, x: number): PhoneFlowNode | null {
+function makeNode(projectId: string, screenId: string, x: number, y = 0): PhoneFlowNode | null {
   const screen = SCREEN_BY_ID.get(screenId)
   if (!screen) return null
   return {
     id: nextNodeId(projectId),
     type: 'phone',
-    position: { x, y: 0 },
+    position: { x, y },
     data: { screenId: screen.id, deviceId: deviceForScreen(screenId) },
   }
 }
@@ -90,16 +90,37 @@ export function pruneZombieNodes<N extends BoardNode | TrashEntry>(
   })
 }
 
-function freshNodes(project: Project): BoardNode[] {
+/**
+ * Fresh board: every project screen in manifest order, one row, laid out by
+ * the shared `layoutRows` rule (single row === the old `nextSlotX` cursor
+ * exactly). Returns the row model too so the board keeps it going forward.
+ */
+function freshBoard(project: Project): { nodes: BoardNode[]; arrangement: ArrangementRow[] } {
   counters[project.id] = 0
+  const ids = resolveScreens(project)
+  const cells = layoutRows([ids.map((sid) => ({ deviceId: deviceForScreen(sid) }))], COLUMN_GAP)[0] ?? []
   const out: BoardNode[] = []
-  for (const sid of resolveScreens(project)) {
-    // nextSlotX measures the placed nodes' own widths — an iPad node never
-    // gets covered by the phone-width cursor that used to follow it
-    const node = makeNode(project.id, sid, nextSlotX(out, COLUMN_GAP))
+  ids.forEach((sid, i) => {
+    const node = makeNode(project.id, sid, cells[i]?.x ?? 0, cells[i]?.y ?? 0)
     if (node) out.push(node)
-  }
-  return out
+  })
+  return { nodes: out, arrangement: [{ screens: ids }] }
+}
+
+/**
+ * Keep only rows that still name known screens (delete --force / rename drops
+ * them from the manifest). Trashed screens stay in their row — a restore puts
+ * the node back at its old position, and the row is only "last applied".
+ */
+function sanitizeRows(
+  arrangement: ArrangementRow[] | undefined,
+  known: Pick<typeof SCREEN_BY_ID, 'has'>,
+): ArrangementRow[] | undefined {
+  if (!arrangement) return undefined
+  const rows = arrangement
+    .map((r) => ({ ...r, screens: r.screens.filter((s) => known.has(s)) }))
+    .filter((r) => r.screens.length > 0)
+  return rows.length > 0 ? rows : undefined
 }
 
 /**
@@ -118,6 +139,7 @@ function openingNodes(
   edges: Edge[]
   removed: string[]
   trash: TrashEntry[]
+  arrangement: ArrangementRow[] | undefined
 } {
   if (saved && saved.nodes.length > 0) {
     let max = 0
@@ -164,10 +186,12 @@ function openingNodes(
         edges: pruneEdges(phones, saved.edges),
         removed,
         trash,
+        arrangement: sanitizeRows(saved.arrangement, SCREEN_BY_ID),
       }
     }
   }
-  return { nodes: freshNodes(project), edges: [] as Edge[], removed: [], trash: [] }
+  const fresh = freshBoard(project)
+  return { nodes: fresh.nodes, edges: [] as Edge[], removed: [], trash: [], arrangement: fresh.arrangement }
 }
 
 /**
@@ -181,20 +205,32 @@ function reconciledNodes(
   project: Project,
   nodes: BoardNode[],
   removed: string[],
-): BoardNode[] {
+  arrangement: ArrangementRow[] | undefined,
+): { nodes: BoardNode[]; arrangement: ArrangementRow[] | undefined } {
   const missing = missingScreenIds(
     resolveScreens(project),
     nodes.map((n) => n.data.screenId),
     removed,
   )
-  if (missing.length === 0) return nodes
+  if (missing.length === 0) return { nodes, arrangement }
+  // màn mới vào hàng cuối của model đã lưu (drag cũ không xếp lại); chưa có
+  // model thì hàng cuối chính là toàn board — tương đương hành vi cũ (y = 0).
+  const rows = arrangement && arrangement.length > 0
+    ? arrangement.map((r) => ({ ...r, screens: [...r.screens] }))
+    : [{ screens: [] as string[] }]
+  const last = rows[rows.length - 1] ?? { screens: [] as string[] }
   const out = [...nodes]
   for (const screenId of missing) {
-    const node = makeNode(project.id, screenId, nextSlotX(out, COLUMN_GAP))
+    const rowNodes = out.filter((n) => last.screens.includes(n.data.screenId))
+    const anchor = rowNodes.length > 0 ? rowNodes : out
+    const x = nextSlotX(anchor, COLUMN_GAP)
+    const y = anchor.length > 0 ? Math.max(...anchor.map((n) => n.position.y)) : 0
+    const node = makeNode(project.id, screenId, x, y)
     if (!node) continue
     out.push(node)
+    last.screens.push(screenId)
   }
-  return out
+  return { nodes: out, arrangement: rows }
 }
 
 export type BoardViewProps = {
@@ -240,11 +276,13 @@ function BoardViewInner({
   const opening = useMemo(() => {
     const saved = openingNodes(project, loadBoard(project.id))
     const trashedIds = saved.trash.map((t) => t.screenId)
+    const rec = reconciledNodes(project, saved.nodes, [...saved.removed, ...trashedIds], saved.arrangement)
     return {
-      nodes: reconciledNodes(project, saved.nodes, [...saved.removed, ...trashedIds]),
+      nodes: rec.nodes,
       edges: saved.edges,
       removed: saved.removed,
       trash: saved.trash,
+      arrangement: rec.arrangement,
     }
   }, [project])
   const [nodes, setNodes, onNodesChange] = useNodesState<BoardNode>(opening.nodes)
@@ -264,6 +302,8 @@ function BoardViewInner({
   const [removed, setRemoved] = useState<string[]>(opening.removed)
   // thùng rác per-project: snapshot node + edges bị cắt, newest cuối
   const [trash, setTrash] = useState<TrashEntry[]>(opening.trash)
+  // model hàng áp dụng lần cuối — drag tay đổi nodes chứ không đổi model
+  const [arrangement, setArrangement] = useState<ArrangementRow[] | undefined>(opening.arrangement)
 
   // Freeze seed (5.2): `project/<id>/board.json` — the `npm run project --
   // freeze` artifact — opens the board ONLY when the record does not already
@@ -279,7 +319,9 @@ function BoardViewInner({
       if (superseded || !file) return
       const seeded = openingNodes(project, file.board)
       const trashedIds = seeded.trash.map((t) => t.screenId)
-      setNodes(reconciledNodes(project, seeded.nodes, [...seeded.removed, ...trashedIds]))
+      const rec = reconciledNodes(project, seeded.nodes, [...seeded.removed, ...trashedIds], seeded.arrangement)
+      setNodes(rec.nodes)
+      setArrangement(rec.arrangement)
       setEdges(seeded.edges)
       setRemoved(seeded.removed)
       setTrash(seeded.trash)
@@ -290,8 +332,8 @@ function BoardViewInner({
   }, [project, setNodes, setEdges])
 
   useEffect(() => {
-    saveBoard(project.id, { nodes, edges, removed, trash })
-  }, [project.id, nodes, edges, removed, trash])
+    saveBoard(project.id, { nodes, edges, removed, trash, arrangement })
+  }, [project.id, nodes, edges, removed, trash, arrangement])
 
   // Live registry sync: a project file added/edited/removed on disk resyncs
   // the mounted board — prune zombie nodes, drop their edges, place new
@@ -312,34 +354,30 @@ function BoardViewInner({
     const keptTrash = lost.size === 0 ? trash : trash.filter((t) => known.has(t.screenId))
     const trashedIds = new Set(keptTrash.map((t) => t.screenId))
     const nextRemoved = [...new Set([...removed, ...lost])].filter((id) => !trashedIds.has(id))
-    const missing = missingScreenIds(
-      resolveScreens(project),
-      [...keptNodes.map((n) => n.data.screenId), ...trashedIds],
-      nextRemoved,
-    )
-    const nextNodes = [...keptNodes]
-    for (const screenId of missing) {
-      const node = makeNode(project.id, screenId, nextSlotX(nextNodes, COLUMN_GAP))
-      if (node) nextNodes.push(node)
-    }
+    const saneArrangement = lost.size === 0 ? arrangement : sanitizeRows(arrangement, known)
+    const rec = reconciledNodes(project, keptNodes, [...nextRemoved, ...trashedIds], saneArrangement)
+    const nextNodes = rec.nodes
+    const nextArrangement = rec.arrangement
     const nextEdges = lost.size === 0 ? edges : pruneEdges(nextNodes, edges)
     if (
       keptNodes.length !== nodes.length ||
       nextNodes.length !== keptNodes.length ||
       keptTrash.length !== trash.length ||
       nextRemoved.length !== removed.length ||
-      nextEdges.length !== edges.length
+      nextEdges.length !== edges.length ||
+      nextArrangement !== saneArrangement
     ) {
       setNodes(nextNodes)
       setEdges(nextEdges)
       setTrash(keptTrash)
       setRemoved(nextRemoved)
+      if (nextArrangement !== saneArrangement) setArrangement(nextArrangement)
     }
-  }, [registryVersion, project, nodes, edges, removed, trash])
+  }, [registryVersion, project, nodes, edges, removed, trash, arrangement])
 
   // xuất/nhập trạng thái — browser không ghi được vào repo nên đi qua file
   const handleExportState = useCallback(() => {
-    const stateFile = toStateFile(project.id, { v: 5, nodes, edges, removed, trash })
+    const stateFile = toStateFile(project.id, { v: 5, nodes, edges, removed, trash, arrangement })
     const url = URL.createObjectURL(
       new Blob([JSON.stringify(stateFile, null, 2)], { type: 'application/json' }),
     )
@@ -348,7 +386,7 @@ function BoardViewInner({
     a.download = `${project.id}-board.json`
     a.click()
     URL.revokeObjectURL(url)
-  }, [project.id, nodes, edges, removed, trash])
+  }, [project.id, nodes, edges, removed, trash, arrangement])
 
   const handleImportState = useCallback(
     async (file: File) => {

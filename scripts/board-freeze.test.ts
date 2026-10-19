@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { scanProjects } from './scan-projects.ts'
 import { parseStateFile } from '../src/projects/storage.ts'
-import { resolveBoardPath, writeBoardFreeze } from './board-freeze.ts'
+import { parseRowsFlag, resolveBoardPath, writeBoardFreeze } from './board-freeze.ts'
 
 // RED-first contract (fails until board-freeze.ts exists):
 // freeze writer reuses scan-projects discovery + placement math,
@@ -85,6 +85,83 @@ describe('board freeze writer', () => {
 
   it('refuses unknown projects instead of writing an empty board', async () => {
     await expect(writeBoardFreeze('no-such-project', { root: process.cwd() })).rejects.toThrow()
+  })
+})
+
+describe('board freeze rows (board-arrangement)', () => {
+  it('--order + --row-size cut two rows in the given order, leftovers appended', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'freeze-rows-'))
+    const { registry } = await scanProjects()
+    const manifest = registry.projects.find((p) => p.id === 'noor')?.screenIds ?? []
+    expect(manifest.length).toBeGreaterThan(3)
+    const [first, second] = manifest
+    const file = await writeBoardFreeze('noor', {
+      root: process.cwd(),
+      outDir: dir,
+      order: [second!, first!],
+      rowSize: 2,
+      rowNames: ['nhom-1'],
+    })
+    const parsed = parseStateFile(await readFile(file, 'utf8'), 'noor')
+    // first row follows --order, not the manifest
+    expect(parsed.board.nodes[0]?.data.screenId).toBe(second)
+    expect(parsed.board.nodes[1]?.data.screenId).toBe(first)
+    const rows = parsed.board.arrangement ?? []
+    expect(rows[0]).toEqual({ name: 'nhom-1', screens: [second, first] })
+    // every project screen still present exactly once, rows cover all
+    expect(rows.flatMap((r) => r.screens).sort()).toEqual([...manifest].sort())
+    // second row restarts x at 0 and sits below the first
+    const y1 = parsed.board.nodes[0]?.position.y ?? -1
+    const y2 = parsed.board.nodes[2]?.position.y ?? -1
+    expect(parsed.board.nodes[2]?.position.x).toBe(0)
+    expect(y2).toBeGreaterThan(y1)
+    await rm(dir, { recursive: true, force: true })
+  })
+
+  it('--rows places explicit groups and --dry-run writes nothing', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'freeze-explicit-'))
+    const { registry } = await scanProjects()
+    const manifest = registry.projects.find((p) => p.id === 'noor')?.screenIds ?? []
+    const [a, b, c] = manifest
+    const file = await writeBoardFreeze('noor', {
+      root: process.cwd(),
+      outDir: dir,
+      rows: parseRowsFlag(`${a},${b};${c}`),
+      rowNames: ['mot', 'hai'],
+    })
+    const parsed = parseStateFile(await readFile(file, 'utf8'), 'noor')
+    // unlisted screens append as one final row after the explicit ones
+    expect(parsed.board.arrangement?.slice(0, 2)).toEqual([
+      { name: 'mot', screens: [a, b] },
+      { name: 'hai', screens: [c] },
+    ])
+    expect(parseRowsFlag('x,y\nz')).toEqual([['x', 'y'], ['z']])
+    const before = await readFile(file, 'utf8')
+    await writeBoardFreeze('noor', { root: process.cwd(), outDir: dir, rows: [[a!]], dryRun: true })
+    expect(await readFile(file, 'utf8')).toBe(before)
+    await rm(dir, { recursive: true, force: true })
+  })
+
+  it('unknown screen ids fail before anything is written', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'freeze-bad-'))
+    await expect(
+      writeBoardFreeze('noor', { root: process.cwd(), outDir: dir, order: ['no-such-screen'] }),
+    ).rejects.toThrow('no-such-screen')
+    await expect(
+      writeBoardFreeze('noor', { root: process.cwd(), outDir: dir, rows: [['splash', 'no-such-screen']] }),
+    ).rejects.toThrow('no-such-screen')
+    await rm(dir, { recursive: true, force: true })
+  })
+
+  it('default order follows the manifest in one row', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'freeze-default-'))
+    const { registry } = await scanProjects()
+    const manifest = registry.projects.find((p) => p.id === 'noor')?.screenIds ?? []
+    const file = await writeBoardFreeze('noor', { root: process.cwd(), outDir: dir })
+    const parsed = parseStateFile(await readFile(file, 'utf8'), 'noor')
+    expect(parsed.board.nodes.map((n) => n.data.screenId)).toEqual(manifest)
+    expect(parsed.board.arrangement).toEqual([{ screens: manifest }])
+    await rm(dir, { recursive: true, force: true })
   })
 })
 

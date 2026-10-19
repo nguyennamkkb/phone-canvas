@@ -1,0 +1,153 @@
+<!-- pc {"title":"Reader"} -->
+<!-- FS-005 Reader — Mushaf Page. THE APP ROOT (Overview.md §2 D6).
+     No bottom tab bar, and no tab component at all: the shell builds a tab
+     band only from `data-tab`, so declaring none is what makes Concept-A's
+     "0 persistent navigation destinations pinned to the bottom edge" true in
+     the markup rather than only in the doc.
+
+     Attention law (Design_Direction §2): the lit verse is the only fully lit
+     thing; the mode switcher and the surah affordance are contextual; the
+     Now Playing bar is the ONE permitted persistent chrome element.
+
+     Chrome: nav slots only — title = where you are, right = the two
+     destinations reachable without a tab bar. Back is deliberately absent:
+     when this screen is the navigation root, back scrolls to the last-read
+     marker rather than popping, so a back affordance would lie. -->
+<div class="screen" style="background-color: var(--bg)">
+  <span data-slot="title" class="nav-title">Al-Fatihah</span>
+  <button data-slot="right" class="nr-icon-btn" aria-label="Search">
+    <span class="icon icon-sm" data-symbol="magnifyingglass"></span>
+  </button>
+  <button data-slot="right" class="nr-icon-btn" aria-label="Settings">
+    <span class="icon icon-sm" data-symbol="gear"></span>
+  </button>
+
+  <div class="body-fixed">
+    <!-- THE reading region, and the one scroller on this screen. Elevation 0:
+         no gradient, no scrim, no translucency, nothing floating above the
+         Mushaf. It scrolls; the Now Playing bar below it does not. -->
+    <div class="nr-plane nr-scroll" style="padding: var(--s3) var(--s5) var(--s5); gap: var(--s3)">
+      <!-- surah-navigation affordance (CONTEXTUAL) — needed when the
+           remembered position is wrong, so it names where you are -->
+      <div class="nr-row is-plain" style="padding: 0 0 var(--s2)">
+        <span class="grow col" style="gap: 0">
+          <span class="nr-title" style="color: var(--label)">1 · Al-Fatihah</span>
+          <span class="nr-row-sub">Meccan · 7 verses · juz 1</span>
+        </span>
+        <button class="nr-icon-btn" aria-label="Open the surah index">
+          <span class="icon icon-sm" data-symbol="list.bullet" style="color: var(--accent)"></span>
+        </button>
+      </div>
+
+      <!-- mode switcher (CONTEXTUAL): Read / Listen / Memorize. Changing
+           stance, not place — so it does not outrank the text below it. -->
+      <div class="nr-modes">
+        <button class="nr-mode is-on" aria-label="Read" aria-pressed="true">
+          <span class="icon icon-xs" data-symbol="book"></span>
+          <span>Read</span>
+        </button>
+        <button class="nr-mode" aria-label="Listen">
+          <span class="icon icon-xs" data-symbol="speaker.wave.2"></span>
+          <span>Listen</span>
+        </button>
+        <button class="nr-mode" aria-label="Memorize">
+          <span class="icon icon-xs" data-symbol="bookmark"></span>
+          <span>Memorize</span>
+        </button>
+      </div>
+
+      <!-- COMP / VerseRow × 7. Each row is one target: the number and its
+           trailing marker are never two targets. The inline translation and
+           bookmark controls sit 8pt apart so neither is mis-tapped. -->
+      <div class="col" style="gap: var(--s1)">
+        <div class="nr-verse-row" style="background: var(--surface-2)">
+          <div class="nr-verse">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+          <div class="nr-verse-tools">
+            <button class="nr-icon-btn" aria-label="Bookmark this verse">
+              <span class="icon icon-sm" data-symbol="bookmark"></span>
+            </button>
+            <button class="nr-icon-btn" aria-label="Show the translation of this verse">
+              <span class="icon icon-sm" data-symbol="textformat" style="color: var(--accent)"></span>
+            </button>
+            <span class="grow"></span>
+            <span class="nr-mark">١</span>
+          </div>
+        </div>
+
+        <!-- EI-001: the lit verse. The only primary-plane element on this
+             surface — everything around it drops to the ambient plane. -->
+        <div class="nr-verse-row is-lit">
+          <div class="nr-verse">الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ</div>
+          <div class="nr-verse-tools">
+            <button class="nr-icon-btn" aria-label="Pause recitation">
+              <span class="icon icon-sm" data-symbol="pause.fill"></span>
+            </button>
+            <button class="nr-icon-btn" aria-label="Bookmark this verse">
+              <span class="icon icon-sm" data-symbol="bookmark"></span>
+            </button>
+            <span class="grow"></span>
+            <span class="nr-mark">٢</span>
+          </div>
+        </div>
+
+        <div class="nr-verse-row">
+          <div class="nr-verse">الرَّحْمَٰنِ الرَّحِيمِ</div>
+          <div class="nr-verse-tools">
+            <span class="grow"></span>
+            <span class="nr-mark">٣</span>
+          </div>
+        </div>
+
+        <div class="nr-verse-row">
+          <div class="nr-verse">مَالِكِ يَوْمِ الدِّينِ</div>
+          <div class="nr-verse-tools">
+            <span class="grow"></span>
+            <span class="nr-mark">٤</span>
+          </div>
+        </div>
+
+        <!-- the last-read marker (RARE): faint, never animated -->
+        <div class="nr-marker">
+          <span class="nr-marker-rule"></span>
+          <span class="t-caption" style="color: var(--label-2)">You stopped here</span>
+          <span class="nr-marker-rule"></span>
+        </div>
+
+        <div class="nr-verse-row">
+          <div class="nr-verse">إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ</div>
+          <div class="nr-verse-tools">
+            <span class="grow"></span>
+            <span class="nr-mark">٥</span>
+          </div>
+        </div>
+
+        <div class="nr-verse-row">
+          <div class="nr-verse">اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ</div>
+          <div class="nr-verse-tools">
+            <span class="grow"></span>
+            <span class="nr-mark">٦</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMP / NowPlayingBar — the single persistent chrome element, docked
+         above the home indicator and OUTSIDE the scroller, so the passage
+         scrolls behind it instead of under it. A `.col` wrapper holding one
+         child, not a distributing row, so it reads as content (an ambient
+         bar) and not as a hand-built bottom navigation band. -->
+    <div class="col" style="padding: 0 var(--s5) calc(var(--s3) + var(--safe-bottom))">
+      <button class="nr-nowbar" aria-label="Now playing. Al-Fatihah, verse 2, Mishary Rashid Alafasy. Open the full player.">
+        <img class="art nr-cover" src="/project/noor/assets/cover-reciter.svg" width="40" height="40" alt="" data-asset="CoverReciter" />
+        <span class="nr-meta">
+          <span class="nr-meta-title">Al-Fatihah · 1:2</span>
+          <span class="nr-meta-sub">Mishary Rashid Alafasy</span>
+        </span>
+        <span class="nr-icon-btn" aria-label="Pause">
+          <span class="icon icon-sm" data-symbol="pause.fill" style="color: var(--accent)"></span>
+        </span>
+        <span class="icon icon-sm" data-symbol="chevron.right" style="color: var(--label-3)"></span>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,119 @@
+<!-- pc {"title":"Memorize"} -->
+<!-- FS-028 Memorize — Setup. Presented from the reader's mode switcher on
+     the Memorize segment (carrying the current verse as default range start),
+     or from FS-029 mid-session carrying its range — never from a tab,
+     because this app has no tab bar (Overview.md §2 D6). Back pops and begins
+     NO session: confinement has not begun, leaving costs nothing, and a
+     session starting on dismissal would force the user to undo a state change
+     just to reconsider its parameters (§2). ONLY the Begin control starts
+     anything — the one element on this screen that begins, stated at its
+     foot exactly like FS-014's equivalent.
+
+     Hierarchy follows FS-028 §8 exactly, and its Counter Hypothesis is the
+     thing being refused: the RANGE is IMMEDIATE and the only hero plane. A
+     cue level without material is meaningless — EI-008 requires knowing WHAT
+     is being helped with before choosing help — and tuning difficulty before
+     range practises the wrong passage under another passage's conditions.
+     Range + cue are ONE group (§3 grouping): choosing them apart produces a
+     session whose help no longer matches its material.
+
+     NO ARCH (EI-004 rations the mihrab to FS-006 alone). Every plane below is
+     a plain `nr-card` / `nr-setting`.
+
+     Origin rendered: At-Tin 95:1–8 (reader was at verse 1; the full 8-verse
+     surah as default range — a first drill over a whole short surah). Cue
+     level 2 of 4 ("First words"). Every control states its CURRENT VALUE
+     (F10 trust surface, same rule as FS-014): the range names its passage +
+     verse count, the cue names its level, the difficulty statement says what
+     level 2 reveals and — equally — what it withholds.
+
+     Band: `.body-fixed` + range pinned above the scroller (§3.1: a drill
+     over the wrong range is the most expensive mistake here) + Begin pinned
+     below. Cue + difficulty scroll between; difficulty last so it goes first
+     when the frame is short — same ordering logic as FS-014's gap row. -->
+<div class="screen" style="background-color: var(--bg)">
+  <button data-slot="back" class="nr-icon-btn" aria-label="Back — no session starts">
+    <span class="icon icon-sm" data-symbol="chevron.left"></span>
+  </button>
+  <span data-slot="title" class="nav-title">Memorize</span>
+
+  <div class="body-fixed" style="gap: var(--s3); padding: var(--s2) var(--s5) calc(var(--s5) + var(--safe-bottom))">
+    <!-- RANGE — IMMEDIATE, the one hero plane. Only the four ± steps are
+         tappable (§3.1's FS-014 twin: two bounds must never be mis-set at
+         once, so the plane between them is inert). The count is a report. -->
+    <div class="nr-card" style="width: 100%; gap: var(--s2); padding: var(--s3) var(--s4)">
+      <div class="row" style="gap: var(--s3); align-items: flex-end">
+        <span class="grow col" style="gap: var(--s1)">
+          <span class="nr-eyebrow">Practice range</span>
+          <span class="nr-row-title">At-Tin · 95:1 – 95:8</span>
+        </span>
+        <span class="nr-setting-val">8 verses</span>
+      </div>
+
+      <div class="row" style="gap: var(--s2); align-items: flex-start">
+        <span class="grow nr-verse-sm" style="padding-left: var(--s3)">وَالتِّينِ وَالزَّيْتُونِ</span>
+        <span class="nr-mark">١</span>
+      </div>
+
+      <div class="row" style="gap: var(--s3)">
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">Start</span>
+          <span class="nr-setting-val">first ayah</span>
+        </span>
+        <span class="nr-stepper">
+          <button class="nr-stepper-btn" aria-label="Start one ayah earlier">
+            <span class="icon icon-sm" data-symbol="minus"></span>
+          </button>
+          <span class="nr-stepper-val">1</span>
+          <button class="nr-stepper-btn" aria-label="Start one ayah later">
+            <span class="icon icon-sm" data-symbol="plus"></span>
+          </button>
+        </span>
+      </div>
+
+      <div class="row" style="gap: var(--s3)">
+        <span class="grow col" style="gap: 0">
+          <span class="nr-row-title">End</span>
+          <span class="nr-setting-val">last ayah</span>
+        </span>
+        <span class="nr-stepper">
+          <button class="nr-stepper-btn" aria-label="End one ayah earlier">
+            <span class="icon icon-sm" data-symbol="minus"></span>
+          </button>
+          <span class="nr-stepper-val">8</span>
+          <button class="nr-stepper-btn" aria-label="End one ayah later">
+            <span class="icon icon-sm" data-symbol="plus"></span>
+          </button>
+        </span>
+      </div>
+    </div>
+
+    <!-- The one scroller: CUE (CONTEXTUAL) then DIFFICULTY (SECONDARY). Four
+         equal segments, full width, never wraps (§3.2). The live segment is
+         plane + `aria-pressed`, never brass alone. The statement below is
+         INERT — a consequence report, readable without being operable (§3
+         grouping), and never truncated past what the level reveals. -->
+    <div class="col nr-scroll" style="gap: var(--s3)">
+      <div class="nr-card" style="gap: var(--s2); padding: var(--s3) var(--s4)">
+        <span class="nr-row-title">How much help</span>
+        <div class="nr-modes">
+          <button class="nr-mode" aria-label="No help — recall from nothing">None</button>
+          <button class="nr-mode is-on" aria-label="First words shown — active" aria-pressed="true">First words</button>
+          <button class="nr-mode" aria-label="First lines shown">First lines</button>
+          <button class="nr-mode" aria-label="Previous verse shown">Prev verse</button>
+        </div>
+        <span class="nr-setting-val">First words shows each verse's opening — the rest stays hidden until you ask.</span>
+      </div>
+    </div>
+
+    <!-- BEGIN — CONTEXTUAL, pinned. The ONLY element that starts concealment.
+         Disabled until the range is valid (valid here). The caption states
+         the back rule so it is never discovered by accident. -->
+    <div class="col" style="gap: var(--s2)">
+      <div class="t-caption" style="color: var(--label-2); text-align: center">Going back starts nothing — only this begins.</div>
+      <button class="nr-btn is-block" aria-label="Begin memorizing At-Tin verses 1 to 8 with first-words help">
+        <span>Begin memorizing</span>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,101 @@
+<!-- pc {"title":"Session"} -->
+<!-- FS-029 Memorize — Session. Entered from FS-028 on Begin carrying range +
+     cue level (At-Tin 1–8, First words), or re-entered from the mode
+     switcher with existing state — never from a tab, because this app has no
+     tab bar (Overview.md §2 D6). Back ENDS the session and restores normal
+     reading — but discards NOTHING: attempts and reveals are recorded as
+     they happen (§2). Back is disabled only mid-reveal (not rendered here).
+
+     Hierarchy follows FS-029 §8 exactly: the CONCEALED PASSAGE is IMMEDIATE —
+     what am I recalling. Everything else helps recall or reports on it.
+     Session controls stay SECONDARY: prominence during recall would compete
+     with recall itself, the one thing the user is doing.
+
+     CONCEALMENT, honestly built (design decision 3): hidden text is NEVER
+     real text made transparent/blurred — `filter`/`opacity` tricks are out
+     of subset AND leak through selection/copy AND would let VoiceOver read
+     answers aloud. Each hidden verse is a row of brass dots (ornament
+     glyphs, `nr-mark` family) on the ambient plane: tappable 44pt+ to reveal
+     THAT verse only (§3.1 — revealing costs what reading costs). The verse
+     NUMBER stays (orientation without answers). A revealed verse shows real
+     text in the verse's own space — layout never shifts under the holder
+     (§3.3) — and becomes inert readable text, no further control (§3.3).
+
+     CUE ("First words" level): each concealed row carries its opening words
+     as INERT text above the dots — the help, visible but not tappable for
+     reveal (§3.2: tapping help for answers converts sessions into lookups).
+     Revealed rows need no cue (it has done its job, §8).
+
+     Origin rendered: mid-session — verses 1–2 REVEALED (recorded attempts),
+     verse 3 concealed with cue, verses 4–8 concealed with cues below in the
+     scroll. Stats control PRESENT (session has produced statistics); absent
+     only before the first reveal (§3.4). End + Adjust separated ≥12pt.
+
+     NO ARCH (EI-004 rations the mihrab to FS-006 alone). No card borders.
+
+     Band: `.body-fixed` + progress line pinned above the scroller (CONTEXTUAL
+     report: 2 of 8 revealed — inert, not a target) + session controls pinned
+     below (SECONDARY, above the home indicator + clear of any Now Playing
+     element). The passage scrolls between; the last verse clears the
+     controls. -->
+<div class="screen" style="background-color: var(--bg)">
+  <button data-slot="back" class="nr-icon-btn" aria-label="End the session — attempts kept, back to reading">
+    <span class="icon icon-sm" data-symbol="chevron.left"></span>
+  </button>
+  <span data-slot="title" class="nav-title">Session</span>
+
+  <div class="body-fixed" style="gap: var(--s3); padding: var(--s2) var(--s5) calc(var(--s5) + var(--safe-bottom))">
+    <!-- PROGRESS — CONTEXTUAL, pinned, inert. What has been earned so far. -->
+    <div class="nr-card is-quiet" style="width: 100%; gap: var(--s1); padding: var(--s2) var(--s4); align-items: center">
+      <span class="nr-setting-val">At-Tin · 2 of 8 revealed · First words</span>
+      <span class="nr-track" style="width: 100%" aria-hidden="true">
+        <span class="nr-fill" style="width: 25%"></span>
+      </span>
+    </div>
+
+    <!-- PASSAGE — IMMEDIATE, the one scroller. Concealed rows are 44pt+
+         single-verse targets; revealed rows are inert text in the same
+         space (no layout shift). Cue words are inert by design. -->
+    <div class="col nr-scroll" style="gap: var(--s2)">
+      <div class="nr-card" style="gap: var(--s1); padding: var(--s3) var(--s4)">
+        <div class="row" style="gap: var(--s2)">
+          <span class="nr-setting-val">95:1</span>
+          <span class="grow nr-verse-sm">وَالتِّينِ وَالزَّيْتُونِ</span>
+        </div>
+      </div>
+      <div class="nr-card" style="gap: var(--s1); padding: var(--s3) var(--s4)">
+        <div class="row" style="gap: var(--s2)">
+          <span class="nr-setting-val">95:2</span>
+          <span class="grow nr-verse-sm">وَطُورِ سِينِينَ</span>
+        </div>
+      </div>
+      <button class="nr-card" style="width: 100%; gap: var(--s1); text-align: left" aria-label="Verse 3 concealed. First words: وهذا البلد. Tap to reveal verse 3">
+        <span class="nr-setting-val">95:3 · وهذا البلد…</span>
+        <span class="nr-mark" aria-hidden="true">• • • • • • •</span>
+      </button>
+      <button class="nr-card" style="width: 100%; gap: var(--s1); text-align: left" aria-label="Verse 4 concealed. First words: لقد خلقنا. Tap to reveal verse 4">
+        <span class="nr-setting-val">95:4 · لقد خلقنا…</span>
+        <span class="nr-mark" aria-hidden="true">• • • • • • •</span>
+      </button>
+      <button class="nr-card" style="width: 100%; gap: var(--s1); text-align: left" aria-label="Verse 5 concealed. First words: ثم رددناه. Tap to reveal verse 5">
+        <span class="nr-setting-val">95:5 · ثم رددناه…</span>
+        <span class="nr-mark" aria-hidden="true">• • • • • • •</span>
+      </button>
+    </div>
+
+    <!-- CONTROLS — SECONDARY, pinned. End (back-equivalent, keeps work) +
+         Adjust (to FS-028 with state, not a restart) ≥12pt apart; Stats
+         present because reveals exist. -->
+    <div class="row" style="gap: var(--s3)">
+      <button class="nr-btn is-quiet grow" aria-label="End the session — attempts kept">
+        <span>End</span>
+      </button>
+      <button class="nr-icon-btn" aria-label="Adjust range or help — session kept">
+        <span class="icon icon-sm" data-symbol="slider.horizontal.3"></span>
+      </button>
+      <button class="nr-icon-btn" aria-label="Review statistics for this range">
+        <span class="icon icon-sm" data-symbol="chart.bar"></span>
+      </button>
+    </div>
+  </div>
+</div>

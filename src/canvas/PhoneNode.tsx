@@ -64,6 +64,9 @@ function PhoneNodeInner({ id, data }: NodeProps) {
 
   // Collapsed = device frame (internal scroll); expanded = full content height.
   const contentH = expanded ? (contentSizes[id] ?? device.height) : device.height
+  // The toggle promises full content: hide it while the content fits the
+  // frame (or is still unknown) so it can never be a dead button.
+  const canExpand = (contentSizes[id] ?? 0) > device.height + 1
 
   const projectId = screen ? (projectOfScreen(screen.id)?.id ?? undefined) : undefined
   // C (13§5): projected copy text — pure derivation, pinned by labelCopyText test
@@ -153,23 +156,25 @@ function PhoneNodeInner({ id, data }: NodeProps) {
             in-flow column trên frame (trục Y tự do, không chạm placement X);
             ngoài iframe nên không chặn pickAt; ellipsis chỉ ở dòng id */}
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="text-[13px] font-semibold leading-tight">{screen?.title ?? d.screenId}</span>
-          <Badge variant="outline">
+          <span className="text-[26px] font-semibold leading-tight">{screen?.title ?? d.screenId}</span>
+          <Badge variant="outline" className="text-2xl">
             {device.width} × {Math.round(contentH)}
           </Badge>
           <Badge
+            className="text-2xl"
             variant={golden.state === 'match' ? 'default' : golden.state === 'mismatch' ? 'destructive' : 'secondary'}
             title={`Golden: ${golden.label} (read-only — chạy export --golden để tạo) — ${d.screenId}`}
           >
             {golden.state === 'match' ? '●' : golden.state === 'mismatch' ? '●' : '○'}
           </Badge>
           {expandError && (
-            <Badge variant="destructive" title={expandError.title}>
+            <Badge variant="destructive" title={expandError.title} className="text-2xl">
               {expandError.text}
             </Badge>
           )}
           {formChipText && (
             <Badge
+              className="text-2xl"
               variant="secondary"
               title={`Form-factor: ${device.name} — đổi ở dropdown Thiết bị trong panel`}
             >
@@ -189,7 +194,7 @@ function PhoneNodeInner({ id, data }: NodeProps) {
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="ml-auto"
+                className="ml-auto [&_svg]:size-8"
                 title="Xóa màn hình khỏi board (Delete)"
                 aria-label="Xóa màn hình khỏi board (Delete)"
                 onClick={(e) => {
@@ -207,7 +212,7 @@ function PhoneNodeInner({ id, data }: NodeProps) {
             type="button"
             variant="ghost"
             size="sm"
-            className="h-auto justify-start px-1 py-0.5 text-xs font-normal"
+            className="h-auto justify-start px-1 py-0.5 text-2xl font-normal"
             title={screen ? `${projectId ?? '?'}/${screen.id} · ${screen.file} (click để chép id)` : 'click để chép id'}
             onClick={(e) => {
               e.stopPropagation()
@@ -219,14 +224,15 @@ function PhoneNodeInner({ id, data }: NodeProps) {
           >
             <span className="truncate">{copiedId ? 'Đã chép' : idLabel}</span>
           </Button>
-          <span className="px-1 text-xs text-muted-foreground" title={`Golden: ${golden.label} (read-only — chạy export --golden để tạo)`}>
+          <span className="px-1 text-2xl text-muted-foreground" title={`Golden: ${golden.label} (read-only — chạy export --golden để tạo)`}>
             {golden.state === 'match' ? '● khớp golden' : golden.state === 'mismatch' ? '● lệch golden' : '○ chưa có golden'}
           </span>
+          {(expanded || canExpand) && (
           <Button
             type="button"
             variant="link"
             size="sm"
-            className="h-auto justify-start px-1 py-0.5"
+            className="h-auto justify-start px-1 py-0.5 text-2xl"
             title={expanded ? 'Thu về khung thiết bị' : 'Mở rộng xem hết nội dung'}
             onClick={(e) => {
               e.stopPropagation()
@@ -235,8 +241,10 @@ function PhoneNodeInner({ id, data }: NodeProps) {
           >
             {expanded ? '⤡ Thu về' : '⤢ Mở rộng'}
           </Button>
+          )}
           {!isKnownDevice(d.deviceId) && (
             <Badge
+              className="text-2xl"
               variant="destructive"
               title={`Thiết bị “${d.deviceId}” không tồn tại — đang hiển thị ở Reference`}
             >

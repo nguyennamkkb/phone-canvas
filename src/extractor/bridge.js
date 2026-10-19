@@ -372,22 +372,33 @@
   }
 
   /**
-   * How tall the screen would be if nothing were clipped: the frame height plus
-   * the overflow of the first band that overflows. Measured WITHOUT un-clipping
-   * on purpose — inserting a style here would change `.device`'s height and
-   * re-trigger the ResizeObserver below, i.e. a measurement loop.
+   * How tall the screen would be if nothing were clipped.
+   *
+   * One-shot unclip: flex-shrink can SQUASH content instead of overflowing
+   * it, and a squashed box reports scrollHeight == clientHeight — so the
+   * scrollHeight scan below the fold is blind to it (surah-index measured
+   * 844 with 1155pt of real content). Reading `.screen` with its own height
+   * is the only reliable way to ask "how tall is this screen?".
+   *
+   * Loop-safe by construction: `.device` keeps its fixed frame height the
+   * whole time (children overflow visibly but the device box never moves),
+   * so the ResizeObserver on deviceEl stays silent; the style is applied,
+   * forced-laid-out and removed inside this one task.
    */
   function measuredContentHeight() {
     var base = measuredHeight()
-    var extra = 0
-    var sels = ['.viewport', '.screen', '.body', '.body-fixed']
-    for (var i = 0; i < sels.length; i++) {
-      var el = document.querySelector(sels[i])
-      if (!el) continue
-      var over = el.scrollHeight - el.clientHeight
-      if (over > extra) extra = over
-    }
-    return base + extra
+    var screen = document.querySelector('.screen')
+    if (!screen) return base
+    var clipped = Math.ceil(screen.getBoundingClientRect().height)
+    var style = document.createElement('style')
+    style.textContent =
+      '.viewport{overflow:visible !important}' +
+      '.screen{flex:none !important;height:auto !important}' +
+      '.body,.body-fixed{flex:none !important;height:auto !important;overflow:visible !important}'
+    document.head.appendChild(style)
+    var natural = Math.ceil(screen.getBoundingClientRect().height)
+    if (style.parentNode) style.parentNode.removeChild(style)
+    return base + Math.max(0, natural - clipped)
   }
 
   function postHeight() {

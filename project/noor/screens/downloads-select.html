@@ -1,0 +1,126 @@
+<!-- pc {"title":"Get audio"} -->
+<!-- FS-019 Select & Transfer. Pushed from FS-018's Add (usage + limit
+     carried), presented from FS-013 pre-scoped to a reciter, or from the
+     reader for one surah — never from a tab, because this app has no tab bar
+     (Overview.md §2 D6). Back pops and STARTS NOTHING: a selection that
+     transferred on dismissal would teach the user that cancelling spends
+     their data allowance, learned only by discovering it afterwards (§2).
+
+     Hierarchy follows FS-019 §8 exactly, and its Counter Hypothesis is the
+     thing being refused: the SUMMARY is IMMEDIATE and pinned — it answers
+     "what will this cost me", the one question that prevents a phone full of
+     surprises (EI-003). Leading with the surah list would serve only the
+     user who already knows what they want and strand the commuter on hotel
+     Wi-Fi with an unreconciled data budget.
+
+     The summary and the disclosure are SEPARATE groups (§3 grouping): one is
+     arithmetic, one is commercial, and merging them lets a price read as a
+     storage figure — precisely the confusion EI-009 forbids. Both precede
+     the transfer control, always in that order.
+
+     NO ARCH (EI-004 rations the mihrab to FS-006 alone). No card borders.
+
+     Origin rendered: from FS-013 pre-scoped to Al-Husary, three surahs
+     selected (Al-Fatihah, Al-Baqarah, Al-Imran) at 86 MB against the 2 GB
+     limit with 760 MB free — summary recomputed, never stale (§4). Sizes are
+     PER-RECITER: the selector precedes the list because showing sizes before
+     a reciter is chosen means showing figures that will change (§3
+     grouping). Selection state is never colour-alone: checkmark glyph +
+     filled plane + `aria-pressed` per row.
+     Entitlement here is premium, so the disclosure states the capability
+     without blocking and the transfer control is armed — the free-tier
+     disabled variant is a state of this same screen (control disabled + row
+     names the capability), not a second screen.
+
+     Band: `.body-fixed` + summary pinned above the scroller (§3.1: it must
+     accompany every selection change) + disclosure/transfer pinned below.
+     Reciter selector scrolls WITH the list (§3.2: two pinned regions leave
+     no room to select). Final row clears the disclosure. -->
+<div class="screen" style="background-color: var(--bg)">
+  <button data-slot="back" class="nr-icon-btn" aria-label="Back — nothing starts, no data spent">
+    <span class="icon icon-sm" data-symbol="chevron.left"></span>
+  </button>
+  <span data-slot="title" class="nav-title">Get audio</span>
+
+  <div class="body-fixed" style="gap: var(--s3); padding: var(--s2) var(--s5) calc(var(--s5) + var(--safe-bottom))">
+    <!-- SUMMARY — IMMEDIATE, pinned, inert (§3.1: a statement, not a target).
+         Serif numerals for both quantities — arithmetic the user must READ.
+         Recomputed for the current selection; an empty selection would show
+         the resting state, never a stale figure (§4). -->
+    <div class="nr-card" style="width: 100%; gap: var(--s1); padding: var(--s3) var(--s4); align-items: center">
+      <span class="nr-eyebrow">This download</span>
+      <span class="nr-numeric" aria-label="3 surahs, 86 megabytes, 760 megabytes free after">3 · 86 MB</span>
+      <span class="nr-setting-val">760 MB free after · fits your 2 GB limit</span>
+    </div>
+
+    <!-- The one scroller: reciter selector FIRST (sizes depend on it), then
+         the surah list. Each surah row is one 44pt+ target: tap toggles
+         selection AND the summary recomputes (§5). Already-downloaded rows
+         would show as such and refuse re-adding — none rendered here because
+         Al-Husary holds nothing yet in this session. -->
+    <div class="col nr-scroll" style="gap: var(--s2)">
+      <div class="nr-card" style="gap: var(--s2); padding: var(--s3) var(--s4)">
+        <span class="nr-row-title">Voice</span>
+        <div class="nr-modes" style="width: 100%">
+          <button class="nr-mode" style="padding: 0 var(--s1)" aria-label="Mishary Rashid Alafasy — switch voice, sizes will update">Mishary</button>
+          <button class="nr-mode is-on" style="padding: 0 var(--s1)" aria-label="Mahmoud Khalil Al-Husary — selected" aria-pressed="true">Al-Husary</button>
+          <button class="nr-mode" style="padding: 0 var(--s1)" aria-label="Saad Al-Ghamdi — switch voice, sizes will update">Ghamdi</button>
+        </div>
+      </div>
+
+      <div class="col" style="gap: var(--s2)">
+        <button class="nr-setting is-on" aria-pressed="true" aria-label="Al-Fatihah, 7 verses, 2 megabytes. Selected — tap to remove">
+          <span class="grow col" style="gap: 0">
+            <span class="nr-row-title">Al-Fatihah</span>
+            <span class="nr-setting-val">7 verses · 2 MB</span>
+          </span>
+          <span class="icon icon-sm" data-symbol="checkmark" style="color: var(--accent)"></span>
+        </button>
+        <button class="nr-setting is-on" aria-pressed="true" aria-label="Al-Baqarah, 286 verses, 61 megabytes. Selected — tap to remove">
+          <span class="grow col" style="gap: 0">
+            <span class="nr-row-title">Al-Baqarah</span>
+            <span class="nr-setting-val">286 verses · 61 MB</span>
+          </span>
+          <span class="icon icon-sm" data-symbol="checkmark" style="color: var(--accent)"></span>
+        </button>
+        <button class="nr-setting is-on" aria-pressed="true" aria-label="Aal Imran, 200 verses, 23 megabytes. Selected — tap to remove">
+          <span class="grow col" style="gap: 0">
+            <span class="nr-row-title">Aal Imran</span>
+            <span class="nr-setting-val">200 verses · 23 MB</span>
+          </span>
+          <span class="icon icon-sm" data-symbol="checkmark" style="color: var(--accent)"></span>
+        </button>
+        <button class="nr-setting" aria-label="An-Nisa, 176 verses, 21 megabytes. Not selected — tap to add">
+          <span class="grow col" style="gap: 0">
+            <span class="nr-row-title">An-Nisa</span>
+            <span class="nr-setting-val">176 verses · 21 MB</span>
+          </span>
+          <span class="icon icon-sm" data-symbol="plus" style="color: var(--label-3)"></span>
+        </button>
+        <button class="nr-setting" aria-label="Al-Maidah, 120 verses, 15 megabytes. Not selected — tap to add">
+          <span class="grow col" style="gap: 0">
+            <span class="nr-row-title">Al-Maidah</span>
+            <span class="nr-setting-val">120 verses · 15 MB</span>
+          </span>
+          <span class="icon icon-sm" data-symbol="plus" style="color: var(--label-3)"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- DISCLOSURE + TRANSFER — pinned below the scroller, disclosure FIRST
+         (§3.4: always seen in that order). Separate groups: arithmetic above,
+         commercial here. The transfer control is armed (premium + non-empty
+         selection within limit); on free it would sit disabled with the row
+         naming the capability — same screen, not a fork. -->
+    <div class="col" style="gap: var(--s2)">
+      <div class="nr-setting is-plain" style="cursor: default; padding: var(--s1) var(--s4)">
+        <span class="icon icon-xs" data-symbol="info.circle" style="color: var(--label-2)"></span>
+        <span class="nr-setting-val">Offline audio is a Noor Plus capability — already active on this device.</span>
+      </div>
+      <button class="nr-btn is-block" aria-label="Download 3 surahs, 86 megabytes, for Mahmoud Khalil Al-Husary">
+        <span class="icon icon-sm" data-symbol="download"></span>
+        <span>Download 86 MB</span>
+      </button>
+    </div>
+  </div>
+</div>
