@@ -36,6 +36,7 @@ const PINS: Pin[] = [
   { screen: 'family-plan', element: 'pw-cta', why: 'the same CTA on the second paywall screen' },
   { screen: 'family-plan', element: 'pw-card.fp-plan.is-best', why: 'the highlighted plan card' },
   { screen: 'seasonal-sale', element: 'pw-card.ss-plan.is-best', why: 'the highlighted plan card' },
+  { screen: 'halloween-offer', element: 'region-nav', why: 'band nav trên nền ảnh — crop vắt qua seam .device/.screen' },
 ]
 
 type Row = { pin: string; key: string; status: string }

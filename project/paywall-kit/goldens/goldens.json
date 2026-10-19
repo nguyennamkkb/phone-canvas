@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-12T07:32:56.765Z",
+  "updatedAt": "2026-10-19T09:07:07.443Z",
   "records": {},
   "elements": {
     "seasonal-sale--reference--light--pw-cta": {
@@ -50,6 +50,18 @@
       "specHash": "5e2015a96d6d1cb05bb1e4d840355123feba96657afc37fb73d055afbe2ad591",
       "png": "seasonal-sale--reference--light--pw-card.png",
       "updatedAt": 1791790376765
+    },
+    "halloween-offer--reference--light--region-nav": {
+      "elementKey": "halloween-offer--reference--light--region-nav",
+      "screen": "halloween-offer",
+      "device": "reference",
+      "theme": "light",
+      "scale": 2,
+      "cropHash": "bb73e2c5d8e979f80a1696bee75f13fadd0246e0740fe40b353635a54ae45ef9",
+      "phash": "6160e0c0c0c01010",
+      "specHash": "375bd08bd526caabacc33cdd5b201656dfdb16508cf8b9eab9885cb884737900",
+      "png": "halloween-offer--reference--light--region-nav.png",
+      "updatedAt": 1792400827443
     }
   }
 }
